@@ -1,3 +1,33 @@
+
+# chm
+*.chm
+
+# SI4
+SIP.si4project/
+
+# python
+__pycache__/
+
+# .vs
+*.vs
+Debug/
+Release/
+x86/
+x64/
+ARM/
+
+# .vscode
+.vscode/
+
+# MDK-ARM
+DebugConfig/
+Listings/
+Objects/
+# *.uvoptx
+*.uvguix.*
+*.scvd
+JLinkLog.txt
+
 # Prerequisites
 *.d
 
@@ -17,19 +47,19 @@
 *.pch
 
 # Libraries
-*.lib
+# *.lib
 *.a
 *.la
 *.lo
 
 # Shared objects (inc. Windows DLLs)
-*.dll
+# *.dll
 *.so
 *.so.*
 *.dylib
 
 # Executables
-*.exe
+# *.exe
 *.out
 *.app
 *.i*86

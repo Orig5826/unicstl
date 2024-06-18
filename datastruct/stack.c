@@ -1,0 +1,115 @@
+
+#include "stack.h"
+
+#if STACK == 1
+
+bool stack_init(pstack_t *head)
+{
+	*head = (pstack_t)malloc(sizeof(stack_t));
+	if(*head == NULL)
+	{
+		return false;
+	}
+	(*head)->top = NULL;
+	(*head)->size = 0;
+	return true;
+}
+
+void stack_destroy(pstack_t *head)
+{
+	if(*head != NULL)
+	{
+		stack_clear(*head);
+		free(*head);
+		*head = NULL;
+	}
+}
+
+bool stack_empty(pstack_t head)
+{
+	return (head == NULL || head->top == NULL) ? true : false;
+}
+
+void stack_clear(pstack_t head)
+{
+	pstack_node_t top_item;
+	if(head != NULL)
+	{
+		top_item = head->top;
+		while(top_item != NULL)
+		{
+			head->top = top_item->next;
+			free(top_item);
+			top_item = head->top;
+		}
+	}
+	head->size = 0;
+}
+
+bool stack_push(pstack_t head, stack_data_t data)
+{
+	pstack_node_t new_item;
+	if(head == NULL)
+	{
+		return false;
+	}
+
+	new_item = (pstack_node_t)malloc(sizeof(stack_node_t));
+	if(new_item == NULL)
+	{
+		return false;
+	}
+	new_item->data = data;
+
+	// insert from head
+	new_item->next = head->top;
+	head->top = new_item;
+
+	// increase
+	if(head->size < _UI32_MAX)
+	{
+		head->size ++;
+	}
+	return true;
+}
+
+void stack_pop(pstack_t head, stack_data_t *data)
+{
+	pstack_node_t top_item;
+	if(!stack_empty(head))
+	{
+		top_item = head->top;
+		*data = top_item->data;
+
+		// free the top item
+		head->top = top_item->next;
+		free(top_item);
+		top_item = NULL;
+
+		// decrease
+		if(head->size > 0)
+		{
+			head->size--;
+		}
+	}
+}
+
+bool stack_get_top(pstack_t head, stack_data_t *data)
+{
+	if(!stack_empty(head))
+	{
+		*data = head->top->data;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+uint32_t stack_get_size(pstack_t head)
+{
+	return head->size;
+}
+
+#endif
