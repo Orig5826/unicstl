@@ -9,12 +9,12 @@
 
 
 // optional
-#define RBTREE		1
+#define RBTREE		0
 #define AVLTREE		0
 #define RAVLTREE	0	// avl tree by recursion
-#define QUEUE		1
+#define QUEUE		0
 #define STACK		1
-#define LIST		1
+#define LIST		0
 
 
 // --------------------------------------------------

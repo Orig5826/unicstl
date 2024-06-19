@@ -5,30 +5,29 @@
 
 #if STACK == 1
 
-// typedef int stack_data_t;
-
-typedef struct _stack_node_t
+struct _stack_node
 {
-	stack_data_t data;
-	struct _stack_node_t * next;
-} stack_node_t, *pstack_node_t;
+	void * obj;
+	struct _stack_node * next;
+};
 
-typedef struct _stack_t
+struct _stack
 {
-	struct _stack_node_t * top;
-	uint32_t size;
-} stack_t, *pstack_t;
+	struct _stack_node * _node;
+	uint32_t _capacity;			// 总容量
+	uint32_t _size;				// 栈大小
+	uint32_t _obj_size;			// 元素大小
 
+	bool (*empty)(struct _stack* s);
+	bool (*clear)(struct _stack* s);
+	uint32_t(*size)(struct _stack* s);
 
-bool stack_init(pstack_t *head);
-void stack_destroy(pstack_t *head);
-bool stack_empty(pstack_t head);
-void stack_clear(pstack_t head);
-uint32_t stack_get_size(pstack_t head);
+	bool (*peek)(struct _stack* s, void *obj);
+	bool (*push)(struct _stack* s, void* obj);
+	bool (*pop)(struct _stack* s, void* obj);
+};
 
-bool stack_push(pstack_t head, stack_data_t data);
-void stack_pop(pstack_t head, stack_data_t *data);
-bool stack_get_top(pstack_t head, stack_data_t *data);
+bool stack_init(struct _stack* s, uint32_t type_size);
 
 #endif
 

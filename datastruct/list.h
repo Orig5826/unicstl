@@ -4,7 +4,7 @@
 #include "common.h"
 
 // #define LINK_LIST		1
-#define LIST				1
+// #define LIST				1
 
 #ifdef LINK_LIST
 #define LIST_TEST

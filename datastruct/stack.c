@@ -1,8 +1,9 @@
 
 #include "stack.h"
 
-#if STACK == 1
 
+#if STACK == 1
+#if 0
 bool stack_init(pstack_t *head)
 {
 	*head = (pstack_t)malloc(sizeof(stack_t));
@@ -110,6 +111,70 @@ bool stack_get_top(pstack_t head, stack_data_t *data)
 uint32_t stack_get_size(pstack_t head)
 {
 	return head->size;
+}
+#endif
+
+uint32_t stack_capacity(struct _stack* s)
+{
+	assert(s != NULL);
+	return s->_capacity;
+}
+
+uint32_t stack_size(struct _stack* s)
+{
+	assert(s != NULL);
+	return s->_size;
+}
+
+bool stack_empty(struct _stack* s)
+{
+	assert(s != NULL);
+	return !stack_size(s);
+}
+
+bool stack_clear(struct _stack* s)
+{
+	assert(s != NULL);
+	return true;
+}
+
+bool stack_peek(struct _stack* s, void* obj)
+{
+	return true;
+}
+
+bool stack_push(struct _stack* s, void* obj)
+{
+	assert(s != NULL);
+	assert(obj != NULL);
+	return true;
+}
+
+bool stack_pop(struct _stack* s, void* obj)
+{
+	return true;
+}
+
+bool stack_init(struct _stack* s, uint32_t obj_size)
+{
+	// 1. set attr
+	s->_obj_size = obj_size;
+	s->_size = 0;
+	// s->capacity = 64;
+	
+	// 2. set function
+	s->clear = stack_clear;
+	s->empty = stack_empty;
+	s->peek = stack_peek;
+	s->pop = stack_pop;
+	s->push = stack_push;
+	s->size = stack_size;
+
+	// 3. set node
+	s->_node->obj = NULL;
+	s->_node->next = NULL;
+
+	return true;
 }
 
 #endif

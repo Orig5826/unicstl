@@ -8,7 +8,7 @@
 #include "common.h"
 
 // It is recommended to keep one at the same time
-#define RBTREE_TEST		1
+#define RBTREE_TEST		0
 #define AVLTREE_TEST	0
 #define RAVLTRE_TEST	0
 #define STACK_TEST		0

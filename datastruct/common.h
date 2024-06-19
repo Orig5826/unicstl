@@ -11,7 +11,7 @@
 
 #include "config.h"
 
-// ---------------------------------------
+
 #if RBTREE == 1
 #include "rbtree.h"
 	typedef prbtree_node_t stack_data_t;
@@ -27,7 +27,6 @@
 	typedef int queue_data_t;
 	typedef int list_data_t;
 #endif
-
 
 #endif // _DEMO_H_
 
