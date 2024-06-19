@@ -30,6 +30,7 @@ struct _stack
 	// others
 	bool (*clear)(struct _stack* s);
 	void (*destory)(struct _stack* s);
+	void (*print_obj)(void* obj);
 	void (*print)(struct _stack* s);
 };
 
