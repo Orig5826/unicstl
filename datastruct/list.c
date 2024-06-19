@@ -219,7 +219,7 @@ bool list_insert(list_t list, int index, list_data_t data)
 		list->array = array;
 		list->capacity = capacity;
 	}
-	memmove(&list->array[index + 1], &list->array[index], list_size(list));
+	memmove(&list->array[index + 1], &list->array[index], list_size(list) * sizeof(list_data_t));
 	list->array[index] = data;
 	list->size += 1;
 	return true;
@@ -269,8 +269,8 @@ bool list_clear(list_t list)
 
 list_data_t list_get(list_t list, int index)
 {
-	assert(index >= 0 && index < list_size(list));
-	return list->array[index];
+	assert(index >= -list_size(list) && index < list_size(list));
+	return index >= 0 ? list->array[index] : list->array[list_size(list) + index];
 }
 
 bool list_set(list_t list, int index, list_data_t data)
@@ -286,7 +286,7 @@ void list_print(list_t list)
 	{
 		for (int i = 0; i < list_size(list); i++)
 		{
-			printf("%d ", list->array[i]);
+			printf("%2d ", list->array[i]);
 		}
 		printf("\n");
 	}
@@ -295,7 +295,8 @@ void list_print(list_t list)
 void list_test(void)
 {
 	int i = 0;
-
+	
+	list_data_t data = 0;
 	struct _list list;
 	list_init(&list);
 
@@ -322,6 +323,33 @@ void list_test(void)
 	for (i = 0; i < 18; i++)
 	{
 		list_insert(&list, 0, i);
+		list_print(&list);
+	}
+
+	printf("----- get -----\n");
+	data = list_get(&list, 0);
+	printf("list[0] = %2d\n", data);
+
+	data = list_get(&list, 17);
+	printf("list[17] = %2d\n", data);
+
+	data = list_get(&list, 5);
+	printf("list[5] = %2d\n", data);
+
+	printf("----- like python -----\n");
+	data = list_get(&list, -1);
+	printf("list[-1] = %2d\n", data);
+
+	data = list_get(&list, -5);
+	printf("list[-5] = %2d\n", data);
+
+	data = list_get(&list, -18);
+	printf("list[-18] = %2d\n", data);
+
+	printf("----- set -----\n");
+	for (i = 0; i < 18; i++)
+	{
+		list_set(&list, i, i);
 		list_print(&list);
 	}
 
