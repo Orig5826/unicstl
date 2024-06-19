@@ -109,12 +109,5 @@ void stack_test(void)
 	printf("----------------------------------------\n");
 }
 
-#else
-
-void stack_test(void)
-{
-	
-}
-
 #endif
 

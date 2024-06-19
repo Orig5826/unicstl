@@ -132,14 +132,12 @@ bool stack_empty(struct _stack* s)
 	return !stack_size(s);
 }
 
-bool stack_clear(struct _stack* s)
-{
-	assert(s != NULL);
-	return true;
-}
-
 bool stack_peek(struct _stack* s, void* obj)
 {
+	assert(s != NULL);
+	assert(s->_head != NULL);
+	struct _stack_node * node = s->_head->next;
+	memmove(obj, node->obj, s->_obj_size);
 	return true;
 }
 
@@ -147,12 +145,77 @@ bool stack_push(struct _stack* s, void* obj)
 {
 	assert(s != NULL);
 	assert(obj != NULL);
+
+	void* new_obj = (void*)malloc(s->_obj_size);
+	if (new_obj == NULL)
+	{
+		return false;
+	}
+	memmove(new_obj, obj, s->_obj_size);
+
+	struct _stack_node* new_node = (struct _stack_node*)malloc(sizeof(struct _stack_node));
+	if (new_node == NULL)
+	{
+		return false;
+	}
+	new_node->obj = new_obj;
+	new_node->next = s->_head->next;
+	s->_head->next = new_node;
+
+	s->_size += 1;
 	return true;
 }
 
 bool stack_pop(struct _stack* s, void* obj)
 {
+	assert(s != NULL);
+	assert(obj != NULL);
+	assert(s->_head != NULL);
+	
+	if (s->_head->next == NULL)
+	{
+		return false;
+	}
+
+	struct _stack_node* node = s->_head->next;
+	// 将弹出的数据输出
+	memmove(obj, node->obj, s->_obj_size);
+
+	// 更新指针
+	s->_head->next = node->next;
+
+	// 释放数据和节点
+	free(node->obj);
+	free(node);
+
+	s->_size -= 1;
 	return true;
+}
+
+bool stack_clear(struct _stack* s)
+{
+	assert(s != NULL);
+
+	if (s->_head == NULL)
+	{
+		return false;
+	}
+
+	struct _stack_node* node = s->_head->next;
+	while (node != NULL)
+	{
+		node = node->next;
+	}
+	return true;
+}
+
+void stack_destory(struct _stack* s)
+{
+	assert(s != NULL);
+	
+	s->clear(s);
+	free(s->_head);
+	s->_head = NULL;
 }
 
 bool stack_init(struct _stack* s, uint32_t obj_size)
@@ -160,7 +223,7 @@ bool stack_init(struct _stack* s, uint32_t obj_size)
 	// 1. set attr
 	s->_obj_size = obj_size;
 	s->_size = 0;
-	// s->capacity = 64;
+	// s->_capacity = 64;
 	
 	// 2. set function
 	s->clear = stack_clear;
@@ -169,12 +232,74 @@ bool stack_init(struct _stack* s, uint32_t obj_size)
 	s->pop = stack_pop;
 	s->push = stack_push;
 	s->size = stack_size;
+	s->destory = stack_destory;
+	s->print = NULL;
 
 	// 3. set node
-	s->_node->obj = NULL;
-	s->_node->next = NULL;
+	s->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
+	if (s->_head == NULL)
+	{
+		return false;
+	}
+	s->_head->obj = NULL;
+	s->_head->next = NULL;
 
 	return true;
+}
+
+void stack_print_num(struct _stack* s)
+{
+	uint32_t i = 0;
+	struct _stack_node * node = s->_head->next;
+	while (node != NULL)
+	{
+		printf("%2d ", *(int*)node->obj);
+		node = node->next;
+	}
+	printf("\n");
+}
+
+void stack_test(void)
+{
+	uint32_t i = 0;
+	int data[] = {1,2,3,4,5,6,7,8,9,10};
+	int temp = 0;
+	uint32_t len = sizeof(data)/sizeof(data[0]);
+
+	struct _stack s;
+	stack_init(&s, sizeof(int));
+	s.print = stack_print_num;
+
+	printf("----- push -----\n");
+	for (i = 0; i < len; i++)
+	{
+		s.push(&s, &data[i]);
+
+		s.peek(&s, &temp);
+		printf("top = %2d, size after push = %2d\n", temp, s.size(&s));
+	}
+	printf("----- print -----\n");
+	s.print(&s);
+
+	printf("----- pop -----\n");
+	for (i = 0; i < len + 1; i++)
+	{
+		if (true == s.pop(&s, &temp))
+		{
+			printf("top = %2d, size after pop = %2d\n", temp, s.size(&s));
+		}
+		else
+		{
+			printf("pop failed! because stack is empty\n");
+		}
+
+		if (s.empty(&s))
+		{
+			printf("----- empty -----\n");
+		}
+	}
+
+	s.destory(&s);
 }
 
 #endif
