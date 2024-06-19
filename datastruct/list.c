@@ -1,6 +1,8 @@
 
 #include "list.h"
 
+
+#ifdef LINK_LIST
 bool list_init(plist_t *list)
 {
 	*list = (plist_t)malloc(sizeof(list_t));
@@ -163,4 +165,166 @@ void list_traversal_reversed(plist_t list, list_data_disp_t disp)
 		}
 	}
 }
+#endif
 
+bool list_init(list_t list)
+{
+	// list->capacity = 64;
+	list->capacity = 8;
+
+	list->size = 0;
+	list->extend_ratio = 2;
+	list->array = (list_data_t *)malloc(list->capacity * sizeof(list_data_t));
+	if (list->array == NULL)
+	{
+		return false;
+	}
+	return true;
+}
+
+void list_destory(list_t list)
+{
+	if (list->array != NULL)
+	{
+		free(list->array);
+	}
+}
+
+int list_capacity(list_t list)
+{
+	return list->capacity;
+}
+
+int list_size(list_t list)
+{
+	return list->size;
+}
+
+bool list_empty(list_t list)
+{
+	return list_size(list) == 0 ? true : false;
+}
+
+bool list_insert(list_t list, int index, list_data_t data)
+{
+	assert(index >= 0 && index <= list_size(list));
+	if (list_size(list) == list_capacity(list))
+	{
+		int capacity = list->capacity * list->extend_ratio;
+		list_data_t * array = (list_data_t*)realloc(list->array, capacity * sizeof(list_data_t));
+		if (array == NULL)
+		{
+			return false;
+		}
+		list->array = array;
+		list->capacity = capacity;
+	}
+	memmove(&list->array[index + 1], &list->array[index], list_size(list));
+	list->array[index] = data;
+	list->size += 1;
+	return true;
+}
+
+bool list_append(list_t list, list_data_t data)
+{
+	if (list_size(list) == list_capacity(list))
+	{
+		int capacity = list->capacity * list->extend_ratio;
+		list_data_t * array = (list_data_t*)realloc(list->array, capacity * sizeof(list_data_t));
+		if (array == NULL)
+		{
+			return false;
+		}
+		list->array = array;
+		list->capacity = capacity;
+	}
+	list->array[list->size] = data;
+	list->size += 1;
+	return true;
+}
+
+int list_delete(list_t list, int index)
+{
+	assert(index >= 0 && index < list_size(list));
+	int temp = 0;
+	temp = list->array[index];
+	if (index != list_size(list))
+	{
+		memmove(&list->array[index], &list->array[index + 1], (list_size(list) - 1 - index) * sizeof(list_data_t));
+		//for (int i = index; i < list_size(list) - 1; i++)
+		//{
+		//	list->array[i] = list->array[i + 1];
+		//}
+	}
+	list->size -= 1;
+	return temp;
+}
+
+bool list_clear(list_t list)
+{
+	memset(list->array, 0, list->size);
+	list->size = 0;
+	return true;
+}
+
+list_data_t list_get(list_t list, int index)
+{
+	assert(index >= 0 && index < list_size(list));
+	return list->array[index];
+}
+
+bool list_set(list_t list, int index, list_data_t data)
+{
+	assert(index >= 0 && index < list_size(list));
+	list->array[index] = data;
+	return true;
+}
+
+void list_print(list_t list)
+{
+	if (!list_empty(list))
+	{
+		for (int i = 0; i < list_size(list); i++)
+		{
+			printf("%d ", list->array[i]);
+		}
+		printf("\n");
+	}
+}
+
+void list_test(void)
+{
+	int i = 0;
+
+	struct _list list;
+	list_init(&list);
+
+	printf("----- append -----\n");
+	for (i = 0; i < 18; i++)
+	{
+		list_append(&list, i);
+		list_print(&list);
+	}
+
+	printf("----- delete -----\n");
+	list_delete(&list, 17);
+	list_print(&list);
+
+	list_delete(&list, 0);
+	list_print(&list);
+
+	list_delete(&list, 9);
+	list_print(&list);
+
+	printf("----- clear -----\n");
+	list_clear(&list);
+	printf("----- insert -----\n");
+	for (i = 0; i < 18; i++)
+	{
+		list_insert(&list, 0, i);
+		list_print(&list);
+	}
+
+	list_print(&list);
+	list_destory(&list);
+}

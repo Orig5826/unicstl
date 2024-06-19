@@ -3,13 +3,15 @@
 
 int main()
 {
-	while (1)
+	list_test();
+
+	// while (1)
 	{	
 		//stack_test();
 		//queue_test();
 		// list_test();
 		//tree_test();
-		rbtree_test();
+		// rbtree_test();
 	}
 	return 0;
 }
