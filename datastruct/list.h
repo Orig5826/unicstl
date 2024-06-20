@@ -3,69 +3,43 @@
 
 #include "common.h"
 
-// #define LINK_LIST		1
-// #define LIST				1
-
-#ifdef LINK_LIST
-#define LIST_TEST
-
-#ifdef LIST_TEST
-	typedef int list_data_t;
-#else
-	typedef int list_data_t;
-#endif
-
-typedef struct _list_t
-{
-	list_data_t data;
-	struct _list_t * prev;
-	struct _list_t * next;
-}list_t,*plist_t;
-
-typedef void (*list_data_disp_t)(list_data_t data);
-
-
-bool list_init(plist_t *list);
-void list_destroy(plist_t *list);
-bool list_empty(plist_t list);
-void list_clear(plist_t list);
-bool list_insert_head(plist_t list, list_data_t data);
-bool list_insert_tail(plist_t list, list_data_t data);
-bool list_delete(plist_t list, list_data_t data);
-uint32_t list_count(plist_t list);
-void list_traversal_sequence(plist_t list, list_data_disp_t disp);
-void list_traversal_reversed(plist_t list, list_data_disp_t disp);
-
-extern void list_test(void);
-#endif
-
 #ifdef LIST
 
 struct _list
 {
 	void * obj;
+
 	uint32_t _obj_size;			// 元素大小
 	uint32_t _size;				// 栈大小
 	uint32_t _capacity;			// 总容量
 	uint32_t _ratio;			// 扩展比率
 
 	// kernel
-	bool (*append)(struct _list* self, void* obj);						// 追加对象
-	bool (*insert)(struct _list* self, uint32_t index, void* obj);		// 在列表指定位置，插入对象
-	bool (*pop)(struct _list* self, int index, void* obj);				// 根据索引，删除对象并返回。
-	bool (*remove)(struct _list* self, int index);						// 根据索引，移除对象
+	bool (*append)(struct _list* self, void* obj);						// Append object to the end of the list.
+	bool (*insert)(struct _list* self, int index, void* obj);			// Insert object before index.
+	bool (*pop)(struct _list* self, int index, void* obj);				// Remove and return item at index.
+	
+	int (*index)(struct _list* self, void* obj);						// Return first index of obj. Return -1 if the obj is not present.
+	bool (*remove)(struct _list* self, void *obj);						// Remove first occurrence of obj.
 
-	int (*index)(struct _list* self, void* obj);						// 在列表中，查找数据是否存在，若存在则返回其索引。否则返回-1
-	bool (*at)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
+	bool (*clear)(struct _list* self);									// Remove all items from list.
+
+	bool (*get)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
 	bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
 
 	// base
 	uint32_t(*size)(struct _list* self);
-	bool (*clear)(struct _list* self);
 	bool (*empty)(struct _list* self);
 
 	// sort
-	bool (*reverse)(struct _list* self);
+	bool (*reverse)(struct _list* self);		// Reverse *IN PLACE*.
+
+	/**
+		Sort the list in ascending order and return false.
+		The sort is in-place (i.e. the list itself is modified) and stable (i.e. the
+		order of two equal elements is maintained).
+		The reverse flag can be set to sort in descending order.
+	*/
 	bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
 
 	// free

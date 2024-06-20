@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS 1
+#define _CRT_SECURE_NO_WARNINGS 1		// for vs2022
 #include "list.h"
 
 static void print_num(void* obj)
@@ -28,16 +28,16 @@ static void list_test_num(void)
 	list.print(&list);
 	printf("\n");
 
-	printf("----- remove -----\n");
-	list.remove(&list, 9);
+	printf("----- pop -----\n");
+	list.pop(&list, 9, NULL);
 	list.print(&list);
 	printf("\n");
 
-	list.remove(&list, 0);
+	list.pop(&list, 0, NULL);
 	list.print(&list);
 	printf("\n");
 
-	list.remove(&list, 4);
+	list.pop(&list, 4, NULL);
 	list.print(&list);
 	printf("\n");
 
@@ -55,17 +55,17 @@ static void list_test_num(void)
 	list.print(&list);
 	printf("\n");
 
-	printf("----- at -----\n");
+	printf("----- get -----\n");
 	index = 0;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 	index = 4;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 	index = 9;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 
@@ -92,15 +92,15 @@ static void list_test_num(void)
 
 	printf("----- at like python -----\n");
 	index = -1;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 	index = -6;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 	index = -10;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = %2d\n", index, temp);
 
 	printf("----- set like python -----\n");
@@ -177,16 +177,16 @@ static void list_test_struct(void)
 	list.print(&list);
 	printf("\n");
 
-	printf("----- remove -----\n");
-	list.remove(&list, 9);
+	printf("----- pop -----\n");
+	list.pop(&list, 9, NULL);
 	list.print(&list);
 	printf("\n");
 
-	list.remove(&list, 0);
+	list.pop(&list, 0, NULL);
 	list.print(&list);
 	printf("\n");
 
-	list.remove(&list, 4);
+	list.pop(&list, 4, NULL);
 	list.print(&list);
 	printf("\n");
 
@@ -206,17 +206,17 @@ static void list_test_struct(void)
 
 	printf("----- at -----\n");
 	index = 0;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
 	index = 4;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
 	index = 9;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
@@ -250,17 +250,17 @@ static void list_test_struct(void)
 
 	printf("----- at like python -----\n");
 	index = -1;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
 	index = -6;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
 	index = -10;
-	list.at(&list, index, &temp);
+	list.get(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");
 
