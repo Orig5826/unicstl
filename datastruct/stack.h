@@ -34,7 +34,8 @@ struct _stack
 	void (*print)(struct _stack* s);
 };
 
-bool stack_init(struct _stack* s, uint32_t type_size);
+bool stack_init(struct _stack* s, uint32_t obj_size);	// Á´±í
+bool stack2_init(struct _stack* s, uint32_t obj_size);	// Êý×é
 
 #endif
 
