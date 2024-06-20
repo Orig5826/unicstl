@@ -1,113 +1,203 @@
-#include "test.h"
+#include "stack.h"
 
-#if STACK_TEST == 1
+void print_num(void* obj)
+{
+	printf("(%2d )", *(int*)obj);
+}
+
+void stack_test_num(void)
+{
+	uint32_t i = 0;
+	int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+	int temp = 0;
+	uint32_t len = sizeof(data) / sizeof(data[0]);
+
+	struct _stack s;
+	stack_init(&s, sizeof(int));
+	s.print_obj = print_num;
+
+	printf("\n\n----- stack_test_num -----\n");
+	// get top if stack is empty
+	s.peek(&s, &temp);
+
+	printf("----- push -----\n");
+	for (i = 0; i < len; i++)
+	{
+		s.push(&s, &data[i]);
+
+		s.peek(&s, &temp);
+
+		printf("top = ");
+		s.print_obj(&temp);
+		printf("\tsize after push = %2d\n", s.size(&s));
+	}
+	printf("----- print -----\n");
+	s.print(&s);
+	printf("\n");
+
+	printf("----- pop -----\n");
+	for (i = 0; i < len + 1; i++)
+	{
+		if (true == s.pop(&s, &temp))
+		{
+			printf("top = ");
+			s.print_obj(&temp);
+			printf("\tsize after push = %2d\n", s.size(&s));
+		}
+		else
+		{
+			printf("pop failed! because stack is empty\n");
+		}
+
+		if (s.empty(&s))
+		{
+			printf("----- empty -----\n");
+		}
+	}
+
+	s.destory(&s);
+}
+
+void print_char(void* obj)
+{
+	printf("(%2c )", *(char*)obj);
+}
+
+void stack_test_char(void)
+{
+	uint32_t i = 0;
+	char data[] = "abcdefghijk";
+	char temp = 0;
+	uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+
+	struct _stack s;
+	stack2_init(&s, sizeof(char));
+	s.print_obj = print_char;
+
+	printf("\n\n----- stack_test_char -----\n");
+	// get top if stack is empty
+	s.peek(&s, &temp);
+
+	printf("----- push -----\n");
+	for (i = 0; i < len; i++)
+	{
+		s.push(&s, &data[i]);
+
+		s.peek(&s, &temp);
+		printf("top = ");
+		s.print_obj(&temp);
+		printf("\tsize after push = %2d\n", s.size(&s));
+	}
+	printf("----- print -----\n");
+	s.print(&s);
+	printf("\n");
+
+	printf("----- pop -----\n");
+	for (i = 0; i < len + 1; i++)
+	{
+		if (true == s.pop(&s, &temp))
+		{
+			printf("top = ");
+			s.print_obj(&temp);
+			printf("\tsize after push = %2d\n", s.size(&s));
+		}
+		else
+		{
+			printf("pop failed! because stack is empty\n");
+		}
+
+		if (s.empty(&s))
+		{
+			printf("----- empty -----\n");
+		}
+	}
+
+	s.destory(&s);
+}
+
+
+struct _student
+{
+	char name[16];
+	int id;
+};
+
+void print_struct(void* obj)
+{
+	struct _student* student = (struct _student*)obj;
+	printf("(%2d:%-5s ) ", student->id, student->name);
+}
+
+void stack_test_struct(void)
+{
+	uint32_t i = 0;
+	struct _student data[] = {
+		{"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
+		"zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
+	};
+	struct _student temp = { 0 };
+	uint32_t len = sizeof(data) / sizeof(data[0]);
+
+	struct _stack s;
+	stack_init(&s, sizeof(struct _student));
+	s.print_obj = print_struct;
+
+	printf("\n\n----- stack_test_struct -----\n");
+	// get top if stack is empty
+	s.peek(&s, &temp);
+
+	printf("----- push -----\n");
+	for (i = 0; i < len; i++)
+	{
+		s.push(&s, &data[i]);
+
+		s.peek(&s, &temp);
+		printf("top = ");
+		s.print_obj(&temp);
+		printf("\tsize after push = %2d\n", s.size(&s));
+	}
+	printf("----- print -----\n");
+	s.print(&s);
+	printf("\n");
+
+	printf("----- clear -----\n");
+	s.clear(&s);
+	printf("----- print -----\n");
+	s.print(&s);
+	printf("\n");
+
+	printf("----- push -----\n");
+	for (i = 0; i < len; i++)
+	{
+		s.push(&s, &data[i]);
+	}
+
+	printf("----- pop -----\n");
+	for (i = 0; i < len + 1; i++)
+	{
+		if (true == s.pop(&s, &temp))
+		{
+			printf("top = ");
+			s.print_obj(&temp);
+			printf("\tsize after push = %2d\n", s.size(&s));
+		}
+		else
+		{
+			printf("pop failed! because stack is empty\n");
+		}
+
+		if (s.empty(&s))
+		{
+			printf("----- empty -----\n");
+		}
+	}
+
+	s.destory(&s);
+}
 
 void stack_test(void)
 {
-	int32_t i = 0;
-	uint32_t size = 0;
-	stack_data_t dat[10] = {0,1,2,3,4,5,6,7,8,9};
-	stack_data_t tmp;
-	pstack_t pst;
-	if(!stack_init(&pst))
-	{
-		printf("failure -> stack_init\n");
-	}
-	printf("success -> stack_init\n");
-
-	// push
-	for(i = 0; i < 10; i++)
-	{
-		if(!stack_push(pst,dat[i]))
-		{
-			printf("failure -> stack_push\n");
-		}
-		printf("    push %d\n",dat[i]);
-	}
-	printf("success -> stack_push\n");
-
-	// stack size
-	size = stack_get_size(pst);
-	if(size != 10)
-	{
-		printf("failure -> the size of stack is %d\n",size);
-	}
-	else
-	{
-		printf("success -> the size of stack is %d\n",size);
-	}
-
-	if(!stack_empty(pst))
-	{
-		printf("success -> the stack is not empty!\n");
-	}
-	else
-	{
-		printf("failure -> the stack is empty!\n");
-	}
-
-	// pop
-	for(i = 0; i < 10; i++)
-	{
-		stack_get_top(pst,&tmp);
-		printf("    top = %d",tmp);
-		stack_pop(pst,&tmp);
-		printf("    pop %d\n",tmp);
-	}
-	printf("stack_pop success!\n");
-
-	// stack size
-	size = stack_get_size(pst);
-	if(size != 0)
-	{
-		printf("failure -> the size of stack is %d\n",size);
-	}
-	else
-	{
-		printf("success -> the size of stack is %d\n",size);
-	}
-
-	if(stack_empty(pst))
-	{
-		printf("success -> the stack is empty!\n");
-	}
-	else
-	{
-		printf("failure -> the stack is empty!\n");
-	}
-
-	for(i = 0; i < 5; i++)
-	{
-		stack_push(pst,dat[i]);
-	}
-	if(!stack_empty(pst))
-	{
-		stack_clear(pst);
-		printf("success -> stack_clear\n");
-		if(stack_empty(pst))
-		{
-			printf("success -> the stack is empty!\n");
-		}
-	}
-
-	stack_destroy(&pst);
-	printf("success -> stack_destroy\n");
-
-	if(!stack_push(pst,dat[0]))
-	{
-		printf("success -> stack_push failed!\n");
-	}
-
-	stack_pop(pst,&tmp);
-	printf("success -> stack_pop invalid!\n");
-
-	if(stack_empty(pst))
-	{
-		printf("success -> If pst is NULL, stack_empty alse return true!\n");
-	}
-
-	printf("----------------------------------------\n");
+	stack_test_num();
+	stack_test_char();
+	stack_test_struct();
 }
-
-#endif
-

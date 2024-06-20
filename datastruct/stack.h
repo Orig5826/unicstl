@@ -3,8 +3,6 @@
 
 #include "common.h"
 
-#if STACK == 1
-
 struct _stack_node
 {
 	void * obj;
@@ -37,8 +35,6 @@ struct _stack
 
 bool stack_init(struct _stack* s, uint32_t obj_size);	// Á´±í
 bool stack2_init(struct _stack* s, uint32_t obj_size);	// Êý×é
-
-#endif
 
 #endif // _STACK_H_
 
