@@ -360,3 +360,112 @@ void list_test(void)
 
 #endif
 
+
+// kernel
+bool list_append(struct _list* self, void* obj)
+{
+
+}
+
+bool list_clear(struct _list* self)
+{
+
+}
+
+bool list_empty(struct _list* self)
+{
+	
+}
+
+uint32_t list_index(struct _list* self, void* obj)
+{
+
+}
+
+bool list_insert(struct _list* self, uint32_t index, void* obj)
+{
+
+}
+
+bool list_pop(struct _list* self, uint32_t index, void* obj)
+{
+
+}
+
+bool list_at(struct _list* self, uint32_t index)
+{
+	
+}
+
+bool list_set(struct _list* self, uint32_t index, void* obj)
+{
+
+}
+
+uint32_t list_size(struct _list* self)
+{
+
+}
+
+bool list_remove(struct _list* self, uint32_t index)
+{
+
+}
+
+bool list_reverse(struct _list* self)
+{
+
+}
+
+bool list_sort(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2))
+{
+
+}
+
+// free
+void list_destory(struct _list* self)
+{
+
+}
+
+// print
+void list_print(struct _list* self)
+{
+
+}
+
+bool list_init(struct _list* list, uint32_t obj_size)
+{
+	assert(list != NULL);
+
+	// 1. set attr
+	list->_obj_size = obj_size;
+	list->_size = 0;
+	list->_capacity = 64;
+	list->_ratio = 2;
+
+	// 2. set function
+	// kernel
+	list->append = list_append;
+	list->at = list_at;
+	list->clear = list_clear;
+	list->destory = list_destory;
+	list->empty = list_empty;
+	list->index = list_index;
+	list->insert = list_insert;
+	list->pop = list_pop;
+	list->print = list->print;
+	list->remove = list->remove;
+	list->reverse = list->reverse;
+	list->set = list->set;
+	list->size = list->size;
+	list->sort = list->sort;
+
+	// 3. set array
+	list->obj = (void*)calloc(list->_capacity, list->_obj_size);
+	if (list->obj == NULL)
+	{
+		return false;
+	}
+	return true;
+}

@@ -82,7 +82,7 @@ struct _list
 	void (*print_obj)(void* obj);
 };
 
-bool list_init(struct _list *l);
+bool list_init(struct _list* list, uint32_t obj_size);
 
 #endif
 

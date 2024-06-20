@@ -261,8 +261,7 @@ bool stack2_init(struct _stack* s, uint32_t obj_size)
 	// 1. set attr
 	s->_obj_size = obj_size;
 	s->_size = 0;
-	// s->_capacity = 64;
-	s->_capacity = 3;
+	s->_capacity = 64;
 	s->_ratio = 2;
 
 	// 2. set function
