@@ -167,6 +167,7 @@ void list_traversal_reversed(plist_t list, list_data_disp_t disp)
 }
 #endif
 
+#if 0
 bool list_init(list_t list)
 {
 	// list->capacity = 64;
@@ -356,3 +357,6 @@ void list_test(void)
 	list_print(&list);
 	list_destory(&list);
 }
+
+#endif
+

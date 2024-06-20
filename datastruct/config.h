@@ -14,7 +14,7 @@
 #define RAVLTREE	0	// avl tree by recursion
 #define QUEUE		0
 #define STACK		1
-#define LIST		0
+#define LIST		1
 
 
 // --------------------------------------------------
