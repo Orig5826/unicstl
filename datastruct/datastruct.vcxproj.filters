@@ -54,6 +54,12 @@
     <ClCompile Include="list_test.c">
       <Filter>测试</Filter>
     </ClCompile>
+    <ClCompile Include="deque.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="deque_test.c">
+      <Filter>测试</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="list.h">
@@ -81,6 +87,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="deque.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

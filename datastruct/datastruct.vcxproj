@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="deque.c" />
+    <ClCompile Include="deque_test.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="list_test.c" />
     <ClCompile Include="main.c" />
@@ -159,6 +161,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="demo.h" />
+    <ClInclude Include="deque.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="rbtree.h" />
