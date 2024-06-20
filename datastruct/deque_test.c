@@ -24,15 +24,25 @@ static void deque_test_num(void)
 	{
 		dq.push_back(&dq, &data[i]);
 
-		dq.back(&dq, &temp);
-
-		printf("push_back = ");
+		dq.front(&dq, &temp);
+		printf("front = ");
 		dq.print_obj(&temp);
-		printf("\tsize after push_back = %2d\n", dq.size(&dq));
+
+		dq.back(&dq, &temp);
+		printf("\tback = ");
+		dq.print_obj(&temp);
+
+		printf("\tsize = %2d\n", dq.size(&dq));
 	}
 	printf("----- print -----\n");
 	dq.print(&dq);
 	printf("\n");
+
+	dq.clear(&dq);
+	if (dq.empty(&dq))
+	{
+		printf("----- empty -----\n");
+	}
 
 #if 0
 	printf("----- pop -----\n");

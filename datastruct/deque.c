@@ -76,7 +76,16 @@ bool deque_back(struct _deque* self, void* obj)
 
 bool deque_front(struct _deque* self, void* obj)
 {
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
 
+    if (self->empty(self))
+    {
+        return false;
+    }
+    memmove(obj, self->_head->prev->obj, self->_obj_size);
+    return true;
 }
 
 bool deque_insert(struct _deque* self, int index, void* obj)
@@ -143,7 +152,7 @@ void deque_print(struct _deque* self)
 
     uint32_t i = 0;
     struct _deque_node * node = self->_head->prev;
-    while (node != self->_head->next)
+    for (uint32_t i = 0; i < self->size(self); i++)
     {
         self->print_obj(node->obj);
         node = node->next;
