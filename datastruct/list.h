@@ -56,7 +56,7 @@ struct _list
 	bool (*remove)(struct _list* self, int index);						// 根据索引，移除对象
 
 	int (*index)(struct _list* self, void* obj);						// 在列表中，查找数据是否存在，若存在则返回其索引。否则返回-1
-	bool (*at)(struct _list* self, int index, void* obj);			// 根据索引，获取对象
+	bool (*at)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
 	bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
 
 	// base
