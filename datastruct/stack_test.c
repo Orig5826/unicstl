@@ -1,11 +1,11 @@
 #include "stack.h"
 
-void print_num(void* obj)
+static void print_num(void* obj)
 {
 	printf("(%2d )", *(int*)obj);
 }
 
-void stack_test_num(void)
+static void stack_test_num(void)
 {
 	uint32_t i = 0;
 	int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -58,12 +58,12 @@ void stack_test_num(void)
 	s.destory(&s);
 }
 
-void print_char(void* obj)
+static void print_char(void* obj)
 {
 	printf("(%2c )", *(char*)obj);
 }
 
-void stack_test_char(void)
+static void stack_test_char(void)
 {
 	uint32_t i = 0;
 	char data[] = "abcdefghijk";
@@ -122,13 +122,13 @@ struct _student
 	int id;
 };
 
-void print_struct(void* obj)
+static void print_struct(void* obj)
 {
 	struct _student* student = (struct _student*)obj;
 	printf("(%2d:%-5s ) ", student->id, student->name);
 }
 
-void stack_test_struct(void)
+static void stack_test_struct(void)
 {
 	uint32_t i = 0;
 	struct _student data[] = {

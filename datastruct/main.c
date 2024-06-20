@@ -5,8 +5,8 @@ int main()
 {
 	// while (1)
 	{	
-		// list_test();
-		stack_test();
+		list_test();
+		// stack_test();
 		// queue_test();
 		// tree_test();
 		// rbtree_test();

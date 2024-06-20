@@ -50,28 +50,22 @@ struct _list
 	uint32_t _ratio;			// 扩展比率
 
 	// kernel
-	bool (*append)(struct _list* self, void* obj);
+	bool (*append)(struct _list* self, void* obj);						// 追加对象
+	bool (*insert)(struct _list* self, uint32_t index, void* obj);		// 在列表指定位置，插入对象
+	bool (*pop)(struct _list* self, int index, void* obj);				// 根据索引，删除对象并返回。
+	bool (*remove)(struct _list* self, int index);						// 根据索引，移除对象
 
+	int (*index)(struct _list* self, void* obj);						// 在列表中，查找数据是否存在，若存在则返回其索引。否则返回-1
+	bool (*at)(struct _list* self, int index, void* obj);			// 根据索引，获取对象
+	bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
+
+	// base
+	uint32_t(*size)(struct _list* self);
 	bool (*clear)(struct _list* self);
-
 	bool (*empty)(struct _list* self);
 
-	uint32_t (*index)(struct _list* self, void* obj);
-
-	bool (*insert)(struct _list* self, uint32_t index, void* obj);
-
-	bool (*pop)(struct _list* self, uint32_t index, void* obj);
-
-	bool (*at)(struct _list* self, uint32_t index);
-
-	bool (*set)(struct _list* self, uint32_t index, void* obj);
-
-	uint32_t(*size)(struct _list* self);
-
-	bool (*remove)(struct _list* self, uint32_t index);
-	
+	// sort
 	bool (*reverse)(struct _list* self);
-
 	bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
 
 	// free
