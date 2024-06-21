@@ -4,4 +4,4 @@ aux_source_directory(. LIB_SRC)
 add_library(unicstl STATIC ${LIB_SRC})
 
 # install
-install(TARGETS unicstl DESTINATION bin)
+install(TARGETS unicstl DESTINATION lib)

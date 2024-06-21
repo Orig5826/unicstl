@@ -1,10 +1,14 @@
 
+project(test)
+
+# include
+include_directories(.)
+# add src
 aux_source_directory(. DIR_TEST)
 
-include_directories(.)
-
 # generate target
-add_executable(${PROJECT_NAME} test.c)
+add_executable(${PROJECT_NAME} ${DIR_TEST})
+
 # link libary
 target_link_libraries(${PROJECT_NAME} unicstl)
 

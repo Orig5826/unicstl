@@ -1,6 +1,7 @@
 
 # cmake
 build/
+release/
 
 # SI4
 SIP.si4project/
