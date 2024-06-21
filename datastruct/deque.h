@@ -46,6 +46,10 @@ struct _deque
     // free
     void (*destory)(struct _deque* self);
 
+    // compare
+    int (*cmp)(void* obj, void* obj2);
+    bool (*sort)(struct _list* self, uint8_t reserve);
+
     // print
     void (*print)(struct _deque* self);
     void (*print_obj)(void* obj);
