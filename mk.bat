@@ -4,4 +4,4 @@
 cmake -B build -G "MinGW Makefiles"
 
 make -C build
-make -C install 
+@REM make -C install 

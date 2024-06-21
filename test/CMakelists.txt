@@ -13,4 +13,5 @@ add_executable(${PROJECT_NAME} ${DIR_TEST})
 target_link_libraries(${PROJECT_NAME} unicstl)
 
 # install 
+set(CMAKE_INSTALL_PREFIX "./release")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
