@@ -19,9 +19,11 @@
 	#endif
 #endif
 
-void stack_test(void);
-void queue_test(void);
 void list_test(void);
+void stack_test(void);
+void deque_test(void);
+
+void queue_test(void);
 void tree_test(void);
 void rbtree_test(void);
 

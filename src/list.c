@@ -76,7 +76,7 @@ bool list_pop(struct _list* self, int index, void* obj)
 	return true;
 }
 
-uint32_t list_index(struct _list* self, void* obj)
+int list_index(struct _list* self, void* obj)
 {
 	return 0;
 }
