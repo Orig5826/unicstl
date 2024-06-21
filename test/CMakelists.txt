@@ -1,0 +1,12 @@
+
+aux_source_directory(. DIR_TEST)
+
+include_directories(.)
+
+# generate target
+add_executable(${PROJECT_NAME} test.c)
+# link libary
+target_link_libraries(${PROJECT_NAME} unicstl)
+
+# install 
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)

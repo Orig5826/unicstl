@@ -1,0 +1,24 @@
+
+# 0. cmake 最低版本号要求
+cmake_minimum_required(VERSION 3.8)
+
+# 0. 项目信息
+project(demo)
+
+# 0. 查找当前目录下的所有文件，并将名称保存在DIR_SRC中
+# aux_source_directory(. DIR_SRC)
+
+# 1. 添加头文件路径
+include_directories(include)
+
+# 1. 添加子目录
+add_subdirectory(src)
+add_subdirectory(test)
+
+# 2. 支持GDB
+set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+
+# install
+set(CMAKE_INSTALL_PREFIX "./release")

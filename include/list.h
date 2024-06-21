@@ -1,9 +1,7 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-#include "common.h"
-
-#ifdef LIST
+#include "unicstl.h"
 
 struct _list
 {
@@ -51,7 +49,5 @@ struct _list
 };
 
 bool list_init(struct _list* list, uint32_t obj_size);
-
-#endif
 
 #endif // _LIST_H_

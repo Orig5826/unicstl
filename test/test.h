@@ -2,9 +2,6 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
-#include <Windows.h>
-#include <time.h>
-
 #include "common.h"
 
 // It is recommended to keep one at the same time
@@ -21,9 +18,6 @@
 	#error "When use the tree, you can't use the base data type of stack or queue! "
 	#endif
 #endif
-
-
-#define SYSTEM_PAUSE()		(system("pause"))
 
 void stack_test(void);
 void queue_test(void);

@@ -2,7 +2,7 @@
 #ifndef _DEQUE_H_
 #define _DEQUE_H_
 
-#include "common.h"
+#include "unicstl.h"
 
 struct _deque_node
 {
@@ -48,7 +48,7 @@ struct _deque
 
     // compare
     int (*cmp)(void* obj, void* obj2);
-    bool (*sort)(struct _list* self, uint8_t reserve);
+    bool (*sort)(struct _deque* self, uint8_t reserve);
 
     // print
     void (*print)(struct _deque* self);

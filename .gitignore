@@ -1,6 +1,6 @@
 
-# chm
-*.chm
+# cmake
+build/
 
 # SI4
 SIP.si4project/
