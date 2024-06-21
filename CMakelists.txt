@@ -21,13 +21,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 # install
-set(CMAKE_INSTALL_PREFIX "./release")
-
-# generate target
-# add_executable(${PROJECT_NAME} ${DIR_TEST})
-
-# link libary
-# target_link_libraries(${PROJECT_NAME} unicstl)
-
-# install 
-# install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+set(CMAKE_INSTALL_PREFIX "release")

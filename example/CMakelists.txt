@@ -1,4 +1,4 @@
 
-aux_source_directory(. DIR_LIB_SRC)
+aux_source_directory(. SRC_DEMO)
 
-add_library(unicstl STATIC  ${DIR_LIB_SRC})
+add_library(example STATIC  ${SRC_DEMO})
