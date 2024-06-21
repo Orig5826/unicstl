@@ -2,7 +2,7 @@
 
 static void print_num(void* obj)
 {
-	printf("(%2d )", *(int*)obj);
+	printf("(%2d ) ", *(int*)obj);
 }
 
 static void stack_test_num(void)
@@ -29,7 +29,8 @@ static void stack_test_num(void)
 
 		printf("top = ");
 		s.print_obj(&temp);
-		printf("\tsize after push = %2d\n", s.size(&s));
+
+		printf("size = %2d\n", s.size(&s));
 	}
 	printf("----- print -----\n");
 	s.print(&s);
@@ -40,9 +41,16 @@ static void stack_test_num(void)
 	{
 		if (true == s.pop(&s, &temp))
 		{
-			printf("top = ");
+			printf("pop = ");
 			s.print_obj(&temp);
-			printf("\tsize after push = %2d\n", s.size(&s));
+
+			if (s.peek(&s, &temp))
+			{
+				printf("top = ");
+				s.print_obj(&temp);
+			}
+
+			printf("size = %2d\n", s.size(&s));
 		}
 		else
 		{
@@ -60,7 +68,7 @@ static void stack_test_num(void)
 
 static void print_char(void* obj)
 {
-	printf("(%2c )", *(char*)obj);
+	printf("(%2c ) ", *(char*)obj);
 }
 
 static void stack_test_char(void)
@@ -86,7 +94,8 @@ static void stack_test_char(void)
 		s.peek(&s, &temp);
 		printf("top = ");
 		s.print_obj(&temp);
-		printf("\tsize after push = %2d\n", s.size(&s));
+
+		printf("size = %2d\n", s.size(&s));
 	}
 	printf("----- print -----\n");
 	s.print(&s);
@@ -97,9 +106,16 @@ static void stack_test_char(void)
 	{
 		if (true == s.pop(&s, &temp))
 		{
-			printf("top = ");
+			printf("pop = ");
 			s.print_obj(&temp);
-			printf("\tsize after push = %2d\n", s.size(&s));
+
+			if (s.peek(&s, &temp))
+			{
+				printf("top = ");
+				s.print_obj(&temp);
+			}
+
+			printf("size = %2d\n", s.size(&s));
 		}
 		else
 		{
@@ -154,7 +170,8 @@ static void stack_test_struct(void)
 		s.peek(&s, &temp);
 		printf("top = ");
 		s.print_obj(&temp);
-		printf("\tsize after push = %2d\n", s.size(&s));
+
+		printf("size = %2d\n", s.size(&s));
 	}
 	printf("----- print -----\n");
 	s.print(&s);
@@ -177,9 +194,16 @@ static void stack_test_struct(void)
 	{
 		if (true == s.pop(&s, &temp))
 		{
-			printf("top = ");
+			printf("pop = ");
 			s.print_obj(&temp);
-			printf("\tsize after push = %2d\n", s.size(&s));
+
+			if (s.peek(&s, &temp))
+			{
+				printf("top = ");
+				s.print_obj(&temp);
+			}
+
+			printf("size = %2d\n", s.size(&s));
 		}
 		else
 		{

@@ -3,13 +3,13 @@
 
 static void print_num(void* obj)
 {
-	printf("(%2d )", *(int*)obj);
+	printf("(%2d ) ", *(int*)obj);
 }
 
 static void deque_test_num(void)
 {
 	uint32_t i = 0;
-	int data[] = { 0, 1,2,3,4,5,6,7,8,9,10 };
+	int data[] = { 1,2,3,4,5,6,7,8,9,10 };
 	int temp = 0;
 	uint32_t len = sizeof(data) / sizeof(data[0]);
 
@@ -19,7 +19,7 @@ static void deque_test_num(void)
 
 	printf("\n\n----- deque_test_num -----\n");
 
-	printf("----- push_back -----\n");
+	printf("----- after push_back -----\n");
 	for (i = 0; i < len; i++)
 	{
 		dq.push_back(&dq, &data[i]);
@@ -44,27 +44,45 @@ static void deque_test_num(void)
 		printf("----- empty -----\n");
 	}
 
-#if 0
-	printf("----- pop -----\n");
+	printf("----- push_back -----\n");
+	for (i = 0; i < len; i++)
+	{
+		dq.push_back(&dq, &data[i]);
+	}
+
+	printf("----- after pop_back -----\n");
 	for (i = 0; i < len + 1; i++)
 	{
-		if (true == s.pop(&s, &temp))
+		if (true == dq.pop_back(&dq, &temp))
 		{
-			printf("top = ");
-			s.print_obj(&temp);
-			printf("\tsize after push = %2d\n", s.size(&s));
+			printf("pop = ");
+			dq.print_obj(&temp);
+
+			if (true == dq.front(&dq, &temp))
+			{
+				printf("front = ");
+				dq.print_obj(&temp);
+			}
+
+			if (dq.back(&dq, &temp))
+			{
+				printf("back = ");
+				dq.print_obj(&temp);
+			}
+
+			printf("size = %2d\n", dq.size(&dq));
 		}
 		else
 		{
 			printf("pop failed! because stack is empty\n");
 		}
 
-		if (s.empty(&s))
+		if (dq.empty(&dq))
 		{
 			printf("----- empty -----\n");
 		}
 	}
-#endif
+
 	dq.destory(&dq);
 }
 
