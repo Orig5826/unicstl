@@ -48,28 +48,67 @@ bool deque_push_back(struct _deque* self, void* obj)
 
 bool deque_push_front(struct _deque* self, void* obj)
 {
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    struct _deque_node* front = NULL;
+    struct _deque_node* back = NULL;
 
+    // create a new object
+    void* new_obj = (void*)malloc(self->_obj_size);
+    if (new_obj == NULL)
+    {
+        return false;
+    }
+    memmove(new_obj, obj, self->_obj_size);
+
+    // create a new node
+    struct _deque_node* new_node = (struct _deque_node*)malloc(sizeof(struct _deque_node));
+    if (new_node == NULL)
+    {
+        return false;
+    }
+    new_node->obj = new_obj;
+
+    // link node
+    if (self->empty(self))
+    {
+        // if this is first node
+        self->_head->next = new_node;
+        self->_head->prev = new_node;
+    }
+    new_node->prev = self->_head->next;         // step 1
+    new_node->next = self->_head->prev;         // step 2
+
+    back = self->_head->next;
+    back->next = new_node;                      // step 3
+
+    front = self->_head->prev;
+    front->prev = new_node;                     // step 4
+
+    self->_head->prev = new_node;               // step 5
+
+    self->_size += 1;
+    return true;
 }
 
 bool deque_pop_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     assert(self->_head != NULL);
-    struct _deque_node* front = NULL;
-    struct _deque_node* back = NULL;
     struct _deque_node* node = NULL;
+    struct _deque_node* front = NULL;
 
     if (self->empty(self))
     {
         return false;
     }
 
+    node = self->_head->next;
     if (obj != NULL)
     {
-        memmove(obj, self->_head->next->obj, self->_obj_size);
+        memmove(obj, node->obj, self->_obj_size);
     }
 
-    node = self->_head->next;
     if (self->size(self) == 1)
     {
         self->_head->next = NULL;
@@ -92,7 +131,40 @@ bool deque_pop_back(struct _deque* self, void* obj)
 
 bool deque_pop_front(struct _deque* self, void* obj)
 {
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    struct _deque_node* node = NULL;
+    struct _deque_node* back = NULL;
+    
+    if (self->empty(self))
+    {
+        return false;
+    }
 
+    node = self->_head->prev;
+    if (obj != NULL)
+    {
+        memmove(obj, node->obj, self->_obj_size);
+    }
+
+    if (self->size(self) == 1)
+    {
+        self->_head->next = NULL;
+        self->_head->prev = NULL;
+    }
+    else
+    {
+        self->_head->prev = node->next;         // step 1
+
+        back = self->_head->next;
+        back->next = node->next;               // step 2
+    }
+
+    free(node->obj);
+    free(node);
+
+    self->_size -= 1;
+    return true;
 }
 
 bool deque_back(struct _deque* self, void* obj)
@@ -125,11 +197,11 @@ bool deque_front(struct _deque* self, void* obj)
 
 bool deque_insert(struct _deque* self, int index, void* obj)
 {
-
+    return true;
 }
 bool deque_erase(struct _deque* self, int index, void* obj)
 {
-
+    return true;
 }
 
 int deque_index(struct _deque* self, void* obj)
@@ -156,6 +228,8 @@ bool deque_get(struct _deque* self, int index, void* obj)
     assert(self != NULL);
     assert(self->_head != NULL);
     assert(obj != NULL);
+    assert(index >= 0 && index < self->size(self));
+
     struct _deque_node* node = self->_head->prev;   // front
 
     for (int i = 0; i < index; i++)
@@ -171,6 +245,8 @@ bool deque_set(struct _deque* self, int index, void* obj)
     assert(self != NULL);
     assert(self->_head != NULL);
     assert(obj != NULL);
+    assert(index >= 0 && index < self->size(self));
+
     struct _deque_node* node = self->_head->prev;   // front
 
     for (int i = 0; i < index; i++)
@@ -237,7 +313,7 @@ bool deque_init(struct _deque* deque, uint32_t obj_size)
     deque->index = deque_index;
     deque->insert = deque_insert;
     deque->pop_back = deque_pop_back;
-    deque->pop_front = deque_pop_back;
+    deque->pop_front = deque_pop_front;
     deque->push_back = deque_push_back;
     deque->push_front = deque_push_front;
     deque->print = deque_print;

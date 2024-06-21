@@ -83,6 +83,94 @@ static void deque_test_num(void)
 		}
 	}
 
+	printf("----- after push_front -----\n");
+	for (i = 0; i < len; i++)
+	{
+		dq.push_front(&dq, &data[i]);
+
+		dq.front(&dq, &temp);
+		printf("front = ");
+		dq.print_obj(&temp);
+
+		dq.back(&dq, &temp);
+		printf("\tback = ");
+		dq.print_obj(&temp);
+
+		printf("\tsize = %2d\n", dq.size(&dq));
+	}
+	printf("----- print -----\n");
+	dq.print(&dq);
+	printf("\n");
+
+	dq.clear(&dq);
+	if (dq.empty(&dq))
+	{
+		printf("----- empty -----\n");
+	}
+
+	printf("----- push_front -----\n");
+	for (i = 0; i < len; i++)
+	{
+		dq.push_front(&dq, &data[i]);
+	}
+
+	for (i = 0; i < len + 1; i++)
+	{
+		if (true == dq.pop_front(&dq, &temp))
+		{
+			printf("pop = ");
+			dq.print_obj(&temp);
+
+			if (true == dq.front(&dq, &temp))
+			{
+				printf("front = ");
+				dq.print_obj(&temp);
+			}
+
+			if (dq.back(&dq, &temp))
+			{
+				printf("back = ");
+				dq.print_obj(&temp);
+			}
+
+			printf("size = %2d\n", dq.size(&dq));
+		}
+	}
+
+	printf("----- push_front -----\n");
+	for (i = 0; i < len; i++)
+	{
+		dq.push_front(&dq, &data[i]);
+	}
+	printf("----- print -----\n");
+	dq.print(&dq);
+	printf("\n");
+
+	printf("----- set -----\n");
+	temp = 11;
+	dq.set(&dq, 0, &temp);
+
+	temp = 22;
+	dq.set(&dq, len/2, &temp);
+
+	temp = 33;
+	dq.set(&dq, len - 1, &temp);
+
+	printf("----- print -----\n");
+	dq.print(&dq);
+	printf("\n");
+
+	printf("----- get -----\n");
+	for (i = 0; i < len; i++)
+	{
+		if (true == dq.get(&dq, i, &temp))
+		{
+			printf("deque[%2d] = ", i);
+			dq.print_obj(&temp);
+			printf("\n");
+		}
+	}
+
 	dq.destory(&dq);
 }
 
