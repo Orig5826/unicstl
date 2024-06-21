@@ -6,6 +6,7 @@ bool deque_push_back(struct _deque* self, void* obj)
     assert(self != NULL);
     assert(self->_head != NULL);
     struct _deque_node* front = NULL;
+    struct _deque_node* back = NULL;
 
     // create a new object
     void* new_obj = (void*)malloc(self->_obj_size);
@@ -30,16 +31,16 @@ bool deque_push_back(struct _deque* self, void* obj)
         self->_head->next = new_node;
         self->_head->prev = new_node;
     }
-    new_node->prev = self->_head->next; 
-    new_node->next = self->_head->prev;
+    new_node->prev = self->_head->next;         // step 1
+    new_node->next = self->_head->prev;         // step 2
 
-    front = self->_head->next;
-    front->next = new_node;
+    back = self->_head->next;
+    back->next = new_node;                      // step 3
 
     front = self->_head->prev;
-    front->prev = new_node;
+    front->prev = new_node;                     // step 4
 
-    self->_head->next = new_node;
+    self->_head->next = new_node;               // step 5
 
     self->_size += 1;
     return true;
@@ -54,8 +55,9 @@ bool deque_pop_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     assert(self->_head != NULL);
-    struct _deque_node* node = NULL;
+    struct _deque_node* front = NULL;
     struct _deque_node* back = NULL;
+    struct _deque_node* node = NULL;
 
     if (self->empty(self))
     {
@@ -66,21 +68,25 @@ bool deque_pop_back(struct _deque* self, void* obj)
     {
         memmove(obj, self->_head->next->obj, self->_obj_size);
     }
-    back = self->_head->next;
-    self->_head->next = back->prev;
 
-    node = self->_head->prev;
-    node->prev = self->_head->next;
+    node = self->_head->next;
+    if (self->size(self) == 1)
+    {
+        self->_head->next = NULL;
+        self->_head->prev = NULL;
+    }
+    else
+    {
+        self->_head->next = node->prev;         // step 1
 
-    free(back->obj);
-    free(back);
+        front = self->_head->prev;
+        front->prev = node->prev;               // step 2
+    }
+
+    free(node->obj);
+    free(node);
 
     self->_size -= 1;
-    if (self->empty(self))
-    {
-        self->_head->prev = NULL;
-        self->_head->next = NULL;
-    }
     return true;
 }
 
@@ -128,12 +134,12 @@ bool deque_erase(struct _deque* self, int index, void* obj)
 
 int deque_index(struct _deque* self, void* obj)
 {
-
+    return -1;
 }
 
 bool deque_remove(struct _deque* self, void* obj)
 {
-
+    return true;
 }
 
 bool deque_clear(struct _deque* self)
@@ -147,12 +153,32 @@ bool deque_clear(struct _deque* self)
 
 bool deque_get(struct _deque* self, int index, void* obj)
 {
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
+    struct _deque_node* node = self->_head->prev;   // front
 
+    for (int i = 0; i < index; i++)
+    {
+        node = node->next;
+    }
+    memmove(obj, node->obj, self->_obj_size);
+    return true;
 }
 
 bool deque_set(struct _deque* self, int index, void* obj) 
 {
-    
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
+    struct _deque_node* node = self->_head->prev;   // front
+
+    for (int i = 0; i < index; i++)
+    {
+        node = node->next;
+    }
+    memmove(node->obj, obj, self->_obj_size);
+    return true;
 }
 
 uint32_t deque_size(struct _deque* self)
@@ -218,7 +244,6 @@ bool deque_init(struct _deque* deque, uint32_t obj_size)
     deque->remove = deque_remove;
     deque->set = deque_set;
     deque->size = deque_size;
-
 
     deque->_head = (struct _deque_node*)malloc(sizeof(struct _deque_node));
     if (deque->_head == NULL)
