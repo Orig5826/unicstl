@@ -54,7 +54,7 @@ static void stack_test_num(void)
 		}
 		else
 		{
-			printf("pop failed! because stack is empty\n");
+			printf("pop failed! because it is empty\n");
 		}
 
 		if (s.empty(&s))
@@ -119,7 +119,7 @@ static void stack_test_char(void)
 		}
 		else
 		{
-			printf("pop failed! because stack is empty\n");
+			printf("pop failed! because it is empty\n");
 		}
 
 		if (s.empty(&s))
@@ -207,7 +207,7 @@ static void stack_test_struct(void)
 		}
 		else
 		{
-			printf("pop failed! because stack is empty\n");
+			printf("pop failed! because it is empty\n");
 		}
 
 		if (s.empty(&s))

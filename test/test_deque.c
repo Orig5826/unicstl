@@ -74,7 +74,7 @@ static void deque_test_num(void)
 		}
 		else
 		{
-			printf("pop failed! because stack is empty\n");
+			printf("pop failed! because it is empty\n");
 		}
 
 		if (dq.empty(&dq))
@@ -258,7 +258,7 @@ static void deque_test_struct(void)
 		}
 		else
 		{
-			printf("pop failed! because stack is empty\n");
+			printf("pop failed! because it is empty\n");
 		}
 
 		if (dq.empty(&dq))

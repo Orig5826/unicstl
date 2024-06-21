@@ -19,6 +19,27 @@
 	#endif
 #endif
 
+
+/**
+ * @brief test objects
+ * 
+ */
+struct _student
+{
+	char name[16];
+	int id;
+};
+
+void print_num(void* obj);
+void print_char(void* obj);
+void print_struct(void* obj);
+void print_str(void* obj);
+
+
+/**
+ * @brief test function
+ * 
+ */
 void list_test(void);
 void stack_test(void);
 void deque_test(void);
