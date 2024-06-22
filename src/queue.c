@@ -287,3 +287,165 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
     queue->_front = NULL;
     queue->_back = NULL;
 }
+
+
+
+bool queue2_push(struct _queue* self, void* obj)
+{
+    assert(self != NULL);
+    assert(obj != NULL);
+
+    if(self->full(self))
+    {
+        return false;
+    }
+    void * obj_array = self->_front->obj;
+    uint32_t index = self->_index_back;
+    index++;
+    if(index >= self->capacity(self))
+    {
+        index = 0;
+    }
+    memmove((char*)obj_array + index * self->_obj_size, obj, self->_obj_size);
+    self->_index_back = index;
+    self->_size++;
+    return true;
+}
+
+bool queue2_pop(struct _queue* self, void* obj)
+{
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    void * obj_array = self->_front->obj;
+    uint32_t index = self->_index_front;
+
+    if(index == 0)
+    {
+        index = self->capacity(self) - 1;
+    }
+    else
+    {
+        index--;
+    }
+    if(obj != NULL)
+    {
+        memmove(obj, (char*)obj_array + index * self->_obj_size,self->_obj_size);
+    }
+    self->_index_front = index;
+    self->_size--;
+    return true;
+}
+
+bool queue2_back(struct _queue* self, void* obj)
+{
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    void * obj_array = self->_front->obj;
+    uint32_t index = self->_index_back;
+    memmove(obj, obj_array + self->_obj_size, self->_obj_size);
+    return true;
+}
+
+bool queue2_front(struct _queue* self, void* obj)
+{
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    void * obj_array = self->_front->obj;
+    uint32_t index = self->_index_front;
+    memmove(obj, obj_array + index * self->_obj_size, self->_obj_size);
+    return true;
+}
+
+bool queue2_clear(struct _queue* self)
+{
+    assert(self != NULL);
+    self->_index_front = 0;
+    self->_index_back = 0;
+    self->_size = 0;
+    return true;
+}
+
+bool queue2_full(struct _queue* self)
+{
+    assert(self != NULL);
+    return self->size(self) == self->capacity(self);
+}
+
+uint32_t queue2_capacity(struct _queue* self)
+{
+    assert(self != NULL);
+    return self->_capacity;
+}
+
+void queue2_destory(struct _queue* self)
+{
+    assert(self != NULL);
+    self->clear(self);
+}
+
+void queue2_print(struct _queue* self)
+{
+    assert(self != NULL);
+    uint32_t index = 0;
+    void * obj_array = self->_front->obj;
+
+    for(uint32_t i = 0; i < self->size(self); i++)
+    {
+        index = self->_index_front + i;
+        if(index >= self->capacity(self))
+        {
+            index -= self->_capacity;
+        }
+
+        self->print_obj((char *)obj_array + index * self->_obj_size);
+    }
+}
+
+bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
+{
+    assert(queue != NULL);
+    assert(obj_size > 0);
+
+    // attribute init
+    queue->_size = 0;
+    queue->_obj_size = obj_size;
+    queue->_capacity = capacity;
+    queue->_ratio = 2;
+
+    // function init
+    queue->push = queue2_push;
+    queue->pop = queue2_pop;
+    queue->back = queue2_back;
+    queue->front = queue2_front;
+    queue->clear = queue2_clear;
+    queue->empty = queue_empty;
+    queue->size = queue_size;
+    queue->capacity = queue2_capacity;
+    queue->destory = queue2_destory;
+    queue->print = queue2_print;
+
+    // init front & back
+    queue->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
+    if(queue->_front == NULL)
+    {
+        return false;
+    }
+    queue->_back = queue->_back;
+
+    queue->_front->obj = calloc(queue->_capacity + 1, queue->_obj_size);
+    if(queue->_front->obj == NULL)
+    {
+        return false;
+    }
+    queue->_index_front = 0;
+    queue->_index_back = 0;
+}

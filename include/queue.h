@@ -56,6 +56,9 @@ struct _queue
 	struct _queue_node * _front;
 	struct _queue_node * _back;
 
+    uint32_t _index_front;
+    uint32_t _index_back;
+
     uint32_t _obj_size;			// 元素大小
     uint32_t _size;				// 栈大小
     uint32_t _capacity;			// 总容量
@@ -70,8 +73,10 @@ struct _queue
 
     bool (*clear)(struct _queue* self);
 	bool (*empty)(struct _queue* self);
+    bool (*full)(struct _queue* self);      // only for queue2
     uint32_t (*size)(struct _queue* self);
-    
+    uint32_t (*capacity)(struct _queue* self);
+
     // free
     void (*destory)(struct _queue* self);
 
@@ -81,5 +86,6 @@ struct _queue
 };
 
 bool queue_init(struct _queue * queue, uint32_t obj_size);
+bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity);
 
 #endif // _QUEUE_H_
