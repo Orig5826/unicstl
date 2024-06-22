@@ -1439,7 +1439,43 @@ static bool tree_node_free(struct _tree_node* node)
 
 bool tree_avl_insert(struct _tree* self, void* obj)
 {
-	
+	assert(self != NULL);
+	assert(obj != NULL);
+	assert(self->compare != NULL);
+
+	struct _tree_node* node = tree_node_new(self, obj);
+	if(node == NULL)
+	{
+		return false;
+	}
+
+	// if no root
+	if(self->_root == NULL)
+	{
+		self->_root = node;
+	}
+	else
+	{
+		// insert the node
+		struct _tree_node* root = self->_root;
+		if(self->compare(obj, root->obj) < 0)
+		{
+			root->left = node;
+		}
+		else if(self->compare(obj, root->obj) > 0)
+		{
+			root->right = node;
+		}
+		else
+		{
+			// if obj exist, just return false
+			tree_node_free(node);
+			return false;
+		}
+	}
+
+	self->_size++;
+	return true;
 }
 
 bool tree_avl_delete(struct _tree* self, void* obj)
@@ -1472,13 +1508,21 @@ void tree_destory(struct _tree* self)
 	self->clear(self);
 }
 
-// print
-void tree_print(struct _tree* self)
+void tree_avl_preorder(struct _tree* self)
+{
+
+}
+void tree_avl_inorder(struct _tree* self)
+{
+
+}
+void tree_avl_postorder(struct _tree* self)
 {
 
 }
 
-void tree_print_obj(void* obj)
+// traversal breadth
+void tree_avl_breadth(struct _tree* self)
 {
 
 }
@@ -1498,17 +1542,10 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
 	self->empty = tree_empty;
 	self->size = tree_size;
 	self->destory = tree_destory;
-	self->print = tree_print;
-
-	self->_head = (struct _tree_node *)malloc(sizeof(struct _tree_node));
-	if(self->_head == NULL)
-	{
-		return false;
-	}
-	self->_head->parent = NULL;
-	self->_head->left = NULL;
-	self->_head->right = NULL;
-	self->_head->balance = 0;
+	self->preorder = tree_avl_preorder;
+	self->inorder = tree_avl_inorder;
+	self->postorder = tree_avl_postorder;
+	self->breadth = tree_avl_breadth;
 
 	return true;
 }

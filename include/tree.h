@@ -81,7 +81,7 @@ typedef struct _tree_node * tree_node_t;
 
 struct _tree
 {
-    struct _tree_node * _head;
+    struct _tree_node * _root;
 
     uint32_t _size;				// 栈大小
     uint32_t _obj_size;			// 元素大小
@@ -97,14 +97,28 @@ struct _tree
     bool (*empty)(struct _tree* self);
     uint32_t (*size)(struct _tree* self);
 
-    // compare
-    int (*compare)(void* obj1, void* obj2);
+    /**
+     * @brief obj compare with obj2
+     * 
+     * @return
+     *      obj < obj2 return -1
+     *      obj == obj2 return 0
+     *      obj > obj2 return 1
+     */
+    int (*compare)(void* obj, void* obj2);
 
     // free
     void (*destory)(struct _tree* self);
 
-    // print
-    void (*print)(struct _tree* self);
+
+    // ----- print -----
+    // traversal depth
+    void (*preorder)(struct _tree* self);
+    void (*inorder)(struct _tree* self);
+    void (*postorder)(struct _tree* self);
+    // traversal breadth
+    void (*breadth)(struct _tree* self);
+
     void (*print_obj)(void* obj);
 };
 
