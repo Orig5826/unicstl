@@ -6,6 +6,7 @@
         "unicstl.h": "c",
         "test.h": "c",
         "queue.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "stdint.h": "c"
     }
 }

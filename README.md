@@ -16,6 +16,6 @@
 | **queue**   | | **队列**
 | queue_init  | 单向链表 | |
 | queue2_init | 数组 | FIFO/空/满 |
-| **deque**   | **双端队列** |
+| **deque**   | |**双端队列** |
 | deque_init  | 双向循环链表 | |
 

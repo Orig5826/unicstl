@@ -1392,3 +1392,128 @@ static bool tree_rebalance(ptree_t head, ptree_node_t tree)
 
 #endif
 
+
+static tree_node_t * tree_node_new(struct _tree* self, void* obj)
+{
+	void * obj_new = malloc(self->_obj_size);
+    if (obj_new == NULL)
+    {
+        goto done;
+    }
+    memmove(obj_new, obj, self->_obj_size);
+
+    struct _tree_node* node_new = (struct _queue_node*)malloc(sizeof(struct _tree_node));
+    if(node_new == NULL)
+    {
+		goto done;
+    }
+    node_new->obj = obj_new;
+	node_new->parent = NULL;
+	node_new->left = NULL;
+	node_new->right = NULL;
+	node_new->balance = 0;
+
+	return node_new;
+done:
+	if(obj_new != NULL)
+	{
+		free(obj_new);
+	}
+	if(node_new != NULL)
+    {
+        free(node_new);
+    }
+	return NULL;
+}
+
+static bool tree_node_free(struct _tree_node* node)
+{
+	assert(node != NULL);
+	if(node->obj != NULL)
+	{
+		free(node->obj);
+	}
+	free(node);
+	return true;
+}
+
+bool tree_avl_insert(struct _tree* self, void* obj)
+{
+	
+}
+
+bool tree_avl_delete(struct _tree* self, void* obj)
+{
+
+}
+
+bool tree_clear(struct _tree* self)
+{
+	assert(self != NULL);
+	return true;
+}
+
+bool tree_empty(struct _tree* self)
+{
+	assert(self != NULL);
+	return !self->size(self);
+}
+
+uint32_t tree_size(struct _tree* self)
+{
+	assert(self != NULL);
+	return self->size(self);
+}
+
+// free
+void tree_destory(struct _tree* self)
+{
+	assert(self != NULL);
+	self->clear(self);
+}
+
+// print
+void tree_print(struct _tree* self)
+{
+
+}
+
+void tree_print_obj(void* obj)
+{
+
+}
+
+bool tree_avl_init(struct _tree *self, uint32_t obj_size)
+{
+	assert(self != NULL);
+
+	self->_obj_size = obj_size;
+	self->_size = 0;
+	// self->_capacity = 64;
+	// self->_ratio = 2;
+
+	self->insert = tree_avl_insert;
+	self->delete = tree_avl_delete;
+	self->clear = tree_clear;
+	self->empty = tree_empty;
+	self->size = tree_size;
+	self->destory = tree_destory;
+	self->print = tree_print;
+
+	self->_head = (struct _tree_node *)malloc(sizeof(struct _tree_node));
+	if(self->_head == NULL)
+	{
+		return false;
+	}
+	self->_head->parent = NULL;
+	self->_head->left = NULL;
+	self->_head->right = NULL;
+	self->_head->balance = 0;
+
+	return true;
+}
+
+bool tree_rb_init(struct _tree *self, uint32_t obj_size)
+{
+
+}

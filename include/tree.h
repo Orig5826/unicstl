@@ -8,18 +8,18 @@
 
 typedef struct _tree_node_t
 {
-	tree_data_t data;
-	struct _tree_node_t * left;
-	struct _tree_node_t * right;
-	struct _tree_node_t * parent;
-	int32_t balance;		// balance of avl tree
+    tree_data_t data;
+    struct _tree_node_t * left;
+    struct _tree_node_t * right;
+    struct _tree_node_t * parent;
+    int32_t balance;		// balance of avl tree
 }tree_node_t, *ptree_node_t;
 
 
 typedef struct _tree_t
 {
-	struct _tree_node_t * tree;
-	uint32_t size;
+    struct _tree_node_t * tree;
+    uint32_t size;
 }tree_t, *ptree_t;
 
 typedef void (*tree_data_disp_t)(tree_data_t data);
@@ -28,41 +28,89 @@ typedef void (*tree_data_disp_t)(tree_data_t data);
 
 
 #if RAVLTREE == 1
-	bool tree_init(ptree_node_t *head);
-	void tree_destroy(ptree_node_t *head);
-	bool tree_empty(ptree_node_t head);
-	void tree_clear(ptree_node_t head);
-	uint32_t tree_get_size(ptree_node_t head);
+    bool tree_init(ptree_node_t *head);
+    void tree_destroy(ptree_node_t *head);
+    bool tree_empty(ptree_node_t head);
+    void tree_clear(ptree_node_t head);
+    uint32_t tree_get_size(ptree_node_t head);
 
-	bool tree_insert(ptree_node_t head, tree_data_t data);
-	bool tree_delete(ptree_node_t head, tree_data_t data);
-	bool tree_get_min(ptree_node_t head, tree_data_t *data);
-	bool tree_get_max(ptree_node_t head, tree_data_t *data);
+    bool tree_insert(ptree_node_t head, tree_data_t data);
+    bool tree_delete(ptree_node_t head, tree_data_t data);
+    bool tree_get_min(ptree_node_t head, tree_data_t *data);
+    bool tree_get_max(ptree_node_t head, tree_data_t *data);
 
-	void tree_traversal_depth_preorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
-	void tree_traversal_depth_inorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
-	//void tree_traversal_depth_postorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
-	//void tree_traversal_breadth(ptree_node_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_depth_preorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_depth_inorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
+    //void tree_traversal_depth_postorder(ptree_node_t head, tree_data_disp_t tree_data_disp);
+    //void tree_traversal_breadth(ptree_node_t head, tree_data_disp_t tree_data_disp);
 
 #endif
 
 #if AVLTREE == 1
-	bool tree_init(ptree_t *head);
-	void tree_destroy(ptree_t *head);
-	bool tree_empty(ptree_t head);
-	void tree_clear(ptree_t head);
-	uint32_t tree_get_size(ptree_t head);
+    bool tree_init(ptree_t *head);
+    void tree_destroy(ptree_t *head);
+    bool tree_empty(ptree_t head);
+    void tree_clear(ptree_t head);
+    uint32_t tree_get_size(ptree_t head);
 
-	bool tree_insert(ptree_t head, tree_data_t data);
-	bool tree_delete(ptree_t head, tree_data_t data);
-	bool tree_get_min(ptree_t head, tree_data_t *data);
-	bool tree_get_max(ptree_t head, tree_data_t *data);
+    bool tree_insert(ptree_t head, tree_data_t data);
+    bool tree_delete(ptree_t head, tree_data_t data);
+    bool tree_get_min(ptree_t head, tree_data_t *data);
+    bool tree_get_max(ptree_t head, tree_data_t *data);
 
-	void tree_traversal_depth_preorder(ptree_t head, tree_data_disp_t tree_data_disp);
-	void tree_traversal_depth_inorder(ptree_t head, tree_data_disp_t tree_data_disp);
-	void tree_traversal_depth_postorder(ptree_t head, tree_data_disp_t tree_data_disp);
-	void tree_traversal_breadth(ptree_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_depth_preorder(ptree_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_depth_inorder(ptree_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_depth_postorder(ptree_t head, tree_data_disp_t tree_data_disp);
+    void tree_traversal_breadth(ptree_t head, tree_data_disp_t tree_data_disp);
 #endif
+
+struct _tree_node
+{
+    void *obj;
+    struct _tree_node * left;
+    struct _tree_node * right;
+    struct _tree_node * parent;
+
+    union 
+    {
+        uint32_t balance;
+        uint32_t color;
+    };
+};
+typedef struct _tree_node * tree_node_t;
+
+struct _tree
+{
+    struct _tree_node * _head;
+
+    uint32_t _size;				// 栈大小
+    uint32_t _obj_size;			// 元素大小
+    uint32_t _capacity;			// 总容量
+    uint32_t _ratio;			// 扩展比率
+
+    // kernel
+    bool (*insert)(struct _tree* self, void* obj);
+    bool (*delete)(struct _tree* self, void* obj);
+    bool (*peek)(struct _tree* self, void** obj);
+
+    bool (*clear)(struct _tree* self);
+    bool (*empty)(struct _tree* self);
+    uint32_t (*size)(struct _tree* self);
+
+    // compare
+    int (*compare)(void* obj1, void* obj2);
+
+    // free
+    void (*destory)(struct _tree* self);
+
+    // print
+    void (*print)(struct _tree* self);
+    void (*print_obj)(void* obj);
+};
+
+// bst_tree
+bool tree_avl_init(struct _tree *self, uint32_t obj_size);
+bool tree_rb_init(struct _tree *self, uint32_t obj_size);
 
 
 #endif // _TREE_H_
