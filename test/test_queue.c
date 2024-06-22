@@ -242,7 +242,8 @@ static void queue_test_char(void)
 	uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
 	struct _queue queue;
-	queue2_init(&queue, sizeof(char), 64);
+	// queue2_init(&queue, sizeof(char), 64);
+	queue2_init(&queue, sizeof(char), 10);
 	queue.print_obj = print_char;
 
 	printf("\n\n----- queue_test_char -----\n");
@@ -250,17 +251,27 @@ static void queue_test_char(void)
 	printf("----- after push-----\n");
 	for (i = 0; i < len; i++)
 	{
-		queue.push(&queue, &data[i]);
+		if(queue.push(&queue, &data[i]))
+		{
+			queue.front(&queue, &temp);
+			printf("front = ");
+			queue.print_obj(&temp);
 
-		queue.front(&queue, &temp);
-		printf("front = ");
-		queue.print_obj(&temp);
+			queue.back(&queue, &temp);
+			printf("\tback = ");
+			queue.print_obj(&temp);
 
-		queue.back(&queue, &temp);
-		printf("\tback = ");
-		queue.print_obj(&temp);
+			printf("\tsize = %2d\n", queue.size(&queue));
+		}
+		else
+		{
+			printf("push failed! because it is full\n");
+		}
 
-		printf("\tsize = %2d\n", queue.size(&queue));
+		if(queue.full(&queue))
+		{
+			printf("----- full -----\n");
+		}
 	}
 	printf("----- print -----\n");
 	queue.print(&queue);
