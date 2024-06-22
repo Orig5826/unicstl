@@ -33,9 +33,12 @@ struct _stack
 	void (*print_obj)(void* obj);
 	void (*print)(struct _stack* s);
 };
+typedef struct _stack* stack_t;
 
-bool stack_init(struct _stack* s, uint32_t obj_size);	// Á´±í
-bool stack2_init(struct _stack* s, uint32_t obj_size);	// Êý×é
+bool stack_init(struct _stack* self, uint32_t obj_size);
+bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity);
+
+stack_t stack_new(void);
+void stack_free(stack_t stack);
 
 #endif // _STACK_H_
-
