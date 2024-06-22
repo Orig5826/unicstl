@@ -3,6 +3,9 @@
 build/
 release/
 
+# .vscode
+# .vscode/
+
 # SI4
 SIP.si4project/
 
@@ -16,9 +19,6 @@ Release/
 x86/
 x64/
 ARM/
-
-# .vscode
-.vscode/
 
 # MDK-ARM
 DebugConfig/

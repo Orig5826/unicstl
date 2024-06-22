@@ -1,0 +1,10 @@
+{
+    "cmake.configureOnOpen": true,
+    "files.encoding": "gb18030",
+    "files.associations": {
+        "common.h": "c",
+        "unicstl.h": "c",
+        "test.h": "c",
+        "queue.h": "c"
+    }
+}
