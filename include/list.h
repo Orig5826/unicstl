@@ -47,7 +47,11 @@ struct _list
 	void (*print)(struct _list* self);
 	void (*print_obj)(void* obj);
 };
+typedef struct _list* list_t;
 
-bool list_init(struct _list* list, uint32_t obj_size);
+bool list_init2(struct _list* self, uint32_t obj_size, uint32_t capacity);
+
+list_t list_new(void);
+void list_free(list_t list);
 
 #endif // _LIST_H_

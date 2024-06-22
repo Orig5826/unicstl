@@ -1,12 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS 1		// for vs2022
-#include "list.h"
 
-static void print_num(void* obj)
-{
-	printf("(%2d )", *(int*)obj);
-}
+#include "test.h"
 
-static void list_test_num(void)
+static void test_list_num(void)
 {
 	int i = 0;
 	int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -15,7 +10,7 @@ static void list_test_num(void)
 	int len = sizeof(data) / sizeof(data[0]);
 
 	struct _list list;
-	list_init(&list, sizeof(int));
+	list_init2(&list, sizeof(int), 64);
 	list.print_obj = print_num;
 
 	printf("\n\n----- list_test_num -----\n");
@@ -138,20 +133,7 @@ static void list_test_num(void)
 	list.destory(&list);
 }
 
-
-struct _student
-{
-	char name[16];
-	int id;
-};
-
-static void print_struct(void* obj)
-{
-	struct _student* student = (struct _student*)obj;
-	printf("(%4d:%-8s) ", student->id, student->name);
-}
-
-static void list_test_struct(void)
+static void test_list_struct(void)
 {
 	int i = 0;
 	struct _student data[] = {
@@ -164,7 +146,7 @@ static void list_test_struct(void)
 	int len = sizeof(data) / sizeof(data[0]);
 
 	struct _list list;
-	list_init(&list, sizeof(struct _student));
+	list_init2(&list, sizeof(struct _student), 64);
 	list.print_obj = print_struct;
 
 	printf("\n\n----- list_test_num -----\n");
@@ -307,6 +289,6 @@ static void list_test_struct(void)
 
 void list_test(void)
 {
-	list_test_num();
-	list_test_struct();
+	test_list_num();
+	test_list_struct();
 }

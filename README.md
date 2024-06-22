@@ -12,7 +12,7 @@
 | stack_init  | 链表 | |
 | stack2_init | 动态数组 | |
 | **list**   | | **列表**
-| list_init  | 动态数组 | |
+| list_init2  | 动态数组 | |
 | **queue**   | | **队列**
 | queue_init  | 单向链表 | |
 | queue2_init | 数组 | FIFO/空/满 |

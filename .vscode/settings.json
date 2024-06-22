@@ -8,6 +8,8 @@
         "queue.h": "c",
         "stdbool.h": "c",
         "stdint.h": "c",
-        "stack.h": "c"
+        "stack.h": "c",
+        "list.h": "c",
+        "stdio.h": "c"
     }
 }

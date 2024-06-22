@@ -9,6 +9,12 @@
 #include <string.h>
 #include <assert.h>
 
+#include "list.h"
+#include "stack.h"
+#include "queue.h"
+#include "deque.h"
+#include "tree.h"
+
 #if RBTREE == 1
 #include "rbtree.h"
 	typedef prbtree_node_t stack_data_t;

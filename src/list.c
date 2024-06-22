@@ -170,14 +170,14 @@ void list_print(struct _list* self)
 	}
 }
 
-bool list_init(struct _list* list, uint32_t obj_size)
+bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
 	assert(list != NULL);
 
 	// 1. set attr
 	list->_obj_size = obj_size;
 	list->_size = 0;
-	list->_capacity = 64;
+	list->_capacity = capacity;
 	list->_ratio = 2;
 
 	// 2. set function

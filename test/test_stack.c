@@ -1,11 +1,7 @@
-#include "stack.h"
 
-static void print_num(void* obj)
-{
-	printf("(%2d ) ", *(int*)obj);
-}
+#include "test.h"
 
-static void stack_test_num(void)
+static void test_stack_num(void)
 {
 	uint32_t i = 0;
 	int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -16,7 +12,7 @@ static void stack_test_num(void)
 	stack_init(&s, sizeof(int));
 	s.print_obj = print_num;
 
-	printf("\n\n----- stack_test_num -----\n");
+	printf("\n\n----- test_stack_num -----\n");
 	// get top if stack is empty
 	s.peek(&s, &temp);
 
@@ -66,12 +62,7 @@ static void stack_test_num(void)
 	s.destory(&s);
 }
 
-static void print_char(void* obj)
-{
-	printf("(%2c ) ", *(char*)obj);
-}
-
-static void stack_test_char(void)
+static void test_stack_char(void)
 {
 	uint32_t i = 0;
 	char data[] = "abcdefghijk";
@@ -82,7 +73,7 @@ static void stack_test_char(void)
 	stack_init2(&s, sizeof(char), 64);
 	s.print_obj = print_char;
 
-	printf("\n\n----- stack_test_char -----\n");
+	printf("\n\n----- test_stack_char -----\n");
 	// get top if stack is empty
 	s.peek(&s, &temp);
 
@@ -131,20 +122,7 @@ static void stack_test_char(void)
 	s.destory(&s);
 }
 
-
-struct _student
-{
-	char name[16];
-	int id;
-};
-
-static void print_struct(void* obj)
-{
-	struct _student* student = (struct _student*)obj;
-	printf("(%2d:%-5s ) ", student->id, student->name);
-}
-
-static void stack_test_struct(void)
+static void test_stack_struct(void)
 {
 	uint32_t i = 0;
 	struct _student data[] = {
@@ -159,7 +137,7 @@ static void stack_test_struct(void)
 	stack_init(stack, sizeof(struct _student));
 	stack->print_obj = print_struct;
 
-	printf("\n\n----- stack_test_struct -----\n");
+	printf("\n\n----- test_stack_struct -----\n");
 	// get top if stack is empty
 	stack->peek(stack, &temp);
 
@@ -221,9 +199,9 @@ static void stack_test_struct(void)
 	stack_free(stack);
 }
 
-void stack_test(void)
+void test_stack(void)
 {
-	stack_test_num();
-	stack_test_char();
-	stack_test_struct();
+	test_stack_num();
+	test_stack_char();
+	test_stack_struct();
 }

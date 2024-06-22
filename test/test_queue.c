@@ -1,5 +1,4 @@
 
-#include "queue.h"
 #include "test.h"
 
 #if QUEUE_TEST == 1

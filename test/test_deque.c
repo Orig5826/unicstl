@@ -1,10 +1,5 @@
 
-#include "deque.h"
-
-static void print_num(void* obj)
-{
-	printf("(%2d ) ", *(int*)obj);
-}
+#include "test.h"
 
 static void deque_test_num(void)
 {
@@ -172,18 +167,6 @@ static void deque_test_num(void)
 	}
 
 	dq.destory(&dq);
-}
-
-struct _student
-{
-	char name[16];
-	int id;
-};
-
-static void print_struct(void* obj)
-{
-	struct _student* student = (struct _student*)obj;
-	printf("(%4d:%-8s) ", student->id, student->name);
 }
 
 static void deque_test_struct(void)
