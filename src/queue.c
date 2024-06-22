@@ -299,8 +299,10 @@ bool queue2_push(struct _queue* self, void* obj)
     {
         return false;
     }
+
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_back;
+    memmove((char*)obj_array + index * self->_obj_size, obj, self->_obj_size);
     if(index >= self->capacity(self))
     {
         index = 0;
@@ -309,7 +311,6 @@ bool queue2_push(struct _queue* self, void* obj)
     {
         index++;
     }
-    memmove((char*)obj_array + index * self->_obj_size, obj, self->_obj_size);
     self->_index_back = index;
     self->_size++;
     return true;
@@ -324,7 +325,10 @@ bool queue2_pop(struct _queue* self, void* obj)
     }
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_front;
-
+    if(obj != NULL)
+    {
+        memmove(obj, (char*)obj_array + index * self->_obj_size,self->_obj_size);
+    }
     if(index >= self->capacity(self))
     {
         index = 0;
@@ -332,10 +336,6 @@ bool queue2_pop(struct _queue* self, void* obj)
     else
     {
         index++;
-    }
-    if(obj != NULL)
-    {
-        memmove(obj, (char*)obj_array + index * self->_obj_size,self->_obj_size);
     }
     self->_index_front = index;
     self->_size--;
@@ -351,7 +351,15 @@ bool queue2_back(struct _queue* self, void* obj)
     }
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_back;
-    memmove(obj, (char *)obj_array + self->_obj_size, self->_obj_size);
+    if(index == 0)
+    {
+        index = self->capacity(self) - 1;
+    }
+    else
+    {
+        index--;
+    }
+    memmove(obj, (char *)obj_array + index * self->_obj_size, self->_obj_size);
     return true;
 }
 
@@ -445,7 +453,8 @@ bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     }
     queue->_back = queue->_front;
 
-    queue->_front->obj = calloc(queue->_capacity + 1, queue->_obj_size);
+    // queue->_front->obj = calloc(queue->_capacity + 1, queue->_obj_size);
+    queue->_front->obj = calloc(queue->_capacity, queue->_obj_size);
     if(queue->_front->obj == NULL)
     {
         return false;

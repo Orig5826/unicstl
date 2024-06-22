@@ -239,7 +239,7 @@ static void queue_test_char(void)
 	uint32_t i = 0;
 	char data[] = "abcdefghijk";
 	char temp = 0;
-	uint32_t len = sizeof(data) / sizeof(data[0]);
+	uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
 	struct _queue queue;
 	queue2_init(&queue, sizeof(char), 64);
