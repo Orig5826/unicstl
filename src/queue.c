@@ -301,10 +301,13 @@ bool queue2_push(struct _queue* self, void* obj)
     }
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_back;
-    index++;
     if(index >= self->capacity(self))
     {
         index = 0;
+    }
+    else
+    {
+        index++;
     }
     memmove((char*)obj_array + index * self->_obj_size, obj, self->_obj_size);
     self->_index_back = index;
@@ -322,13 +325,13 @@ bool queue2_pop(struct _queue* self, void* obj)
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_front;
 
-    if(index == 0)
+    if(index >= self->capacity(self))
     {
-        index = self->capacity(self) - 1;
+        index = 0;
     }
     else
     {
-        index--;
+        index++;
     }
     if(obj != NULL)
     {
@@ -348,7 +351,7 @@ bool queue2_back(struct _queue* self, void* obj)
     }
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_back;
-    memmove(obj, obj_array + self->_obj_size, self->_obj_size);
+    memmove(obj, (char *)obj_array + self->_obj_size, self->_obj_size);
     return true;
 }
 
@@ -361,7 +364,7 @@ bool queue2_front(struct _queue* self, void* obj)
     }
     void * obj_array = self->_front->obj;
     uint32_t index = self->_index_front;
-    memmove(obj, obj_array + index * self->_obj_size, self->_obj_size);
+    memmove(obj, (char *)obj_array + index * self->_obj_size, self->_obj_size);
     return true;
 }
 
@@ -428,6 +431,7 @@ bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     queue->front = queue2_front;
     queue->clear = queue2_clear;
     queue->empty = queue_empty;
+    queue->full = queue2_full;
     queue->size = queue_size;
     queue->capacity = queue2_capacity;
     queue->destory = queue2_destory;
@@ -439,7 +443,7 @@ bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     {
         return false;
     }
-    queue->_back = queue->_back;
+    queue->_back = queue->_front;
 
     queue->_front->obj = calloc(queue->_capacity + 1, queue->_obj_size);
     if(queue->_front->obj == NULL)
