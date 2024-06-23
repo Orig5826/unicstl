@@ -1480,10 +1480,11 @@ static struct _tree_node* tree_trun_left_then_right(struct _tree* self, struct _
 {
     assert(self != NULL);
     assert(root != NULL);
-    assert(root->left != NULL);
     struct _tree_node* node = root->left;
-
-    tree_turn_left(self, root->left);
+    if(node != NULL)
+    {
+        tree_turn_left(self, node);
+    }
     node = tree_turn_right(self, root);
     return node;
 }
@@ -1492,9 +1493,11 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
 {
     assert(self != NULL);
     assert(root != NULL);
-    assert(root->right != NULL);
     struct _tree_node* node = root->right;
-    tree_turn_right(self, root->right);
+    if(node != NULL)
+    {
+        tree_turn_right(self, node);
+    }
     node = tree_turn_left(self, root);
     return node;
 }
