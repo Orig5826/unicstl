@@ -270,7 +270,8 @@ void tree_test(void)
 void test_tree_num(void)
 {
     uint32_t i = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    // int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int data[] = { 5,2,3,1,7,8,6 };
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
@@ -288,6 +289,14 @@ void test_tree_num(void)
     }
     printf("----- preorder -----\n");
     tree->preorder(tree, tree->_root);
+    printf("\n");
+
+    printf("----- inorder -----\n");
+    tree->inorder(tree, tree->_root);
+    printf("\n");
+
+    printf("----- postorder -----\n");
+    tree->postorder(tree, tree->_root);
     printf("\n");
 
     tree_free(tree);

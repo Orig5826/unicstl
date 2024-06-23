@@ -124,10 +124,10 @@ struct _tree
     // ----- print -----
     // traversal depth
     void (*preorder)(struct _tree* self, struct _tree_node* root);
-    void (*inorder)(struct _tree* self);
-    void (*postorder)(struct _tree* self);
+    void (*inorder)(struct _tree* self, struct _tree_node* root);
+    void (*postorder)(struct _tree* self, struct _tree_node* root);
     // traversal breadth
-    void (*breadth)(struct _tree* self);
+    void (*breadth)(struct _tree* self, struct _tree_node* root);
 
     void (*print_obj)(void* obj);
 };

@@ -1588,29 +1588,47 @@ void tree_destory(struct _tree* self)
 void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
+    self->print_obj(root->obj);
     if(root->left != NULL)
     {
         tree_avl_preorder(self, root->left);
     }
-    self->print_obj(root->obj);
     if(root->right != NULL)
     {
         tree_avl_preorder(self, root->right);
     }
 }
 
-void tree_avl_inorder(struct _tree* self)
+void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
 {
-
+    assert(self != NULL);
+    if(root->left != NULL)
+    {
+        tree_avl_inorder(self, root->left);
+    }
+    self->print_obj(root->obj);
+    if(root->right != NULL)
+    {
+        tree_avl_inorder(self, root->right);
+    }
 }
 
-void tree_avl_postorder(struct _tree* self)
+void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
 {
-
+    assert(self != NULL);
+    if(root->left != NULL)
+    {
+        tree_avl_postorder(self, root->left);
+    }
+    if(root->right != NULL)
+    {
+        tree_avl_postorder(self, root->right);
+    }
+    self->print_obj(root->obj);
 }
 
 // traversal breadth
-void tree_avl_breadth(struct _tree* self)
+void tree_avl_breadth(struct _tree* self, struct _tree_node* root)
 {
 
 }
