@@ -12,8 +12,8 @@
  */
 struct _student
 {
-	char name[16];
-	int id;
+    char name[16];
+    int id;
 };
 
 void print_num(void* obj);

@@ -421,7 +421,7 @@ void queue2_print(struct _queue* self)
     }
 }
 
-bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
+bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
 {
     assert(queue != NULL);
     assert(obj_size > 0);
@@ -465,7 +465,7 @@ bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
 
 queue_t queue_new(void)
 {
-    return (struct queue_t *)malloc(sizeof(struct _queue));
+    return (struct _queue *)malloc(sizeof(struct _queue));
 }
 
 void queue_free(queue_t queue)

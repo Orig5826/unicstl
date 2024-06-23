@@ -3,308 +3,326 @@
 
 static uint32_t stack_capacity(struct _stack* self)
 {
-	assert(self != NULL);
-	return self->_capacity;
+    assert(self != NULL);
+    return self->_capacity;
 }
 
 static uint32_t stack_size(struct _stack* self)
 {
-	assert(self != NULL);
-	return self->_size;
+    assert(self != NULL);
+    return self->_size;
 }
 
 static bool stack_empty(struct _stack* self)
 {
-	assert(self != NULL);
-	// assert(self->_head != NULL);
-	// return self->_head->next == NULL ? true : false;
-	return !stack_size(self);
+    assert(self != NULL);
+    // assert(self->_head != NULL);
+    // return self->_head->next == NULL ? true : false;
+    return !stack_size(self);
 }
 
 static bool stack_peek(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	assert(obj != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
 
-	if (self->empty(self))
-	{
-		return false;
-	}
+    if (self->empty(self))
+    {
+        return false;
+    }
 
-	struct _stack_node * node = self->_head->next;
-	memmove(obj, node->obj, self->_obj_size);
-	return true;
+    struct _stack_node * node = self->_head->next;
+    memmove(obj, node->obj, self->_obj_size);
+    return true;
 }
 
 static bool stack_push(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	assert(obj != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
 
-	void* new_obj = (void*)calloc(1, self->_obj_size);
-	if (new_obj == NULL)
-	{
-		return false;
-	}
-	memmove(new_obj, obj, self->_obj_size);
+    void* new_obj = (void*)calloc(1, self->_obj_size);
+    if (new_obj == NULL)
+    {
+        return false;
+    }
+    memmove(new_obj, obj, self->_obj_size);
 
-	struct _stack_node* new_node = (struct _stack_node*)malloc(sizeof(struct _stack_node));
-	if (new_node == NULL)
-	{
-		return false;
-	}
-	new_node->obj = new_obj;
-	new_node->next = self->_head->next;
-	self->_head->next = new_node;
+    struct _stack_node* new_node = (struct _stack_node*)malloc(sizeof(struct _stack_node));
+    if (new_node == NULL)
+    {
+        return false;
+    }
+    new_node->obj = new_obj;
+    new_node->next = self->_head->next;
+    self->_head->next = new_node;
 
-	self->_size += 1;
-	return true;
+    self->_size += 1;
+    return true;
 }
 
 static bool stack_pop(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	// assert(obj != NULL);
-	
-	if (self->empty(self))
-	{
-		return false;
-	}
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    // assert(obj != NULL);
+    
+    if (self->empty(self))
+    {
+        return false;
+    }
 
-	struct _stack_node* node = self->_head->next;
+    struct _stack_node* node = self->_head->next;
 
-	if (obj != NULL)
-	{
-		// 将弹出的数据输出
-		memmove(obj, node->obj, self->_obj_size);
-	}
+    if (obj != NULL)
+    {
+        // 将弹出的数据输出
+        memmove(obj, node->obj, self->_obj_size);
+    }
 
-	// 更新指针
-	self->_head->next = node->next;
+    // 更新指针
+    self->_head->next = node->next;
 
-	// 释放数据和节点
-	free(node->obj);
-	free(node);
+    // 释放数据和节点
+    free(node->obj);
+    free(node);
 
-	self->_size -= 1;
-	return true;
+    self->_size -= 1;
+    return true;
 }
 
 static bool stack_clear(struct _stack* self)
 {
-	assert(self != NULL);
+    assert(self != NULL);
 
-	if (self->empty(self))
-	{
-		return false;
-	}
+    if (self->empty(self))
+    {
+        return false;
+    }
 
-	struct _stack_node* node = self->_head->next;
-	while (node != NULL)
-	{
-		// 更新指针
-		self->_head->next = node->next;
+    struct _stack_node* node = self->_head->next;
+    while (node != NULL)
+    {
+        // 更新指针
+        self->_head->next = node->next;
 
-		// 释放数据和节点
-		free(node->obj);
-		free(node);
+        // 释放数据和节点
+        free(node->obj);
+        free(node);
 
-		node = self->_head->next;
-	}
-	self->_size = 0;
-	return true;
+        node = self->_head->next;
+    }
+    self->_size = 0;
+    return true;
 }
 
 static void stack_destory(struct _stack* self)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	
-	self->clear(self);
-	free(self->_head);
-	self->_head = NULL;
+    assert(self != NULL);
+    self->clear(self);
+    if(self->_head != NULL)
+    {
+        free(self->_head);
+        self->_head = NULL;
+    }
 }
 
 static void stack_print(struct _stack* self)
 {
-	uint32_t i = 0;
-	struct _stack_node* node = self->_head->next;
-	while (node != NULL)
-	{
-		self->print_obj(node->obj);
-		node = node->next;
-	}
+    uint32_t i = 0;
+    struct _stack_node* node = self->_head->next;
+    while (node != NULL)
+    {
+        self->print_obj(node->obj);
+        node = node->next;
+    }
 }
 
 bool stack_init(struct _stack* self, uint32_t obj_size)
 {
-	assert(self != NULL);
+    assert(self != NULL);
 
-	// 1. set attr
-	self->_obj_size = obj_size;
-	self->_size = 0;
-	// self->_capacity = 64;		// 无效
-	// self->_ratio = 2;			// 无效
-	
-	// 2. set function
-	// kernel
-	self->peek = stack_peek;
-	self->pop = stack_pop;
-	self->push = stack_push;
+    // 1. set attr
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    // self->_capacity = 64;		// 无效
+    // self->_ratio = 2;			// 无效
+    
+    // 2. set function
+    // kernel
+    self->peek = stack_peek;
+    self->pop = stack_pop;
+    self->push = stack_push;
 
-	// others
-	self->clear = stack_clear;
-	self->empty = stack_empty;
-	self->size = stack_size;
-	self->destory = stack_destory;
-	self->print = stack_print;
+    // others
+    self->clear = stack_clear;
+    self->empty = stack_empty;
+    self->size = stack_size;
+    self->destory = stack_destory;
+    self->print = stack_print;
 
-	// 3. set node
-	self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
-	if (self->_head == NULL)
-	{
-		return false;
-	}
-	self->_head->obj = NULL;
-	self->_head->next = NULL;
+    // 3. set node
+    self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
+    if (self->_head == NULL)
+    {
+        return false;
+    }
+    self->_head->obj = NULL;
+    self->_head->next = NULL;
 
-	return true;
+    return true;
 }
 
 
 static bool stack2_peek(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	assert(obj != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
 
-	if (self->empty(self))
-	{
-		return false;
-	}
+    if (self->empty(self))
+    {
+        return false;
+    }
 
-	uint32_t top = self->size(self) - 1;
-	uint32_t offset = top * self->_obj_size;
-	memmove(obj, (char *)self->_head->obj + offset, self->_obj_size);
-	return true;
+    uint32_t top = self->size(self) - 1;
+    uint32_t offset = top * self->_obj_size;
+    memmove(obj, (char *)self->_head->obj + offset, self->_obj_size);
+    return true;
 }
 
 static bool stack2_push(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	assert(obj != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    assert(obj != NULL);
 
-	if (self->size(self) == self->_capacity)
-	{
-		void* obj_new = (void*)realloc(self->_head->obj, self->_capacity * self->_obj_size * self->_ratio);
-		if (obj_new == NULL)
-		{
-			return false;
-		}
-		self->_head->obj = obj_new;
-	}
+    if (self->size(self) == self->_capacity)
+    {
+        void* obj_new = (void*)realloc(self->_head->obj, self->_capacity * self->_obj_size * self->_ratio);
+        if (obj_new == NULL)
+        {
+            return false;
+        }
+        self->_head->obj = obj_new;
+    }
 
-	uint32_t top = self->size(self);
-	uint32_t offset = top * self->_obj_size;
-	memmove((char*)self->_head->obj + offset, obj, self->_obj_size);
+    uint32_t top = self->size(self);
+    uint32_t offset = top * self->_obj_size;
+    memmove((char*)self->_head->obj + offset, obj, self->_obj_size);
 
-	self->_size += 1;
-	return true;
+    self->_size += 1;
+    return true;
 }
 
 static bool stack2_pop(struct _stack* self, void* obj)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
-	// assert(obj != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
+    // assert(obj != NULL);
 
-	if (self->empty(self))
-	{
-		return false;
-	}
+    if (self->empty(self))
+    {
+        return false;
+    }
 
-	if (obj != NULL)
-	{
-		uint32_t top = self->size(self) - 1;
-		uint32_t offset = top * self->_obj_size;
-		memmove(obj, (char*)self->_head->obj + offset, self->_obj_size);
-	}
+    if (obj != NULL)
+    {
+        uint32_t top = self->size(self) - 1;
+        uint32_t offset = top * self->_obj_size;
+        memmove(obj, (char*)self->_head->obj + offset, self->_obj_size);
+    }
 
-	self->_size -= 1;
-	return true;
+    self->_size -= 1;
+    return true;
+}
+
+
+static void stack2_destory(struct _stack* self)
+{
+    assert(self != NULL);
+    self->clear(self);
+    if(self->_head != NULL)
+    {
+        if(self->_head->obj != NULL)
+        {
+            free(self->_head->obj);
+            self->_head->obj = NULL;
+        }
+        free(self->_head);
+        self->_head = NULL;
+    }
 }
 
 static void stack2_print(struct _stack* self)
 {
-	assert(self != NULL);
-	assert(self->_head != NULL);
+    assert(self != NULL);
+    assert(self->_head != NULL);
 
-	void* obj = NULL;
-	uint32_t offset = 0;
+    void* obj = NULL;
+    uint32_t offset = 0;
 
-	for (int i = self->size(self) - 1; i >= 0; i--)
-	{
-		offset = self->_obj_size * i;
-		obj = (char*)self->_head->obj + offset;
-		self->print_obj(obj);
-	}
+    for (int i = self->size(self) - 1; i >= 0; i--)
+    {
+        offset = self->_obj_size * i;
+        obj = (char*)self->_head->obj + offset;
+        self->print_obj(obj);
+    }
 }
 
 bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
-	assert(self != NULL);
+    assert(self != NULL);
 
-	// 1. set attr
-	self->_obj_size = obj_size;
-	self->_size = 0;
-	self->_capacity = capacity;
-	self->_ratio = 2;
+    // 1. set attr
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    self->_capacity = capacity;
+    self->_ratio = 2;
 
-	// 2. set function
-	// kernel
-	self->peek = stack2_peek;
-	self->pop = stack2_pop;
-	self->push = stack2_push;
+    // 2. set function
+    // kernel
+    self->peek = stack2_peek;
+    self->pop = stack2_pop;
+    self->push = stack2_push;
 
-	// others
-	self->clear = stack_clear;
-	self->empty = stack_empty;
-	self->size = stack_size;
-	self->destory = stack_destory;
-	self->print = stack2_print;
+    // others
+    self->clear = stack_clear;
+    self->empty = stack_empty;
+    self->size = stack_size;
+    self->destory = stack2_destory;
+    self->print = stack2_print;
 
-	// 3. set node
-	self->_head = (struct _stack_node*)malloc(sizeof(struct _stack_node));
-	if (self->_head == NULL)
-	{
-		return false;
-	}
-	// self->_head->obj = NULL;
-	self->_head->next = NULL;		// 无效参数
+    // 3. set node
+    self->_head = (struct _stack_node*)malloc(sizeof(struct _stack_node));
+    if (self->_head == NULL)
+    {
+        return false;
+    }
+    // self->_head->obj = NULL;
+    self->_head->next = NULL;		// 无效参数
 
-	// 4. set array
-	self->_head->obj = (void *)calloc(self->_capacity, self->_obj_size);
-	if (self->_head->obj == NULL)
-	{
-		return false;
-	}
-	return true;
+    // 4. set array
+    self->_head->obj = (void *)calloc(self->_capacity, self->_obj_size);
+    if (self->_head->obj == NULL)
+    {
+        return false;
+    }
+    return true;
 }
 
 stack_t stack_new(void)
 {
-	return (struct _stack*)malloc(sizeof(struct _stack));
+    return (struct _stack*)malloc(sizeof(struct _stack));
 }
 
 void stack_free(stack_t stack)
 {
-	if(stack)
-	{
-		stack->destory(stack);
-		free(stack);
-	}
+    if(stack)
+    {
+        stack->destory(stack);
+        free(stack);
+    }
 }

@@ -19,16 +19,16 @@
 // node of queue
 typedef struct _queue_node_t
 {
-	queue_data_t data;
-	struct _queue_node_t * next;
+    queue_data_t data;
+    struct _queue_node_t * next;
 } queue_node_t, *pqueue_node_t;
 
 // queue
 typedef struct _queue_t
 {
-	struct _queue_node_t * front;
-	struct _queue_node_t * rear;
-	uint32_t size;
+    struct _queue_node_t * front;
+    struct _queue_node_t * rear;
+    uint32_t size;
 }queue_t,*pqueue_t;
 
 
@@ -47,14 +47,14 @@ bool queue_get_rear(pqueue_t head, queue_data_t *data);
 
 struct _queue_node
 {
-	void  *obj;
-	struct _queue_node * next;
+    void  *obj;
+    struct _queue_node * next;
 };
 
 struct _queue
 {
-	struct _queue_node * _front;
-	struct _queue_node * _back;
+    struct _queue_node * _front;
+    struct _queue_node * _back;
 
     uint32_t _index_front;
     uint32_t _index_back;
@@ -72,7 +72,7 @@ struct _queue
     bool (*front)(struct _queue* self, void* obj);
 
     bool (*clear)(struct _queue* self);
-	bool (*empty)(struct _queue* self);
+    bool (*empty)(struct _queue* self);
     bool (*full)(struct _queue* self);      // only for queue2
     uint32_t (*size)(struct _queue* self);
     uint32_t (*capacity)(struct _queue* self);
@@ -87,7 +87,7 @@ struct _queue
 typedef struct _queue* queue_t;
 
 bool queue_init(struct _queue * queue, uint32_t obj_size);
-bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity);
+bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity);
 
 queue_t queue_new(void);
 void queue_free(queue_t queue);

@@ -9,17 +9,17 @@ typedef int rbtree_data_t;
 
 typedef struct _rbtree_node_t
 {
-	rbtree_data_t data;
-	struct _rbtree_node_t * left;
-	struct _rbtree_node_t * right;
-	struct _rbtree_node_t * parent;
-	uint32_t color;
+    rbtree_data_t data;
+    struct _rbtree_node_t * left;
+    struct _rbtree_node_t * right;
+    struct _rbtree_node_t * parent;
+    uint32_t color;
 }rbtree_node_t, *prbtree_node_t;
 
 typedef struct _rbtree_t
 {
-	struct _rbtree_node_t * tree;
-	uint32_t size;
+    struct _rbtree_node_t * tree;
+    uint32_t size;
 }rbtree_t, *prbtree_t;
 
 
