@@ -1458,8 +1458,6 @@ static bool tree_node_free(struct _tree_node* node)
  */
 struct _tree_node * tree_find_pos(struct _tree* self, void* obj)
 {
-    printf("222\n");
-
     assert(self != NULL);
     assert(self->compare != NULL);
 
@@ -1511,10 +1509,7 @@ bool tree_avl_insert(struct _tree* self, void* obj)
     else
     {
         // insert the node
-        struct _tree_node* root = NULL;
-        printf("111\n");
-        root = tree_find_pos(self, root->obj);
-        printf("444\n");
+        struct _tree_node* root = tree_find_pos(self, obj);
         if(self->compare(obj, root->obj) < 0)
         {
             root->left = node;
