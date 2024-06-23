@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/release/bin/test.exe",
             "args": [],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
@@ -28,7 +28,7 @@
                 }
             ],
             "preLaunchTask": "build",
-            "miDebuggerPath": "D:/Qt/Tools/mingw1120_64/bin/gdb.exe"
+            "miDebuggerPath": "D:/Lang/mingw64/bin/gdb.exe"
         }
     ]
 }

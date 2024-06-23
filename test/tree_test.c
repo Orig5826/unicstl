@@ -281,7 +281,7 @@ void test_tree_num(void)
 
     printf("\n\n----- test_queue_num -----\n");
 
-    printf("----- after push-----\n");
+    printf("----- insert -----\n");
     for (i = 0; i < len; i++)
     {
         tree->insert(tree, &data[i]);

@@ -87,7 +87,6 @@ struct _tree_node
         uint32_t color;
     };
 };
-typedef struct _tree_node* tree_node_t;
 
 struct _tree
 {
@@ -102,6 +101,8 @@ struct _tree
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
     bool (*peek)(struct _tree* self, void** obj);
+
+    struct _tree_node* (*find)(struct _tree* self, void* obj);
 
     bool (*clear)(struct _tree* self);
     bool (*empty)(struct _tree* self);

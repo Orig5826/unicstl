@@ -1402,7 +1402,7 @@ static bool tree_rebalance(ptree_t head, ptree_node_t tree)
 #endif
 
 
-static tree_node_t tree_node_new(struct _tree* self, void* obj)
+static struct _tree_node * tree_node_new(struct _tree* self, void* obj)
 {
     assert(self != NULL);
 
@@ -1450,6 +1450,47 @@ static bool tree_node_free(struct _tree_node* node)
     return true;
 }
 
+/**
+ * @brief 在树中查找插入位置
+ * 
+ * @param self 树的指针
+ * @param obj 要查找或插入的对象
+ */
+struct _tree_node * tree_find_pos(struct _tree* self, void* obj)
+{
+    printf("222\n");
+
+    assert(self != NULL);
+    assert(self->compare != NULL);
+
+    struct _tree_node* root = self->_root;
+    while(root != NULL)
+    {
+        if(self->compare(obj, root->obj) == 0)
+        {
+            break;
+        }
+        else if(self->compare(obj, root->obj) < 0)
+        {
+            if(root->left == NULL)
+            {
+                break;
+            }
+            root = root->left;
+        }
+        else
+        {
+            if(root->right == NULL)
+            {
+                break;
+            }
+            root = root->right;
+        }
+    }
+    return root;
+}
+
+
 bool tree_avl_insert(struct _tree* self, void* obj)
 {
     assert(self != NULL);
@@ -1470,7 +1511,10 @@ bool tree_avl_insert(struct _tree* self, void* obj)
     else
     {
         // insert the node
-        struct _tree_node* root = self->_root;
+        struct _tree_node* root = NULL;
+        printf("111\n");
+        root = tree_find_pos(self, root->obj);
+        printf("444\n");
         if(self->compare(obj, root->obj) < 0)
         {
             root->left = node;
@@ -1498,6 +1542,28 @@ bool tree_avl_delete(struct _tree* self, void* obj)
 
 }
 
+struct _tree_node * tree_avl_find(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    struct _tree_node* root = self->_root;
+    while(root != NULL)
+    {
+        if(self->compare(obj, root->obj) == 0)
+        {
+            return root;
+        }
+        else if(self->compare(obj, root->obj) < 0)
+        {
+            root = root->left;
+        }
+        else
+        {
+            root = root->right;
+        }
+    }
+    return NULL;
+}
+
 bool tree_clear(struct _tree* self)
 {
     assert(self != NULL);
@@ -1521,6 +1587,7 @@ void tree_destory(struct _tree* self)
 {
     assert(self != NULL);
     self->clear(self);
+    self->_root = NULL;
 }
 
 void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
@@ -1572,6 +1639,8 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->inorder = tree_avl_inorder;
     self->postorder = tree_avl_postorder;
     self->breadth = tree_avl_breadth;
+
+    self->_root = NULL;
 
     return true;
 }
