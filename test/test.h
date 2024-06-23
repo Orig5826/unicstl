@@ -17,6 +17,8 @@ struct _student
 };
 
 void print_num(void* obj);
+int compare_num(void *obj, void *obj2);
+
 void print_char(void* obj);
 void print_struct(void* obj);
 void print_str(void* obj);
@@ -29,10 +31,8 @@ void print_str(void* obj);
 void test_list(void);
 void test_stack(void);
 void test_deque(void);
-
 void test_queue(void);
-void tree_test(void);
-void rbtree_test(void);
+void test_tree(void);
 
 #endif // _TEST_H_
 

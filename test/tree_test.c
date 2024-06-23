@@ -265,7 +265,35 @@ void tree_test(void)
     printf("----------------------------------------\n");
 }
 #endif
-
-
 #endif
 
+void test_tree_num(void)
+{
+    uint32_t i = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    tree_t tree = tree_new();
+    tree_avl_init(tree, sizeof(int));
+    tree->print_obj = print_num;
+    tree->compare = compare_num;
+
+    printf("\n\n----- test_queue_num -----\n");
+
+    printf("----- after push-----\n");
+    for (i = 0; i < len; i++)
+    {
+        tree->insert(tree, &data[i]);
+    }
+    printf("----- preorder -----\n");
+    tree->preorder(tree, tree->_root);
+    printf("\n");
+
+    tree_free(tree);
+}
+
+void test_tree(void)
+{
+    test_tree_num();
+}

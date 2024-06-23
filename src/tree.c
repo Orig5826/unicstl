@@ -1404,6 +1404,8 @@ static bool tree_rebalance(ptree_t head, ptree_node_t tree)
 
 static tree_node_t tree_node_new(struct _tree* self, void* obj)
 {
+    assert(self != NULL);
+
     void * obj_new = malloc(self->_obj_size);
     if (obj_new == NULL)
     {
@@ -1437,12 +1439,14 @@ done:
 
 static bool tree_node_free(struct _tree_node* node)
 {
-    assert(node != NULL);
-    if(node->obj != NULL)
+    if(node != NULL)
     {
-        free(node->obj);
+        if(node->obj != NULL)
+        {
+            free(node->obj);
+        }
+        free(node);
     }
-    free(node);
     return true;
 }
 
@@ -1470,10 +1474,12 @@ bool tree_avl_insert(struct _tree* self, void* obj)
         if(self->compare(obj, root->obj) < 0)
         {
             root->left = node;
+            node->parent = root;
         }
         else if(self->compare(obj, root->obj) > 0)
         {
             root->right = node;
+            node->parent = root;
         }
         else
         {
@@ -1517,14 +1523,25 @@ void tree_destory(struct _tree* self)
     self->clear(self);
 }
 
-void tree_avl_preorder(struct _tree* self)
+void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
 {
-
+    assert(self != NULL);
+    if(root->left != NULL)
+    {
+        tree_avl_preorder(self, root->left);
+    }
+    self->print_obj(root->obj);
+    if(root->right != NULL)
+    {
+        tree_avl_preorder(self, root->right);
+    }
 }
+
 void tree_avl_inorder(struct _tree* self)
 {
 
 }
+
 void tree_avl_postorder(struct _tree* self)
 {
 
@@ -1562,4 +1579,18 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
 bool tree_rb_init(struct _tree *self, uint32_t obj_size)
 {
 
+}
+
+tree_t tree_new(void)
+{
+    return (struct _tree*)malloc(sizeof(struct _tree));
+}
+
+void tree_free(tree_t tree)
+{
+    if(tree != NULL)
+    {
+        tree->destory(tree);
+        free(tree);
+    }
 }
