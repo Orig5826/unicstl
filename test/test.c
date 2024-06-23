@@ -10,9 +10,12 @@ int compare_num(void *obj, void *obj2)
 {
     int num1 = *(int*)obj;
     int num2 = *(int*)obj2;
-    return num1 - num2 > 0 ? 1 : -1;
+    if(num1 == num2)
+    {
+        return 0;
+    }
+    return num1 > num2 ? 1 : -1;
 }
-
 
 void print_struct(void* obj)
 {

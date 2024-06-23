@@ -331,17 +331,26 @@ void test_tree_num(void)
     tree->breadth(tree, tree->_root);
     printf("\n");
 
-#if 0
-    while(!tree->empty(tree))
+    for (i = 0; i < len; i++)
     {
+        temp = data[i];
         tree->delete(tree, &temp);
 
-        printf("pop = ");
+        printf("delete = ");
         tree->print_obj(&temp);
 
         printf("size = %2d\n", tree->size(tree));
+
+        printf("----- breadth -----\n");
+        tree->breadth(tree, tree->_root);
+        printf("\n");
     }
-#endif
+
+    if(tree->empty(tree))
+    {
+        printf("----- empty -----\n");
+    }
+
     tree_free(tree);
 }
 

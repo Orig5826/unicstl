@@ -104,8 +104,8 @@ struct _tree
     bool (*delete)(struct _tree* self, void* obj);
 
     struct _tree_node* (*find)(struct _tree* self, void* obj);
-    struct _tree_node* (*find_min)(struct _tree* self);
-    struct _tree_node* (*find_max)(struct _tree* self);
+    struct _tree_node* (*find_min)(struct _tree* self, struct _tree_node* root);
+    struct _tree_node* (*find_max)(struct _tree* self, struct _tree_node* root);
 
     bool (*rebalance)(struct _tree* self, struct _tree_node* root);
     uint32_t (*height)(struct _tree* self, struct _tree_node* root);
