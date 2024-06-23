@@ -331,6 +331,10 @@ void test_tree_num(void)
     tree->breadth(tree, tree->_root);
     printf("\n");
 
+
+
+    printf("----- left priority -----\n");
+    tree->order(tree, false);
     for (i = 0; i < len; i++)
     {
         temp = data[i];
