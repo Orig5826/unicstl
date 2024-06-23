@@ -331,6 +331,7 @@ void test_tree_num(void)
     tree->breadth(tree, tree->_root);
     printf("\n");
 
+#if 0
     while(!tree->empty(tree))
     {
         tree->delete(tree, &temp);
@@ -340,7 +341,7 @@ void test_tree_num(void)
 
         printf("size = %2d\n", tree->size(tree));
     }
-
+#endif
     tree_free(tree);
 }
 

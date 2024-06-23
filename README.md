@@ -7,6 +7,8 @@
 
 > 标准：--std=c99
 
+[数据结构详细说明](http://wenjianfeng.top)
+
 ## 数据结构
 |数据结构 | 原理 |说明 |
 |---|---|---|
@@ -20,4 +22,6 @@
 | queue_init2 | 数组 | FIFO/空/满 |
 | **deque**   | |**双端队列** |
 | deque_init  | 双向循环链表 | |
-
+| **tree**    | |**树** |
+| tree_avl_init | 二叉搜索树 | AVL树 |
+| tree_rb_init  | 二叉搜索树 | 红黑树 |
