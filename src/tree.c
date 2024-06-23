@@ -1585,46 +1585,97 @@ void tree_destory(struct _tree* self)
     self->_root = NULL;
 }
 
+void tree_order(struct _tree* self, bool right_priority)
+{
+    assert(self != NULL);
+    self->_right_priority = right_priority;
+}
+
 void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
-    self->print_obj(root->obj);
-    if(root->left != NULL)
+    if(!self->_right_priority)
     {
-        tree_avl_preorder(self, root->left);
+        self->print_obj(root->obj);
+        if(root->left != NULL)
+        {
+            tree_avl_preorder(self, root->left);
+        }
+        if(root->right != NULL)
+        {
+            tree_avl_preorder(self, root->right);
+        }
     }
-    if(root->right != NULL)
+    else
     {
-        tree_avl_preorder(self, root->right);
+        self->print_obj(root->obj);
+        if(root->right != NULL)
+        {
+            tree_avl_preorder(self, root->right);
+        }
+        if(root->left != NULL)
+        {
+            tree_avl_preorder(self, root->left);
+        }
     }
 }
 
 void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
-    if(root->left != NULL)
+    if(!self->_right_priority)
     {
-        tree_avl_inorder(self, root->left);
+        if(root->left != NULL)
+        {
+            tree_avl_inorder(self, root->left);
+        }
+        self->print_obj(root->obj);
+        if(root->right != NULL)
+        {
+            tree_avl_inorder(self, root->right);
+        }
     }
-    self->print_obj(root->obj);
-    if(root->right != NULL)
+    else
     {
-        tree_avl_inorder(self, root->right);
+        if(root->right != NULL)
+        {
+            tree_avl_inorder(self, root->right);
+        }
+        self->print_obj(root->obj);
+        if(root->left != NULL)
+        {
+            tree_avl_inorder(self, root->left);
+        }
     }
 }
 
 void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
-    if(root->left != NULL)
+    if(!self->_right_priority)
     {
-        tree_avl_postorder(self, root->left);
+        if(root->left != NULL)
+        {
+            tree_avl_postorder(self, root->left);
+        }
+        if(root->right != NULL)
+        {
+            tree_avl_postorder(self, root->right);
+        }
+        self->print_obj(root->obj);
     }
-    if(root->right != NULL)
+    else
     {
-        tree_avl_postorder(self, root->right);
+        if(root->right != NULL)
+        {
+            tree_avl_postorder(self, root->right);
+        }
+        if(root->left != NULL)
+        {
+            tree_avl_postorder(self, root->left);
+        }
+        self->print_obj(root->obj);
     }
-    self->print_obj(root->obj);
 }
 
 // traversal breadth
@@ -1642,6 +1693,8 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     // self->_capacity = 64;
     // self->_ratio = 2;
 
+    self->_right_priority = false;
+
     self->insert = tree_avl_insert;
     self->delete = tree_avl_delete;
     self->clear = tree_clear;
@@ -1652,6 +1705,7 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->inorder = tree_avl_inorder;
     self->postorder = tree_avl_postorder;
     self->breadth = tree_avl_breadth;
+    self->order = tree_order;
 
     self->_root = NULL;
 

@@ -97,6 +97,8 @@ struct _tree
     uint32_t _capacity;			// 总容量
     uint32_t _ratio;			// 扩展比率
 
+    bool _right_priority;		// 右优先
+
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
@@ -123,6 +125,8 @@ struct _tree
 
     // ----- print -----
     // traversal depth
+    void (*order)(struct _tree* self, bool right_priority);
+
     void (*preorder)(struct _tree* self, struct _tree_node* root);
     void (*inorder)(struct _tree* self, struct _tree_node* root);
     void (*postorder)(struct _tree* self, struct _tree_node* root);
