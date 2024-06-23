@@ -38,8 +38,8 @@ int main()
         // test_list();
         // test_stack();
         // test_deque();
-        // test_queue();
-        test_tree();
+        test_queue();
+        // test_tree();
 
         // rbtree_test();
     }

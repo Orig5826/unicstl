@@ -299,6 +299,10 @@ void test_tree_num(void)
     tree->postorder(tree, tree->_root);
     printf("\n");
 
+    printf("----- breadth -----\n");
+    tree->breadth(tree, tree->_root);
+    printf("\n");
+
     printf("----- right priority -----\n");
     tree->order(tree, true);
 
@@ -312,6 +316,10 @@ void test_tree_num(void)
 
     printf("----- postorder -----\n");
     tree->postorder(tree, tree->_root);
+    printf("\n");
+
+    printf("----- breadth -----\n");
+    tree->breadth(tree, tree->_root);
     printf("\n");
 
     tree_free(tree);

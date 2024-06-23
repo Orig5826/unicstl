@@ -9,6 +9,7 @@
  * 
  */
 #include "tree.h"
+#include "queue.h"
 
 #if RAVLTREE == 1
 // function declare
@@ -1681,7 +1682,43 @@ void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
 // traversal breadth
 void tree_avl_breadth(struct _tree* self, struct _tree_node* root)
 {
+    assert(self != NULL);
+    struct _tree_node* node = self->_root;
+    queue_t queue = queue_new();
+    queue_init(queue, self->_obj_size);
 
+    if(node != NULL)
+    {
+        queue->push(queue, node);
+        while(!queue->empty(queue))
+        {
+            queue->pop(queue, node);
+            if(!self->_right_priority)
+            {
+                if(node->left != NULL)
+                {
+                    queue->push(queue, node->left);
+                }
+                if(node->right != NULL)
+                {
+                    queue->push(queue, node->right);
+                }
+            }
+            else
+            {
+                if(node->right != NULL)
+                {
+                    queue->push(queue, node->right);
+                }
+                if(node->left != NULL)
+                {
+                    queue->push(queue, node->left);
+                }
+            }
+            self->print_obj(node->obj);
+        }
+    }
+    queue_free(queue);
 }
 
 bool tree_avl_init(struct _tree *self, uint32_t obj_size)
