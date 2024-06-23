@@ -205,3 +205,17 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 	}
 	return true;
 }
+
+list_t list_new(void)
+{
+	return (struct _list*)malloc(sizeof(struct _list));
+}
+
+void list_free(list_t list)
+{
+	if(list != NULL)
+	{
+		list->destory(list);
+		free(list);
+	}
+}

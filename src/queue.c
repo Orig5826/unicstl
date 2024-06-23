@@ -462,3 +462,17 @@ bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     queue->_index_front = 0;
     queue->_index_back = 0;
 }
+
+queue_t queue_new(void)
+{
+    return (struct queue_t *)malloc(sizeof(struct _queue));
+}
+
+void queue_free(queue_t queue)
+{
+    if(queue != NULL)
+    {
+        queue->destory(queue);
+        free(queue);
+    }
+}

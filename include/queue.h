@@ -84,8 +84,12 @@ struct _queue
     void (*print)(struct _queue* self);
     void (*print_obj)(void* obj);
 };
+typedef struct _queue* queue_t;
 
 bool queue_init(struct _queue * queue, uint32_t obj_size);
 bool queue2_init(struct _queue * queue, uint32_t obj_size, uint32_t capacity);
+
+queue_t queue_new(void);
+void queue_free(queue_t queue);
 
 #endif // _QUEUE_H_

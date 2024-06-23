@@ -304,6 +304,7 @@ void stack_free(stack_t stack)
 {
 	if(stack)
 	{
+		stack->destory(stack);
 		free(stack);
 	}
 }

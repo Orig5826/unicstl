@@ -27,9 +27,9 @@ int main()
 	printf("----- unicstl test -----\n");
 	// while (1)
 	{	
-		list_test();
+		// list_test();
 		// test_stack();
-		// deque_test();
+		deque_test();
 		// queue_test();
 		
 		// tree_test();

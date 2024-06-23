@@ -262,8 +262,12 @@ static void test_list_struct(void)
 	list.print_obj(&temp); printf("\n");
 
 	index = -10;
-	temp.id = 97;
-	sprintf(temp.name, "robot_%02d", temp.id);
+	//temp.id = 97;
+	//sprintf(temp.name, "robot_%02d", temp.id);
+	// temp = data[0];
+	// struct _student robot = {"robot", 97};
+	// temp = robot;
+	temp = (struct _student){"robot", 97};
 	list.set(&list, index, &temp);
 	printf("list[%4d] = ", index);
 	list.print_obj(&temp); printf("\n");

@@ -294,41 +294,55 @@ void deque_print(struct _deque* self)
     }
 }
 
-bool deque_init(struct _deque* deque, uint32_t obj_size)
+bool deque_init(struct _deque* self, uint32_t obj_size)
 {
     // attribute
-    deque->_obj_size = obj_size;
-    deque->_size = 0;
-    // deque->_capacity = 64;
-    // deque->_ratio = 2;
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    // self->_capacity = 64;
+    // self->_ratio = 2;
 
     // function
-    deque->back = deque_back;
-    deque->clear = deque_clear;
-    deque->destory = deque_destory;
-    deque->empty = deque_empty;
-    deque->erase = deque_erase;
-    deque->front = deque_front;
-    deque->get = deque_get;
-    deque->index = deque_index;
-    deque->insert = deque_insert;
-    deque->pop_back = deque_pop_back;
-    deque->pop_front = deque_pop_front;
-    deque->push_back = deque_push_back;
-    deque->push_front = deque_push_front;
-    deque->print = deque_print;
-    deque->remove = deque_remove;
-    deque->set = deque_set;
-    deque->size = deque_size;
+    self->back = deque_back;
+    self->clear = deque_clear;
+    self->destory = deque_destory;
+    self->empty = deque_empty;
+    self->erase = deque_erase;
+    self->front = deque_front;
+    self->get = deque_get;
+    self->index = deque_index;
+    self->insert = deque_insert;
+    self->pop_back = deque_pop_back;
+    self->pop_front = deque_pop_front;
+    self->push_back = deque_push_back;
+    self->push_front = deque_push_front;
+    self->print = deque_print;
+    self->remove = deque_remove;
+    self->set = deque_set;
+    self->size = deque_size;
 
-    deque->_head = (struct _deque_node*)malloc(sizeof(struct _deque_node));
-    if (deque->_head == NULL)
+    self->_head = (struct _deque_node*)malloc(sizeof(struct _deque_node));
+    if (self->_head == NULL)
     {
         return false;
     }
-    deque->_head->obj = NULL;
-    deque->_head->prev = NULL;
-    deque->_head->next = NULL;
+    self->_head->obj = NULL;
+    self->_head->prev = NULL;
+    self->_head->next = NULL;
     
     return true;
+}
+
+deque_t deque_new(void)
+{
+    return (struct _deque*)malloc(sizeof(struct _deque));
+}
+
+void deque_free(deque_t deque)
+{
+    if(deque != NULL)
+    {
+        deque->destory(deque);
+        free(deque);
+    }
 }
