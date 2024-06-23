@@ -1689,30 +1689,30 @@ void tree_avl_breadth(struct _tree* self, struct _tree_node* root)
 
     if(node != NULL)
     {
-        queue->push(queue, node);
+        queue->push(queue, &node);
         while(!queue->empty(queue))
         {
-            queue->pop(queue, node);
+            queue->pop(queue, &node);
             if(!self->_right_priority)
             {
                 if(node->left != NULL)
                 {
-                    queue->push(queue, node->left);
+                    queue->push(queue, &node->left);
                 }
                 if(node->right != NULL)
                 {
-                    queue->push(queue, node->right);
+                    queue->push(queue, &node->right);
                 }
             }
             else
             {
                 if(node->right != NULL)
                 {
-                    queue->push(queue, node->right);
+                    queue->push(queue, &node->right);
                 }
                 if(node->left != NULL)
                 {
-                    queue->push(queue, node->left);
+                    queue->push(queue, &node->left);
                 }
             }
             self->print_obj(node->obj);

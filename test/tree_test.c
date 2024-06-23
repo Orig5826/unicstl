@@ -267,6 +267,15 @@ void tree_test(void)
 #endif
 #endif
 
+/**
+ * @brief 
+ * int data[] = { 5,2,3,1,7,8,6 };
+ *           5
+ *      |         |
+ *      2         7
+ *   |    |     |   |
+ *   1    3     6   8
+ */
 void test_tree_num(void)
 {
     uint32_t i = 0;
