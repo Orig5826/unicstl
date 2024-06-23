@@ -1416,9 +1416,12 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
 {
     assert(self != NULL);
     assert(root != NULL);
-    assert(root->right != NULL);
     struct _tree_node* node = root->right;
-    
+    if(node == NULL)
+    {
+        return root;
+    }
+
     if(root->parent != NULL)
     {
         if(root->parent->left == root)          // step1
@@ -1445,9 +1448,12 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
 {
     assert(self != NULL);
     assert(root != NULL);
-    assert(root->left != NULL);
     struct _tree_node* node = root->left;
-    
+    if(node == NULL)
+    {
+        return root;
+    }
+
     if(root->parent != NULL)
     {
         if(root->parent->left == root)
@@ -1528,7 +1534,11 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     {
         return true;
     }
-
+    if(root->left == NULL && root->right == NULL)
+    {
+        return true;
+    }
+    
     tree_set_balance(self, root);
     int balance = root->balance;
     if(balance > 1)
@@ -1725,6 +1735,10 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
                 node->right->parent = node->parent;
                 node->parent->left = node->right;
             }
+            else
+            {
+                node->parent->left = NULL;
+            }
         }
         else if(node->parent->right == node)
         {
@@ -1737,6 +1751,10 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             {
                 node->right->parent = node->parent;
                 node->parent->right = node->right;
+            }
+            else
+            {
+                node->parent->right = NULL;
             }
         }
 
@@ -1801,6 +1819,8 @@ bool tree_avl_delete(struct _tree* self, void* obj)
             {
                 node->parent->right = NULL;
             }
+
+            self->rebalance(self, node->parent);
         }
         tree_node_free(node);
     }
