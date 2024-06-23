@@ -1402,6 +1402,16 @@ static bool tree_rebalance(ptree_t head, ptree_node_t tree)
 
 #endif
 
+static void tree_set_balance(struct _tree* self, struct _tree_node * node)
+{
+    assert(self != NULL);
+    if(node == NULL)
+    {
+        return;
+    }
+    node->balance = self->height(self, node->right) - self->height(self, node->left);
+}
+
 static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
@@ -1409,14 +1419,25 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
     assert(root->right != NULL);
     struct _tree_node* node = root->right;
     
-    root->parent->right = node;         // step1
+    if(root->parent != NULL)
+    {
+        if(root->parent->left == root)          // step1
+        {
+            root->parent->left = node;
+        }
+        else if(root->parent->right == root)
+        {
+            root->parent->right = node;         // setp1
+        }
+    }
     node->parent = root->parent;        // step2
-
     root->parent = node;                // step3
-    node->left = root;                  // step4
+
+    root->right = node->left;           // step4
+    node->left = root;                  // step5
     
-    root->balance = 0;
-    node->balance = 0;
+    tree_set_balance(self, root);
+    tree_set_balance(self, node);
     return node;
 }
 
@@ -1427,13 +1448,25 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
     assert(root->left != NULL);
     struct _tree_node* node = root->left;
     
-    root->parent->left = node;          // step1
+    if(root->parent != NULL)
+    {
+        if(root->parent->left == root)
+        {
+            root->parent->left = node;          // step1
+        }
+        else if(root->parent->right == root)
+        {
+            root->parent->right = node;         // setp1
+        }
+    }
     node->parent = root->parent;        // step2
     root->parent = node;                // step3
-    node->right = root;                 // step4
+
+    root->left = node->right;           // step4
+    node->right = root;                 // step5
     
-    root->balance = 0;
-    node->balance = 0;
+    tree_set_balance(self, root);
+    tree_set_balance(self, node);
     return node;
 }
 
@@ -1467,26 +1500,9 @@ uint32_t tree_height(struct _tree* self, struct _tree_node* root)
     {
         return 0;
     }
-    uint32_t left = tree_height(self, root->left);
-    uint32_t right = tree_height(self, root->right);
-    if(left > right)
-    {
-        return left + 1;
-    }
-    else
-    {
-        return right + 1;
-    }
-}
-
-static void tree_set_balance(struct _tree* self, struct _tree_node * node)
-{
-    assert(self != NULL);
-    if(node == NULL)
-    {
-        return;
-    }
-    node->balance = self->height(self, node->right) - self->height(self, node->left);
+    uint32_t left_height = tree_height(self, root->left);
+    uint32_t right_height = tree_height(self, root->right);
+    return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
 }
 
 /**
@@ -1537,10 +1553,14 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
             root = tree_trun_right_then_left(self, root);
         }
     }
-
+    
     if(root->parent != NULL)
     {
         tree_avl_rebalance(self, root->parent);
+    }
+    else
+    {
+        self->_root = root;
     }
     return true;
 }
@@ -1671,7 +1691,6 @@ bool tree_avl_insert(struct _tree* self, void* obj)
         }
         self->rebalance(self, root);
     }
-
     self->_size++;
     return true;
 }
