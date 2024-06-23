@@ -1,4 +1,13 @@
-
+/**
+ * @file tree.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-06-23
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "tree.h"
 
 #if RAVLTREE == 1
@@ -1393,7 +1402,7 @@ static bool tree_rebalance(ptree_t head, ptree_node_t tree)
 #endif
 
 
-static tree_node_t * tree_node_new(struct _tree* self, void* obj)
+static tree_node_t tree_node_new(struct _tree* self, void* obj)
 {
     void * obj_new = malloc(self->_obj_size);
     if (obj_new == NULL)
@@ -1402,7 +1411,7 @@ static tree_node_t * tree_node_new(struct _tree* self, void* obj)
     }
     memmove(obj_new, obj, self->_obj_size);
 
-    struct _tree_node* node_new = (struct _queue_node*)malloc(sizeof(struct _tree_node));
+    struct _tree_node* node_new = (struct _tree_node*)malloc(sizeof(struct _tree_node));
     if(node_new == NULL)
     {
         goto done;

@@ -1,3 +1,13 @@
+/**
+ * @file tree.h
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-06-23
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef _TREE_H_
 #define _TREE_H_
 
@@ -77,7 +87,7 @@ struct _tree_node
         uint32_t color;
     };
 };
-typedef struct _tree_node * tree_node_t;
+typedef struct _tree_node* tree_node_t;
 
 struct _tree
 {

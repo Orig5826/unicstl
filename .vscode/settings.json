@@ -12,6 +12,7 @@
         "list.h": "c",
         "stdio.h": "c",
         "tree.h": "c",
-        "deque.h": "c"
+        "deque.h": "c",
+        "config.h": "c"
     }
 }

@@ -1,6 +1,6 @@
 
-#ifndef _DEMO_H_
-#define _DEMO_H_
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -8,9 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-
-#include "config.h"
-
 
 #if RBTREE == 1
 #include "rbtree.h"

@@ -291,7 +291,7 @@ static void test_list_struct(void)
     list.destory(&list);
 }
 
-void list_test(void)
+void test_list(void)
 {
     test_list_num();
     test_list_struct();

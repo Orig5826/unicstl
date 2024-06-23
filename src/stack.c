@@ -1,4 +1,13 @@
-
+/**
+ * @file stack.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-06-23
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "stack.h"
 
 static uint32_t stack_capacity(struct _stack* self)

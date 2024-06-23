@@ -1,13 +1,15 @@
-
+/**
+ * @file unicstl.h
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-06-23
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef _DEMO_H_
 #define _DEMO_H_
-
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
 
 #include "list.h"
 #include "stack.h"

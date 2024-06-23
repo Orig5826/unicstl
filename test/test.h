@@ -26,11 +26,11 @@ void print_str(void* obj);
  * @brief test function
  * 
  */
-void list_test(void);
+void test_list(void);
 void test_stack(void);
-void deque_test(void);
+void test_deque(void);
 
-void queue_test(void);
+void test_queue(void);
 void tree_test(void);
 void rbtree_test(void);
 

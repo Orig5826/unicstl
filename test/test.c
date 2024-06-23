@@ -27,10 +27,10 @@ int main()
     printf("----- unicstl test -----\n");
     // while (1)
     {	
-        list_test();
+        test_list();
         test_stack();
-        deque_test();
-        queue_test();
+        test_deque();
+        test_queue();
         
         // tree_test();
         // rbtree_test();
