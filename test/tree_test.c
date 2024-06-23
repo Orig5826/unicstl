@@ -279,8 +279,8 @@ void tree_test(void)
 void test_tree_num(void)
 {
     uint32_t i = 0;
-    // int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    int data[] = { 5,2,3,1,7,8,6 };
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    // int data[] = { 5,2,3,1,7,8,6 };
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
@@ -330,6 +330,16 @@ void test_tree_num(void)
     printf("----- breadth -----\n");
     tree->breadth(tree, tree->_root);
     printf("\n");
+
+    while(!tree->empty(tree))
+    {
+        tree->delete(tree, &temp);
+
+        printf("pop = ");
+        tree->print_obj(&temp);
+
+        printf("size = %2d\n", tree->size(tree));
+    }
 
     tree_free(tree);
 }

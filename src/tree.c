@@ -1535,7 +1535,41 @@ bool tree_avl_insert(struct _tree* self, void* obj)
 
 bool tree_avl_delete(struct _tree* self, void* obj)
 {
+    assert(self != NULL);
+    assert(obj != NULL);
+    assert(self->compare != NULL);
 
+    // if 
+    if(self->empty(self))
+    {
+        return false;
+    }
+    else
+    {
+        struct _tree_node* node = self->find(self, obj);
+        if(node == NULL)
+        {
+            return false;
+        }
+
+        if(obj != NULL)
+        {
+            memmove(obj, node->obj, self->_obj_size);
+        }
+
+        if(node->parent->left == node)
+        {
+            node->parent->left = NULL;
+        }
+        else if(node->parent->right == node)
+        {
+
+        }
+        tree_node_free(node);
+    }
+
+    self->_size--;
+    return true;
 }
 
 struct _tree_node * tree_avl_find(struct _tree* self, void* obj)
@@ -1575,7 +1609,7 @@ bool tree_empty(struct _tree* self)
 uint32_t tree_size(struct _tree* self)
 {
     assert(self != NULL);
-    return self->size(self);
+    return self->_size;
 }
 
 // free
@@ -1685,7 +1719,7 @@ void tree_avl_breadth(struct _tree* self, struct _tree_node* root)
     assert(self != NULL);
     struct _tree_node* node = self->_root;
     queue_t queue = queue_new();
-    queue_init(queue, self->_obj_size);
+    queue_init(queue, sizeof(struct _tree_node*));
 
     if(node != NULL)
     {
@@ -1743,6 +1777,7 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->postorder = tree_avl_postorder;
     self->breadth = tree_avl_breadth;
     self->order = tree_order;
+    self->find = tree_avl_find;
 
     self->_root = NULL;
 
