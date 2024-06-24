@@ -1480,7 +1480,7 @@ static struct _tree_node* tree_trun_left_then_right(struct _tree* self, struct _
 {
     assert(self != NULL);
     assert(root != NULL);
-    struct _tree_node* node = root->left;
+    struct _tree_node* node = root->right;
     if(node != NULL)
     {
         tree_turn_left(self, node);
@@ -1493,7 +1493,7 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
 {
     assert(self != NULL);
     assert(root != NULL);
-    struct _tree_node* node = root->right;
+    struct _tree_node* node = root->left;
     if(node != NULL)
     {
         tree_turn_right(self, node);
@@ -1524,7 +1524,7 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
  * | 1    |  2           |  1             | ×óÐý
  * | 2    |  2           | -1             | ÏÈÓÒÐýºó×óÐý
  * | 3    | -2           | -1             | ÓÒÐý
- * | 4    | -2           |  1             | ÏÈÓÒÐýºó×óÐý
+ * | 4    | -2           |  1             | ÏÈ×óÐýºóÓÒÐý
  * 
  * @param self 
  * @return true 
@@ -1541,7 +1541,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     {
         return true;
     }
-    
+    self->print_obj(root->obj);
     tree_set_balance(self, root);
     int balance = root->balance;
     if(balance == 2)
@@ -1552,7 +1552,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         }
         else if(root->right->balance == -1)
         {
-            root = tree_trun_left_then_right(self, root);
+            root = tree_trun_right_then_left(self, root);
         }
     }
     else if(balance == -2)
@@ -1563,7 +1563,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         }
         else if(root->left->balance == 1)
         {
-            root = tree_trun_right_then_left(self, root);
+            root = tree_trun_left_then_right(self, root);
         }
     }
     

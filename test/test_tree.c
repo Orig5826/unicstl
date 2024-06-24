@@ -297,6 +297,10 @@ void test_tree_num(void)
     for (i = 0; i < len; i++)
     {
         tree->insert(tree, &data[i]);
+
+        printf("----- preorder -----\n");
+        tree->preorder(tree, tree->_root);
+        printf("\n");
     }
     printf("----- preorder -----\n");
     tree->preorder(tree, tree->_root);
