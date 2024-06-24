@@ -10,6 +10,7 @@
  */
 #include "tree.h"
 #include "queue.h"
+#include "stack.h"
 
 #if RAVLTREE == 1
 // function declare
@@ -1947,6 +1948,7 @@ void tree_order(struct _tree* self, bool right_priority)
 
 void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
@@ -1977,6 +1979,47 @@ void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
             tree_avl_preorder(self, root->left);
         }
     }
+#else
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return;
+    }
+    struct _tree_node* node = NULL;
+
+    stack_t stack = stack_new();
+    stack_init(stack, sizeof(struct _tree_node*));
+    stack->push(stack, &root);
+    while(!stack->empty(stack))
+    {
+        stack->pop(stack, &node);
+        if(!self->_right_priority)          // left priority
+        {
+            self->print_obj(node->obj);
+            if(node->right != NULL)
+            {
+                stack->push(stack, &node->right);
+            }
+            if(node->left != NULL)
+            {
+                stack->push(stack, &node->left);
+            }
+        }
+        else
+        {
+            self->print_obj(node->obj);
+            if(node->left != NULL)
+            {
+                stack->push(stack, &node->left);
+            }
+            if(node->right != NULL)
+            {
+                stack->push(stack, &node->right);
+            }
+        }
+    }
+    stack_free(stack);
+#endif
 }
 
 void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
