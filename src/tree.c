@@ -1541,7 +1541,8 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     {
         return true;
     }
-    self->print_obj(root->obj);
+
+    // self->print_obj(root->obj);
     tree_set_balance(self, root);
     int balance = root->balance;
     if(balance == 2)
@@ -1778,12 +1779,16 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
     assert(self != NULL);
     assert(node != NULL);
     struct _tree_node* tmp = self->find_min(self, node->right);
-    if(tmp == NULL)
+    if(tmp != NULL)
     {
-        return false;
+        memmove(node->obj, tmp->obj, self->_obj_size);
+        if(tmp->right != NULL)
+        {
+            node->right = tmp->right;
+            tmp->right->parent = node;
+        }
+        tree_avl_delete_single_child(self, tmp);
     }
-    memmove(node->obj, tmp->obj, self->_obj_size);
-    tree_avl_delete_single_child(self, tmp);
     return true;
 }
 
@@ -1803,6 +1808,8 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     {
         return false;
     }
+    // debug
+    self->print_obj(obj);
 
     if(node->left != NULL && node->right != NULL)
     {

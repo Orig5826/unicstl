@@ -298,9 +298,9 @@ void test_tree_num(void)
     {
         tree->insert(tree, &data[i]);
 
-        printf("----- preorder -----\n");
-        tree->preorder(tree, tree->_root);
-        printf("\n");
+        // printf("----- preorder -----\n");
+        // tree->preorder(tree, tree->_root);
+        // printf("\n");
     }
     printf("----- preorder -----\n");
     tree->preorder(tree, tree->_root);
@@ -355,10 +355,10 @@ void test_tree_num(void)
 
         tree->delete(tree, &temp);
 
-        printf("----- breadth -----\n");
-        tree->breadth(tree, tree->_root);
-        printf("----- inorder -----\n");
-        tree->inorder(tree, tree->_root);
+        // printf("----- breadth -----\n");
+        // tree->breadth(tree, tree->_root);
+        printf("----- preorder -----\n");
+        tree->preorder(tree, tree->_root);
         printf("\n");
     }
 
