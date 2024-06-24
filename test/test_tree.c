@@ -340,8 +340,8 @@ void test_tree_num(void)
 
     printf("----- left priority -----\n");
     tree->order(tree, false);
-    printf("----- breadth -----\n");
-    tree->breadth(tree, tree->_root);
+    printf("----- preorder -----\n");
+    tree->preorder(tree, tree->_root);
     printf("\n");
 
     for (i = 0; i < len; i++)
@@ -350,9 +350,11 @@ void test_tree_num(void)
 
         printf("delete = ");
         tree->print_obj(&temp);
+        // delete
+        tree->delete(tree, &temp);
+
         printf("size = %2d : ", tree->size(tree));
 
-        tree->delete(tree, &temp);
 
         // printf("----- breadth -----\n");
         // tree->breadth(tree, tree->_root);

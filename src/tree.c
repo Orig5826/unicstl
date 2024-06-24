@@ -1875,8 +1875,6 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     {
         return false;
     }
-    // debug
-    self->print_obj(obj);
 
     if((node->left != NULL) && (node->right != NULL))
     {
@@ -2110,7 +2108,7 @@ static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* r
     }
     return tree_find_min(self, root->left);
 #else
-    while(root == NULL)
+    while(root != NULL)
     {
         if(root->left != NULL)
         {
@@ -2118,7 +2116,7 @@ static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* r
         }
         else
         {
-            break;
+            return root;
         }
     }
     return root;
