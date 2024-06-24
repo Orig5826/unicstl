@@ -296,11 +296,14 @@ void test_tree_num(void)
     printf("----- insert -----\n");
     for (i = 0; i < len; i++)
     {
-        tree->insert(tree, &data[i]);
+        temp = data[i];
+        tree->insert(tree, &temp);
 
-        // printf("----- preorder -----\n");
-        // tree->preorder(tree, tree->_root);
-        // printf("\n");
+        printf("insert = ");
+        tree->print_obj(&temp);
+        printf("size = %2d : ", tree->size(tree));
+        tree->preorder(tree, tree->_root);
+        printf("\n");
     }
     printf("----- preorder -----\n");
     tree->preorder(tree, tree->_root);
@@ -321,19 +324,19 @@ void test_tree_num(void)
     printf("----- right priority -----\n");
     tree->order(tree, true);
 
-    printf("----- preorder -----\n");
+    printf("----- preorder(right) -----\n");
     tree->preorder(tree, tree->_root);
     printf("\n");
 
-    printf("----- inorder -----\n");
+    printf("----- inorder(right) -----\n");
     tree->inorder(tree, tree->_root);
     printf("\n");
 
-    printf("----- postorder -----\n");
+    printf("----- postorder(right) -----\n");
     tree->postorder(tree, tree->_root);
     printf("\n");
 
-    printf("----- breadth -----\n");
+    printf("----- breadth(right) -----\n");
     tree->breadth(tree, tree->_root);
     printf("\n");
 
@@ -347,18 +350,12 @@ void test_tree_num(void)
     for (i = 0; i < len; i++)
     {
         temp = data[i];
-
-        printf("delete = ");
-        tree->print_obj(&temp);
         // delete
         tree->delete(tree, &temp);
 
+        printf("delete = ");
+        tree->print_obj(&temp);
         printf("size = %2d : ", tree->size(tree));
-
-
-        // printf("----- breadth -----\n");
-        // tree->breadth(tree, tree->_root);
-        // printf("----- preorder -----\n");
         tree->preorder(tree, tree->_root);
         printf("\n");
     }
