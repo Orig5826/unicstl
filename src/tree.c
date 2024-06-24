@@ -1422,11 +1422,15 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
         return root;
     }
 
-    if(root->parent != NULL)
+    if(root->parent == NULL)
     {
-        if(root->parent->left == root)          // step1
+        self->_root = node;                     // step1
+    }
+    else
+    {
+        if(root->parent->left == root) 
         {
-            root->parent->left = node;
+            root->parent->left = node;          // step1
         }
         else if(root->parent->right == root)
         {
@@ -1437,7 +1441,11 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
     root->parent = node;                // step3
 
     root->right = node->left;           // step4
-    node->left = root;                  // step5
+    if(node->left != NULL)
+    {
+        node->left->parent = root;      // step5
+    }
+    node->left = root;                  // step6
     
     tree_set_balance(self, root);
     tree_set_balance(self, node);
@@ -1454,7 +1462,11 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
         return root;
     }
 
-    if(root->parent != NULL)
+    if(root->parent == NULL)
+    {
+        self->_root = node;                     // step1
+    }
+    else
     {
         if(root->parent->left == root)
         {
@@ -1469,7 +1481,11 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
     root->parent = node;                // step3
 
     root->left = node->right;           // step4
-    node->right = root;                 // step5
+    if(node->right != NULL)
+    {
+        node->right->parent = root;     // step5
+    }
+    node->right = root;                 // step6
     
     tree_set_balance(self, root);
     tree_set_balance(self, node);
@@ -1521,10 +1537,10 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
  * 
  * | 情况 | root->balance | node->balance | 调整方式 |
  * | ---- | ------------ | -------------- | -------- |
- * | 1    |  2           |  1             | 左旋
- * | 2    |  2           | -1             | 先右旋后左旋
- * | 3    | -2           | -1             | 右旋
- * | 4    | -2           |  1             | 先左旋后右旋
+ * | 1    |  2           | >= 0           | 左旋
+ * | 2    |  2           | < 0            | 先右旋后左旋
+ * | 3    | -2           | <= 0           | 右旋
+ * | 4    | -2           | > 0            | 先左旋后右旋
  * 
  * @param self 
  * @return true 
@@ -1547,22 +1563,22 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     int balance = root->balance;
     if(balance == 2)
     {
-        if(root->right->balance == 1)
+        if(root->right->balance >= 0)
         {
             root = tree_turn_left(self, root);
         }
-        else if(root->right->balance == -1)
+        else
         {
             root = tree_trun_right_then_left(self, root);
         }
     }
     else if(balance == -2)
     {
-        if(root->left->balance == -1)
+        if(root->left->balance <= 0)
         {
             root = tree_turn_right(self, root);
         }
-        else if(root->left->balance == 1)
+        else
         {
             root = tree_trun_left_then_right(self, root);
         }
