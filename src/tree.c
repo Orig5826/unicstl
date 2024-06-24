@@ -1737,19 +1737,19 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
     {
         if(node->left != NULL)
         {
-            node->left->parent = NULL;      // step1
-            self->_root = node->left;       // step2
+            node->left->parent = node->parent;      // step1 : NULL for root
+            self->_root = node->left;               // step2
 
             // options
-            node->left = NULL;
+            // node->left = NULL;
         }
         else if(node->right != NULL)
         {
-            node->right->parent = NULL;     // step1
-            self->_root = node->right;      // step2
+            node->right->parent = node->parent;     // step1 : NULL for root
+            self->_root = node->right;              // step2
 
             // options
-            node->right = NULL;
+            // node->right = NULL;
         }
         else
         {
@@ -1764,28 +1764,28 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->left = node->left;        // step2
-                node->left->right = node->right;        // step3 : NULL for singly child
 
-                // options
-                node->left = NULL;
-                node->parent = NULL;
+                // node->left->right = node->right;        // step3 : NULL for singly child
+                // // options
+                // node->left = NULL;
+                // node->parent = NULL;
             }
             else if(node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->left = node->right;       // step2
-                node->right->left = node->left;         // step3 : NULL for singly child
 
-                // options
-                node->right = NULL;
-                node->parent = NULL;
+                // node->right->left = node->left;         // step3 : NULL for singly child
+                // // options
+                // node->right = NULL;
+                // node->parent = NULL;
             }
             else
             {
                 node->parent->left = NULL;
 
                 // options
-                node->parent = NULL;
+                // node->parent = NULL;
             }
         }
         else if(node->parent->right == node)
@@ -1794,28 +1794,28 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->right = node->left;       // step2
-                node->left->right = node->right;        // step3 : NULL for singly child
 
-                // options
-                node->left = NULL;
-                node->parent = NULL;
+                // node->left->right = node->right;        // step3 : NULL for singly child
+                // // options
+                // node->left = NULL;
+                // node->parent = NULL;
             }
             else if(node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->right = node->right;      // step2
-                node->right->left = node->left;         // step3 : NULL for singly child
 
-                // options
-                node->right = NULL;
-                node->parent = NULL;
+                // node->right->left = node->left;         // step3 : NULL for singly child
+                // // options
+                // node->right = NULL;
+                // node->parent = NULL;
             }
             else
             {
                 node->parent->right = NULL;
 
                 // options
-                node->parent = NULL;
+                // node->parent = NULL;
             }
         }
 
@@ -1862,7 +1862,7 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     // debug
     self->print_obj(obj);
 
-    if(node->left != NULL && node->right != NULL)
+    if((node->left != NULL) && (node->right != NULL))
     {
         // have two child
         tree_avl_delete_double_child(self, node);
@@ -2083,6 +2083,7 @@ void tree_avl_breadth(struct _tree* self, struct _tree_node* root)
 static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
+#if 0
     if(root == NULL)
     {
         return NULL;
@@ -2092,6 +2093,20 @@ static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* r
         return root;
     }
     return tree_find_min(self, root->left);
+#else
+    while(root == NULL)
+    {
+        if(root->left != NULL)
+        {
+            root = root->left;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return root;
+#endif
 }
 
 static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* root)
