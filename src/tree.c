@@ -10,6 +10,7 @@
  */
 #include "tree.h"
 #include "queue.h"
+#include "stack.h"
 
 #if RAVLTREE == 1
 // function declare
@@ -1981,6 +1982,7 @@ void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
 
 void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
@@ -1996,7 +1998,7 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
         self->print_obj(root->obj);
         if(root->right != NULL)
         {
-            tree_avl_inorder(self, root->right);
+            tree_avl_inorder(self, root->right);  
         }
     }
     else
@@ -2011,6 +2013,56 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
             tree_avl_inorder(self, root->left);
         }
     }
+#else
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return;
+    }
+
+    struct _tree_node *node = root;
+
+    stack_t stack = stack_new();
+    stack_init(stack, sizeof(struct _tree_node*));
+
+    if(!self->_right_priority)
+    {
+        while(node != NULL || !stack->empty(stack))
+        {
+            while(node != NULL)
+            {
+                stack->push(stack, &node);
+                node = node->left;
+            }
+
+            do
+            {
+                stack->pop(stack, &node);
+                self->print_obj(node->obj);
+            }while(node->right == NULL && !stack->empty(stack));
+            node = node->right;
+        }
+    }
+    else
+    {
+        while(node != NULL || !stack->empty(stack))
+        {
+            while(node != NULL)
+            {
+                stack->push(stack, &node);
+                node = node->right;
+            }
+
+            do
+            {
+                stack->pop(stack, &node);
+                self->print_obj(node->obj);
+            }while(node->left == NULL && !stack->empty(stack));
+            node = node->left;
+        }
+    }
+    stack_free(stack);
+#endif
 }
 
 void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
