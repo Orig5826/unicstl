@@ -1737,13 +1737,19 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
     {
         if(node->left != NULL)
         {
-            node->left->parent = NULL;
-            self->_root = node->left;
+            node->left->parent = NULL;      // step1
+            self->_root = node->left;       // step2
+
+            // options
+            node->left = NULL;
         }
         else if(node->right != NULL)
         {
-            node->right->parent = NULL;
-            self->_root = node->right;
+            node->right->parent = NULL;     // step1
+            self->_root = node->right;      // step2
+
+            // options
+            node->right = NULL;
         }
         else
         {
@@ -1756,34 +1762,60 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
         {
             if(node->left != NULL)
             {
-                node->left->parent = node->parent;
-                node->parent->left = node->left;
+                node->left->parent = node->parent;      // step1
+                node->parent->left = node->left;        // step2
+                node->left->right = node->right;        // step3 : NULL for singly child
+
+                // options
+                node->left = NULL;
+                node->parent = NULL;
             }
             else if(node->right != NULL)
             {
-                node->right->parent = node->parent;
-                node->parent->left = node->right;
+                node->right->parent = node->parent;     // step1
+                node->parent->left = node->right;       // step2
+                node->right->left = node->left;         // step3 : NULL for singly child
+
+                // options
+                node->right = NULL;
+                node->parent = NULL;
             }
             else
             {
                 node->parent->left = NULL;
+
+                // options
+                node->parent = NULL;
             }
         }
         else if(node->parent->right == node)
         {
             if(node->left != NULL)
             {
-                node->left->parent = node->parent;
-                node->parent->right = node->left;
+                node->left->parent = node->parent;      // step1
+                node->parent->right = node->left;       // step2
+                node->left->right = node->right;        // step3 : NULL for singly child
+
+                // options
+                node->left = NULL;
+                node->parent = NULL;
             }
             else if(node->right != NULL)
             {
-                node->right->parent = node->parent;
-                node->parent->right = node->right;
+                node->right->parent = node->parent;     // step1
+                node->parent->right = node->right;      // step2
+                node->right->left = node->left;         // step3 : NULL for singly child
+
+                // options
+                node->right = NULL;
+                node->parent = NULL;
             }
             else
             {
                 node->parent->right = NULL;
+
+                // options
+                node->parent = NULL;
             }
         }
 
@@ -1801,11 +1833,11 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
     if(tmp != NULL)
     {
         memmove(node->obj, tmp->obj, self->_obj_size);
-        if(tmp->right != NULL)
-        {
-            node->right = tmp->right;
-            tmp->right->parent = node;
-        }
+        // if(tmp->right != NULL)
+        // {
+        //     node->right = tmp->right;
+        //     tmp->right->parent = node;
+        // }
         tree_avl_delete_single_child(self, tmp);
     }
     return true;
