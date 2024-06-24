@@ -1521,10 +1521,10 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
  * 
  * | Çé¿ö | root->balance | node->balance | µ÷Õû·½Ê½ |
  * | ---- | ------------ | -------------- | -------- |
- * | 1    | > 1          | > 0            | ×óÐý
- * | 2    | > 1          | < 0            | ÏÈÓÒÐýºó×óÐý
- * | 3    | < -1         | < 0            | ÓÒÐý
- * | 4    | < -1         | > 0            | ÏÈÓÒÐýºó×óÐý
+ * | 1    |  2           |  1             | ×óÐý
+ * | 2    |  2           | -1             | ÏÈÓÒÐýºó×óÐý
+ * | 3    | -2           | -1             | ÓÒÐý
+ * | 4    | -2           |  1             | ÏÈÓÒÐýºó×óÐý
  * 
  * @param self 
  * @return true 
@@ -1544,28 +1544,24 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     
     tree_set_balance(self, root);
     int balance = root->balance;
-    if(balance == 0)
+    if(balance == 2)
     {
-        // no need to rebalance
-    }
-    else if(balance > 1)
-    {
-        if(root->right->balance > 0)
+        if(root->right->balance == 1)
         {
             root = tree_turn_left(self, root);
         }
-        else if(root->right->balance < 0)
+        else if(root->right->balance == -1)
         {
             root = tree_trun_left_then_right(self, root);
         }
     }
-    else if(balance < 1)
+    else if(balance == -2)
     {
-        if(root->left->balance < 0)
+        if(root->left->balance == -1)
         {
             root = tree_turn_right(self, root);
         }
-        else if(root->left->balance > 0)
+        else if(root->left->balance == 1)
         {
             root = tree_trun_right_then_left(self, root);
         }
