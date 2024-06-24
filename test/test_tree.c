@@ -291,7 +291,7 @@ void test_tree_num(void)
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
-    printf("\n\n----- test_queue_num -----\n");
+    printf("\n\n----- test_tree_num -----\n");
 
     printf("----- insert -----\n");
     for (i = 0; i < len; i++)
