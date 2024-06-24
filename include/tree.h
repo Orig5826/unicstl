@@ -83,7 +83,7 @@ struct _tree_node
 
     union 
     {
-        uint32_t balance;
+        int32_t balance;
         uint32_t color;
     };
 };
@@ -108,7 +108,7 @@ struct _tree
     struct _tree_node* (*find_max)(struct _tree* self, struct _tree_node* root);
 
     bool (*rebalance)(struct _tree* self, struct _tree_node* root);
-    uint32_t (*height)(struct _tree* self, struct _tree_node* root);
+    int32_t (*height)(struct _tree* self, struct _tree_node* root);
 
     bool (*min)(struct _tree* self, void** obj);
     bool (*max)(struct _tree* self, void** obj);

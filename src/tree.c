@@ -1502,7 +1502,7 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
     return node;
 }
 
-uint32_t tree_height(struct _tree* self, struct _tree_node* root)
+int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
     if(root == NULL)
@@ -1544,7 +1544,11 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     
     tree_set_balance(self, root);
     int balance = root->balance;
-    if(balance > 1)
+    if(balance == 0)
+    {
+        // no need to rebalance
+    }
+    else if(balance > 1)
     {
         if(root->right->balance > 0)
         {
@@ -1806,34 +1810,14 @@ bool tree_avl_delete(struct _tree* self, void* obj)
 
     if(node->left != NULL && node->right != NULL)
     {
+        // have two child
         tree_avl_delete_double_child(self, node);
     }
     else
-    // else if(node->left != NULL || node->right != NULL)
     {
+        // have singule child or no child
         tree_avl_delete_single_child(self, node);
     }
-    // else
-    // {
-    //     if(node->parent == NULL)
-    //     {
-    //         self->_root = NULL;
-    //     }
-    //     else
-    //     {
-    //         if(node->parent->left == node)
-    //         {
-    //             node->parent->left = NULL;
-    //         }
-    //         else if(node->parent->right == node)
-    //         {
-    //             node->parent->right = NULL;
-    //         }
-
-    //         self->rebalance(self, node->parent);
-    //     }
-    //     tree_node_free(node);
-    // }
 
     self->_size--;
     return true;

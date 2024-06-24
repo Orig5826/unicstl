@@ -344,12 +344,12 @@ void test_tree_num(void)
     for (i = 0; i < len; i++)
     {
         temp = data[i];
-        tree->delete(tree, &temp);
 
         printf("delete = ");
         tree->print_obj(&temp);
-
         printf("size = %2d\n", tree->size(tree));
+
+        tree->delete(tree, &temp);
 
         printf("----- breadth -----\n");
         tree->breadth(tree, tree->_root);
