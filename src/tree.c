@@ -1703,7 +1703,26 @@ bool tree_avl_insert(struct _tree* self, void* obj)
             tree_node_free(node);
             return false;
         }
+
+        // printf("--------------------\n");
+        // printf("insert     : \n");
+        // self->print_obj(node->obj);
+        // printf("\n");
+
+        // printf("all data   : \n");
+        // self->preorder(self, self->_root);
+        // printf("\n");
+
         self->rebalance(self, root);
+
+        // printf("parent_path: \n");
+        // struct _tree_node * tmp = node;
+        // do
+        // {
+        //     self->print_obj(tmp->obj);
+        //     tmp = tmp->parent;
+        // }while(tmp != NULL);
+        // printf("\n");
     }
     self->_size++;
     return true;
