@@ -249,6 +249,6 @@ void test_rbtree_num(void)
 
 void test_tree(void)
 {
-    test_avltree_num();
-    // test_rbtree_num();
+    // test_avltree_num();
+    test_rbtree_num();
 }

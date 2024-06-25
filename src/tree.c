@@ -1124,6 +1124,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
                 }
                 grandfather->color = RBT_RED;
                 tree_turn_right(self, grandfather);
+                break;
             }
         }
         else
@@ -1149,6 +1150,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
                 }
                 grandfather->color = RBT_RED;
                 tree_turn_left(self, grandfather);
+                break;
             }
         }
     }
