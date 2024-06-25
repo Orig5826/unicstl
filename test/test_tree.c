@@ -306,6 +306,16 @@ void test_tree_num(void)
         printf("\n");
     }
 
+    printf("----- max -----\n");
+    tree->max(tree, &temp);
+    tree->print_obj(&temp);
+    printf("\n");
+
+    printf("----- min -----\n");
+    tree->min(tree, &temp);
+    tree->print_obj(&temp);
+    printf("\n");
+
     printf("----- tree -----\n");
     tree->clear(tree);
     if(tree->empty(tree))

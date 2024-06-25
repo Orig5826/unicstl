@@ -13,6 +13,8 @@
         "stdio.h": "c",
         "tree.h": "c",
         "deque.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "limits": "c",
+        "*.tcc": "c"
     }
 }
