@@ -993,13 +993,53 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->min = tree_min;
 
     self->_root = NULL;
+    return true;
+}
 
+rbt_color tree_color(struct _tree_node* node)
+{
+    assert(node != NULL);
+    return node->color;
+}
+
+bool tree_set_color(struct _tree_node* node, rbt_color color)
+{
+    assert(node != NULL);
+    node->color = color;
     return true;
 }
 
 bool tree_rb_init(struct _tree *self, uint32_t obj_size)
 {
+    assert(self != NULL);
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    // self->_capacity = 64;
+    // self->_ratio = 2;
 
+    self->_right_priority = false;
+
+    self->insert = tree_avl_insert;
+    self->delete = tree_avl_delete;
+    self->clear = tree_clear;
+    self->empty = tree_empty;
+    self->size = tree_size;
+    self->destory = tree_destory;
+    self->preorder = tree_avl_preorder;
+    self->inorder = tree_avl_inorder;
+    self->postorder = tree_avl_postorder;
+    self->breadth = tree_avl_breadth;
+    self->order = tree_order;
+    self->find = tree_avl_find;
+    self->height = tree_height;
+    self->rebalance = tree_avl_rebalance;
+    self->find_max = tree_find_max;
+    self->find_min = tree_find_min;
+    self->max = tree_max;
+    self->min = tree_min;
+
+    self->_root = NULL;
+    return true;
 }
 
 tree_t tree_new(void)

@@ -13,6 +13,11 @@
 
 #include "common.h"
 
+typedef enum {
+    RED = 0x01,
+    BLACK = 0x02,
+}rbt_color;
+
 struct _tree_node
 {
     void *obj;
