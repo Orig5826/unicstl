@@ -1521,14 +1521,50 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
 
 int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
         return 0;
     }
-    uint32_t left_height = tree_height(self, root->left);
-    uint32_t right_height = tree_height(self, root->right);
+    int32_t left_height = tree_height(self, root->left);
+    int32_t right_height = tree_height(self, root->right);
     return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
+#else
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return 0;
+    }
+    struct _tree_node *node = root;
+    int32_t left_height = 0, right_height = 0;
+    int32_t left_height_max = 0, right_height_max = 0;
+
+    stack_t stack = stack_new();
+    stack_init(stack, sizeof(struct _tree_node*));
+    stack->push(stack, &root);
+    while(!stack->empty(stack))
+    {
+        stack->pop(stack, &node);
+        left_height = stack->size(stack);
+        if(left_height > left_height_max)
+        {
+            left_height_max = left_height;
+        }
+        
+        if(node->right != NULL)
+        {
+            stack->push(stack, &node->right);
+        }
+        if(node->left != NULL)
+        {
+            stack->push(stack, &node->left);
+        }
+    }
+    stack_free(stack);
+
+    return left_height_max > right_height_max ? left_height_max : right_height_max;
+#endif
 }
 
 /**
@@ -2069,7 +2105,7 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
 
     if(!self->_right_priority)
     {
-        while(node != NULL || !stack->empty(stack))
+        while(!stack->empty(stack) || node != NULL)
         {
             while(node != NULL)
             {
@@ -2077,12 +2113,20 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
                 node = node->left;
             }
 
-            do
+            // do
+            // {
+            //     stack->pop(stack, &node);
+            //     self->print_obj(node->obj);
+            // }while(node->right == NULL && !stack->empty(stack));
+            // node = node->right;
+
+            // optimize code
+            if(!stack->empty(stack))
             {
                 stack->pop(stack, &node);
                 self->print_obj(node->obj);
-            }while(node->right == NULL && !stack->empty(stack));
-            node = node->right;
+                node = node->right;
+            }
         }
     }
     else
@@ -2095,12 +2139,20 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
                 node = node->right;
             }
 
-            do
+            // do
+            // {
+            //     stack->pop(stack, &node);
+            //     self->print_obj(node->obj);
+            // }while(node->left == NULL && !stack->empty(stack));
+            // node = node->left;
+
+             // optimize code
+            if(!stack->empty(stack))
             {
                 stack->pop(stack, &node);
                 self->print_obj(node->obj);
-            }while(node->left == NULL && !stack->empty(stack));
-            node = node->left;
+                node = node->left;
+            }
         }
     }
     stack_free(stack);
