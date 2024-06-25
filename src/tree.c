@@ -1521,7 +1521,7 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
 
 int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
-#if 1
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
@@ -1536,34 +1536,40 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
     {
         return 0;
     }
-    struct _tree_node *node = root;
-    int32_t left_height = 0, right_height = 0;
-    int32_t left_height_max = 0, right_height_max = 0;
+    int32_t height = 0;
+    int32_t count_cur_level = 0;
+    int32_t count_next_level = 0;
 
-    stack_t stack = stack_new();
-    stack_init(stack, sizeof(struct _tree_node*));
-    stack->push(stack, &root);
-    while(!stack->empty(stack))
+    struct _tree_node* node = root;
+    queue_t queue = queue_new();
+    queue_init(queue, sizeof(struct _tree_node*));
+
+    queue->push(queue, &node);
+    while(!queue->empty(queue))
     {
-        stack->pop(stack, &node);
-        left_height = stack->size(stack);
-        if(left_height > left_height_max)
-        {
-            left_height_max = left_height;
-        }
-        
-        if(node->right != NULL)
-        {
-            stack->push(stack, &node->right);
-        }
+        queue->pop(queue, &node);
         if(node->left != NULL)
         {
-            stack->push(stack, &node->left);
+            queue->push(queue, &node->left);
+        }
+        if(node->right != NULL)
+        {
+            queue->push(queue, &node->right);
+        }
+
+        if(count_cur_level == count_next_level)
+        {
+            count_next_level = queue->size(queue);
+            height++;
+            count_cur_level = 1;
+        }
+        else
+        {
+            count_cur_level++;
         }
     }
-    stack_free(stack);
-
-    return left_height_max > right_height_max ? left_height_max : right_height_max;
+    queue_free(queue);
+    return height;
 #endif
 }
 
@@ -2142,6 +2148,7 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
             {
                 stack->pop(stack, &node);
                 self->print_obj(node->obj);
+
                 node = node->left;
             }
         }
