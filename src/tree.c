@@ -200,14 +200,15 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
  */
 static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
-        return true;
+        return false;
     }
     if(root->left == NULL && root->right == NULL)
     {
-        return true;
+        return false;
     }
 
     // self->print_obj(root->obj);
@@ -245,6 +246,56 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         self->_root = root;
     }
     return true;
+#else
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return false;
+    }
+    if(root->left == NULL && root->right == NULL)
+    {
+        return false;
+    }
+    int balance = 0;
+    
+    do
+    {
+        tree_set_balance(self, root);
+        balance = root->balance;
+        if(balance == 2)
+        {
+            if(root->right->balance >= 0)
+            {
+                root = tree_turn_left(self, root);
+            }
+            else
+            {
+                root = tree_trun_right_then_left(self, root);
+            }
+        }
+        else if(balance == -2)
+        {
+            if(root->left->balance <= 0)
+            {
+                root = tree_turn_right(self, root);
+            }
+            else
+            {
+                root = tree_trun_left_then_right(self, root);
+            }
+        }
+
+        // if node become the new root
+        if(root->parent == NULL)
+        {
+            break;
+        }
+        root = root->parent;
+    }while(root != NULL);
+    
+    self->_root = root;
+    return true;
+#endif
 }
 
 static struct _tree_node * tree_node_new(struct _tree* self, void* obj)
@@ -993,6 +1044,7 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->min = tree_min;
 
     self->_root = NULL;
+
     return true;
 }
 

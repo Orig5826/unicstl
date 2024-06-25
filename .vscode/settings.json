@@ -15,6 +15,7 @@
         "deque.h": "c",
         "config.h": "c",
         "limits": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "cstdlib": "c"
     }
 }
