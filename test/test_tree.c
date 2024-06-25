@@ -219,7 +219,7 @@ void test_rbtree_num(void)
     tree->breadth(tree, tree->_root);
     printf("\n");
 
-#if 0
+#if 1
     printf("----- left priority -----\n");
     tree->order(tree, false);
     printf("----- preorder -----\n");

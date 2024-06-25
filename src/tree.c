@@ -1168,6 +1168,182 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
     return true;
 }
 
+bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
+{
+    assert(self != NULL);
+    struct _tree_node* father = NULL;
+    struct _tree_node* brother = NULL;
+    struct _tree_node* tmp = NULL;
+    if(node == NULL)
+    {
+        return false;
+    }
+
+    // the color of node is black
+    while(node->parent != NULL && node->color == RBT_BLACK)
+    {
+        father = node->parent;
+        if(father->left == node)
+        {
+            brother = father->right;
+            if(brother->color == RBT_RED)
+            {
+                brother->color = RBT_BLACK;
+                father->color = RBT_RED;
+                tmp = tree_turn_left(self, father);
+            }
+            else if(brother->right != NULL && brother->right->color == RBT_RED)
+            {
+                brother->color = father->color;
+                father->color = RBT_BLACK;
+                brother->right->color = RBT_BLACK;
+                node = tree_turn_left(self, father);
+                break;
+            }
+            else if(brother->left != NULL && brother->left->color == RBT_RED)
+            {
+                brother->color = RBT_RED;
+                brother->left->color = RBT_BLACK;
+                tmp = tree_turn_right(self, brother);
+            }
+            else
+            {
+                if(father->color = RBT_BLACK)
+                {
+                    brother->color = RBT_RED;
+                    node = father;
+                }
+                else
+                {
+                    brother->color = RBT_RED;
+                    father->color = RBT_BLACK;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            brother = father->left;
+            if(brother != NULL && brother->color == RBT_RED)
+            {
+                brother->color = RBT_BLACK;
+                father->color = RBT_RED;
+                tmp = tree_turn_right(self, father);
+            }
+            else if(brother->left != NULL && brother->left->color == RBT_RED)
+            {
+                brother->color = father->color;
+                father->color = RBT_BLACK;
+                brother->left->color = RBT_BLACK;
+                node = tree_turn_right(self, father);
+                break;
+            }
+            else if(brother->right != NULL && brother->right->color == RBT_RED)
+            {
+                brother->color = RBT_RED;
+                brother->right->color = RBT_BLACK;
+                tmp = tree_turn_left(self, brother);
+            }
+            else
+            {
+                if(father->color = RBT_BLACK)
+                {
+                    brother->color = RBT_RED;
+                    node = father;
+                }
+                else
+                {
+                    brother->color = RBT_RED;
+                    father->color = RBT_BLACK;
+                    break;
+                }
+            }
+        }
+
+        if(tmp != NULL && tmp->parent == NULL)
+        {
+            self->_root = node;
+            break;
+        }
+    }
+    
+    if(node->parent == NULL)
+    {
+        self->_root = node;
+    }
+    self->_root->color = RBT_BLACK;
+    return true;
+}
+
+bool tree_rb_delete(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    assert(obj != NULL);
+    assert(self->compare != NULL);
+
+    if(self->empty(self))
+    {
+        return false;
+    }
+
+    struct _tree_node* node = self->find(self, obj);
+    if(node == NULL)
+    {
+        return false;
+    }
+
+    struct _tree_node* tmp = NULL;
+    if(node->left == NULL && node->right == NULL)
+    {
+        tmp = node;
+    }
+    else if(node->left != NULL && node->right == NULL)
+    {
+        tmp = node->left;
+        memmove(node->obj,tmp->obj, self->_obj_size);
+    }
+    else if(node->left == NULL && node->right != NULL)
+    {
+        tmp = node->right;
+        memmove(node->obj,tmp->obj, self->_obj_size);
+    }
+    else
+    {
+        tmp = self->find_min(self, node->right);
+        memmove(node->obj, tmp->obj, self->_obj_size);
+        if(tmp->right != NULL)
+        {
+            memmove(tmp->obj, tmp->right->obj, self->_obj_size);
+            tmp = tmp->right;
+        }
+    }
+
+    if(tmp->color == RBT_BLACK)
+    {
+        tree_rb_delete_fix(self, tmp);
+    }
+
+    if(tmp->parent != NULL)
+    {
+        if(tmp->parent->left == tmp)
+        {
+            tmp->parent->left = NULL;
+        }
+        else
+        {
+            tmp->parent->right = NULL;
+        }
+    }
+    else
+    {
+        self->_root = NULL;
+    }
+
+    tree_node_free(tmp);
+    self->_size--;
+    return true;
+}
+
 bool tree_rb_init(struct _tree *self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -1179,7 +1355,7 @@ bool tree_rb_init(struct _tree *self, uint32_t obj_size)
     self->_right_priority = false;
 
     self->insert = tree_avl_insert;
-    self->delete = tree_avl_delete;
+    self->delete = tree_rb_delete;
     self->clear = tree_clear;
     self->empty = tree_empty;
     self->size = tree_size;
@@ -1214,3 +1390,4 @@ void tree_free(tree_t tree)
         free(tree);
     }
 }
+          
