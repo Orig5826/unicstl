@@ -305,6 +305,20 @@ void test_tree_num(void)
         tree->preorder(tree, tree->_root);
         printf("\n");
     }
+
+    printf("----- tree -----\n");
+    tree->clear(tree);
+    if(tree->empty(tree))
+    {
+        printf("----- empty -----\n");
+    }
+    printf("----- insert -----\n");
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        tree->insert(tree, &temp);
+    }
+
     printf("----- preorder -----\n");
     tree->preorder(tree, tree->_root);
     printf("\n");

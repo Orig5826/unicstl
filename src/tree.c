@@ -1763,25 +1763,7 @@ bool tree_avl_insert(struct _tree* self, void* obj)
             return false;
         }
 
-        // printf("--------------------\n");
-        // printf("insert     : \n");
-        // self->print_obj(node->obj);
-        // printf("\n");
-
-        // printf("all data   : \n");
-        // self->preorder(self, self->_root);
-        // printf("\n");
-
         self->rebalance(self, root);
-
-        // printf("parent_path: \n");
-        // struct _tree_node * tmp = node;
-        // do
-        // {
-        //     self->print_obj(tmp->obj);
-        //     tmp = tmp->parent;
-        // }while(tmp != NULL);
-        // printf("\n");
     }
     self->_size++;
     return true;
@@ -1798,17 +1780,11 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
         {
             node->left->parent = node->parent;      // step1 : NULL for root
             self->_root = node->left;               // step2
-
-            // options
-            // node->left = NULL;
         }
         else if(node->right != NULL)
         {
             node->right->parent = node->parent;     // step1 : NULL for root
             self->_root = node->right;              // step2
-
-            // options
-            // node->right = NULL;
         }
         else
         {
@@ -1823,28 +1799,15 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->left = node->left;        // step2
-
-                // node->left->right = node->right;        // step3 : NULL for singly child
-                // // options
-                // node->left = NULL;
-                // node->parent = NULL;
             }
             else if(node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->left = node->right;       // step2
-
-                // node->right->left = node->left;         // step3 : NULL for singly child
-                // // options
-                // node->right = NULL;
-                // node->parent = NULL;
             }
             else
             {
                 node->parent->left = NULL;
-
-                // options
-                // node->parent = NULL;
             }
         }
         else if(node->parent->right == node)
@@ -1853,28 +1816,15 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->right = node->left;       // step2
-
-                // node->left->right = node->right;        // step3 : NULL for singly child
-                // // options
-                // node->left = NULL;
-                // node->parent = NULL;
             }
             else if(node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->right = node->right;      // step2
-
-                // node->right->left = node->left;         // step3 : NULL for singly child
-                // // options
-                // node->right = NULL;
-                // node->parent = NULL;
             }
             else
             {
                 node->parent->right = NULL;
-
-                // options
-                // node->parent = NULL;
             }
         }
 
@@ -1892,11 +1842,6 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
     if(tmp != NULL)
     {
         memmove(node->obj, tmp->obj, self->_obj_size);
-        // if(tmp->right != NULL)
-        // {
-        //     node->right = tmp->right;
-        //     tmp->right->parent = node;
-        // }
         tree_avl_delete_single_child(self, tmp);
     }
     return true;
@@ -1959,6 +1904,32 @@ struct _tree_node * tree_avl_find(struct _tree* self, void* obj)
 bool tree_clear(struct _tree* self)
 {
     assert(self != NULL);
+    if(self->_root == NULL)
+    {
+        return false;
+    }
+
+    struct _tree_node* node = self->_root;
+    queue_t queue = queue_new();
+    queue_init(queue, sizeof(struct _tree_node*));
+
+    queue->push(queue, &node);
+    while(!queue->empty(queue))
+    {
+        queue->pop(queue, &node);
+        if(node->left != NULL)
+        {
+            queue->push(queue, &node->left);
+        }
+        if(node->right != NULL)
+        {
+            queue->push(queue, &node->right);
+        }
+        tree_node_free(node);
+    }
+    queue_free(queue);
+    self->_root = NULL;
+    self->_size = 0;
     return true;
 }
 
@@ -2331,6 +2302,7 @@ static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* r
 
 static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
@@ -2341,6 +2313,20 @@ static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* r
         return root;
     }
     return tree_find_max(self, root->right);
+#else
+    while(root != NULL)
+    {
+        if(root->right != NULL)
+        {
+            root = root->right;
+        }
+        else
+        {
+            return root;
+        }
+    }
+    return root;
+#endif
 }
 
 bool tree_avl_init(struct _tree *self, uint32_t obj_size)
