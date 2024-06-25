@@ -102,7 +102,7 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
     return node;
 }
 
-static struct _tree_node* tree_trun_left_then_right(struct _tree* self, struct _tree_node* root)
+static struct _tree_node* tree_turn_left_then_right(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
     assert(root != NULL);
@@ -115,7 +115,7 @@ static struct _tree_node* tree_trun_left_then_right(struct _tree* self, struct _
     return node;
 }
 
-static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _tree_node* root)
+static struct _tree_node* tree_turn_right_then_left(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
     assert(root != NULL);
@@ -222,7 +222,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         }
         else
         {
-            root = tree_trun_right_then_left(self, root);
+            root = tree_turn_right_then_left(self, root);
         }
     }
     else if(balance == -2)
@@ -233,7 +233,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         }
         else
         {
-            root = tree_trun_left_then_right(self, root);
+            root = tree_turn_left_then_right(self, root);
         }
     }
     
@@ -257,7 +257,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         return false;
     }
     int balance = 0;
-    
+
     do
     {
         tree_set_balance(self, root);
@@ -270,7 +270,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
             }
             else
             {
-                root = tree_trun_right_then_left(self, root);
+                root = tree_turn_right_then_left(self, root);
             }
         }
         else if(balance == -2)
@@ -281,7 +281,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
             }
             else
             {
-                root = tree_trun_left_then_right(self, root);
+                root = tree_turn_left_then_right(self, root);
             }
         }
 
@@ -1061,6 +1061,106 @@ bool tree_set_color(struct _tree_node* node, rbt_color color)
     return true;
 }
 
+/**
+ * @brief 
+ * 
+ * 以 balance = rigth - left 为标准，调整平衡因子
+ * 
+ * | 情况 | root->balance | node->balance | 调整方式 |
+ * | ---- | ------------ | -------------- | -------- |
+ * | 1    |  2           | >= 0           | 左旋
+ * | 2    |  2           | < 0            | 先右旋后左旋
+ * | 3    | -2           | <= 0           | 右旋
+ * | 4    | -2           | > 0            | 先左旋后右旋
+ * 
+ * @param self 
+ * @return true 
+ * @return false 
+ */
+static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
+{
+    assert(self != NULL);
+    if(node == NULL)
+    {
+        return false;
+    }
+    struct _tree_node* father = NULL;
+    struct _tree_node* grandfather = NULL;
+    struct _tree_node* uncle = NULL;
+
+    /**
+     * @brief 考虑三种情况，其余三种对称即可
+     * 
+     * 新插入节点为红色，若父节点为黑色，则不用处理
+     * 
+     * | 情况 | 说明 | 调整方式 |
+     * | ---- | --- | -------- |
+     * | 1 | 
+     */
+    while(node->parent != NULL && node->parent->color == RBT_RED)
+    {
+        father = node->parent;
+        grandfather = father->parent;
+        if(father == grandfather->left)
+        {
+            uncle = grandfather->right;
+            if(uncle != NULL && uncle->color == RBT_RED)        // uncle is red
+            {
+                father->color = RBT_BLACK;
+                uncle->color = RBT_BLACK;
+                grandfather->color = RBT_RED;
+                node = grandfather;
+            }
+            else                                                // uncle is black
+            {
+                if(node == father->right)
+                {
+                    node = tree_turn_left(self, father);
+                    node->color = RBT_BLACK;
+                }
+                else
+                {
+                    father->color = RBT_BLACK;
+                }
+                grandfather->color = RBT_RED;
+                tree_turn_right(self, grandfather);
+            }
+        }
+        else
+        {
+            uncle = grandfather->left;
+            if(uncle != NULL && uncle->color == RBT_RED)        // uncle is red
+            {
+                father->color = RBT_BLACK;
+                uncle->color = RBT_BLACK;
+                grandfather->color = RBT_RED;
+                node = grandfather;
+            }
+            else                                                // uncle is black
+            {
+                if(node == father->left)
+                {
+                    node = tree_turn_right(self, father);
+                    node->color = RBT_BLACK;
+                }
+                else
+                {
+                    father->color = RBT_BLACK;
+                }
+                grandfather->color = RBT_RED;
+                tree_turn_left(self, grandfather);
+            }
+        }
+    }
+
+    if(node->parent == NULL)
+    {
+        self->_root = node;
+        node->color = RBT_BLACK;
+    }
+    return true;
+}
+
 bool tree_rb_init(struct _tree *self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -1084,7 +1184,7 @@ bool tree_rb_init(struct _tree *self, uint32_t obj_size)
     self->order = tree_order;
     self->find = tree_avl_find;
     self->height = tree_height;
-    self->rebalance = tree_avl_rebalance;
+    self->rebalance = tree_rb_rebalance;
     self->find_max = tree_find_max;
     self->find_min = tree_find_min;
     self->max = tree_max;

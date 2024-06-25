@@ -14,8 +14,8 @@
 #include "common.h"
 
 typedef enum {
-    RED = 0x01,
-    BLACK = 0x02,
+    RBT_RED = 0x00,
+    RBT_BLACK = 0x01,
 }rbt_color;
 
 struct _tree_node
