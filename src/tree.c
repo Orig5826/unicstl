@@ -1521,7 +1521,7 @@ static struct _tree_node* tree_trun_right_then_left(struct _tree* self, struct _
 
 int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
-#if 0
+#if 1
     assert(self != NULL);
     if(root == NULL)
     {
@@ -2029,9 +2029,10 @@ void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
     while(!stack->empty(stack))
     {
         stack->pop(stack, &node);
+        self->print_obj(node->obj);
+
         if(!self->_right_priority)          // left priority
         {
-            self->print_obj(node->obj);
             if(node->right != NULL)
             {
                 stack->push(stack, &node->right);
@@ -2043,7 +2044,6 @@ void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
         }
         else
         {
-            self->print_obj(node->obj);
             if(node->left != NULL)
             {
                 stack->push(stack, &node->left);
@@ -2161,6 +2161,7 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
 
 void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
 {
+#if 0
     assert(self != NULL);
     if(root == NULL)
     {
@@ -2191,6 +2192,61 @@ void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
         }
         self->print_obj(root->obj);
     }
+#else
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return;
+    }
+    struct _tree_node* node = NULL;
+
+    stack_t stack2 = stack_new();
+    stack_init(stack2, sizeof(struct _tree_node*));
+
+    // left: postorder == right: the reverse of preorder 
+    // so we use stack2 to store the right node
+    stack_t stack = stack_new();
+    stack_init(stack, sizeof(struct _tree_node*));
+    stack->push(stack, &root);
+    while(!stack->empty(stack))
+    {
+        stack->pop(stack, &node);
+        // self->print_obj(node->obj);
+        stack2->push(stack2, &node);
+
+        if(!self->_right_priority)          // left priority
+        {
+            if(node->left != NULL)
+            {
+                stack->push(stack, &node->left);
+            }
+            if(node->right != NULL)
+            {
+                stack->push(stack, &node->right);
+            }
+        }
+        else
+        {
+            if(node->right != NULL)
+            {
+                stack->push(stack, &node->right);
+            }
+            if(node->left != NULL)
+            {
+                stack->push(stack, &node->left);
+            }
+        }
+    }
+
+    while(!stack2->empty(stack2))
+    {
+        stack2->pop(stack2, &node);
+        self->print_obj(node->obj);
+    }
+
+    stack_free(stack);
+    stack_free(stack2);
+#endif
 }
 
 // traversal breadth
