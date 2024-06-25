@@ -2021,36 +2021,44 @@ void tree_avl_preorder(struct _tree* self, struct _tree_node* root)
     {
         return;
     }
-    struct _tree_node* node = NULL;
+    struct _tree_node* node = root;
 
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
-    stack->push(stack, &root);
-    while(!stack->empty(stack))
-    {
-        stack->pop(stack, &node);
-        self->print_obj(node->obj);
 
-        if(!self->_right_priority)          // left priority
+    if(!self->_right_priority)          // left priority
+    {
+        while(!stack->empty(stack) || node != NULL)
         {
-            if(node->right != NULL)
+            if(node != NULL)
             {
-                stack->push(stack, &node->right);
+                self->print_obj(node->obj);
+
+                stack->push(stack, &node);
+                node = node->left;
             }
-            if(node->left != NULL)
+            else
             {
-                stack->push(stack, &node->left);
+                stack->pop(stack, &node);
+                node = node->right;
             }
         }
-        else
+    }
+    else
+    {
+        while(!stack->empty(stack) || node != NULL)
         {
-            if(node->left != NULL)
+            if(node != NULL)
             {
-                stack->push(stack, &node->left);
+                self->print_obj(node->obj);
+
+                stack->push(stack, &node);
+                node = node->right;
             }
-            if(node->right != NULL)
+            else
             {
-                stack->push(stack, &node->right);
+                stack->pop(stack, &node);
+                node = node->left;
             }
         }
     }
@@ -2103,28 +2111,20 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
 
-    if(!self->_right_priority)
+    if(!self->_right_priority)         // left priority
     {
         while(!stack->empty(stack) || node != NULL)
         {
-            while(node != NULL)
+            if(node != NULL)
             {
                 stack->push(stack, &node);
                 node = node->left;
             }
-
-            // do
-            // {
-            //     stack->pop(stack, &node);
-            //     self->print_obj(node->obj);
-            // }while(node->right == NULL && !stack->empty(stack));
-            // node = node->right;
-
-            // optimize code
-            if(!stack->empty(stack))
+            else
             {
                 stack->pop(stack, &node);
                 self->print_obj(node->obj);
+
                 node = node->right;
             }
         }
@@ -2133,21 +2133,12 @@ void tree_avl_inorder(struct _tree* self, struct _tree_node* root)
     {
         while(node != NULL || !stack->empty(stack))
         {
-            while(node != NULL)
+            if(node != NULL)
             {
                 stack->push(stack, &node);
                 node = node->right;
             }
-
-            // do
-            // {
-            //     stack->pop(stack, &node);
-            //     self->print_obj(node->obj);
-            // }while(node->left == NULL && !stack->empty(stack));
-            // node = node->left;
-
-             // optimize code
-            if(!stack->empty(stack))
+            else
             {
                 stack->pop(stack, &node);
                 self->print_obj(node->obj);
@@ -2198,42 +2189,48 @@ void tree_avl_postorder(struct _tree* self, struct _tree_node* root)
     {
         return;
     }
-    struct _tree_node* node = NULL;
+    struct _tree_node* node = root;
 
     stack_t stack2 = stack_new();
     stack_init(stack2, sizeof(struct _tree_node*));
 
-    // left: postorder == right: the reverse of preorder 
-    // so we use stack2 to store the right node
+    // because: left:postorder == right:the reverse of preorder 
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
-    stack->push(stack, &root);
-    while(!stack->empty(stack))
-    {
-        stack->pop(stack, &node);
-        // self->print_obj(node->obj);
-        stack2->push(stack2, &node);
 
-        if(!self->_right_priority)          // left priority
+    if(!self->_right_priority)          // left priority
+    {
+        while(!stack->empty(stack) || node != NULL)
         {
-            if(node->left != NULL)
+            if(node != NULL)
             {
-                stack->push(stack, &node->left);
+                stack2->push(stack2, &node);
+
+                stack->push(stack, &node);
+                node = node->right;
             }
-            if(node->right != NULL)
+            else
             {
-                stack->push(stack, &node->right);
+                stack->pop(stack, &node);
+                node = node->left;
             }
         }
-        else
+    }
+    else
+    {
+        while(!stack->empty(stack) || node != NULL)
         {
-            if(node->right != NULL)
+            if(node != NULL)
             {
-                stack->push(stack, &node->right);
+                stack2->push(stack2, &node);
+
+                stack->push(stack, &node);
+                node = node->left;
             }
-            if(node->left != NULL)
+            else
             {
-                stack->push(stack, &node->left);
+                stack->pop(stack, &node);
+                node = node->right;
             }
         }
     }
