@@ -1299,16 +1299,21 @@ bool tree_rb_delete(struct _tree* self, void* obj)
     }
     else if(node->left != NULL && node->right == NULL)
     {
+        // node->left must be red
         tmp = node->left;
         memmove(node->obj,tmp->obj, self->_obj_size);
     }
     else if(node->left == NULL && node->right != NULL)
     {
+        // node->right must be red
         tmp = node->right;
         memmove(node->obj,tmp->obj, self->_obj_size);
     }
     else
     {
+        // 1. find the min node in right subtree
+        // 2. replace the node with min node
+        // 3. delete the min node
         tmp = self->find_min(self, node->right);
         memmove(node->obj, tmp->obj, self->_obj_size);
         if(tmp->right != NULL)
