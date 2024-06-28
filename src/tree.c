@@ -1218,12 +1218,13 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else
             {
-                // father is black, after delete node, total of black is -1
                 if(father->color = RBT_BLACK)
                 {
                     // case 4
+                    // father is black, brother has no children
                     brother->color = RBT_RED;
                     node = father;
+                    // After deleting the node, it became unbalanced
                 }
                 else
                 {
@@ -1236,15 +1237,18 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
         }
         else
         {
+            // symmetric
             brother = father->left;
-            if(brother != NULL && brother->color == RBT_RED)
+            if(brother->color == RBT_RED)
             {
+                // case1
                 brother->color = RBT_BLACK;
                 father->color = RBT_RED;
                 tmp = tree_turn_right(self, father);
             }
             else if(brother->left != NULL && brother->left->color == RBT_RED)
             {
+                // case2
                 brother->color = father->color;
                 father->color = RBT_BLACK;
                 brother->left->color = RBT_BLACK;
@@ -1253,19 +1257,23 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else if(brother->right != NULL && brother->right->color == RBT_RED)
             {
+                // case3
                 brother->color = RBT_RED;
                 brother->right->color = RBT_BLACK;
                 tmp = tree_turn_left(self, brother);
+                // convert to case2
             }
             else
             {
                 if(father->color = RBT_BLACK)
                 {
+                    // case4
                     brother->color = RBT_RED;
                     node = father;
                 }
                 else
                 {
+                    // case5
                     brother->color = RBT_RED;
                     father->color = RBT_BLACK;
                     break;
