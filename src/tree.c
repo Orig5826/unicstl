@@ -1188,33 +1188,46 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             brother = father->right;
             if(brother->color == RBT_RED)
             {
+                // case 1
+                // father is black, brother is red
+                // brother has two black children
+                // so ...
                 brother->color = RBT_BLACK;
                 father->color = RBT_RED;
                 tmp = tree_turn_left(self, father);
+                // After deleting the node, it became unbalanced
+                // so convert to case5
             }
             else if(brother->right != NULL && brother->right->color == RBT_RED)
             {
+                // case 2
                 brother->color = father->color;
                 father->color = RBT_BLACK;
                 brother->right->color = RBT_BLACK;
                 node = tree_turn_left(self, father);
+                // After deleting the node, it remains balanced
                 break;
             }
             else if(brother->left != NULL && brother->left->color == RBT_RED)
             {
+                // case 3
                 brother->color = RBT_RED;
                 brother->left->color = RBT_BLACK;
                 tmp = tree_turn_right(self, brother);
+                // Convert to case2
             }
             else
             {
+                // father is black, after delete node, total of black is -1
                 if(father->color = RBT_BLACK)
                 {
+                    // case 4
                     brother->color = RBT_RED;
                     node = father;
                 }
                 else
                 {
+                    // case 5
                     brother->color = RBT_RED;
                     father->color = RBT_BLACK;
                     break;
@@ -1263,7 +1276,6 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
         if(tmp != NULL && tmp->parent == NULL)
         {
             self->_root = node;
-            break;
         }
     }
     
