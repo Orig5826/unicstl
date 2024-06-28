@@ -1338,6 +1338,7 @@ bool tree_rb_delete(struct _tree* self, void* obj)
         memmove(node->obj, tmp->obj, self->_obj_size);
         if(tmp->right != NULL)
         {
+            // tmp->right must be red
             memmove(tmp->obj, tmp->right->obj, self->_obj_size);
             tmp = tmp->right;
         }
