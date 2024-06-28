@@ -1061,6 +1061,53 @@ bool tree_set_color(struct _tree_node* node, rbt_color color)
     return true;
 }
 
+
+bool tree_rb_insert(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    assert(obj != NULL);
+    assert(self->compare != NULL);
+
+    struct _tree_node* node = tree_node_new(self, obj);
+    if(node == NULL)
+    {
+        return false;
+    }
+
+    // if no root
+    if(self->_root == NULL)
+    {
+        self->_root = node;
+    }
+    else
+    {
+        // insert the node
+        struct _tree_node* root = tree_find_pos(self, obj);
+        if(self->compare(obj, root->obj) < 0)
+        {
+            root->left = node;
+            node->parent = root;
+        }
+        else if(self->compare(obj, root->obj) > 0)
+        {
+            root->right = node;
+            node->parent = root;
+        }
+        else
+        {
+            // if obj exist, just return false
+            tree_node_free(node);
+            return false;
+        }
+
+    }
+
+    self->rebalance(self, node);
+    
+    self->_size++;
+    return true;
+}
+
 /**
  * @brief 
  * 
@@ -1380,7 +1427,7 @@ bool tree_rb_init(struct _tree *self, uint32_t obj_size)
 
     self->_right_priority = false;
 
-    self->insert = tree_avl_insert;
+    self->insert = tree_rb_insert;
     self->delete = tree_rb_delete;
     self->clear = tree_clear;
     self->empty = tree_empty;
