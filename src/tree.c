@@ -1242,8 +1242,12 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
                 if(node == father->right)
                 {
                     node = tree_rb_turn_left(self, father);
+                    node->color = RBT_BLACK;
                 }
-                father->color = RBT_BLACK;
+                else
+                {
+                    father->color = RBT_BLACK;
+                }
                 grandfather->color = RBT_RED;
                 node = tree_rb_turn_right(self, grandfather);
                 break;
@@ -1264,8 +1268,12 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
                 if(node == father->left)
                 {
                     node = tree_rb_turn_right(self, father);
+                    node->color = RBT_BLACK;
                 }
-                father->color = RBT_BLACK;
+                else
+                {
+                    father->color = RBT_BLACK;
+                }
                 grandfather->color = RBT_RED;
                 node = tree_rb_turn_left(self, grandfather);
                 break;
