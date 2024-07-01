@@ -126,7 +126,86 @@ void test_avltree_num(void)
     tree_free(tree);
 }
 
+bool tree_rb_check(struct _tree* self, struct _tree_node* root)
+{
+    assert(self != NULL);
+    if(root == NULL)
+    {
+        return false;
+    }
 
+    struct _tree_node* node = root;
+    queue_t queue = queue_new();
+    queue_init(queue, sizeof(struct _tree_node*));
+
+    if(node != NULL)
+    {
+        queue->push(queue, &node);
+        while(!queue->empty(queue))
+        {
+            queue->pop(queue, &node);
+            if(!self->_right_priority)
+            {
+                if(node->left != NULL)
+                {
+                    queue->push(queue, &node->left);
+                }
+                if(node->right != NULL)
+                {
+                    queue->push(queue, &node->right);
+                }
+            }
+            else
+            {
+                if(node->right != NULL)
+                {
+                    queue->push(queue, &node->right);
+                }
+                if(node->left != NULL)
+                {
+                    queue->push(queue, &node->left);
+                }
+            }
+            
+            if(node->color == RBT_RED)
+            {
+                if(node->parent != NULL)
+                {
+                    if(node->parent->color == RBT_RED)
+                    {
+                        return false;
+                    }
+                }
+
+                if(node->left != NULL)
+                {
+                    if(node->left->color == RBT_RED)
+                    {
+                        return false;
+                    }
+                }
+
+                if(node->right != NULL)
+                {
+                    if(node->right->color == RBT_RED)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if(node->parent == NULL)
+            {
+                if(self->_root != node || node->color != RBT_BLACK)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    queue_free(queue);
+    return true;
+}
 
 /**
  * @brief 
@@ -159,6 +238,14 @@ void test_rbtree_num(void)
         printf("size = %2d : ", tree->size(tree));
         tree->preorder(tree, tree->_root);
         printf("\n");
+    }
+
+    printf("----- rb_check -----\n");
+    bool ret = tree_rb_check(tree, tree->_root);
+    if(ret != true)
+    {
+        printf("----- rb_check_error -----\n");
+        return;
     }
 
     printf("----- max -----\n");
