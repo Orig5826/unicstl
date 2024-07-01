@@ -1062,6 +1062,80 @@ bool tree_set_color(struct _tree_node* node, rbt_color color)
 }
 
 
+static struct _tree_node* tree_rb_turn_left(struct _tree* self, struct _tree_node* root)
+{
+    assert(self != NULL);
+    assert(root != NULL);
+    struct _tree_node* node = root->right;
+    if(node == NULL)
+    {
+        return root;
+    }
+
+    if(root->parent == NULL)
+    {
+        self->_root = node;                     // step1
+    }
+    else
+    {
+        if(root->parent->left == root) 
+        {
+            root->parent->left = node;          // step1
+        }
+        else if(root->parent->right == root)
+        {
+            root->parent->right = node;         // setp1
+        }
+    }
+    node->parent = root->parent;        // step2
+    root->parent = node;                // step3
+
+    root->right = node->left;           // step4
+    if(node->left != NULL)
+    {
+        node->left->parent = root;      // step5
+    }
+    node->left = root;                  // step6
+    return node;
+}
+
+static struct _tree_node* tree_rb_turn_right(struct _tree* self, struct _tree_node* root)
+{
+    assert(self != NULL);
+    assert(root != NULL);
+    struct _tree_node* node = root->left;
+    if(node == NULL)
+    {
+        return root;
+    }
+
+    if(root->parent == NULL)
+    {
+        self->_root = node;                     // step1
+    }
+    else
+    {
+        if(root->parent->left == root)
+        {
+            root->parent->left = node;          // step1
+        }
+        else if(root->parent->right == root)
+        {
+            root->parent->right = node;         // setp1
+        }
+    }
+    node->parent = root->parent;        // step2
+    root->parent = node;                // step3
+
+    root->left = node->right;           // step4
+    if(node->right != NULL)
+    {
+        node->right->parent = root;     // step5
+    }
+    node->right = root;                 // step6
+    return node;
+}
+
 bool tree_rb_insert(struct _tree* self, void* obj)
 {
     assert(self != NULL);
@@ -1167,11 +1241,11 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
             {
                 if(node == father->right)
                 {
-                    node = tree_turn_left(self, father);
+                    node = tree_rb_turn_left(self, father);
                 }
                 father->color = RBT_BLACK;
                 grandfather->color = RBT_RED;
-                node = tree_turn_right(self, grandfather);
+                node = tree_rb_turn_right(self, grandfather);
                 break;
             }
         }
@@ -1189,11 +1263,11 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
             {
                 if(node == father->left)
                 {
-                    node = tree_turn_right(self, father);
+                    node = tree_rb_turn_right(self, father);
                 }
                 father->color = RBT_BLACK;
                 grandfather->color = RBT_RED;
-                node = tree_turn_left(self, grandfather);
+                node = tree_rb_turn_left(self, grandfather);
                 break;
             }
         }
@@ -1233,7 +1307,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // so ...
                 brother->color = RBT_BLACK;
                 father->color = RBT_RED;
-                tmp = tree_turn_left(self, father);
+                tmp = tree_rb_turn_left(self, father);
                 // After deleting the node, it became unbalanced
                 // so convert to case5
             }
@@ -1243,7 +1317,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 brother->color = father->color;
                 father->color = RBT_BLACK;
                 brother->right->color = RBT_BLACK;
-                node = tree_turn_left(self, father);
+                node = tree_rb_turn_left(self, father);
                 // After deleting the node, it remains balanced
                 break;
             }
@@ -1252,7 +1326,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // case 3
                 brother->color = RBT_RED;
                 brother->left->color = RBT_BLACK;
-                tmp = tree_turn_right(self, brother);
+                tmp = tree_rb_turn_right(self, brother);
                 // Convert to case2
             }
             else
@@ -1268,6 +1342,8 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 else
                 {
                     // case 5
+                    // father is red, brother has no children
+                    // if delete the node, it remains balanced
                     brother->color = RBT_RED;
                     father->color = RBT_BLACK;
                     break;
@@ -1283,7 +1359,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // case1
                 brother->color = RBT_BLACK;
                 father->color = RBT_RED;
-                tmp = tree_turn_right(self, father);
+                tmp = tree_rb_turn_right(self, father);
             }
             else if(brother->left != NULL && brother->left->color == RBT_RED)
             {
@@ -1291,7 +1367,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 brother->color = father->color;
                 father->color = RBT_BLACK;
                 brother->left->color = RBT_BLACK;
-                node = tree_turn_right(self, father);
+                node = tree_rb_turn_right(self, father);
                 break;
             }
             else if(brother->right != NULL && brother->right->color == RBT_RED)
@@ -1299,7 +1375,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // case3
                 brother->color = RBT_RED;
                 brother->right->color = RBT_BLACK;
-                tmp = tree_turn_left(self, brother);
+                tmp = tree_rb_turn_left(self, brother);
                 // convert to case2
             }
             else
@@ -1386,7 +1462,7 @@ bool tree_rb_delete(struct _tree* self, void* obj)
     if(tmp->color == RBT_BLACK)
     {
         tree_rb_delete_fix(self, tmp);
-    }
+    }         
 
     if(tmp->parent != NULL)
     {
