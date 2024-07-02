@@ -132,16 +132,20 @@ static bool tree_rb_check_color(struct _tree *self, struct _tree_node* root, int
     {
         if(black_num != black_num_expected)
         {
+            printf("black_num != black_num_expected\n");
             return false;
         }
         return true;
     }
+
     if(root->color == RBT_BLACK)
     {
         black_num++;
     }
+
     if(root->color == RBT_RED && root->parent && root->parent->color == RBT_RED)
     {
+        printf("The red node is adjacent to the red node\n");
         return false;
     }
     return tree_rb_check_color(self, root->left, black_num, black_num_expected) && 
