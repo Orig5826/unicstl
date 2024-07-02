@@ -155,6 +155,10 @@ static bool tree_rb_check_color(struct _tree *self, struct _tree_node* root, int
 static bool tree_rb_check(struct _tree* self)
 {
     assert(self != NULL);
+    if(self->_root == NULL)
+    {
+        return true;
+    }
 
     if(self->_root->color != RBT_BLACK)
     {

@@ -1339,7 +1339,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else
             {
-                if(father->color = RBT_BLACK)
+                if(father->color == RBT_BLACK)
                 {
                     // case 4
                     // father is black, brother has no children
@@ -1388,7 +1388,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else
             {
-                if(father->color = RBT_BLACK)
+                if(father->color == RBT_BLACK)
                 {
                     // case4
                     brother->color = RBT_RED;
@@ -1406,7 +1406,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
 
         if(tmp != NULL && tmp->parent == NULL)
         {
-            self->_root = node;
+            self->_root = tmp;
         }
     }
     
