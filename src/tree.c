@@ -1470,7 +1470,7 @@ bool tree_rb_delete(struct _tree* self, void* obj)
     if(tmp->color == RBT_BLACK)
     {
         tree_rb_delete_fix(self, tmp);
-    }         
+    }
 
     if(tmp->parent != NULL)
     {
