@@ -23,6 +23,17 @@ void print_struct(void* obj)
     printf("(%4d:%-8s) ", student->id, student->name);
 }
 
+int compare_struct(void *obj, void *obj2)
+{
+    struct _student num1 = *(struct _student*)obj;
+    struct _student num2 = *(struct _student*)obj2;
+    if(num1.id == num2.id)
+    {
+        return 0;
+    }
+    return num1.id > num2.id ? 1 : -1;
+}
+
 void print_char(void* obj)
 {
     printf("(%2c ) ", *(char*)obj);
