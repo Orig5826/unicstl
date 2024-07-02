@@ -19,7 +19,7 @@ bool list_append(struct _list* self, void* obj)
     if (self->size(self) == self->_capacity)
     {
         int capacity = self->_capacity * self->_ratio;
-        void * obj_new = (list_data_t*)realloc(self->obj, capacity * self->_obj_size);
+        void * obj_new = (void *)realloc(self->obj, capacity * self->_obj_size);
         if (obj_new == NULL)
         {
             return false;
@@ -42,7 +42,7 @@ bool list_insert(struct _list* self, int index, void* obj)
     if (self->size(self) == self->_capacity)
     {
         int capacity = self->_capacity * self->_ratio;
-        void* obj_new = (list_data_t*)realloc(self->obj, capacity * self->_obj_size);
+        void* obj_new = (void *)realloc(self->obj, capacity * self->_obj_size);
         if (obj_new == NULL)
         {
             return false;

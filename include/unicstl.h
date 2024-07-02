@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#ifndef _DEMO_H_
-#define _DEMO_H_
+#ifndef _UNICSTL_H_
+#define _UNICSTL_H_
 
 #include "list.h"
 #include "stack.h"
@@ -17,21 +17,4 @@
 #include "deque.h"
 #include "tree.h"
 
-#if RBTREE == 1
-#include "rbtree.h"
-    typedef prbtree_node_t stack_data_t;
-    typedef prbtree_node_t queue_data_t;
-
-    typedef int list_data_t;
-#elif AVLTREE == 1
-#include "tree.h"
-    typedef ptree_node_t stack_data_t;
-    typedef ptree_node_t queue_data_t;
-#else
-    typedef int stack_data_t;
-    typedef int queue_data_t;
-    typedef int list_data_t;
-#endif
-
-#endif // _DEMO_H_
-
+#endif // _UNICSTL_H_

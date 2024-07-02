@@ -16,6 +16,7 @@
         "config.h": "c",
         "limits": "c",
         "*.tcc": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "string.h": "c"
     }
 }
