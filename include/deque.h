@@ -22,7 +22,8 @@ struct _deque_node
 
 struct _deque
 {
-    struct _deque_node* _head;  // _head->prev指向头节点、_head->next指向尾节点
+    struct _deque_node* _head;  // 头节点
+    struct _deque_node* _tail;  // 尾节点
 
     uint32_t _obj_size;			// 元素大小
     uint32_t _size;				// 栈大小

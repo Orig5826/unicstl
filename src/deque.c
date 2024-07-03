@@ -13,7 +13,6 @@
 bool deque_push_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     struct _deque_node* front = NULL;
     struct _deque_node* back = NULL;
 
@@ -37,19 +36,19 @@ bool deque_push_back(struct _deque* self, void* obj)
     if(self->empty(self))
     {
         // if this is first node
-        self->_head->next = new_node;
-        self->_head->prev = new_node;
+        self->_tail = new_node;
+        self->_head = new_node;
     }
-    new_node->prev = self->_head->next;         // step 1
-    new_node->next = self->_head->prev;         // step 2
+    new_node->prev = self->_tail;         // step 1
+    new_node->next = self->_head;         // step 2
 
-    back = self->_head->next;
+    back = self->_tail;
     back->next = new_node;                      // step 3
 
-    front = self->_head->prev;
+    front = self->_head;
     front->prev = new_node;                     // step 4
 
-    self->_head->next = new_node;               // step 5
+    self->_tail = new_node;               // step 5
 
     self->_size += 1;
     return true;
@@ -58,7 +57,6 @@ bool deque_push_back(struct _deque* self, void* obj)
 bool deque_push_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     struct _deque_node* front = NULL;
     struct _deque_node* back = NULL;
 
@@ -82,19 +80,19 @@ bool deque_push_front(struct _deque* self, void* obj)
     if (self->empty(self))
     {
         // if this is first node
-        self->_head->next = new_node;
-        self->_head->prev = new_node;
+        self->_tail = new_node;
+        self->_head = new_node;
     }
-    new_node->prev = self->_head->next;         // step 1
-    new_node->next = self->_head->prev;         // step 2
+    new_node->prev = self->_tail;         // step 1
+    new_node->next = self->_head;         // step 2
 
-    back = self->_head->next;
+    back = self->_tail;
     back->next = new_node;                      // step 3
 
-    front = self->_head->prev;
+    front = self->_head;
     front->prev = new_node;                     // step 4
 
-    self->_head->prev = new_node;               // step 5
+    self->_head = new_node;               // step 5
 
     self->_size += 1;
     return true;
@@ -103,7 +101,6 @@ bool deque_push_front(struct _deque* self, void* obj)
 bool deque_pop_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     struct _deque_node* node = NULL;
     struct _deque_node* front = NULL;
 
@@ -112,7 +109,7 @@ bool deque_pop_back(struct _deque* self, void* obj)
         return false;
     }
 
-    node = self->_head->next;
+    node = self->_tail;
     if (obj != NULL)
     {
         memmove(obj, node->obj, self->_obj_size);
@@ -120,14 +117,14 @@ bool deque_pop_back(struct _deque* self, void* obj)
 
     if (self->size(self) == 1)
     {
-        self->_head->next = NULL;
-        self->_head->prev = NULL;
+        self->_tail = NULL;
+        self->_head = NULL;
     }
     else
     {
-        self->_head->next = node->prev;         // step 1
+        self->_tail = node->prev;         // step 1
 
-        front = self->_head->prev;
+        front = self->_head;
         front->prev = node->prev;               // step 2
     }
 
@@ -141,7 +138,6 @@ bool deque_pop_back(struct _deque* self, void* obj)
 bool deque_pop_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     struct _deque_node* node = NULL;
     struct _deque_node* back = NULL;
     
@@ -150,7 +146,7 @@ bool deque_pop_front(struct _deque* self, void* obj)
         return false;
     }
 
-    node = self->_head->prev;
+    node = self->_head;
     if (obj != NULL)
     {
         memmove(obj, node->obj, self->_obj_size);
@@ -158,14 +154,14 @@ bool deque_pop_front(struct _deque* self, void* obj)
 
     if (self->size(self) == 1)
     {
-        self->_head->next = NULL;
-        self->_head->prev = NULL;
+        self->_tail = NULL;
+        self->_head = NULL;
     }
     else
     {
-        self->_head->prev = node->next;         // step 1
+        self->_head = node->next;         // step 1
 
-        back = self->_head->next;
+        back = self->_tail;
         back->next = node->next;               // step 2
     }
 
@@ -179,28 +175,26 @@ bool deque_pop_front(struct _deque* self, void* obj)
 bool deque_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     assert(obj != NULL);
 
     if (self->empty(self))
     {
         return false;
     }
-    memmove(obj, self->_head->next->obj, self->_obj_size);
+    memmove(obj, self->_tail->obj, self->_obj_size);
     return true;
 }
 
 bool deque_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     assert(obj != NULL);
 
     if (self->empty(self))
     {
         return false;
     }
-    memmove(obj, self->_head->prev->obj, self->_obj_size);
+    memmove(obj, self->_head->obj, self->_obj_size);
     return true;
 }
 
@@ -235,11 +229,10 @@ bool deque_clear(struct _deque* self)
 bool deque_get(struct _deque* self, int index, void* obj)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     assert(obj != NULL);
     assert(index >= 0 && index < self->size(self));
 
-    struct _deque_node* node = self->_head->prev;   // front
+    struct _deque_node* node = self->_head;   // front
 
     for (int i = 0; i < index; i++)
     {
@@ -252,11 +245,10 @@ bool deque_get(struct _deque* self, int index, void* obj)
 bool deque_set(struct _deque* self, int index, void* obj) 
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     assert(obj != NULL);
     assert(index >= 0 && index < self->size(self));
 
-    struct _deque_node* node = self->_head->prev;   // front
+    struct _deque_node* node = self->_head;   // front
 
     for (int i = 0; i < index; i++)
     {
@@ -292,10 +284,9 @@ void deque_destory(struct _deque* self)
 void deque_print(struct _deque* self)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
 
     uint32_t i = 0;
-    struct _deque_node * node = self->_head->prev;
+    struct _deque_node * node = self->_head;
     for (uint32_t i = 0; i < self->size(self); i++)
     {
         self->print_obj(node->obj);
@@ -330,14 +321,8 @@ bool deque_init(struct _deque* self, uint32_t obj_size)
     self->set = deque_set;
     self->size = deque_size;
 
-    self->_head = (struct _deque_node*)malloc(sizeof(struct _deque_node));
-    if (self->_head == NULL)
-    {
-        return false;
-    }
-    self->_head->obj = NULL;
-    self->_head->prev = NULL;
-    self->_head->next = NULL;
+    self->_head = NULL;
+    self->_tail = NULL;
     
     return true;
 }
