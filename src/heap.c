@@ -25,12 +25,13 @@ bool heap_peek(struct _heap* self, void* obj)
 
 bool heap_push(struct _heap* self, void* obj)
 {
-
+    assert(self != NULL);
+    
 }
 
 bool heap_pop(struct _heap* self, void* obj)
 {
-
+    assert(self != NULL);
 }
 
 void heap_setmin(struct _heap* self, bool min_flag)
