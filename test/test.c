@@ -49,11 +49,13 @@ int main()
     printf("----- unicstl test -----\n");
     // while (1)
     {	
-        // test_list();
-        // test_stack();
+        test_list();
+        test_stack();
         test_deque();
-        // test_queue();
-        // test_tree();
+        test_queue();
+        test_tree();
     }
+
+    printf("----- unicstl ok -----\n");
     return 0;
 }
