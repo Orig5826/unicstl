@@ -39,16 +39,16 @@ bool deque_push_back(struct _deque* self, void* obj)
         self->_tail = new_node;
         self->_head = new_node;
     }
-    new_node->prev = self->_tail;         // step 1
-    new_node->next = self->_head;         // step 2
+    new_node->prev = self->_tail;       // step 1
+    new_node->next = self->_head;       // step 2
 
     back = self->_tail;
-    back->next = new_node;                      // step 3
+    back->next = new_node;              // step 3
 
     front = self->_head;
-    front->prev = new_node;                     // step 4
+    front->prev = new_node;             // step 4
 
-    self->_tail = new_node;               // step 5
+    self->_tail = new_node;             // step 5
 
     self->_size += 1;
     return true;
@@ -83,16 +83,16 @@ bool deque_push_front(struct _deque* self, void* obj)
         self->_tail = new_node;
         self->_head = new_node;
     }
-    new_node->prev = self->_tail;         // step 1
-    new_node->next = self->_head;         // step 2
+    new_node->prev = self->_tail;       // step 1
+    new_node->next = self->_head;       // step 2
 
     back = self->_tail;
-    back->next = new_node;                      // step 3
+    back->next = new_node;              // step 3
 
     front = self->_head;
-    front->prev = new_node;                     // step 4
+    front->prev = new_node;             // step 4
 
-    self->_head = new_node;               // step 5
+    self->_head = new_node;             // step 5
 
     self->_size += 1;
     return true;
@@ -122,10 +122,10 @@ bool deque_pop_back(struct _deque* self, void* obj)
     }
     else
     {
-        self->_tail = node->prev;         // step 1
+        self->_tail = node->prev;       // step 1
 
         front = self->_head;
-        front->prev = node->prev;               // step 2
+        front->prev = node->prev;       // step 2
     }
 
     free(node->obj);
@@ -159,10 +159,10 @@ bool deque_pop_front(struct _deque* self, void* obj)
     }
     else
     {
-        self->_head = node->next;         // step 1
+        self->_head = node->next;       // step 1
 
         back = self->_tail;
-        back->next = node->next;               // step 2
+        back->next = node->next;        // step 2
     }
 
     free(node->obj);
@@ -202,6 +202,7 @@ bool deque_insert(struct _deque* self, int index, void* obj)
 {
     return true;
 }
+
 bool deque_erase(struct _deque* self, int index, void* obj)
 {
     return true;

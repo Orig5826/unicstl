@@ -1,12 +1,12 @@
 /**
  * @file deque.h
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-06-23
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #ifndef _DEQUE_H_
 #define _DEQUE_H_
@@ -25,10 +25,10 @@ struct _deque
     struct _deque_node* _head;  // 头节点
     struct _deque_node* _tail;  // 尾节点
 
-    uint32_t _obj_size;			// 元素大小
-    uint32_t _size;				// 栈大小
-    uint32_t _capacity;			// 总容量
-    uint32_t _ratio;			// 扩展比率
+    uint32_t _obj_size;         // 元素大小
+    uint32_t _size;             // 栈大小
+    // uint32_t _capacity;         // 总容量
+    // uint32_t _ratio;            // 扩展比率
 
     // kernel
     bool (*push_back)(struct _deque* self, void* obj);
