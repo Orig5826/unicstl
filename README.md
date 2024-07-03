@@ -25,3 +25,5 @@
 | **tree**    | |**树** |
 | tree_avl_init | 二叉搜索树 | AVL树 |
 | tree_rb_init  | 二叉搜索树 | 红黑树 |
+| **heap**    | |**堆** |
+| heap_init2   | 数组 | 最大堆/最小堆 |
