@@ -30,6 +30,7 @@ static int parent(int i)
 bool heap_peek(struct _heap* self, void* obj)
 {
     assert(self != NULL);
+    assert(obj != NULL);
     if(obj == NULL)
     {
         return false;
@@ -52,13 +53,14 @@ static void heap_swap(struct _heap* self, int i, int j)
     memmove(self->obj + j * self->_obj_size, tmp, self->_obj_size);
 }
 
-static void heap_fixed(struct _heap* self, int i)
+static void heap_fixed_up(struct _heap* self, int i)
 {
     assert(self != NULL);
     int p = 0;
     while(1)
     {
         p = parent(i);
+        // 若当前节点大于其父节点，则交换位置，否则退出循环
         if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) <= 0)
         {
             break;
@@ -79,7 +81,37 @@ bool heap_push(struct _heap* self, void* obj)
     memmove(self->obj + index * self->_obj_size, obj, self->_obj_size);
     self->_size++;
 
-    heap_fixed(self, index);
+    heap_fixed_up(self, index);
+}
+
+static void heap_fixed_down(struct _heap* self, int i)
+{
+    assert(self != NULL);
+    int l = 0,r = 0;
+    int max = 0;
+
+    while(1)
+    {
+        l = left(i);
+        r = right(i);
+        max = i;
+
+        if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+        {
+            max = l;
+        }
+
+        if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+        {
+            max = r;
+        }
+        if(max == i)
+        {
+            break;
+        }
+        heap_swap(self, i, max);
+        i = max;
+    }
 }
 
 bool heap_pop(struct _heap* self, void* obj)
@@ -89,13 +121,15 @@ bool heap_pop(struct _heap* self, void* obj)
     {
         return false;
     }
-    heap_swap(self, 0, self->size(self) - 1);
+    int index = self->size(self) - 1;
+    heap_swap(self, 0, index);
     if(obj != NULL)
     {
-        memmove(obj, self->obj, self->_obj_size);
+        memmove(obj, self->obj + index * self->_obj_size, self->_obj_size);
     }
     self->_size--;
-    heap_fixed(self, 0);
+    heap_fixed_down(self, 0);
+    return true;
 }
 
 void heap_setmin(struct _heap* self, bool min_flag)
@@ -141,7 +175,7 @@ void heap_print(struct _heap* self)
     void* obj = NULL;
     uint32_t offset = 0;
 
-    for (int i = self->size(self) - 1; i >= 0; i--)
+    for (int i = 0; i < self->size(self); i++)
     {
         offset = self->_obj_size * i;
         obj = (char *)self->obj + offset;
