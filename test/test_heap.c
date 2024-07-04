@@ -81,7 +81,74 @@ void test_heap_num(void)
     heap_free(heap);
 }
 
+static void test_heap_struct(void)
+{
+    uint32_t i = 0;
+    struct _student data[] = {
+        {"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
+        "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
+    };
+    struct _student temp = {0};
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    heap_t heap = heap_new();
+    heap_init2(heap, sizeof(struct _student), 64);
+    heap->print_obj = print_struct;
+    heap->compare = compare_struct;
+
+    printf("\n\n----- test_heap_num -----\n");
+    printf("----- push -----\n");
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        heap->push(heap, &temp);
+
+        printf("push = ");
+        heap->print_obj(&temp);
+        printf("size = %2d : ", heap->size(heap));
+        heap->print(heap);
+        printf("\n");
+    }
+
+    printf("----- max/min -----\n");
+    heap->peek(heap, &temp);
+    heap->print_obj(&temp);
+    printf("\n");
+
+    printf("----- heap -----\n");
+    heap->clear(heap);
+    if(heap->empty(heap))
+    {
+        printf("----- empty -----\n");
+    }
+    printf("----- heap -----\n");
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        heap->push(heap, &temp);
+    }
+
+    printf("----- pop -----\n");
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        heap->pop(heap, &temp);
+
+        printf("pop = ");
+        heap->print_obj(&temp);
+        printf("size = %2d : ", heap->size(heap));
+        heap->print(heap);
+        printf("\n");
+    }
+    if(heap->empty(heap))
+    {
+        printf("----- empty -----\n");
+    }
+    heap_free(heap);
+}
+
 void test_heap(void)
 {
     test_heap_num();
+    test_heap_struct();
 }
