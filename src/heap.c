@@ -8,6 +8,25 @@
  */
 #include "heap.h"
 
+static int left(int i)
+{
+    return 2 * i + 1;
+}
+
+static int right(int i)
+{
+    return (i << 1) + 2;
+}
+
+static int parent(int i)
+{
+    if(i == 0)
+    {
+        return -1;
+    }
+    return (i-1) >> 1;
+}
+
 bool heap_peek(struct _heap* self, void* obj)
 {
     assert(self != NULL);
@@ -23,15 +42,60 @@ bool heap_peek(struct _heap* self, void* obj)
     return true;
 }
 
+static void heap_swap(struct _heap* self, int i, int j)
+{
+    assert(self != NULL);
+    char tmp[self->_obj_size];
+
+    memmove(tmp, self->obj + i * self->_obj_size, self->_obj_size);
+    memmove(self->obj + i * self->_obj_size, self->obj + j * self->_obj_size, self->_obj_size);
+    memmove(self->obj + j * self->_obj_size, tmp, self->_obj_size);
+}
+
+static void heap_fixed(struct _heap* self, int i)
+{
+    assert(self != NULL);
+    int p = 0;
+    while(1)
+    {
+        p = parent(i);
+        if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) <= 0)
+        {
+            break;
+        }
+        heap_swap(self, i, p);
+        i = p;
+    }
+}
+
 bool heap_push(struct _heap* self, void* obj)
 {
     assert(self != NULL);
-    
+    if(self->size(self) > self->_capacity)
+    {
+        return false;
+    }
+    uint32_t index = self->size(self);
+    memmove(self->obj + index * self->_obj_size, obj, self->_obj_size);
+    self->_size++;
+
+    heap_fixed(self, index);
 }
 
 bool heap_pop(struct _heap* self, void* obj)
 {
     assert(self != NULL);
+    if(self->empty(self))
+    {
+        return false;
+    }
+    heap_swap(self, 0, self->size(self) - 1);
+    if(obj != NULL)
+    {
+        memmove(obj, self->obj, self->_obj_size);
+    }
+    self->_size--;
+    heap_fixed(self, 0);
 }
 
 void heap_setmin(struct _heap* self, bool min_flag)
@@ -55,11 +119,18 @@ bool heap_empty(struct _heap* self)
 bool heap_clear(struct _heap* self)
 {
     assert(self != NULL);
+    self->_size = 0;
+    return true;
 }
 
 void heap_destory(struct _heap* self)
 {
     assert(self != NULL);
+    self->clear(self);
+    if(self->obj)
+    {
+        free(self->obj);
+    }
 }
 
 void heap_print(struct _heap* self)
@@ -73,7 +144,7 @@ void heap_print(struct _heap* self)
     for (int i = self->size(self) - 1; i >= 0; i--)
     {
         offset = self->_obj_size * i;
-        obj = (char*)self->obj + offset;
+        obj = (char *)self->obj + offset;
         self->print_obj(obj);
     }
 }

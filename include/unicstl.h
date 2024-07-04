@@ -16,5 +16,6 @@
 #include "queue.h"
 #include "deque.h"
 #include "tree.h"
+#include "heap.h"
 
 #endif // _UNICSTL_H_
