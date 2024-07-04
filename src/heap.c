@@ -57,16 +57,33 @@ static void heap_fixed_up(struct _heap* self, int i)
 {
     assert(self != NULL);
     int p = 0;
-    while(1)
+    if(self->_min_flag != true)
     {
-        p = parent(i);
-        // 若当前节点大于其父节点，则交换位置，否则退出循环
-        if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) <= 0)
+        while(1)
         {
-            break;
+            p = parent(i);
+            // 若当前节点大于其父节点，则交换位置，否则退出循环
+            if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) <= 0)
+            {
+                break;
+            }
+            heap_swap(self, i, p);
+            i = p;
         }
-        heap_swap(self, i, p);
-        i = p;
+    }
+    else
+    {
+        while(1)
+        {
+            p = parent(i);
+            // 若当前节点大于其父节点，则交换位置，否则退出循环
+            if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) >= 0)
+            {
+                break;
+            }
+            heap_swap(self, i, p);
+            i = p;
+        }
     }
 }
 
@@ -88,29 +105,57 @@ static void heap_fixed_down(struct _heap* self, int i)
 {
     assert(self != NULL);
     int l = 0,r = 0;
-    int max = 0;
+    int max = 0, min = 0;
 
-    while(1)
+    if(self->_min_flag != true)
     {
-        l = left(i);
-        r = right(i);
-        max = i;
+        while(1)
+        {
+            l = left(i);
+            r = right(i);
+            max = i;
 
-        if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + max * self->_obj_size) > 0)
-        {
-            max = l;
-        }
+            if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+            {
+                max = l;
+            }
 
-        if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + max * self->_obj_size) > 0)
-        {
-            max = r;
+            if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+            {
+                max = r;
+            }
+            if(max == i)
+            {
+                break;
+            }
+            heap_swap(self, i, max);
+            i = max;
         }
-        if(max == i)
+    }
+    else
+    {
+        while(1)
         {
-            break;
+            l = left(i);
+            r = right(i);
+            min = i;
+
+            if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + min * self->_obj_size) < 0)
+            {
+                min = l;
+            }
+
+            if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + min * self->_obj_size) < 0)
+            {
+                min = r;
+            }
+            if(min == i)
+            {
+                break;
+            }
+            heap_swap(self, i, min);
+            i = min;
         }
-        heap_swap(self, i, max);
-        i = max;
     }
 }
 

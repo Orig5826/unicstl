@@ -27,7 +27,7 @@ void test_heap_num(void)
 
     // default: maxheap
     // maxheap or minheap
-    // heap->setmin(heap, true);
+    heap->setmin(heap, true);
 
     printf("\n\n----- test_heap_num -----\n");
 
@@ -44,7 +44,7 @@ void test_heap_num(void)
         printf("\n");
     }
 
-    printf("----- max -----\n");
+    printf("----- max/min -----\n");
     heap->peek(heap, &temp);
     heap->print_obj(&temp);
     printf("\n");
