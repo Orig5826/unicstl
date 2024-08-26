@@ -1,6 +1,14 @@
 
 #include "test.h"
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
 /**
  * @brief 
  * int data[] = { 5,2,3,1,7,8,6 };

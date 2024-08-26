@@ -46,11 +46,25 @@ bool heap_peek(struct _heap* self, void* obj)
 static void heap_swap(struct _heap* self, int i, int j)
 {
     assert(self != NULL);
+    assert(self->_obj_size != 0);
+// #define C99_VLA
+#ifdef C99_VLA
     char tmp[self->_obj_size];
+#else
+    char* tmp = malloc(self->_obj_size);
+    if (tmp == NULL)
+    {
+        return;
+    }
+#endif
 
-    memmove(tmp, self->obj + i * self->_obj_size, self->_obj_size);
-    memmove(self->obj + i * self->_obj_size, self->obj + j * self->_obj_size, self->_obj_size);
-    memmove(self->obj + j * self->_obj_size, tmp, self->_obj_size);
+    memmove(tmp, (char *)self->obj + i * self->_obj_size, self->_obj_size);
+    memmove((char*)self->obj + i * self->_obj_size, (char*)self->obj + j * self->_obj_size, self->_obj_size);
+    memmove((char*)self->obj + j * self->_obj_size, tmp, self->_obj_size);
+
+#ifndef C99_VLA
+    free(tmp);
+#endif
 }
 
 static void heap_fixed_up(struct _heap* self, int i)
@@ -63,7 +77,7 @@ static void heap_fixed_up(struct _heap* self, int i)
         {
             p = parent(i);
             // 若当前节点大于其父节点，则交换位置，否则退出循环
-            if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) <= 0)
+            if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) <= 0)
             {
                 break;
             }
@@ -77,7 +91,7 @@ static void heap_fixed_up(struct _heap* self, int i)
         {
             p = parent(i);
             // 若当前节点大于其父节点，则交换位置，否则退出循环
-            if(p < 0 || self->compare(self->obj + i * self->_obj_size, self->obj + p * self->_obj_size) >= 0)
+            if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) >= 0)
             {
                 break;
             }
@@ -95,10 +109,11 @@ bool heap_push(struct _heap* self, void* obj)
         return false;
     }
     uint32_t index = self->size(self);
-    memmove(self->obj + index * self->_obj_size, obj, self->_obj_size);
+    memmove((char *)self->obj + index * self->_obj_size, obj, self->_obj_size);
     self->_size++;
 
     heap_fixed_up(self, index);
+    return true;
 }
 
 static void heap_fixed_down(struct _heap* self, int i)
@@ -115,12 +130,12 @@ static void heap_fixed_down(struct _heap* self, int i)
             r = right(i);
             max = i;
 
-            if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+            if(l < self->size(self) && self->compare((char *)self->obj + l * self->_obj_size, (char *)self->obj + max * self->_obj_size) > 0)
             {
                 max = l;
             }
 
-            if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + max * self->_obj_size) > 0)
+            if(r < self->size(self) && self->compare((char *)self->obj + r * self->_obj_size, (char *)self->obj + max * self->_obj_size) > 0)
             {
                 max = r;
             }
@@ -140,12 +155,12 @@ static void heap_fixed_down(struct _heap* self, int i)
             r = right(i);
             min = i;
 
-            if(l < self->size(self) && self->compare(self->obj + l * self->_obj_size, self->obj + min * self->_obj_size) < 0)
+            if(l < self->size(self) && self->compare((char *)self->obj + l * self->_obj_size, (char *)self->obj + min * self->_obj_size) < 0)
             {
                 min = l;
             }
 
-            if(r < self->size(self) && self->compare(self->obj + r * self->_obj_size, self->obj + min * self->_obj_size) < 0)
+            if(r < self->size(self) && self->compare((char *)self->obj + r * self->_obj_size, (char *)self->obj + min * self->_obj_size) < 0)
             {
                 min = r;
             }
@@ -170,7 +185,7 @@ bool heap_pop(struct _heap* self, void* obj)
     heap_swap(self, 0, index);
     if(obj != NULL)
     {
-        memmove(obj, self->obj + index * self->_obj_size, self->_obj_size);
+        memmove(obj, (char *)self->obj + index * self->_obj_size, self->_obj_size);
     }
     self->_size--;
     heap_fixed_down(self, 0);
