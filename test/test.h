@@ -35,6 +35,7 @@ void test_stack(void);
 void test_deque(void);
 void test_queue(void);
 void test_tree(void);
+void test_heap(void);
 
 #endif // _TEST_H_
 
