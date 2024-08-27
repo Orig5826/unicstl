@@ -70,8 +70,11 @@ void tearDown(void)
 
 int main(int argc, char const *argv[])
 {
-    printf("\n---------- 单元测试 ----------\n");
+    printf("----- 单元测试 -----\n");
     UNITY_BEGIN();
-    RUN_TEST(test_stack);
-    return UNITY_END();
+
+    test_stack();
+    
+    UNITY_END();
+    return 0;
 }

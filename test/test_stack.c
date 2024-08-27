@@ -17,34 +17,40 @@ static void test_stack_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    struct _stack s;
-    TEST_ASSERT_TRUE(stack_init(&s, sizeof(int)));
-    s.print_obj = print_num;
+    stack_t stack = NULL;
+    stack = stack_new();
+    TEST_ASSERT_TRUE(stack_init(stack, sizeof(int)));
+    stack->print_obj = print_num;
 
-    TEST_ASSERT_FALSE(s.peek(&s, &temp));
+    TEST_ASSERT_FALSE(stack->peek(stack, &temp));
 
     for (i = 0; i < len; i++)
     {
-        s.push(&s, &data[i]);
-        s.peek(&s, &temp);
+        stack->push(stack, &data[i]);
+        stack->peek(stack, &temp);
     }
 
     for (i = 0; i < len + 1; i++)
     {
-        if (true == s.pop(&s, &temp))
+        if (true == stack->pop(stack, &temp))
         {
-            if(false != s.peek(&s, &temp))
+            if(false != stack->peek(stack, &temp))
             {
                 TEST_ASSERT_EQUAL(data[len - 2 - i], temp);
             }
         }
     }
-    TEST_ASSERT_TRUE(s.empty(&s));
+    TEST_ASSERT_TRUE(stack->empty(stack));
 
-    s.destory(&s);
+    stack_free(&stack);
+    TEST_ASSERT_NULL(stack);
 }
 
 void test_stack(void)
 {
+    // UNITY_BEGIN();
+
     RUN_TEST(test_stack_num);
+
+    // UNITY_END();
 }

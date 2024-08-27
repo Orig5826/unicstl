@@ -327,11 +327,12 @@ stack_t stack_new(void)
     return (struct _stack*)malloc(sizeof(struct _stack));
 }
 
-void stack_free(stack_t stack)
+void stack_free(stack_t *stack)
 {
-    if(stack)
+    if(*stack)
     {
-        stack->destory(stack);
-        free(stack);
+        (*stack)->destory(*stack);
+        free(*stack);
     }
+    *stack = NULL;
 }

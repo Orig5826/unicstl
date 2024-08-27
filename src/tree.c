@@ -699,7 +699,7 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
             }
         }
     }
-    stack_free(stack);
+    stack_free(&stack);
 #endif
 }
 
@@ -784,7 +784,7 @@ void tree_inorder(struct _tree* self, struct _tree_node* root)
             }
         }
     }
-    stack_free(stack);
+    stack_free(&stack);
 #endif
 }
 
@@ -879,8 +879,8 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
         self->print_obj(node->obj);
     }
 
-    stack_free(stack);
-    stack_free(stack2);
+    stack_free(&stack);
+    stack_free(&stack2);
 #endif
 }
 

@@ -51,6 +51,6 @@ bool stack_init(struct _stack* self, uint32_t obj_size);
 bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity);
 
 stack_t stack_new(void);
-void stack_free(stack_t stack);
+void stack_free(stack_t* stack);
 
 #endif // _STACK_H_
