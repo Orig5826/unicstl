@@ -1,5 +1,5 @@
 /**
- * @file test_deque.c
+ * @file demo_deque.c
  * @author wenjf (Orig5826@163.com)
  * @brief 
  * @version 0.1
@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "test.h"
+#include "demo.h"
 
-static void test_deque_num(void)
+static void demo_deque_num(void)
 {
     uint32_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -21,7 +21,7 @@ static void test_deque_num(void)
     deque_init(&dq, sizeof(int));
     dq.print_obj = print_num;
 
-    printf("\n\n----- test_deque_num -----\n");
+    printf("\n\n----- demo_deque_num -----\n");
 
     printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
@@ -178,7 +178,7 @@ static void test_deque_num(void)
     dq.destory(&dq);
 }
 
-static void test_deque_struct(void)
+static void demo_deque_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -193,7 +193,7 @@ static void test_deque_struct(void)
     deque_init(&dq, sizeof(struct _student));
     dq.print_obj = print_struct;
 
-    printf("\n\n----- test_deque_struct -----\n");
+    printf("\n\n----- demo_deque_struct -----\n");
 
     printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
@@ -352,8 +352,8 @@ static void test_deque_struct(void)
     dq.destory(&dq);
 }
 
-void test_deque(void)
+void demo_deque(void)
 {
-    test_deque_num();
-    test_deque_struct();
+    demo_deque_num();
+    demo_deque_struct();
 }

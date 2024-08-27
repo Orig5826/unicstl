@@ -1,7 +1,16 @@
+/**
+ * @file demo_list.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-27
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "demo.h"
 
-#include "test.h"
-
-static void test_list_num(void)
+static void demo_list_num(void)
 {
     int i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -13,7 +22,7 @@ static void test_list_num(void)
     list_init2(&list, sizeof(int), 64);
     list.print_obj = print_num;
 
-    printf("\n\n----- list_test_num -----\n");
+    printf("\n\n----- list_demo_num -----\n");
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
@@ -133,7 +142,7 @@ static void test_list_num(void)
     list.destory(&list);
 }
 
-static void test_list_struct(void)
+static void demo_list_struct(void)
 {
     int i = 0;
     struct _student data[] = {
@@ -149,7 +158,7 @@ static void test_list_struct(void)
     list_init2(&list, sizeof(struct _student), 64);
     list.print_obj = print_struct;
 
-    printf("\n\n----- list_test_num -----\n");
+    printf("\n\n----- list_demo_num -----\n");
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
@@ -291,8 +300,8 @@ static void test_list_struct(void)
     list.destory(&list);
 }
 
-void test_list(void)
+void demo_list(void)
 {
-    test_list_num();
-    test_list_struct();
+    demo_list_num();
+    demo_list_struct();
 }

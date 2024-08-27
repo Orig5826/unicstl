@@ -1,7 +1,16 @@
+/**
+ * @file demo_queue.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-27
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "demo.h"
 
-#include "test.h"
-
-static void test_queue_num(void)
+static void demo_queue_num(void)
 {
     uint32_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -12,7 +21,7 @@ static void test_queue_num(void)
     queue_init(&queue, sizeof(int));
     queue.print_obj = print_num;
 
-    printf("\n\n----- test_queue_num -----\n");
+    printf("\n\n----- demo_queue_num -----\n");
 
     printf("----- after push-----\n");
     for (i = 0; i < len; i++)
@@ -86,7 +95,7 @@ static void test_queue_num(void)
 }
 
 
-static void test_queue_char(void)
+static void demo_queue_char(void)
 {
     uint32_t i = 0;
     char data[] = "abcdefghijk";
@@ -98,7 +107,7 @@ static void test_queue_char(void)
     queue_init2(&queue, sizeof(char), 10);
     queue.print_obj = print_char;
 
-    printf("\n\n----- test_queue_char -----\n");
+    printf("\n\n----- demo_queue_char -----\n");
 
     printf("----- after push-----\n");
     for (i = 0; i < len; i++)
@@ -197,7 +206,7 @@ static void test_queue_char(void)
     queue.destory(&queue);
 }
 
-static void test_queue_struct(void)
+static void demo_queue_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -211,7 +220,7 @@ static void test_queue_struct(void)
     queue_init(queue, sizeof(struct _student));
     queue->print_obj = print_struct;
 
-    printf("\n\n----- test_queue_struct -----\n");
+    printf("\n\n----- demo_queue_struct -----\n");
 
     printf("----- after push-----\n");
     for (i = 0; i < len; i++)
@@ -287,9 +296,9 @@ static void test_queue_struct(void)
 }
 
 
-void test_queue(void)
+void demo_queue(void)
 {
-    test_queue_num();
-    test_queue_char();
-    test_queue_struct();
+    demo_queue_num();
+    demo_queue_char();
+    demo_queue_struct();
 }

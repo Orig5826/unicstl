@@ -3,17 +3,14 @@
 cmake_minimum_required(VERSION 3.29)
 
 # 0. 项目信息
-project(demo)
-
-# 0. 查找当前目录下的所有文件，并将名称保存在DIR_SRC中
-# aux_source_directory(. DIR_SRC)
+project(demo VERSION 0.0.01)
 
 # 1. 添加头文件路径
 include_directories(include)
 
 # 1. 添加子目录
 add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(demo)
 
 # 2. 支持GDB
 set(CMAKE_BUILD_TYPE "Debug")

@@ -1,7 +1,16 @@
+/**
+ * @file demo_stack.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-27
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "demo.h"
 
-#include "test.h"
-
-static void test_stack_num(void)
+static void demo_stack_num(void)
 {
     uint32_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -12,7 +21,7 @@ static void test_stack_num(void)
     stack_init(&s, sizeof(int));
     s.print_obj = print_num;
 
-    printf("\n\n----- test_stack_num -----\n");
+    printf("\n\n----- demo_stack_num -----\n");
     // get top if stack is empty
     s.peek(&s, &temp);
 
@@ -62,7 +71,7 @@ static void test_stack_num(void)
     s.destory(&s);
 }
 
-static void test_stack_char(void)
+static void demo_stack_char(void)
 {
     uint32_t i = 0;
     char data[] = "abcdefghijk";
@@ -73,7 +82,7 @@ static void test_stack_char(void)
     stack_init2(&s, sizeof(char), 64);
     s.print_obj = print_char;
 
-    printf("\n\n----- test_stack_char -----\n");
+    printf("\n\n----- demo_stack_char -----\n");
     // get top if stack is empty
     s.peek(&s, &temp);
 
@@ -122,7 +131,7 @@ static void test_stack_char(void)
     s.destory(&s);
 }
 
-static void test_stack_struct(void)
+static void demo_stack_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -137,7 +146,7 @@ static void test_stack_struct(void)
     stack_init(stack, sizeof(struct _student));
     stack->print_obj = print_struct;
 
-    printf("\n\n----- test_stack_struct -----\n");
+    printf("\n\n----- demo_stack_struct -----\n");
     // get top if stack is empty
     stack->peek(stack, &temp);
 
@@ -199,9 +208,9 @@ static void test_stack_struct(void)
     stack_free(stack);
 }
 
-void test_stack(void)
+void demo_stack(void)
 {
-    test_stack_num();
-    test_stack_char();
-    test_stack_struct();
+    demo_stack_num();
+    demo_stack_char();
+    demo_stack_struct();
 }

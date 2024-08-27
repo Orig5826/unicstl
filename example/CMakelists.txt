@@ -1,4 +1,0 @@
-
-aux_source_directory(. SRC_DEMO)
-
-add_library(example STATIC  ${SRC_DEMO})

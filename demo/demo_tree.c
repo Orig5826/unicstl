@@ -1,6 +1,16 @@
+/**
+ * @file demo_tree.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-27
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "demo.h"
 
-#include "test.h"
-
+// vs2022 ±àÒë³åÍ»
 #ifdef max
 #undef max
 #endif
@@ -18,7 +28,7 @@
  *   |    |     |   |
  *   1    3     6   8
  */
-void test_avltree_num(void)
+void demo_avltree_num(void)
 {
     uint32_t i = 0;
     // int data[] = { 2,1,3,4};
@@ -33,7 +43,7 @@ void test_avltree_num(void)
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
-    printf("\n\n----- test_avltree_num -----\n");
+    printf("\n\n----- demo_avltree_num -----\n");
 
     printf("----- insert -----\n");
     for (i = 0; i < len; i++)
@@ -190,7 +200,7 @@ static bool tree_rb_check(struct _tree* self)
 /**
  * @brief 
  */
-void test_rbtree_num(void)
+void demo_rbtree_num(void)
 {
     uint32_t i = 0;
     // int data[] = { 2,1,3,4};
@@ -205,7 +215,7 @@ void test_rbtree_num(void)
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
-    printf("\n\n----- test_rbtree_num -----\n");
+    printf("\n\n----- demo_rbtree_num -----\n");
 
     printf("----- insert -----\n");
     for (i = 0; i < len; i++)
@@ -322,7 +332,7 @@ void test_rbtree_num(void)
 /**
  * @brief 
  */
-void test_rbtree_struct(void)
+void demo_rbtree_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -337,7 +347,7 @@ void test_rbtree_struct(void)
     tree->print_obj = print_struct;
     tree->compare = compare_struct;
 
-    printf("\n\n----- test_rbtree_struct -----\n");
+    printf("\n\n----- demo_rbtree_struct -----\n");
 
     printf("----- insert -----\n");
     for (i = 0; i < len; i++)
@@ -451,9 +461,9 @@ void test_rbtree_struct(void)
     tree_free(tree);
 }
 
-void test_tree(void)
+void demo_tree(void)
 {
-    test_avltree_num();
-    test_rbtree_num();
-    test_rbtree_struct();
+    demo_avltree_num();
+    demo_rbtree_num();
+    demo_rbtree_struct();
 }

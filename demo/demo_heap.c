@@ -1,5 +1,5 @@
 /**
- * @file test_heap.c
+ * @file demo_heap.c
  * @author wenjf (Orig5826@163.com)
  * @brief 
  * @version 0.1
@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include "test.h"
+#include "demo.h"
 
-void test_heap_num(void)
+void demo_heap_num(void)
 {
     uint32_t i = 0;
     // int data[] = { 2,1,3,4};
@@ -29,7 +29,7 @@ void test_heap_num(void)
     // maxheap or minheap
     heap->setmin(heap, true);
 
-    printf("\n\n----- test_heap_num -----\n");
+    printf("\n\n----- demo_heap_num -----\n");
 
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
@@ -81,7 +81,7 @@ void test_heap_num(void)
     heap_free(heap);
 }
 
-static void test_heap_struct(void)
+static void demo_heap_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -96,7 +96,7 @@ static void test_heap_struct(void)
     heap->print_obj = print_struct;
     heap->compare = compare_struct;
 
-    printf("\n\n----- test_heap_num -----\n");
+    printf("\n\n----- demo_heap_num -----\n");
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
@@ -147,8 +147,8 @@ static void test_heap_struct(void)
     heap_free(heap);
 }
 
-void test_heap(void)
+void demo_heap(void)
 {
-    test_heap_num();
-    test_heap_struct();
+    demo_heap_num();
+    demo_heap_struct();
 }

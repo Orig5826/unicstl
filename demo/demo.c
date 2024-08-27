@@ -1,5 +1,14 @@
-
-#include "test.h"
+/**
+ * @file demo.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-27
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "demo.h"
 
 void print_num(void* obj)
 {
@@ -46,15 +55,15 @@ void print_str(void* obj)
 
 int main()
 {
-    printf("----- unicstl test -----\n");
+    printf("----- unicstl demo -----\n");
     // while (1)
-    {	
-        // test_list();
-        // test_stack();
-        // test_deque();
-        // test_queue();
-        // test_tree();
-        test_heap();
+    {
+        // demo_list();
+        // demo_stack();
+        // demo_deque();
+        // demo_queue();
+        // demo_tree();
+        demo_heap();
     }
 
     printf("----- unicstl ok -----\n");
