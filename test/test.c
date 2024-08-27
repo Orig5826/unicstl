@@ -70,7 +70,7 @@ void tearDown(void)
 
 int main(int argc, char const *argv[])
 {
-    printf("----- µ¥Ôª²âÊÔ -----\n");
+    printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
 
     test_stack();
