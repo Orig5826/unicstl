@@ -48,9 +48,5 @@ static void test_stack_num(void)
 
 void test_stack(void)
 {
-    // UNITY_BEGIN();
-
     RUN_TEST(test_stack_num);
-
-    // UNITY_END();
 }

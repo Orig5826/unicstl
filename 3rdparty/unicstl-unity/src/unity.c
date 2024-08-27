@@ -543,6 +543,7 @@ static void UnityTestResultsFailBegin(const UNITY_LINE_TYPE line)
 }
 
 /*-----------------------------------------------*/
+#ifndef RUN_TEST_WITH_CURRENT_FILE
 void UnityConcludeTest(void)
 {
     if (Unity.CurrentTestIgnored)
@@ -565,6 +566,31 @@ void UnityConcludeTest(void)
     UNITY_PRINT_EOL();
     UNITY_FLUSH_CALL();
 }
+#else
+void UnityConcludeTest(const char *FileName)
+{
+    if (Unity.CurrentTestIgnored)
+    {
+        Unity.TestIgnores++;
+    }
+    else if (!Unity.CurrentTestFailed)
+    {
+        UnityTestResultsBegin(FileName, Unity.CurrentTestLineNumber);
+        UnityPrint(UnityStrPass);
+    }
+    else
+    {
+        Unity.TestFailures++;
+    }
+
+    Unity.CurrentTestFailed = 0;
+    Unity.CurrentTestIgnored = 0;
+    UNITY_PRINT_EXEC_TIME();
+    UNITY_PRINT_EOL();
+    UNITY_FLUSH_CALL();
+}
+#endif
+
 
 /*-----------------------------------------------*/
 static void UnityAddMsgIfSpecified(const char* msg)
@@ -2190,6 +2216,7 @@ void UnityMessage(const char* msg, const UNITY_LINE_TYPE line)
 /*-----------------------------------------------*/
 /* If we have not defined our own test runner, then include our default test runner to make life easier */
 #ifndef UNITY_SKIP_DEFAULT_RUNNER
+#ifndef RUN_TEST_WITH_CURRENT_FILE
 void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int FuncLineNum)
 {
     Unity.CurrentTestName = FuncName;
@@ -2209,6 +2236,27 @@ void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int
     UNITY_EXEC_TIME_STOP();
     UnityConcludeTest();
 }
+#else
+void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int FuncLineNum, const char* FileName)
+{
+    Unity.CurrentTestName = FuncName;
+    Unity.CurrentTestLineNumber = (UNITY_LINE_TYPE)FuncLineNum;
+    Unity.NumberOfTests++;
+    UNITY_CLR_DETAILS();
+    UNITY_EXEC_TIME_START();
+    if (TEST_PROTECT())
+    {
+        setUp();
+        Func();
+    }
+    if (TEST_PROTECT())
+    {
+        tearDown();
+    }
+    UNITY_EXEC_TIME_STOP();
+    UnityConcludeTest(FileName);
+}
+#endif
 #endif
 
 /*-----------------------------------------------*/
