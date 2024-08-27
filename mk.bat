@@ -6,3 +6,5 @@ cmake -B build -G "MinGW Makefiles"
 
 make -C build
 make -C build install 
+
+start /b ./build/release/bin/test.exe

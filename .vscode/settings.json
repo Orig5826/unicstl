@@ -19,6 +19,9 @@
         "cstdlib": "c",
         "string.h": "c",
         "demo.h": "c",
-        "unity.h": "c"
+        "unity.h": "c",
+        "unity_config.h": "c",
+        "unity_internals.h": "c",
+        "stdarg.h": "c"
     }
 }
