@@ -347,5 +347,5 @@ void queue_free(queue_t* queue)
         (*queue)->destory(*queue);
         free(*queue);
     }
-    queue = NULL;
+    *queue = NULL;
 }

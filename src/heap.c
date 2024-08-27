@@ -283,5 +283,5 @@ void heap_free(heap_t* heap)
         (*heap)->destory(*heap);
         free(*heap);
     }
-    heap = NULL;
+    *heap = NULL;
 }

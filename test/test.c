@@ -74,6 +74,7 @@ int main(int argc, char const *argv[])
     UNITY_BEGIN();
 
     test_stack();
+    test_queue();
     
     UNITY_END();
     return 0;

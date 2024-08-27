@@ -1539,5 +1539,5 @@ void tree_free(tree_t* tree)
         (*tree)->destory(*tree);
         free(*tree);
     }
-    tree = NULL;
+    *tree = NULL;
 }

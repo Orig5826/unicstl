@@ -227,5 +227,5 @@ void list_free(list_t* list)
         (*list)->destory(*list);
         free(*list);
     }
-    list = NULL;
+    *list = NULL;
 }
