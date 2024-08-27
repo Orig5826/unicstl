@@ -333,11 +333,12 @@ deque_t deque_new(void)
     return (struct _deque*)malloc(sizeof(struct _deque));
 }
 
-void deque_free(deque_t deque)
+void deque_free(deque_t *deque)
 {
-    if(deque != NULL)
+    if(*deque != NULL)
     {
-        deque->destory(deque);
-        free(deque);
+        (*deque)->destory(*deque);
+        free(*deque);
     }
+    *deque = NULL;
 }

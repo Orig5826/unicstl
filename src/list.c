@@ -220,11 +220,12 @@ list_t list_new(void)
     return (struct _list*)malloc(sizeof(struct _list));
 }
 
-void list_free(list_t list)
+void list_free(list_t* list)
 {
-    if(list != NULL)
+    if(*list != NULL)
     {
-        list->destory(list);
-        free(list);
+        (*list)->destory(*list);
+        free(*list);
     }
+    list = NULL;
 }

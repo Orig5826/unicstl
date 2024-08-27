@@ -340,11 +340,12 @@ queue_t queue_new(void)
     return (struct _queue *)malloc(sizeof(struct _queue));
 }
 
-void queue_free(queue_t queue)
+void queue_free(queue_t* queue)
 {
-    if(queue != NULL)
+    if(*queue != NULL)
     {
-        queue->destory(queue);
-        free(queue);
+        (*queue)->destory(*queue);
+        free(*queue);
     }
+    queue = NULL;
 }

@@ -93,7 +93,7 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size);
 bool tree_rb_init(struct _tree *self, uint32_t obj_size);
 
 tree_t tree_new(void);
-void tree_free(tree_t tree);
+void tree_free(tree_t* tree);
 
 #endif // _TREE_H_
 

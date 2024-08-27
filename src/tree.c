@@ -177,7 +177,7 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
             count_cur_level++;
         }
     }
-    queue_free(queue);
+    queue_free(&queue);
     return height;
 #endif
 }
@@ -587,7 +587,7 @@ bool tree_clear(struct _tree* self)
         }
         tree_node_free(node);
     }
-    queue_free(queue);
+    queue_free(&queue);
     self->_root = NULL;
     self->_size = 0;
     return true;
@@ -928,7 +928,7 @@ void tree_breadth(struct _tree* self, struct _tree_node* root)
             self->print_obj(node->obj);
         }
     }
-    queue_free(queue);
+    queue_free(&queue);
 }
 
 static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* root)
@@ -1532,12 +1532,12 @@ tree_t tree_new(void)
     return (struct _tree*)malloc(sizeof(struct _tree));
 }
 
-void tree_free(tree_t tree)
+void tree_free(tree_t* tree)
 {
-    if(tree != NULL)
+    if(*tree != NULL)
     {
-        tree->destory(tree);
-        free(tree);
+        (*tree)->destory(*tree);
+        free(*tree);
     }
+    tree = NULL;
 }
-          

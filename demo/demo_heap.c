@@ -78,7 +78,7 @@ void demo_heap_num(void)
     {
         printf("----- empty -----\n");
     }
-    heap_free(heap);
+    heap_free(&heap);
 }
 
 static void demo_heap_struct(void)
@@ -144,7 +144,7 @@ static void demo_heap_struct(void)
     {
         printf("----- empty -----\n");
     }
-    heap_free(heap);
+    heap_free(&heap);
 }
 
 void demo_heap(void)

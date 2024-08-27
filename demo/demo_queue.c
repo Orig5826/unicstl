@@ -292,7 +292,7 @@ static void demo_queue_struct(void)
     queue->print(queue);
     printf("\n");
 
-    queue_free(queue);
+    queue_free(&queue);
 }
 
 

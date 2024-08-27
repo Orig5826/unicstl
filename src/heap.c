@@ -276,11 +276,12 @@ heap_t heap_new(void)
     return (struct _heap*)malloc(sizeof(struct _heap));
 }
 
-void heap_free(heap_t heap)
+void heap_free(heap_t* heap)
 {
-    if(heap)
+    if(*heap != NULL)
     {
-        heap->destory(heap);
-        free(heap);
+        (*heap)->destory(*heap);
+        free(*heap);
     }
+    heap = NULL;
 }

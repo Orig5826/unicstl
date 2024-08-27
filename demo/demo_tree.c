@@ -141,7 +141,7 @@ void demo_avltree_num(void)
         printf("----- empty -----\n");
     }
 
-    tree_free(tree);
+    tree_free(&tree);
 }
 
 static bool tree_rb_check_color(struct _tree *self, struct _tree_node* root, int black_num, int black_num_expected)
@@ -326,7 +326,7 @@ void demo_rbtree_num(void)
         printf("----- empty -----\n");
     }
 #endif
-    tree_free(tree);
+    tree_free(&tree);
 }
 
 /**
@@ -458,7 +458,7 @@ void demo_rbtree_struct(void)
         printf("----- empty -----\n");
     }
 #endif
-    tree_free(tree);
+    tree_free(&tree);
 }
 
 void demo_tree(void)

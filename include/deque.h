@@ -69,6 +69,6 @@ typedef struct _deque* deque_t;
 bool deque_init(struct _deque* self, uint32_t obj_size);
 
 deque_t deque_new(void);
-void deque_free(deque_t deque);
+void deque_free(deque_t* deque);
 
 #endif
