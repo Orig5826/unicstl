@@ -5,13 +5,6 @@ cmake_minimum_required(VERSION 3.29)
 # 0. 项目信息
 project(demo VERSION 0.0.01)
 
-# 1. 添加头文件路径
-include_directories(include)
-
-# 1. 添加子目录
-add_subdirectory(src)
-add_subdirectory(demo)
-
 # 2. 支持GDB
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g --std=c99")
@@ -19,3 +12,14 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall --std=c99")
 
 # install
 set(CMAKE_INSTALL_PREFIX "release")
+
+
+# 1. 添加头文件路径
+include_directories(include)
+include_directories(3rdparty/unicstl-unity/src)
+
+# 1. 添加子目录
+add_subdirectory(src)
+add_subdirectory(demo)
+add_subdirectory(3rdparty)
+add_subdirectory(test)

@@ -18,6 +18,7 @@
         "*.tcc": "c",
         "cstdlib": "c",
         "string.h": "c",
-        "demo.h": "c"
+        "demo.h": "c",
+        "unity.h": "c"
     }
 }

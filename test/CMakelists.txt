@@ -1,6 +1,6 @@
 
 # set the name of project
-project(demo)
+project(test)
 
 # include
 include_directories(.)
@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME} ${SRCS})
 target_link_libraries(
     ${PROJECT_NAME}
     unicstl
+    unity
 )
 
 # install 
