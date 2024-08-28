@@ -8,7 +8,7 @@
 #ifndef UNITY_INTERNALS_H
 #define UNITY_INTERNALS_H
 
-#define UNITY_INCLUDE_CONFIG_H  1
+#define UNITY_INCLUDE_CONFIG_H
 
 #ifdef UNITY_INCLUDE_CONFIG_H
 #include "unity_config.h"
@@ -546,18 +546,10 @@ extern struct UNITY_STORAGE_T Unity;
 void UnityBegin(const char* filename);
 int  UnityEnd(void);
 void UnitySetTestFile(const char* filename);
-#ifndef RUN_TEST_WITH_CURRENT_FILE
 void UnityConcludeTest(void);
-#else
-void UnityConcludeTest(const char *FileName);
-#endif
 
 #ifndef RUN_TEST
-#ifndef RUN_TEST_WITH_CURRENT_FILE
 void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int FuncLineNum);
-#else
-void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int FuncLineNum, const char* FileName);
-#endif
 #else
 #define UNITY_SKIP_DEFAULT_RUNNER
 #endif
@@ -825,13 +817,9 @@ extern const char UnityStrErrShorthand[];
 #ifndef RUN_TEST
 #ifdef UNITY_SUPPORT_VARIADIC_MACROS
 #define RUN_TEST(...) RUN_TEST_AT_LINE(__VA_ARGS__, __LINE__, throwaway)
-#ifndef RUN_TEST_WITH_CURRENT_FILE
-#define RUN_TEST_AT_LINE(func, line, ...) UnityDefaultTestRun(func, #func, line)
-#else
-#define RUN_TEST_AT_LINE(func, line, ...) UnityDefaultTestRun(func, #func, line, __FILE__)
-#endif // RUN_TEST_WITH_CURRENT_FILE
-#endif // UNITY_SUPPORT_VARIADIC_MACROS
-#endif // RUN_TEST
+#define RUN_TEST_AT_LINE(func, line, ...) UnitySetTestFile(__FILE__);UnityDefaultTestRun(func, #func, line)
+#endif
+#endif
 
 /* Enable default macros for masking param tests test cases */
 #ifdef UNITY_SUPPORT_TEST_CASES

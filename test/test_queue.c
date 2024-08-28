@@ -14,8 +14,10 @@ static void test_queue_destory(void)
 {
     queue_t queue = NULL;
     queue = queue_new();
-    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
     TEST_ASSERT_NOT_NULL(queue);
+
+    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
+    TEST_ASSERT_NULL(queue);
 
     queue_free(&queue);
     TEST_ASSERT_NULL(queue);

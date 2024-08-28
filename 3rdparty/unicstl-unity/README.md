@@ -1,16 +1,12 @@
 
 # 问题和解决方案
 
-## 1. 多文件打印测试文件路径不合理的问题
-新增宏定义，可放于unity_config.h中，用来让测试文件路径显示为当前测试文件，而不是主test.c文件。
-方便针对多文件测试，快速定位错误。
+## 1. 添加配置文件
+在unity_internals.h文件中添加了宏定义，方便使用unity_config.h文件。
 ```c
-#define RUN_TEST_WITH_CURRENT_FILE      1
+#define UNITY_INCLUDE_CONFIG_H
 ```
 
-另外，修改了两个函数，新增文件路径参数。
-```c
-void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int FuncLineNum, const char* FileName);
-
-void UnityConcludeTest(const char *FileName);
-```
+## 2. 多文件打印测试文件路径不合理的问题
+修改`RUN_TEST`宏，在测试文件路径前添加`__FILE__`。
+借助`UnitySetTestFile`函数，打印的路径信息对多文件测试也有效。
