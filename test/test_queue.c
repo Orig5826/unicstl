@@ -33,7 +33,7 @@ static void test_queue_init(void)
     TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
     TEST_ASSERT_FALSE(queue_init(queue, 0));
     TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
-    TEST_ASSERT_FALSE(queue_init(queue, sizeof(int)));     // The queue is only initialized once
+    TEST_ASSERT_TRUE(queue_init(queue, sizeof(char)));
     queue_free(&queue);
 
     // ------------------------------
@@ -42,7 +42,7 @@ static void test_queue_init(void)
     TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
     TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
     TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 1));
-    TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 1));  // The queue is only initialized once
+    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 5));
     queue_free(&queue);
 }
 
@@ -56,7 +56,8 @@ static void test_queue_push(void)
 
     queue_t queue = NULL;
 
-    // ------------------------------    queue = queue_new();
+    // ------------------------------
+    queue = queue_new();
     queue_init(queue, sizeof(int));
     TEST_ASSERT_TRUE(queue->empty(queue));
     for(i = 0; i < len; i++)

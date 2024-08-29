@@ -134,12 +134,15 @@ static bool queue_clear(struct _queue* self)
 static bool queue_empty(struct _queue* self)
 {
     assert(self != NULL);
-    return self->_size == 0;
+    assert(self->size != NULL);
+    return self->size(self) == 0;
 }
 
 static bool queue_full(struct _queue* self)
 {
     assert(self != NULL);
+    assert(self->size != NULL);
+    assert(self->capacity != NULL);
     return self->size(self) == self->capacity(self);
 }
 
@@ -307,12 +310,6 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
         return false;
     }
 
-    // The queue is only initialized once
-    if(queue->_obj_size != 0)
-    {
-        return false;
-    }
-
     // attribute init
     queue->_size = 0;
     queue->_obj_size = obj_size;
@@ -330,13 +327,19 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
     queue->empty = queue_empty;
     queue->full = queue_full;
     queue->size = queue_size;
+    queue->capacity = queue_capacity;
 
     queue->destory = queue_destory;
     queue->print = queue_print;
     
+    // 防止多次调用init导致内存泄漏
+    queue->destory(queue);
+
     // init front & back
     queue->_front = NULL;
     queue->_back = NULL;
+
+    return true;
 }
 
 bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
@@ -345,12 +348,6 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     // assert(obj_size > 0);
     // assert(capacity > 0);
     if(queue == NULL || obj_size == 0 || capacity == 0)
-    {
-        return false;
-    }
-
-    // The queue is only initialized once
-    if(queue->_obj_size != 0)
     {
         return false;
     }
@@ -376,6 +373,11 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
 
     queue->destory = queue2_destory;
     queue->print = queue2_print;
+
+    // 防止多次调用init导致内存泄漏
+    queue->_front = NULL;
+    queue->_back = NULL;
+    queue->destory(queue);
 
     // init front & back
     queue->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));

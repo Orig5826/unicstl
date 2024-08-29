@@ -58,10 +58,10 @@ int main()
     printf("----- unicstl demo -----\n");
     // while (1)
     {
-        demo_list();
+        // demo_list();
         // demo_stack();
         // demo_deque();
-        // demo_queue();
+        demo_queue();
         // demo_tree();
         // demo_heap();
     }
