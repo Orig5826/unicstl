@@ -25,9 +25,7 @@ static uint32_t stack_size(struct _stack* self)
 static bool stack_empty(struct _stack* self)
 {
     assert(self != NULL);
-    // assert(self->_head != NULL);
-    // return self->_head->next == NULL ? true : false;
-    return !stack_size(self);
+    return stack_size(self) == 0;
 }
 
 static bool stack_peek(struct _stack* self, void* obj)
@@ -105,10 +103,9 @@ static bool stack_pop(struct _stack* self, void* obj)
 static bool stack_clear(struct _stack* self)
 {
     assert(self != NULL);
-
     if (self->empty(self))
     {
-        return false;
+        return true;
     }
 
     struct _stack_node* node = self->_head->next;
@@ -149,42 +146,6 @@ static void stack_print(struct _stack* self)
     }
 }
 
-bool stack_init(struct _stack* self, uint32_t obj_size)
-{
-    assert(self != NULL);
-
-    // 1. set attr
-    self->_obj_size = obj_size;
-    self->_size = 0;
-    // self->_capacity = 64;		// 无效
-    // self->_ratio = 2;			// 无效
-    
-    // 2. set function
-    // kernel
-    self->peek = stack_peek;
-    self->pop = stack_pop;
-    self->push = stack_push;
-
-    // others
-    self->clear = stack_clear;
-    self->empty = stack_empty;
-    self->size = stack_size;
-    self->destory = stack_destory;
-    self->print = stack_print;
-
-    // 3. set node
-    self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
-    if (self->_head == NULL)
-    {
-        return false;
-    }
-    self->_head->obj = NULL;
-    self->_head->next = NULL;
-
-    return true;
-}
-
-
 static bool stack2_peek(struct _stack* self, void* obj)
 {
     assert(self != NULL);
@@ -208,9 +169,9 @@ static bool stack2_push(struct _stack* self, void* obj)
     assert(self->_head != NULL);
     assert(obj != NULL);
 
-    if (self->size(self) == self->_capacity)
+    if (self->size(self) == self->capacity(self))
     {
-        void* obj_new = (void*)realloc(self->_head->obj, self->_capacity * self->_obj_size * self->_ratio);
+        void* obj_new = (void*)realloc(self->_head->obj, self->capacity(self) * self->_obj_size * self->_ratio);
         if (obj_new == NULL)
         {
             return false;
@@ -281,6 +242,51 @@ static void stack2_print(struct _stack* self)
     }
 }
 
+
+bool stack_init(struct _stack* self, uint32_t obj_size)
+{
+    assert(self != NULL);
+    assert(obj_size != 0);
+    if(self == NULL || obj_size == 0)
+    {
+        return false;
+    }
+
+    // 1. set attr
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    self->_capacity = UINT32_MAX;
+    self->_ratio = 1;
+    
+    // 2. set function
+    // kernel
+    self->peek = stack_peek;
+    self->pop = stack_pop;
+    self->push = stack_push;
+
+    // base
+    self->empty = stack_empty;
+    self->size = stack_size;
+    self->capacity = stack_capacity;
+
+    // clear and free node
+    self->clear = stack_clear;
+    self->destory = stack_destory;
+    // print
+    self->print = stack_print;
+
+    // 3. set node
+    self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
+    if (self->_head == NULL)
+    {
+        return false;
+    }
+    self->_head->obj = NULL;
+    self->_head->next = NULL;
+
+    return true;
+}
+
 bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
@@ -298,10 +304,14 @@ bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
     self->push = stack2_push;
 
     // others
-    self->clear = stack_clear;
     self->empty = stack_empty;
     self->size = stack_size;
+    self->capacity = stack_capacity;
+
+    // clear and free node
+    self->clear = stack_clear;
     self->destory = stack2_destory;
+    // print
     self->print = stack2_print;
 
     // 3. set node
@@ -324,15 +334,19 @@ bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 
 stack_t stack_new(void)
 {
-    return (struct _stack*)malloc(sizeof(struct _stack));
+    return (struct _stack*)calloc(1, sizeof(struct _stack));
 }
 
 void stack_free(stack_t *stack)
 {
-    if(*stack)
+    assert(stack != NULL);
+    if(stack != NULL && *stack != NULL)
     {
-        (*stack)->destory(*stack);
+        if((*stack)->destory != NULL)
+        {
+            (*stack)->destory(*stack);
+        }
         free(*stack);
+        *stack = NULL;
     }
-    *stack = NULL;
 }

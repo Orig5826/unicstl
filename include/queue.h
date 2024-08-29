@@ -39,13 +39,14 @@ struct _queue
     bool (*back)(struct _queue* self, void* obj);
     bool (*front)(struct _queue* self, void* obj);
 
-    bool (*clear)(struct _queue* self);
+    // base
     bool (*empty)(struct _queue* self);
     bool (*full)(struct _queue* self);
     uint32_t (*size)(struct _queue* self);
     uint32_t (*capacity)(struct _queue* self);
-
-    // clear and free node pointer
+    
+    // clear and free node
+    bool (*clear)(struct _queue* self);
     void (*destory)(struct _queue* self);
 
     // print

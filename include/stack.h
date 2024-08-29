@@ -34,10 +34,11 @@ struct _stack
     bool (*pop)(struct _stack* self, void* obj);
 
     // base
-    uint32_t(*size)(struct _stack* self);
     bool (*empty)(struct _stack* self);
-
-    // others
+    uint32_t (*size)(struct _stack* self);
+    uint32_t (*capacity)(struct _stack* self);
+    
+    // clear and free node
     bool (*clear)(struct _stack* self);
     void (*destory)(struct _stack* self);
 

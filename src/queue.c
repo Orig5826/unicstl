@@ -117,6 +117,11 @@ static bool queue_front(struct _queue* self, void* obj)
 static bool queue_clear(struct _queue* self)
 {
     assert(self != NULL);
+    if(self->empty(self))
+    {
+        return true;
+    }
+
     struct _queue_node* node = self->_front;
     struct _queue_node* next = NULL;
     while (node)
@@ -301,97 +306,97 @@ static void queue2_print(struct _queue* self)
     }
 }
 
-bool queue_init(struct _queue * queue, uint32_t obj_size)
+bool queue_init(struct _queue * self, uint32_t obj_size)
 {
-    assert(queue != NULL);
+    assert(self != NULL);
     assert(obj_size > 0);
-    if(queue == NULL || obj_size == 0)
+    if(self == NULL || obj_size == 0)
     {
         return false;
     }
 
     // attribute init
-    queue->_size = 0;
-    queue->_obj_size = obj_size;
-    queue->_capacity = UINT32_MAX;
-    queue->_ratio = 1;
+    self->_size = 0;
+    self->_obj_size = obj_size;
+    self->_capacity = UINT32_MAX;
+    self->_ratio = 1;
 
     // function init
-    queue->push = queue_push;
-    queue->pop = queue_pop;
+    self->push = queue_push;
+    self->pop = queue_pop;
 
-    queue->back = queue_back;
-    queue->front = queue_front;
+    self->back = queue_back;
+    self->front = queue_front;
 
-    queue->clear = queue_clear;
-    queue->empty = queue_empty;
-    queue->full = queue_full;
-    queue->size = queue_size;
-    queue->capacity = queue_capacity;
+    self->clear = queue_clear;
+    self->empty = queue_empty;
+    self->full = queue_full;
+    self->size = queue_size;
+    self->capacity = queue_capacity;
 
-    queue->destory = queue_destory;
-    queue->print = queue_print;
+    self->destory = queue_destory;
+    self->print = queue_print;
     
     // init front & back
-    queue->_front = NULL;
-    queue->_back = NULL;
+    self->_front = NULL;
+    self->_back = NULL;
 
     return true;
 }
 
-bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
+bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(queue != NULL);
+    assert(self != NULL);
     assert(obj_size > 0);
     assert(capacity > 0);
-    if(queue == NULL || obj_size == 0 || capacity == 0)
+    if(self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
     }
 
     // attribute init
-    queue->_size = 0;
-    queue->_obj_size = obj_size;
-    queue->_capacity = capacity;
-    queue->_ratio = 2;
+    self->_size = 0;
+    self->_obj_size = obj_size;
+    self->_capacity = capacity;
+    self->_ratio = 2;
 
     // function init
-    queue->push = queue2_push;
-    queue->pop = queue2_pop;
+    self->push = queue2_push;
+    self->pop = queue2_pop;
 
-    queue->back = queue2_back;
-    queue->front = queue2_front;
+    self->back = queue2_back;
+    self->front = queue2_front;
 
-    queue->clear = queue2_clear;
-    queue->empty = queue_empty;
-    queue->full = queue_full;
-    queue->size = queue_size;
-    queue->capacity = queue_capacity;
+    self->clear = queue2_clear;
+    self->empty = queue_empty;
+    self->full = queue_full;
+    self->size = queue_size;
+    self->capacity = queue_capacity;
 
-    queue->destory = queue2_destory;
-    queue->print = queue2_print;
+    self->destory = queue2_destory;
+    self->print = queue2_print;
 
     // init front & back
-    queue->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
-    if(queue->_front == NULL)
+    self->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
+    if(self->_front == NULL)
     {
         goto done;
     }
-    queue->_back = queue->_front;
+    self->_back = self->_front;
 
-    // use queue->_front->obj as obj_array
-    // queue->_front->obj = calloc(queue->_capacity, queue->_obj_size);
-    queue->_front->obj = malloc(queue->_capacity * queue->_obj_size);
-    if(queue->_front->obj == NULL)
+    // use self->_front->obj as obj_array
+    // self->_front->obj = calloc(self->_capacity, self->_obj_size);
+    self->_front->obj = malloc(self->_capacity * self->_obj_size);
+    if(self->_front->obj == NULL)
     {
         goto done1;
     }
-    queue->_index_front = 0;
-    queue->_index_back = 0;
+    self->_index_front = 0;
+    self->_index_back = 0;
 
     return true;
 done1:
-    free(queue->_front);
+    free(self->_front);
 done:
     return false;
 }
@@ -403,10 +408,7 @@ queue_t queue_new(void)
 
 void queue_free(queue_t* queue)
 {
-    // assert(queue != NULL);
-    // assert(*queue != NULL);
-    // assert((*queue)->destory != NULL);
-
+    assert(queue != NULL);
     if(queue != NULL && *queue != NULL)
     {
         if((*queue)->destory != NULL)

@@ -73,8 +73,8 @@ int main(int argc, char const *argv[])
     printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
 
-    // test_stack();
     test_queue();
+    test_stack();
     
     return UNITY_END();
 }
