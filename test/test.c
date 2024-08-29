@@ -60,7 +60,9 @@ void print_str(void* obj)
 // --------------------------------------------------
 void setUp(void)
 {
-    // before each test
+    static uint32_t item_cnt = 1;
+    printf("[%4d] ", item_cnt);
+    item_cnt+=1;
 }
 
 void tearDown(void)
