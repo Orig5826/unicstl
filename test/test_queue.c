@@ -10,10 +10,67 @@
  */
 #include "test.h"
 
- /**
-  * @brief 单项队列测试
-  *
-  */
+static void test_queue_new(void)
+{
+    queue_t queue = NULL;
+    queue = queue_new();
+    TEST_ASSERT_NOT_NULL(queue);
+
+    queue_free(&queue);
+    TEST_ASSERT_NULL(queue);
+
+    queue_free(NULL);
+}
+
+static void test_queue_init(void)
+{
+    queue_t queue = NULL;
+
+    // ------------------------------
+    queue = queue_new();
+    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
+    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
+    TEST_ASSERT_FALSE(queue_init(queue, 0));
+    queue_free(&queue);
+
+    // ------------------------------
+    queue = queue_new();
+    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 1));
+    TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int),1 ));
+    TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
+    TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
+    queue_free(&queue);
+
+    queue_init2(queue, sizeof(int), 1);
+}
+
+static void test_queue_push(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    queue_t queue = NULL;
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init(queue, sizeof(int));
+    for(i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+    }
+    queue_free(&queue);
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init2(queue, sizeof(int), 10);
+
+    queue_free(&queue);
+}
+
+
+
 static void test_queue_num(void)
 {
     uint32_t i = 0;
@@ -254,6 +311,9 @@ static void test_queue2_fifo_num(void)
 void test_queue(void)
 {
     // TEST_MESSAGE("----- test_queue -----");
+    RUN_TEST(test_queue_new);
+    RUN_TEST(test_queue_init);
+
     RUN_TEST(test_queue_num);
     RUN_TEST(test_queue_struct);
 

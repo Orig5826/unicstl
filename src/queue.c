@@ -137,6 +137,10 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
 {
     assert(queue != NULL);
     assert(obj_size > 0);
+    if(queue == NULL || obj_size == 0)
+    {
+        return false;
+    }
 
     // attribute init
     queue->_size = 0;
@@ -297,6 +301,11 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
 {
     assert(queue != NULL);
     assert(obj_size > 0);
+    assert(capacity > 0);
+    if(queue == NULL || obj_size == 0 || capacity == 0)
+    {
+        return false;
+    }
 
     // attribute init
     queue->_size = 0;
@@ -321,7 +330,8 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     queue->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
     if(queue->_front == NULL)
     {
-        return false;
+        goto done;
+        // return false;
     }
     queue->_back = queue->_front;
 
@@ -329,23 +339,35 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     queue->_front->obj = calloc(queue->_capacity, queue->_obj_size);
     if(queue->_front->obj == NULL)
     {
-        return false;
+        goto done1;
+        // return false;
     }
     queue->_index_front = 0;
     queue->_index_back = 0;
+
+    return true;
+
+done1:
+    free(queue->_front);
+done:
+    return false;
 }
 
 queue_t queue_new(void)
 {
-    return (struct _queue *)malloc(sizeof(struct _queue));
+    return (struct _queue *)calloc(1, sizeof(struct _queue));
 }
 
 void queue_free(queue_t* queue)
 {
-    if(*queue != NULL)
+    // assert(queue != NULL);
+    if(queue != NULL && *queue != NULL)
     {
-        (*queue)->destory(*queue);
+        if((*queue)->destory != NULL)
+        {
+            (*queue)->destory(*queue);
+        }
         free(*queue);
+        *queue = NULL;
     }
-    *queue = NULL;
 }

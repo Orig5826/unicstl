@@ -11,6 +11,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#define NDEBUG 1
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
