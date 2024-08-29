@@ -258,6 +258,47 @@ static void test_queue_pop(void)
 }
 
 
+static void test_queue_clear(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    queue_t queue = NULL;
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init(queue, sizeof(int));
+    for(i = 0; i < len; i++)
+    {
+        queue->push(queue, &data[i]);
+    }
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    for(i = 0; i < len; i++)
+    {
+        queue->push(queue, &data[i]);
+    }
+    TEST_ASSERT_FALSE(queue->empty(queue));
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    queue_free(&queue);
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init2(queue, sizeof(int), len);
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    for(i = 0; i < len; i++)
+    {
+        queue->push(queue, &data[i]);
+    }
+    TEST_ASSERT_FALSE(queue->empty(queue));
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    queue_free(&queue);
+}
 
 
 static void test_queue_num(void)
@@ -466,32 +507,98 @@ static void test_queue2_num(void)
     TEST_ASSERT_NULL(queue);
 }
 
-static void test_queue2_fifo_num(void)
+static void test_queue2_struct(void)
 {
     uint32_t i = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t capacity = len - 1;
+    struct _student data[] = {
+        {"zhao", 1001}, {"qian", 1002}, {"sun", 1003}, {"li", 1004},
+        "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
+    };
+    struct _student temp;
+    uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+    uint32_t capacity = len - 2;
 
     queue_t queue = NULL;
     queue = queue_new();
     TEST_ASSERT_NOT_NULL(queue);
 
-    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), capacity));
+    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(struct _student), capacity));
+    queue->print_obj = print_struct;
+
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    TEST_ASSERT_FALSE(queue->full(queue));
+    TEST_ASSERT_FALSE(queue->front(queue, &temp));
+    TEST_ASSERT_FALSE(queue->back(queue, &temp));
 
     for (i = 0; i < len; i++)
     {
-        if (queue->size(queue) == capacity)
+        if(i < queue->capacity(queue))
         {
-            TEST_ASSERT_TRUE(queue->full(queue));
-            TEST_ASSERT_FALSE(queue->push(queue, &data[i]));
+            TEST_ASSERT_FALSE(queue->full(queue));
+
+            TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+            TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
         }
         else
         {
-            TEST_ASSERT_FALSE(queue->full(queue));
-            TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+            TEST_ASSERT_TRUE(queue->full(queue));
+
+            TEST_ASSERT_FALSE(queue->push(queue, &data[i]));
         }
+
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[queue->size(queue) - 1].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[queue->size(queue) - 1].name, temp.name);
+    }
+
+    TEST_ASSERT_FALSE(queue->empty(queue));
+    TEST_ASSERT_TRUE(queue->clear(queue));
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    for (i = 0; i < len; i++)
+    {
+        if(i < queue->capacity(queue))
+        {
+            TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+            TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->push(queue, &data[i]));
+        }
+    }
+
+    for(i = 0; i < len; i++)
+    {
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->pop(queue, &temp));
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->pop(queue, &temp));
+        }
+
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->front(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[i + 1].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[i + 1].name, temp.name);
+
+            TEST_ASSERT_TRUE(queue->back(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[queue->capacity(queue) - 1].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[queue->capacity(queue) - 1].name, temp.name);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->front(queue, &temp));
+            TEST_ASSERT_FALSE(queue->back(queue, &temp));
+        }
+
+        TEST_ASSERT_FALSE(queue->full(queue));
     }
     queue_free(&queue);
     TEST_ASSERT_NULL(queue);
@@ -510,5 +617,5 @@ void test_queue(void)
     RUN_TEST(test_queue_struct);
 
     RUN_TEST(test_queue2_num);
-    RUN_TEST(test_queue2_fifo_num);
+    RUN_TEST(test_queue2_struct);
 }
