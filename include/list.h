@@ -30,14 +30,17 @@ struct _list
     int (*index)(struct _list* self, void* obj);						// Return first index of obj. Return -1 if the obj is not present.
     bool (*remove)(struct _list* self, void *obj);						// Remove first occurrence of obj.
 
-    bool (*clear)(struct _list* self);									// Remove all items from list.
-
     bool (*get)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
     bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
 
     // base
     uint32_t(*size)(struct _list* self);
     bool (*empty)(struct _list* self);
+
+    // clear and free node
+    bool (*clear)(struct _list* self);
+    void (*destory)(struct _list* self);
+
 
     // sort
     bool (*reverse)(struct _list* self);		// Reverse *IN PLACE*.
@@ -49,9 +52,6 @@ struct _list
         The reverse flag can be set to sort in descending order.
     */
     bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
-
-    // free
-    void (*destory)(struct _list* self);
 
     // print
     void (*print)(struct _list* self);

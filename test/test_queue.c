@@ -633,7 +633,6 @@ static void test_queue2_struct(void)
 
 void test_queue(void)
 {
-    // TEST_MESSAGE("----- test_queue -----");
     RUN_TEST(test_queue_init);
     RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_push);

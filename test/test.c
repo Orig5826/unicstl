@@ -60,8 +60,9 @@ void print_str(void* obj)
 // --------------------------------------------------
 void setUp(void)
 {
+    // before each test
     static uint32_t item_cnt = 1;
-    printf("[%4d] ", item_cnt);
+    printf("# %d. ", item_cnt);
     item_cnt+=1;
 }
 
@@ -70,13 +71,16 @@ void tearDown(void)
     // after each test
 }
 
+#define TEST_ADD(name)  printf("\n----- " #name " -----\n"); name();
+
 int main(int argc, char const *argv[])
 {
     printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
 
-    test_queue();
-    test_stack();
+    TEST_ADD(test_queue);
+    TEST_ADD(test_stack);
+    TEST_ADD(test_list);
     
     return UNITY_END();
 }

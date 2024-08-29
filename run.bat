@@ -1,1 +1,1 @@
-start /b /wait build/release/bin/test.exe
+start /b /wait build/release/bin/demo.exe

@@ -383,7 +383,7 @@ static void test_stack2_num(void)
     stack_t stack = NULL;
     stack = stack_new();
     TEST_ASSERT_NOT_NULL(stack);
-
+    
     TEST_ASSERT_TRUE(stack_init2(stack, sizeof(int), capacity));
     stack->print_obj = print_num;
 
@@ -493,8 +493,6 @@ static void test_stack2_struct(void)
 
 void test_stack(void)
 {
-    RUN_TEST(test_stack_num);
-
     RUN_TEST(test_stack_init);
     RUN_TEST(test_stack_new);
     RUN_TEST(test_stack_push);

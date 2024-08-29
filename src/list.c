@@ -182,6 +182,12 @@ void list_print(struct _list* self)
 bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
     assert(list != NULL);
+    assert(obj_size > 0);
+    assert(capacity > 0);
+    if(list == NULL || obj_size == 0 || capacity == 0)
+    {
+        return false;
+    }
 
     // 1. set attr
     list->_obj_size = obj_size;
@@ -222,10 +228,14 @@ list_t list_new(void)
 
 void list_free(list_t* list)
 {
-    if(*list != NULL)
+    assert(list != NULL);
+    if(list != NULL && *list != NULL)
     {
-        (*list)->destory(*list);
+        if((*list)->destory != NULL)
+        {
+            (*list)->destory(*list);
+        }
         free(*list);
+        *list = NULL;
     }
-    *list = NULL;
 }
