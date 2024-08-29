@@ -40,9 +40,8 @@ static void test_queue_init(void)
     TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
     TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
     queue_free(&queue);
-
-    queue_init2(queue, sizeof(int), 1);
 }
+
 
 static void test_queue_push(void)
 {
@@ -59,13 +58,55 @@ static void test_queue_push(void)
     for(i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
     }
     queue_free(&queue);
 
     // ------------------------------
     queue = queue_new();
-    queue_init2(queue, sizeof(int), 10);
+    queue_init2(queue, sizeof(int), len);
+    for(i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
 
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    queue_free(&queue);
+
+    // ------------------------------
+    // if capacity is less than data len
+    uint32_t capacity = len - 1;
+    queue = queue_new();
+    queue_init2(queue, sizeof(int), capacity);
+    for(i = 0; i < len; i++)
+    {
+        if(i == capacity - 1)
+        {
+            TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+            TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+
+            TEST_ASSERT_TRUE(queue->front(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+            TEST_ASSERT_TRUE(queue->back(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[i], temp);
+        }
+        else
+        {
+            
+        }
+    }
     queue_free(&queue);
 }
 
@@ -313,6 +354,7 @@ void test_queue(void)
     // TEST_MESSAGE("----- test_queue -----");
     RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_init);
+    RUN_TEST(test_queue_push);
 
     RUN_TEST(test_queue_num);
     RUN_TEST(test_queue_struct);

@@ -10,6 +10,30 @@
  */
 #include "queue.h"
 
+static struct _queue_node * queue_node_new(void* obj, uint32_t obj_size)
+{
+    void * obj_new = malloc(obj_size);
+    if (obj_new == NULL)
+    {
+        goto done;
+    }
+    memmove(obj_new, obj, obj_size);
+
+    struct _queue_node* node_new = (struct _queue_node*)malloc(sizeof(struct _queue_node));
+    if(node_new == NULL)
+    {
+        goto done1;
+    }
+    node_new->obj = obj_new;
+    node_new->next = NULL;
+
+    return node_new;
+done1:
+    free(obj_new);
+done:
+    return NULL;
+}
+
 bool queue_push(struct _queue* self, void* obj)
 {
     assert(self != NULL);
@@ -18,14 +42,14 @@ bool queue_push(struct _queue* self, void* obj)
     void * obj_new = malloc(self->_obj_size);
     if (obj_new == NULL)
     {
-        return false;
+        goto done;
     }
     memmove(obj_new, obj, self->_obj_size);
 
     struct _queue_node* node_new = (struct _queue_node*)malloc(sizeof(struct _queue_node));
     if(node_new == NULL)
     {
-        return false;
+        goto done1;
     }
     node_new->obj = obj_new;
     node_new->next = NULL;
@@ -41,7 +65,12 @@ bool queue_push(struct _queue* self, void* obj)
         self->_back = node_new;
     }
     self->_size++;
+
     return true;
+done1:
+    free(obj_new);
+done:
+    return false;
 }
 
 bool queue_pop(struct _queue* self, void* obj)
