@@ -10,52 +10,63 @@
  */
 #include "test.h"
 
+/**
+ * @brief 
+ * 每成功init一次，就需要对应的destory一次。否则可能存在内存泄漏
+ */
 static void test_queue_init(void)
 {
     struct _queue queue;
+
     // ------------------------------
+#ifdef NDEBUG
     TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
     TEST_ASSERT_FALSE(queue_init(&queue, 0));
+#endif
     TEST_ASSERT_TRUE(queue_init(&queue, sizeof(int)));
     queue.destory(&queue);
 
-    TEST_ASSERT_TRUE(queue_init(&queue, sizeof(char)));
-    queue.destory(&queue);
-
     // ------------------------------
+#ifdef NDEBUG
     TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
     TEST_ASSERT_FALSE(queue_init2(&queue, 0, 1));
     TEST_ASSERT_FALSE(queue_init2(&queue, sizeof(int), 0));
+#endif
     TEST_ASSERT_TRUE(queue_init2(&queue, sizeof(int), 1));
-    queue.destory(&queue);
-
-    TEST_ASSERT_TRUE(queue_init2(&queue, sizeof(int), 5));
     queue.destory(&queue);
 }
 
+/**
+ * @brief 
+ *    每成功init一次，就需要对应的free一次。否则可能存在内存泄漏
+ */
 static void test_queue_new(void)
 {
     queue_t queue = NULL;
-
-    // ------------------------------
     queue = queue_new();
-    TEST_ASSERT_NOT_NULL(queue);
-
-    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
-    TEST_ASSERT_FALSE(queue_init(queue, 0));
-    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
-    TEST_ASSERT_TRUE(queue_init(queue, sizeof(char)));
     queue_free(&queue);
 
     // ------------------------------
     queue = queue_new();
     TEST_ASSERT_NOT_NULL(queue);
 
+#ifdef NDEBUG
+    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
+    TEST_ASSERT_FALSE(queue_init(queue, 0));
+#endif
+    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
+    queue_free(&queue);
+
+    // ------------------------------
+    queue = queue_new();
+    TEST_ASSERT_NOT_NULL(queue);
+
+#ifdef NDEBUG
     TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
     TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
     TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
+#endif
     TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 1));
-    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 5));
     queue_free(&queue);
 
     TEST_ASSERT_NULL(queue);

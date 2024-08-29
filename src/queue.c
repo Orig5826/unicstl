@@ -303,8 +303,8 @@ static void queue2_print(struct _queue* self)
 
 bool queue_init(struct _queue * queue, uint32_t obj_size)
 {
-    // assert(queue != NULL);
-    // assert(obj_size > 0);
+    assert(queue != NULL);
+    assert(obj_size > 0);
     if(queue == NULL || obj_size == 0)
     {
         return false;
@@ -341,9 +341,9 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
 
 bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
 {
-    // assert(queue != NULL);
-    // assert(obj_size > 0);
-    // assert(capacity > 0);
+    assert(queue != NULL);
+    assert(obj_size > 0);
+    assert(capacity > 0);
     if(queue == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
@@ -398,13 +398,15 @@ done:
 
 queue_t queue_new(void)
 {
-    // return (struct _queue *)calloc(1, sizeof(struct _queue));
-    return (struct _queue *)malloc(sizeof(struct _queue));
+    return (struct _queue *)calloc(1, sizeof(struct _queue));
 }
 
 void queue_free(queue_t* queue)
 {
     // assert(queue != NULL);
+    // assert(*queue != NULL);
+    // assert((*queue)->destory != NULL);
+
     if(queue != NULL && *queue != NULL)
     {
         if((*queue)->destory != NULL)
