@@ -116,8 +116,147 @@ static void test_queue_push(void)
         }
     }
     queue_free(&queue);
-    // queue->empty(queue);
 }
+
+static void test_queue_pop(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    queue_t queue = NULL;
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init(queue, sizeof(int));
+    for(i = 0; i < len; i++)
+    {
+        queue->push(queue, &data[i]);
+    }
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+
+        TEST_ASSERT_TRUE(queue->pop(queue, &temp));
+
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->front(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[i + 1], temp);
+
+            TEST_ASSERT_TRUE(queue->back(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->front(queue, &temp));
+            TEST_ASSERT_FALSE(queue->back(queue, &temp));
+        }
+
+        TEST_ASSERT_FALSE(queue->full(queue));
+    }
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    TEST_ASSERT_FALSE(queue->pop(queue, &temp));
+    queue_free(&queue);
+
+    // ------------------------------
+    queue = queue_new();
+    queue_init2(queue, sizeof(int), len);
+    for(i = 0; i < len; i++)
+    {
+        queue->push(queue, &data[i]);
+    }
+    TEST_ASSERT_TRUE(queue->full(queue));
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+
+        TEST_ASSERT_TRUE(queue->pop(queue, &temp));
+
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->front(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[i + 1], temp);
+
+            TEST_ASSERT_TRUE(queue->back(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->front(queue, &temp));
+            TEST_ASSERT_FALSE(queue->back(queue, &temp));
+        }
+
+        TEST_ASSERT_FALSE(queue->full(queue));
+    }
+    TEST_ASSERT_TRUE(queue->empty(queue));
+    TEST_ASSERT_FALSE(queue->pop(queue, &temp));
+    queue_free(&queue);
+
+    // ------------------------------
+    // if capacity is less than data len
+    queue = queue_new();
+    queue_init2(queue, sizeof(int), len - 2);
+    for(i = 0; i < len; i++)
+    {
+        if(i < queue->capacity(queue))
+        {
+            TEST_ASSERT_FALSE(queue->full(queue));
+
+            TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+            TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+        }
+        else
+        {
+            TEST_ASSERT_TRUE(queue->full(queue));
+
+            TEST_ASSERT_FALSE(queue->push(queue, &data[i]));
+            TEST_ASSERT_EQUAL_INT(queue->capacity(queue), queue->size(queue));
+        }
+    }
+    TEST_ASSERT_TRUE(queue->full(queue));
+    uint32_t capacity = queue->capacity(queue);
+    for (i = 0; i < len; i++)
+    {
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->pop(queue, &temp));
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->pop(queue, &temp));
+        }
+
+        if (!queue->empty(queue))
+        {
+            TEST_ASSERT_TRUE(queue->front(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[i + 1], temp);
+
+            TEST_ASSERT_TRUE(queue->back(queue, &temp));
+            TEST_ASSERT_EQUAL_INT(data[capacity - 1], temp);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(queue->pop(queue, &temp));
+
+            TEST_ASSERT_FALSE(queue->front(queue, &temp));
+            TEST_ASSERT_FALSE(queue->back(queue, &temp));
+        }
+
+        TEST_ASSERT_FALSE(queue->full(queue));
+    }
+    queue_free(&queue);
+}
+
 
 
 
@@ -364,6 +503,8 @@ void test_queue(void)
     RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_init);
     RUN_TEST(test_queue_push);
+    RUN_TEST(test_queue_pop);
+    RUN_TEST(test_queue_clear);
 
     RUN_TEST(test_queue_num);
     RUN_TEST(test_queue_struct);

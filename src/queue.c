@@ -138,6 +138,12 @@ static bool queue_empty(struct _queue* self)
     return self->_size == 0;
 }
 
+static bool queue_full(struct _queue* self)
+{
+    assert(self != NULL);
+    return false;
+}
+
 static uint32_t queue_size(struct _queue* self)
 {
     assert(self != NULL);
@@ -193,6 +199,7 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
     queue->size = queue_size;
     queue->destory = queue_destory;
     queue->print = queue_print;
+    queue->full = queue_full;
 
     // init front & back
     queue->_front = NULL;
