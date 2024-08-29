@@ -41,11 +41,11 @@ struct _queue
 
     bool (*clear)(struct _queue* self);
     bool (*empty)(struct _queue* self);
-    bool (*full)(struct _queue* self);      // only for queue2
+    bool (*full)(struct _queue* self);
     uint32_t (*size)(struct _queue* self);
     uint32_t (*capacity)(struct _queue* self);
 
-    // free
+    // clear and free node pointer
     void (*destory)(struct _queue* self);
 
     // print

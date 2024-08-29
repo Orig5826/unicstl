@@ -56,8 +56,7 @@ static void test_queue_push(void)
 
     queue_t queue = NULL;
 
-    // ------------------------------
-    queue = queue_new();
+    // ------------------------------    queue = queue_new();
     queue_init(queue, sizeof(int));
     TEST_ASSERT_TRUE(queue->empty(queue));
     for(i = 0; i < len; i++)

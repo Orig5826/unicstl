@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include <assert.h>
 
 #endif // _COMMON_H_
