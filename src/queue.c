@@ -332,9 +332,6 @@ bool queue_init(struct _queue * queue, uint32_t obj_size)
     queue->destory = queue_destory;
     queue->print = queue_print;
     
-    // 防止多次调用init导致内存泄漏
-    queue->destory(queue);
-
     // init front & back
     queue->_front = NULL;
     queue->_back = NULL;
@@ -374,11 +371,6 @@ bool queue_init2(struct _queue * queue, uint32_t obj_size, uint32_t capacity)
     queue->destory = queue2_destory;
     queue->print = queue2_print;
 
-    // 防止多次调用init导致内存泄漏
-    queue->_front = NULL;
-    queue->_back = NULL;
-    queue->destory(queue);
-
     // init front & back
     queue->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
     if(queue->_front == NULL)
@@ -406,7 +398,8 @@ done:
 
 queue_t queue_new(void)
 {
-    return (struct _queue *)calloc(1, sizeof(struct _queue));
+    // return (struct _queue *)calloc(1, sizeof(struct _queue));
+    return (struct _queue *)malloc(sizeof(struct _queue));
 }
 
 void queue_free(queue_t* queue)

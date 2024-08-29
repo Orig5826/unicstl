@@ -10,26 +10,37 @@
  */
 #include "test.h"
 
-static void test_queue_new(void)
+static void test_queue_init(void)
 {
-    queue_t queue = NULL;
-    queue = queue_new();
-    TEST_ASSERT_NOT_NULL(queue);
+    struct _queue queue;
+    // ------------------------------
+    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
+    TEST_ASSERT_FALSE(queue_init(&queue, 0));
+    TEST_ASSERT_TRUE(queue_init(&queue, sizeof(int)));
+    queue.destory(&queue);
 
-    queue_free(&queue);
-    TEST_ASSERT_NULL(queue);
+    TEST_ASSERT_TRUE(queue_init(&queue, sizeof(char)));
+    queue.destory(&queue);
 
-    TEST_ASSERT_NOT_NULL(&queue);
-    queue_free(&queue);
-    queue_free(NULL);
+    // ------------------------------
+    TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
+    TEST_ASSERT_FALSE(queue_init2(&queue, 0, 1));
+    TEST_ASSERT_FALSE(queue_init2(&queue, sizeof(int), 0));
+    TEST_ASSERT_TRUE(queue_init2(&queue, sizeof(int), 1));
+    queue.destory(&queue);
+
+    TEST_ASSERT_TRUE(queue_init2(&queue, sizeof(int), 5));
+    queue.destory(&queue);
 }
 
-static void test_queue_init(void)
+static void test_queue_new(void)
 {
     queue_t queue = NULL;
 
     // ------------------------------
     queue = queue_new();
+    TEST_ASSERT_NOT_NULL(queue);
+
     TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
     TEST_ASSERT_FALSE(queue_init(queue, 0));
     TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
@@ -38,12 +49,17 @@ static void test_queue_init(void)
 
     // ------------------------------
     queue = queue_new();
+    TEST_ASSERT_NOT_NULL(queue);
+
     TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
     TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
     TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
     TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 1));
     TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 5));
     queue_free(&queue);
+
+    TEST_ASSERT_NULL(queue);
+    queue_free(&queue); // queue_free(NULL);
 }
 
 
@@ -607,8 +623,8 @@ static void test_queue2_struct(void)
 void test_queue(void)
 {
     // TEST_MESSAGE("----- test_queue -----");
-    RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_init);
+    RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_push);
     RUN_TEST(test_queue_pop);
     RUN_TEST(test_queue_clear);
