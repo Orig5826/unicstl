@@ -60,12 +60,12 @@ void print_str(void* obj)
 // --------------------------------------------------
 void setUp(void)
 {
-    // printf("\n----- ≤‚ ‘ø™ º -----\n");
+    // before each test
 }
 
 void tearDown(void)
 {
-    // printf("\n----- ≤‚ ‘Ω· ¯ -----\n");
+    // after each test
 }
 
 int main(int argc, char const *argv[])
@@ -76,6 +76,5 @@ int main(int argc, char const *argv[])
     test_stack();
     test_queue();
     
-    UNITY_END();
-    return 0;
+    return UNITY_END();
 }
