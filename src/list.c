@@ -181,19 +181,25 @@ void list_print(struct _list* self)
 
 void* list_begin(struct _list* self)
 {
+    self->_cur = 0;
     return self->obj;
-}
-
-void* list_next(struct _list* self)
-{
-    void *obj = (char*)self->obj + self->_cur * self->_obj_size;
-    self->_cur += 1;
-    return obj;
 }
 
 void* list_end(struct _list* self)
 {
     return (char*)self->obj + self->_size * self->_obj_size;
+}
+
+void* list_next(struct _list* self)
+{
+    void *obj = NULL;
+    // 加了判断之后，回不到下一个了
+    // if(self->_cur < self->_size - 1)
+    {
+        self->_cur += 1;
+    }
+    obj = (char*)self->obj + self->_cur * self->_obj_size;
+    return obj;
 }
 
 bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
@@ -235,7 +241,8 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     list->end = list_end;
 
     // 3. set array
-    list->obj = (void*)calloc(list->_capacity, list->_obj_size);
+    // list->obj = (void*)calloc(list->_capacity, list->_obj_size);
+    list->obj = (void*)malloc(list->_capacity * list->_obj_size);
     if (list->obj == NULL)
     {
         return false;

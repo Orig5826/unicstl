@@ -401,10 +401,12 @@ static void test_list2_struct(void)
 static void test_list_iter(void)
 {
     int temp = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    int data_temp[32];
-    uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+    int data[32] = { 1,2,3,4,5,6,7,8,9,10 };
+    // uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t len = 10;
     uint32_t i = 0;
+    int buff[32];
+    int count = 0;
 
     list_t list = NULL;
 
@@ -418,12 +420,21 @@ static void test_list_iter(void)
     }
 
     int * iter = NULL;
-    i = 0;
-    for(iter = list->begin(list); iter != list->end(list); iter = list->next(list))
+    
+    iter = list->begin(list);
+    for(count = 0, i = 0; i < len + 12; i++)
     {
-        data_temp[i++] = *iter;
+        if(i < len)
+        {
+            TEST_ASSERT_EQUAL_INT(data[i % len], *iter);
+        }
+        iter = list->next(list);
     }
-    TEST_ASSERT_EQUAL_INT_ARRAY(data, data_temp, i);
+    for(count=0, iter = list->begin(list); iter != list->end(list); iter = list->next(list))
+    {
+        buff[count++] = *iter;
+    }
+    TEST_ASSERT_EQUAL_INT_ARRAY(data, buff, count);
 
     TEST_ASSERT_FALSE(list->empty(list));
     TEST_ASSERT_TRUE(list->clear(list));
