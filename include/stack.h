@@ -29,13 +29,13 @@ struct _stack
     uint32_t _ratio;
 
     // kernel
-    bool (*peek)(struct _stack* self, void* obj);
     bool (*push)(struct _stack* self, void* obj);
     bool (*pop)(struct _stack* self, void* obj);
+    bool (*peek)(struct _stack* self, void* obj);
 
     // base
-    bool (*empty)(struct _stack* self);
     uint32_t (*size)(struct _stack* self);
+    bool (*empty)(struct _stack* self);
     uint32_t (*capacity)(struct _stack* self);
     
     // clear and free node
