@@ -1,7 +1,6 @@
 
 
 # tree
-日志
 ```
 ----- unicstl test -----
 

@@ -1,11 +1,11 @@
 
-# 0. cmake ×îµÍ°æ±¾ºÅÒªÇó
+# 0. cmake æœ€ä½ç‰ˆæœ¬å·è¦æ±‚
 cmake_minimum_required(VERSION 3.29)
 
-# 0. ÏîÄ¿ĞÅÏ¢
+# 0. é¡¹ç›®ä¿¡æ¯
 project(demo VERSION 0.0.01)
 
-# 2. Ö§³ÖGDB
+# 2. æ”¯æŒGDB
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g --std=c99")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall --std=c99")
@@ -14,11 +14,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall --std=c99")
 set(CMAKE_INSTALL_PREFIX "release")
 
 
-# 1. Ìí¼ÓÍ·ÎÄ¼şÂ·¾¶
+# 1. æ·»åŠ å¤´æ–‡ä»¶è·¯å¾„
 include_directories(include)
 include_directories(3rdparty/unicstl-unity/src)
 
-# 1. Ìí¼Ó×ÓÄ¿Â¼
+# 1. æ·»åŠ å­ç›®å½•
 add_subdirectory(src)
 add_subdirectory(demo)
 add_subdirectory(3rdparty)

@@ -1,6 +1,6 @@
 {
     "cmake.configureOnOpen": true,
-    "files.encoding": "gb18030",
+    "files.encoding": "utf8",
     "files.associations": {
         "common.h": "c",
         "unicstl.h": "c",

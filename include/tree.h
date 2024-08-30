@@ -36,12 +36,12 @@ struct _tree
 {
     struct _tree_node * _root;
 
-    uint32_t _size;				// 栈大小
-    uint32_t _obj_size;			// 元素大小
-    uint32_t _capacity;			// 总容量
-    uint32_t _ratio;			// 扩展比率
+    uint32_t _size;
+    uint32_t _obj_size;
+    uint32_t _capacity;
+    uint32_t _ratio;
 
-    bool _right_priority;		// 右优先
+    bool _right_priority;
 
     // kernel
     bool (*insert)(struct _tree* self, void* obj);

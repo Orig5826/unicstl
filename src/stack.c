@@ -85,14 +85,10 @@ static bool stack_pop(struct _stack* self, void* obj)
 
     if (obj != NULL)
     {
-        // 将弹出的数据输出
         memmove(obj, node->obj, self->_obj_size);
     }
-
-    // 更新指针
     self->_head->next = node->next;
 
-    // 释放数据和节点
     free(node->obj);
     free(node);
 
@@ -111,10 +107,8 @@ static bool stack_clear(struct _stack* self)
     struct _stack_node* node = self->_head->next;
     while (node != NULL)
     {
-        // 更新指针
         self->_head->next = node->next;
 
-        // 释放数据和节点
         free(node->obj);
         free(node);
 
@@ -321,7 +315,7 @@ bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
         return false;
     }
     // self->_head->obj = NULL;
-    self->_head->next = NULL;		// 无效参数
+    self->_head->next = NULL;
 
     // 4. set array
     self->_head->obj = (void *)calloc(self->_capacity, self->_obj_size);

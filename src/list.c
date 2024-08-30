@@ -61,7 +61,7 @@ bool list_insert(struct _list* self, int index, void* obj)
 bool list_pop(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
-    assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));		// list空的时候也会报错，太严格了有点
+    assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
 
     if (self->empty(self))
     {
@@ -193,7 +193,7 @@ void* list_end(struct _list* self)
 void* list_next(struct _list* self)
 {
     void *obj = NULL;
-    // 加了判断之后，回不到下一个了
+    // if add this, can't go to end
     // if(self->_cur < self->_size - 1)
     {
         self->_cur += 1;

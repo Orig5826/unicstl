@@ -27,10 +27,10 @@ struct _queue
     uint32_t _index_front;
     uint32_t _index_back;
 
-    uint32_t _obj_size;			// 元素大小
-    uint32_t _size;				// 栈大小
-    uint32_t _capacity;			// 总容量
-    uint32_t _ratio;			// 扩展比率
+    uint32_t _obj_size;
+    uint32_t _size;
+    uint32_t _capacity;
+    uint32_t _ratio;
 
     // kernel
     bool (*push)(struct _queue* self, void* obj);

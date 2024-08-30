@@ -23,10 +23,10 @@ struct _stack
 {
     struct _stack_node * _head;
     
-    uint32_t _size;				// 栈大小
-    uint32_t _obj_size;			// 元素大小
-    uint32_t _capacity;			// 总容量
-    uint32_t _ratio;			// 扩展比率
+    uint32_t _size;
+    uint32_t _obj_size;
+    uint32_t _capacity;
+    uint32_t _ratio;
 
     // kernel
     bool (*peek)(struct _stack* self, void* obj);

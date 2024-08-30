@@ -22,13 +22,13 @@ struct _deque_node
 
 struct _deque
 {
-    struct _deque_node* _head;  // 头节点
-    struct _deque_node* _tail;  // 尾节点
+    struct _deque_node* _head;
+    struct _deque_node* _tail;
 
-    uint32_t _obj_size;         // 元素大小
-    uint32_t _size;             // 栈大小
-    // uint32_t _capacity;         // 总容量
-    // uint32_t _ratio;            // 扩展比率
+    uint32_t _obj_size;
+    uint32_t _size;
+    // uint32_t _capacity;
+    // uint32_t _ratio;
 
     // kernel
     bool (*push_back)(struct _deque* self, void* obj);

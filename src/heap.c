@@ -76,7 +76,7 @@ static void heap_fixed_up(struct _heap* self, int i)
         while(1)
         {
             p = parent(i);
-            // 若当前节点大于其父节点，则交换位置，否则退出循环
+            // if current node is greater than its parent, swap the position. otherwise break out of loop
             if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) <= 0)
             {
                 break;
@@ -90,7 +90,7 @@ static void heap_fixed_up(struct _heap* self, int i)
         while(1)
         {
             p = parent(i);
-            // 若当前节点大于其父节点，则交换位置，否则退出循环
+            // if current node is less than its parent, swap the position. otherwise break out of loop
             if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) >= 0)
             {
                 break;

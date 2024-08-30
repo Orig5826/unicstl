@@ -10,10 +10,6 @@
  */
 #include "test.h"
 
-/**
- * @brief 
- * 每成功init一次，就需要对应的destory一次。否则可能存在内存泄漏
- */
 static void test_queue_init(void)
 {
     struct _queue queue;
@@ -36,10 +32,6 @@ static void test_queue_init(void)
     queue.destory(&queue);
 }
 
-/**
- * @brief 
- *    每成功init一次，就需要对应的free一次。否则可能存在内存泄漏
- */
 static void test_queue_new(void)
 {
     queue_t queue = NULL;

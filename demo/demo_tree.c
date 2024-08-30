@@ -10,7 +10,7 @@
  */
 #include "demo.h"
 
-// vs2022 ±‡“Î≥ÂÕª
+// if vs2022 has error: 'max': macro redefinition
 #ifdef max
 #undef max
 #endif

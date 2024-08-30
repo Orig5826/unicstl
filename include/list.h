@@ -17,22 +17,22 @@ struct _list
 {
     void * obj;
 
-    uint32_t _obj_size;			// 元素大小
-    uint32_t _size;				// 栈大小
-    uint32_t _capacity;			// 总容量
-    uint32_t _ratio;			// 扩展比率
-    uint32_t _cur;              // 当前索引
+    uint32_t _obj_size;
+    uint32_t _size;
+    uint32_t _capacity;
+    uint32_t _ratio;
+    uint32_t _cur;
 
     // kernel
-    bool (*append)(struct _list* self, void* obj);						// Append object to the end of the list.
-    bool (*insert)(struct _list* self, int index, void* obj);			// Insert object before index.
-    bool (*pop)(struct _list* self, int index, void* obj);				// Remove and return item at index.
+    bool (*append)(struct _list* self, void* obj);                      // Append object to the end of the list.
+    bool (*insert)(struct _list* self, int index, void* obj);           // Insert object before index.
+    bool (*pop)(struct _list* self, int index, void* obj);              // Remove and return item at index.
     
-    int (*index)(struct _list* self, void* obj);						// Return first index of obj. Return -1 if the obj is not present.
-    bool (*remove)(struct _list* self, void *obj);						// Remove first occurrence of obj.
+    int (*index)(struct _list* self, void* obj);                        // Return first index of obj. Return -1 if the obj is not present.
+    bool (*remove)(struct _list* self, void *obj);                      // Remove first occurrence of obj.
 
-    bool (*get)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
-    bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
+    bool (*get)(struct _list* self, int index, void* obj);
+    bool (*set)(struct _list* self, int index, void* obj);
 
     // iter
     void* (*begin)(struct _list* self);
@@ -49,7 +49,7 @@ struct _list
 
 
     // sort
-    bool (*reverse)(struct _list* self);		// Reverse *IN PLACE*.
+    bool (*reverse)(struct _list* self);        // Reverse *IN PLACE*.
 
     /**
         Sort the list in ascending order and return false.

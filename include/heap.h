@@ -17,12 +17,12 @@ struct _heap
 {
     void * obj;
 
-    uint32_t _size;             // 栈大小
-    uint32_t _obj_size;         // 元素大小
-    uint32_t _capacity;         // 总容量
-    uint32_t _ratio;            // 扩展比率
+    uint32_t _size;
+    uint32_t _obj_size;
+    uint32_t _capacity;
+    uint32_t _ratio;
 
-    bool _min_flag;             // 最大/小堆标志
+    bool _min_flag;
 
     // kernel
     bool (*peek)(struct _heap* self, void* obj);
