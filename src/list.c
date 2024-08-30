@@ -179,6 +179,23 @@ void list_print(struct _list* self)
     }
 }
 
+void* list_begin(struct _list* self)
+{
+    return self->obj;
+}
+
+void* list_next(struct _list* self)
+{
+    void *obj = (char*)self->obj + self->_cur * self->_obj_size;
+    self->_cur += 1;
+    return obj;
+}
+
+void* list_end(struct _list* self)
+{
+    return (char*)self->obj + self->_size * self->_obj_size;
+}
+
 bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
     assert(list != NULL);
@@ -194,6 +211,7 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     list->_size = 0;
     list->_capacity = capacity;
     list->_ratio = 2;
+    list->_cur = 0;
 
     // 2. set function
     // kernel
@@ -212,6 +230,10 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     list->size = list_size;
     list->sort = list_sort;
 
+    list->begin = list_begin;
+    list->next = list_next;
+    list->end = list_end;
+
     // 3. set array
     list->obj = (void*)calloc(list->_capacity, list->_obj_size);
     if (list->obj == NULL)
@@ -223,7 +245,7 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 
 list_t list_new(void)
 {
-    return (struct _list*)malloc(sizeof(struct _list));
+    return (struct _list*)calloc(1, sizeof(struct _list));
 }
 
 void list_free(list_t* list)

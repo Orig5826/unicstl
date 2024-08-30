@@ -21,6 +21,7 @@ struct _list
     uint32_t _size;				// 栈大小
     uint32_t _capacity;			// 总容量
     uint32_t _ratio;			// 扩展比率
+    uint32_t _cur;              // 当前索引
 
     // kernel
     bool (*append)(struct _list* self, void* obj);						// Append object to the end of the list.
@@ -32,6 +33,11 @@ struct _list
 
     bool (*get)(struct _list* self, int index, void* obj);				// 根据索引，获取对象
     bool (*set)(struct _list* self, int index, void* obj);				// 根据索引，修改对象
+
+    // iter
+    void* (*begin)(struct _list* self);
+    void* (*next)(struct _list* self);
+    void* (*end)(struct _list* self);
 
     // base
     uint32_t(*size)(struct _list* self);

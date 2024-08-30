@@ -397,6 +397,41 @@ static void test_list2_struct(void)
 }
 #endif
 
+
+static void test_list_iter(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int data_temp[32];
+    uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+    uint32_t i = 0;
+
+    list_t list = NULL;
+
+    // ------------------------------
+    list = list_new();
+    list_init2(list, sizeof(int), len);
+    TEST_ASSERT_TRUE(list->clear(list));
+    for(i = 0; i < len; i++)
+    {
+        list->append(list, &data[i]);
+    }
+
+    int * iter = NULL;
+    i = 0;
+    for(iter = list->begin(list); iter != list->end(list); iter = list->next(list))
+    {
+        data_temp[i++] = *iter;
+    }
+    TEST_ASSERT_EQUAL_INT_ARRAY(data, data_temp, i);
+
+    TEST_ASSERT_FALSE(list->empty(list));
+    TEST_ASSERT_TRUE(list->clear(list));
+    TEST_ASSERT_TRUE(list->empty(list));
+    TEST_ASSERT_TRUE(list->clear(list));
+    list_free(&list);
+}
+
 void test_list(void)
 {
     RUN_TEST(test_list_init2);
@@ -407,4 +442,6 @@ void test_list(void)
 
     RUN_TEST(test_list_num);
     // RUN_TEST(test_list_struct);
+
+    RUN_TEST(test_list_iter);
 }
