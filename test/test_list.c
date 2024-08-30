@@ -45,9 +45,8 @@ static void test_list_new(void)
     list_free(&list); // list_free(NULL);
 }
 
-#if 0
 
-static void test_list_push(void)
+static void test_list_append(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -58,30 +57,14 @@ static void test_list_push(void)
 
     // ------------------------------
     list = list_new();
-    list_init2(list, sizeof(int));
-    TEST_ASSERT_TRUE(list->empty(list));
-    for(i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
-        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
-
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
-        TEST_ASSERT_EQUAL_INT(data[i], temp);
-
-        TEST_ASSERT_FALSE(list->empty(list));
-    }
-    list_free(&list);
-
-    // ------------------------------
-    list = list_new();
     list_init2(list, sizeof(int), len);
     TEST_ASSERT_TRUE(list->empty(list));
     for(i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
 
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
+        TEST_ASSERT_TRUE(list->get(list, i, &temp));
         TEST_ASSERT_EQUAL_INT(data[i], temp);
 
         TEST_ASSERT_FALSE(list->empty(list));
@@ -94,11 +77,12 @@ static void test_list_push(void)
     list_init2(list, sizeof(int), len - 2);
     for(i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
     }
     list_free(&list);
 }
+
 
 static void test_list_pop(void)
 {
@@ -111,94 +95,20 @@ static void test_list_pop(void)
 
     // ------------------------------
     list = list_new();
-    list_init2(list, sizeof(int));
-    for(i = 0; i < len; i++)
-    {
-        list->push(list, &data[i]);
-    }
-    for (i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
-        TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
-
-        TEST_ASSERT_TRUE(list->pop(list, &temp));
-
-        if (!list->empty(list))
-        {
-            TEST_ASSERT_TRUE(list->peek(list, &temp));
-            TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
-        }
-        else
-        {
-            TEST_ASSERT_FALSE(list->peek(list, &temp));
-        }
-    }
-    TEST_ASSERT_TRUE(list->empty(list));
-    TEST_ASSERT_FALSE(list->pop(list, &temp));
-    list_free(&list);
-
-    // ------------------------------
-    list = list_new();
     list_init2(list, sizeof(int), len);
     for(i = 0; i < len; i++)
     {
-        list->push(list, &data[i]);
+        list->append(list, &data[i]);
     }
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
-        TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
-
-        TEST_ASSERT_TRUE(list->pop(list, &temp));
-
-        if (!list->empty(list))
-        {
-            TEST_ASSERT_TRUE(list->peek(list, &temp));
-            TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
-        }
-        else
-        {
-            TEST_ASSERT_FALSE(list->peek(list, &temp));
-        }
+        TEST_ASSERT_TRUE(list->pop(list, 0, &temp));
     }
     TEST_ASSERT_TRUE(list->empty(list));
-    TEST_ASSERT_FALSE(list->pop(list, &temp));
-    list_free(&list);
-
-    // ------------------------------
-    // if capacity is less than data len
-    list = list_new();
-    list_init2(list, sizeof(int), len - 2);
-    for(i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
-        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
-    }
-    uint32_t capacity = list->capacity(list);
-    for (i = 0; i < len; i++)
-    {
-        if (!list->empty(list))
-        {
-            TEST_ASSERT_TRUE(list->pop(list, &temp));
-        }
-        else
-        {
-            TEST_ASSERT_FALSE(list->pop(list, &temp));
-        }
-
-        if (!list->empty(list))
-        {
-            TEST_ASSERT_TRUE(list->peek(list, &temp));
-            TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
-        }
-        else
-        {
-            TEST_ASSERT_FALSE(list->pop(list, &temp));
-            TEST_ASSERT_FALSE(list->peek(list, &temp));
-        }
-    }
+    // TEST_ASSERT_FALSE(list->pop(list, 1, &temp));
     list_free(&list);
 }
+
 
 static void test_list_clear(void)
 {
@@ -211,29 +121,11 @@ static void test_list_clear(void)
 
     // ------------------------------
     list = list_new();
-    list_init2(list, sizeof(int));
-    for(i = 0; i < len; i++)
-    {
-        list->push(list, &data[i]);
-    }
-    TEST_ASSERT_TRUE(list->clear(list));
-    for(i = 0; i < len; i++)
-    {
-        list->push(list, &data[i]);
-    }
-    TEST_ASSERT_FALSE(list->empty(list));
-    TEST_ASSERT_TRUE(list->clear(list));
-    TEST_ASSERT_TRUE(list->empty(list));
-    TEST_ASSERT_TRUE(list->clear(list));
-    list_free(&list);
-
-    // ------------------------------
-    list = list_new();
     list_init2(list, sizeof(int), len);
     TEST_ASSERT_TRUE(list->clear(list));
     for(i = 0; i < len; i++)
     {
-        list->push(list, &data[i]);
+        list->append(list, &data[i]);
     }
     TEST_ASSERT_FALSE(list->empty(list));
     TEST_ASSERT_TRUE(list->clear(list));
@@ -244,57 +136,89 @@ static void test_list_clear(void)
 
 static void test_list_num(void)
 {
-    uint32_t i = 0;
+    int i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    int index = 0;
+    int len = sizeof(data) / sizeof(data[0]);
 
     list_t list = NULL;
     list = list_new();
-    TEST_ASSERT_NOT_NULL(list);
+    TEST_ASSERT_TRUE(list != NULL);
 
-    TEST_ASSERT_TRUE(list_init2(list, sizeof(int)));
+    list_init2(list, sizeof(int), 64);
     list->print_obj = print_num;
 
-    TEST_ASSERT_FALSE(list->peek(list, &temp));
-    TEST_ASSERT_TRUE(list->clear(list));
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
-        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
-
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
-        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
     }
-
-    TEST_ASSERT_FALSE(list->empty(list));
+    TEST_ASSERT_TRUE(list->pop(list, 9, NULL));
+    TEST_ASSERT_TRUE(list->pop(list, 0, NULL));
+    TEST_ASSERT_TRUE(list->pop(list, 4, NULL));
     TEST_ASSERT_TRUE(list->clear(list));
-    TEST_ASSERT_TRUE(list->empty(list));
+
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->push(list, &data[i]));
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
     }
+    index = 0;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
 
-    for (i = 0; i < len; i++)
+    index = 4;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
+
+    index = 9;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
+
+    index = 0;
+    temp = 11;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    index = 4;
+    temp = 22;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    index = 9;
+    temp = 33;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    index = -1;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
+
+    index = -6;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
+
+    index = -10;
+    TEST_ASSERT_TRUE(list->get(list, index, &temp));
+
+    index = -1;
+    temp = 99;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    index = -6;
+    temp = 98;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    index = -10;
+    temp = 97;
+    TEST_ASSERT_TRUE(list->set(list, index, &temp));
+
+    for (i = 0; i < len + 1; i++)
     {
-        TEST_ASSERT_TRUE(list->peek(list, &temp));
-        TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
+        TEST_ASSERT_TRUE(list->pop(list, 0, &temp));
 
-        TEST_ASSERT_TRUE(list->pop(list, &temp));
-
-        if (!list->empty(list))
+        if (list->empty(list))
         {
-            TEST_ASSERT_TRUE(list->peek(list, &temp));
-            TEST_ASSERT_EQUAL_INT(data[list->size(list) - 1], temp);
+            break;
         }
     }
-    TEST_ASSERT_TRUE(list->empty(list));
-    TEST_ASSERT_FALSE(list->pop(list, &temp));
 
     list_free(&list);
     TEST_ASSERT_NULL(list);
 }
 
+#if 0
 static void test_list_struct(void)
 {
     uint32_t i = 0;
@@ -471,20 +395,16 @@ static void test_list2_struct(void)
     list_free(&list);
     TEST_ASSERT_NULL(list);
 }
-
 #endif
 
 void test_list(void)
 {
     RUN_TEST(test_list_init2);
     RUN_TEST(test_list_new);
-    // RUN_TEST(test_list_push);
-    // RUN_TEST(test_list_pop);
-    // RUN_TEST(test_list_clear);
+    RUN_TEST(test_list_append);
+    RUN_TEST(test_list_pop);
+    RUN_TEST(test_list_clear);
 
-    // RUN_TEST(test_list_num);
+    RUN_TEST(test_list_num);
     // RUN_TEST(test_list_struct);
-
-    // RUN_TEST(test_list2_num);
-    // RUN_TEST(test_list2_struct);
 }
