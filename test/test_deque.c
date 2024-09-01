@@ -1,184 +1,143 @@
 /**
  * @file test_deque.c
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-09-01
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include "test.h"
 
-static void demo_deque_num(void)
+static void test_deque_num(void)
 {
     uint32_t i = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    struct _deque dq;
-    deque_init(&dq, sizeof(int));
-    dq.print_obj = print_num;
+    deque_t deque = deque_new();
+    TEST_ASSERT_NOT_NULL(deque);
 
-    printf("\n\n----- demo_deque_num -----\n");
+    deque_init(deque, sizeof(int));
+    deque->print_obj = print_num;
 
-    printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_back(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
 
-        dq.front(&dq, &temp);
-        printf("front = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->front(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
 
-        dq.back(&dq, &temp);
-        printf("\tback = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->back(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
 
-        printf("\tsize = %2d\n", dq.size(&dq));
-    }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    dq.clear(&dq);
-    if (dq.empty(&dq))
-    {
-        printf("----- empty -----\n");
+        TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
 
-    printf("----- push_back -----\n");
+    TEST_ASSERT_FALSE(deque->empty(deque));
+    TEST_ASSERT_TRUE(deque->clear(deque));
+    TEST_ASSERT_TRUE(deque->empty(deque));
     for (i = 0; i < len; i++)
     {
-        dq.push_back(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
     }
 
-    printf("----- after pop_back -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == dq.pop_back(&dq, &temp))
+        if (!deque->empty(deque))
         {
-            printf("pop = ");
-            dq.print_obj(&temp);
-
-            if (true == dq.front(&dq, &temp))
-            {
-                printf("front = ");
-                dq.print_obj(&temp);
-            }
-
-            if (dq.back(&dq, &temp))
-            {
-                printf("back = ");
-                dq.print_obj(&temp);
-            }
-
-            printf("size = %2d\n", dq.size(&dq));
+            TEST_ASSERT_TRUE(deque->pop_back(deque, &temp));
         }
         else
         {
-            printf("pop failed! because it is empty\n");
+            TEST_ASSERT_FALSE(deque->pop_back(deque, &temp));
         }
 
-        if (dq.empty(&dq))
+        if (!deque->empty(deque))
         {
-            printf("----- empty -----\n");
+            TEST_ASSERT_TRUE(deque->front(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+            TEST_ASSERT_TRUE(deque->back(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[deque->size(deque) - 1], temp);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->front(deque, &temp));
+            TEST_ASSERT_FALSE(deque->back(deque, &temp));
         }
     }
+    TEST_ASSERT_TRUE(deque->empty(deque));
 
-    printf("----- after push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
 
-        dq.front(&dq, &temp);
-        printf("front = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->front(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[deque->size(deque) - 1], temp);
 
-        dq.back(&dq, &temp);
-        printf("\tback = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->back(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
 
-        printf("\tsize = %2d\n", dq.size(&dq));
+        TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    dq.clear(&dq);
-    if (dq.empty(&dq))
-    {
-        printf("----- empty -----\n");
-    }
-
-    printf("----- push_front -----\n");
+    TEST_ASSERT_TRUE(deque->clear(deque));
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
     }
 
     for (i = 0; i < len + 1; i++)
     {
-        if (true == dq.pop_front(&dq, &temp))
+        if (!deque->empty(deque))
         {
-            printf("pop = ");
-            dq.print_obj(&temp);
+            TEST_ASSERT_TRUE(deque->pop_front(deque, &temp));
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->pop_front(deque, &temp));
+        }
 
-            if (true == dq.front(&dq, &temp))
-            {
-                printf("front = ");
-                dq.print_obj(&temp);
-            }
+        if (!deque->empty(deque))
+        {
+            TEST_ASSERT_TRUE(deque->front(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[deque->size(deque) - 1], temp);
 
-            if (dq.back(&dq, &temp))
-            {
-                printf("back = ");
-                dq.print_obj(&temp);
-            }
-
-            printf("size = %2d\n", dq.size(&dq));
+            TEST_ASSERT_TRUE(deque->back(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[0], temp);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->front(deque, &temp));
+            TEST_ASSERT_FALSE(deque->back(deque, &temp));
         }
     }
 
-    printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
     }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    printf("----- set -----\n");
     temp = 11;
-    dq.set(&dq, 0, &temp);
+    deque->set(deque, 0, &temp);
 
     temp = 22;
-    dq.set(&dq, len/2, &temp);
+    deque->set(deque, len / 2, &temp);
 
     temp = 33;
-    dq.set(&dq, len - 1, &temp);
+    deque->set(deque, len - 1, &temp);
 
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    printf("----- get -----\n");
     for (i = 0; i < len; i++)
     {
-        if (true == dq.get(&dq, i, &temp))
-        {
-            printf("deque[%2d] = ", i);
-            dq.print_obj(&temp);
-            printf("\n");
-        }
+        TEST_ASSERT_TRUE(deque->get(deque, i, &temp));
     }
 
-    dq.destory(&dq);
+    deque_free(&deque);
+    TEST_ASSERT_NULL(deque);
 }
 
-static void demo_deque_struct(void)
+static void test_deque_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
@@ -189,171 +148,127 @@ static void demo_deque_struct(void)
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    struct _deque dq;
-    deque_init(&dq, sizeof(struct _student));
-    dq.print_obj = print_struct;
+    deque_t deque = deque_new();
+    TEST_ASSERT_NOT_NULL(deque);
 
-    printf("\n\n----- demo_deque_struct -----\n");
+    deque_init(deque, sizeof(struct _student));
+    deque->print_obj = print_struct;
 
-    printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_back(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
 
-        dq.front(&dq, &temp);
-        printf("front = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->front(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
 
-        dq.back(&dq, &temp);
-        printf("\tback = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->back(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[i].name, temp.name);
 
-        printf("\tsize = %2d\n", dq.size(&dq));
+        TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    dq.clear(&dq);
-    if (dq.empty(&dq))
-    {
-        printf("----- empty -----\n");
-    }
-
-    printf("----- push_back -----\n");
+    TEST_ASSERT_FALSE(deque->empty(deque));
+    TEST_ASSERT_TRUE(deque->clear(deque));
+    TEST_ASSERT_TRUE(deque->empty(deque));
     for (i = 0; i < len; i++)
     {
-        dq.push_back(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
     }
 
-    printf("----- after pop_back -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == dq.pop_back(&dq, &temp))
+        if(!deque->empty(deque))
         {
-            printf("pop = ");
-            dq.print_obj(&temp);
-
-            if (true == dq.front(&dq, &temp))
-            {
-                printf("front = ");
-                dq.print_obj(&temp);
-            }
-
-            if (dq.back(&dq, &temp))
-            {
-                printf("back = ");
-                dq.print_obj(&temp);
-            }
-
-            printf("size = %2d\n", dq.size(&dq));
+            TEST_ASSERT_TRUE(deque->pop_back(deque, &temp));
         }
         else
         {
-            printf("pop failed! because it is empty\n");
+            TEST_ASSERT_FALSE(deque->pop_back(deque, &temp));
         }
-
-        if (dq.empty(&dq))
+        
+        if(!deque->empty(deque))
         {
-            printf("----- empty -----\n");
+            TEST_ASSERT_TRUE(deque->front(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
+
+            TEST_ASSERT_TRUE(deque->back(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[deque->size(deque) - 1].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[deque->size(deque) - 1].name, temp.name);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->front(deque, &temp));
+            TEST_ASSERT_FALSE(deque->back(deque, &temp));
         }
     }
 
-    printf("----- after push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
 
-        dq.front(&dq, &temp);
-        printf("front = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->front(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[i].name, temp.name);
 
-        dq.back(&dq, &temp);
-        printf("\tback = ");
-        dq.print_obj(&temp);
+        TEST_ASSERT_TRUE(deque->back(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
 
-        printf("\tsize = %2d\n", dq.size(&dq));
+        TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-
-    dq.clear(&dq);
-    if (dq.empty(&dq))
-    {
-        printf("----- empty -----\n");
-    }
-
-    printf("----- push_front -----\n");
+    TEST_ASSERT_TRUE(deque->clear(deque));
+    TEST_ASSERT_TRUE(deque->empty(deque));
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
     }
 
     for (i = 0; i < len + 1; i++)
     {
-        if (true == dq.pop_front(&dq, &temp))
+        if(!deque->empty(deque))
         {
-            printf("pop = ");
-            dq.print_obj(&temp);
+            TEST_ASSERT_TRUE(deque->pop_front(deque, &temp));
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->pop_front(deque, &temp));
+        }
+        
+        if(!deque->empty(deque))
+        {
+            TEST_ASSERT_TRUE(deque->front(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[deque->size(deque) - 1].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[deque->size(deque) - 1].name, temp.name);
 
-            if (true == dq.front(&dq, &temp))
-            {
-                printf("front = ");
-                dq.print_obj(&temp);
-            }
-
-            if (dq.back(&dq, &temp))
-            {
-                printf("back = ");
-                dq.print_obj(&temp);
-            }
-
-            printf("size = %2d\n", dq.size(&dq));
+            TEST_ASSERT_TRUE(deque->back(deque, &temp));
+            TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+            TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
+        }
+        else
+        {
+            TEST_ASSERT_FALSE(deque->front(deque, &temp));
+            TEST_ASSERT_FALSE(deque->back(deque, &temp));
         }
     }
 
-    printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        dq.push_front(&dq, &data[i]);
+        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
     }
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
 
-#if 0
-    printf("----- set -----\n");
-    temp = 11;
-    dq.set(&dq, 0, &temp);
-
-    temp = 22;
-    dq.set(&dq, len / 2, &temp);
-
-    temp = 33;
-    dq.set(&dq, len - 1, &temp);
-
-    printf("----- print -----\n");
-    dq.print(&dq);
-    printf("\n");
-#endif
-
-    printf("----- get -----\n");
     for (i = 0; i < len; i++)
     {
-        if (true == dq.get(&dq, i, &temp))
-        {
-            printf("deque[%2d] = ", i);
-            dq.print_obj(&temp);
-            printf("\n");
-        }
+        TEST_ASSERT_TRUE(deque->get(deque, i, &temp));
     }
 
-    dq.destory(&dq);
+    deque_free(&deque);
+    TEST_ASSERT_NULL(deque);
 }
 
-void demo_deque(void)
+void test_deque(void)
 {
-    demo_deque_num();
-    demo_deque_struct();
+    RUN_TEST(test_deque_num);
+    RUN_TEST(test_deque_struct);
 }

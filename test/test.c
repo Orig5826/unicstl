@@ -81,6 +81,7 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_queue);
     TEST_ADD(test_stack);
     TEST_ADD(test_list);
+    TEST_ADD(test_deque);
     
     return UNITY_END();
 }
