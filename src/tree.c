@@ -566,7 +566,8 @@ bool tree_clear(struct _tree* self)
     assert(self != NULL);
     if(self->_root == NULL)
     {
-        return false;
+        // return false;
+        return true;
     }
 
     struct _tree_node* node = self->_root;
@@ -1485,9 +1486,27 @@ void* tree_begin(struct _tree* self)
         struct _tree_node* node = NULL;
         self->cur_node = self->_root;
 
-        self->stack->clear(self->stack);
-        node = self->cur_node;
-        self->stack->push(self->stack, &self->cur_node);
+        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        {
+            if(self->cur_node != NULL)
+            {
+                node = self->cur_node;
+
+                self->stack->push(self->stack, &self->cur_node);
+                self->cur_node = self->cur_node->left;
+
+                break;
+            }
+            else
+            {
+                self->stack->pop(self->stack, &self->cur_node);
+                self->cur_node = self->cur_node->right;
+            }
+        }
+        if(node == NULL)
+        {
+            return NULL;
+        }
         return node->obj;
     }break;
     case ORDER_LEFT_IN:
@@ -1537,13 +1556,21 @@ void* tree_next(struct _tree* self)
             if(self->cur_node != NULL)
             {
                 node = self->cur_node;
+
                 self->stack->push(self->stack, &self->cur_node);
+                self->cur_node = self->cur_node->left;
+
+                break;
             }
             else
             {
                 self->stack->pop(self->stack, &self->cur_node);
                 self->cur_node = self->cur_node->right;
             }
+        }
+        if(node == NULL)
+        {
+            return NULL;
         }
         return node->obj;
     }break;
