@@ -1,5 +1,5 @@
 /**
- * @file demo_list.c
+ * @file demo_list->c
  * @author wenjf (Orig5826@163.com)
  * @brief 
  * @version 0.1
@@ -18,128 +18,128 @@ static void demo_list_num(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    struct _list list;
-    list_init2(&list, sizeof(int), 64);
-    list.print_obj = print_num;
+    list_t list = list_new();
+    list_init2(list, sizeof(int), 64);
+    list->print_obj = print_num;
 
     printf("\n\n----- list_demo_num -----\n");
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        list.append(&list, &data[i]);
+        list->append(list, &data[i]);
     }
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- pop -----\n");
-    list.pop(&list, 9, NULL);
-    list.print(&list);
+    list->pop(list, 9, NULL);
+    list->print(list);
     printf("\n");
 
-    list.pop(&list, 0, NULL);
-    list.print(&list);
+    list->pop(list, 0, NULL);
+    list->print(list);
     printf("\n");
 
-    list.pop(&list, 4, NULL);
-    list.print(&list);
+    list->pop(list, 4, NULL);
+    list->print(list);
     printf("\n");
 
     printf("----- clear -----\n");
-    list.clear(&list);
-    list.print(&list);
+    list->clear(list);
+    list->print(list);
     printf("\n");
 
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        list.append(&list, &data[i]);
+        list->append(list, &data[i]);
     }
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- get -----\n");
     index = 0;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = 4;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = 9;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
 
     printf("----- set -----\n");
     index = 0;
     temp = 11;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = 4;
     temp = 22;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = 9;
     temp = 33;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
 
     printf("----- at like python -----\n");
     index = -1;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = -6;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = -10;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     printf("----- set like python -----\n");
     index = -1;
     temp = 99;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = -6;
     temp = 98;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     index = -10;
     temp = 97;
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = %2d\n", index, temp);
 
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        list.pop(&list, 0, &temp);
+        list->pop(list, 0, &temp);
 
-        if (list.empty(&list))
+        if (list->empty(list))
         {
             printf("----- empty -----\n");
             break;
         }
     }
 
-    list.destory(&list);
+    list_free(&list);
 }
 
 static void demo_list_struct(void)
@@ -154,121 +154,121 @@ static void demo_list_struct(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    struct _list list;
-    list_init2(&list, sizeof(struct _student), 64);
-    list.print_obj = print_struct;
+    list_t list = list_new();
+    list_init2(list, sizeof(struct _student), 64);
+    list->print_obj = print_struct;
 
     printf("\n\n----- list_demo_num -----\n");
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        list.append(&list, &data[i]);
+        list->append(list, &data[i]);
     }
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- pop -----\n");
-    list.pop(&list, 9, NULL);
-    list.print(&list);
+    list->pop(list, 9, NULL);
+    list->print(list);
     printf("\n");
 
-    list.pop(&list, 0, NULL);
-    list.print(&list);
+    list->pop(list, 0, NULL);
+    list->print(list);
     printf("\n");
 
-    list.pop(&list, 4, NULL);
-    list.print(&list);
+    list->pop(list, 4, NULL);
+    list->print(list);
     printf("\n");
 
     printf("----- clear -----\n");
-    list.clear(&list);
-    list.print(&list);
+    list->clear(list);
+    list->print(list);
     printf("\n");
 
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        list.append(&list, &data[i]);
+        list->append(list, &data[i]);
     }
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- at -----\n");
     index = 0;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = 4;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = 9;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
 
     printf("----- set -----\n");
     index = 0;
     temp.id = 11;
     sprintf(temp.name, "robot_%02d", temp.id);
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = 4;
     temp.id = 22;
     sprintf(temp.name, "robot_%02d", temp.id);
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = 9;
     temp.id = 33;
     sprintf(temp.name, "robot_%02d", temp.id);
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
 
     printf("----- at like python -----\n");
     index = -1;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = -6;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = -10;
-    list.get(&list, index, &temp);
+    list->get(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     printf("----- set like python -----\n");
     index = -1;
     temp.id = 99;
     sprintf(temp.name, "robot_%02d", temp.id);
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = -6;
     temp.id = 98;
     sprintf(temp.name, "robot_%02d", temp.id);
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     index = -10;
     //temp.id = 97;
@@ -277,27 +277,27 @@ static void demo_list_struct(void)
     // struct _student robot = {"robot", 97};
     // temp = robot;
     temp = (struct _student){"robot", 97};
-    list.set(&list, index, &temp);
+    list->set(list, index, &temp);
     printf("list[%4d] = ", index);
-    list.print_obj(&temp); printf("\n");
+    list->print_obj(&temp); printf("\n");
 
     printf("----- print -----\n");
-    list.print(&list);
+    list->print(list);
     printf("\n");
 
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        list.pop(&list, 0, &temp);
+        list->pop(list, 0, &temp);
 
-        if (list.empty(&list))
+        if (list->empty(list))
         {
             printf("----- empty -----\n");
             break;
         }
     }
 
-    list.destory(&list);
+    list_free(&list);
 }
 
 void demo_list(void)
