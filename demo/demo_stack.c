@@ -17,58 +17,58 @@ static void demo_stack_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    struct _stack s;
-    stack_init(&s, sizeof(int));
-    s.print_obj = print_num;
+    stack_t stack = stack_new();
+    stack_init(stack, sizeof(int));
+    stack->print_obj = print_num;
 
     printf("\n\n----- demo_stack_num -----\n");
     // get top if stack is empty
-    s.peek(&s, &temp);
+    stack->peek(stack, &temp);
 
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        s.push(&s, &data[i]);
+        stack->push(stack, &data[i]);
 
-        s.peek(&s, &temp);
+        stack->peek(stack, &temp);
 
         printf("top = ");
-        s.print_obj(&temp);
+        stack->print_obj(&temp);
 
-        printf("size = %2d\n", s.size(&s));
+        printf("size = %2d\n", stack->size(stack));
     }
     printf("----- print -----\n");
-    s.print(&s);
+    stack->print(stack);
     printf("\n");
 
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == s.pop(&s, &temp))
+        if (true == stack->pop(stack, &temp))
         {
             printf("pop = ");
-            s.print_obj(&temp);
+            stack->print_obj(&temp);
 
-            if (s.peek(&s, &temp))
+            if (stack->peek(stack, &temp))
             {
                 printf("top = ");
-                s.print_obj(&temp);
+                stack->print_obj(&temp);
             }
 
-            printf("size = %2d\n", s.size(&s));
+            printf("size = %2d\n", stack->size(stack));
         }
         else
         {
             printf("pop failed! because it is empty\n");
         }
 
-        if (s.empty(&s))
+        if (stack->empty(stack))
         {
             printf("----- empty -----\n");
         }
     }
 
-    s.destory(&s);
+    stack_free(&stack);
 }
 
 static void demo_stack_char(void)
@@ -78,57 +78,57 @@ static void demo_stack_char(void)
     char temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    struct _stack s;
-    stack_init2(&s, sizeof(char), 64);
-    s.print_obj = print_char;
+    stack_t stack = stack_new();
+    stack_init2(stack, sizeof(char), 64);
+    stack->print_obj = print_char;
 
     printf("\n\n----- demo_stack_char -----\n");
     // get top if stack is empty
-    s.peek(&s, &temp);
+    stack->peek(stack, &temp);
 
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        s.push(&s, &data[i]);
+        stack->push(stack, &data[i]);
 
-        s.peek(&s, &temp);
+        stack->peek(stack, &temp);
         printf("top = ");
-        s.print_obj(&temp);
+        stack->print_obj(&temp);
 
-        printf("size = %2d\n", s.size(&s));
+        printf("size = %2d\n", stack->size(stack));
     }
     printf("----- print -----\n");
-    s.print(&s);
+    stack->print(stack);
     printf("\n");
 
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == s.pop(&s, &temp))
+        if (true == stack->pop(stack, &temp))
         {
             printf("pop = ");
-            s.print_obj(&temp);
+            stack->print_obj(&temp);
 
-            if (s.peek(&s, &temp))
+            if (stack->peek(stack, &temp))
             {
                 printf("top = ");
-                s.print_obj(&temp);
+                stack->print_obj(&temp);
             }
 
-            printf("size = %2d\n", s.size(&s));
+            printf("size = %2d\n", stack->size(stack));
         }
         else
         {
             printf("pop failed! because it is empty\n");
         }
 
-        if (s.empty(&s))
+        if (stack->empty(stack))
         {
             printf("----- empty -----\n");
         }
     }
 
-    s.destory(&s);
+    stack_free(&stack);
 }
 
 static void demo_stack_struct(void)
@@ -141,8 +141,7 @@ static void demo_stack_struct(void)
     struct _student temp = { 0 };
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    stack_t stack;
-    stack = stack_new();
+    stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _student));
     stack->print_obj = print_struct;
 

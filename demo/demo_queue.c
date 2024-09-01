@@ -17,33 +17,33 @@ static void demo_queue_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    struct _queue queue;
-    queue_init(&queue, sizeof(int));
-    queue.print_obj = print_num;
+    queue_t queue = queue_new();
+    queue_init(queue, sizeof(int));
+    queue->print_obj = print_num;
 
     printf("\n\n----- demo_queue_num -----\n");
 
     printf("----- after push-----\n");
     for (i = 0; i < len; i++)
     {
-        queue.push(&queue, &data[i]);
+        queue->push(queue, &data[i]);
 
-        queue.front(&queue, &temp);
+        queue->front(queue, &temp);
         printf("front = ");
-        queue.print_obj(&temp);
+        queue->print_obj(&temp);
 
-        queue.back(&queue, &temp);
+        queue->back(queue, &temp);
         printf("\tback = ");
-        queue.print_obj(&temp);
+        queue->print_obj(&temp);
 
-        printf("\tsize = %2d\n", queue.size(&queue));
+        printf("\tsize = %2d\n", queue->size(queue));
     }
     printf("----- print -----\n");
-    queue.print(&queue);
+    queue->print(queue);
     printf("\n");
 
-    queue.clear(&queue);
-    if (queue.empty(&queue))
+    queue->clear(queue);
+    if (queue->empty(queue))
     {
         printf("----- empty -----\n");
     }
@@ -51,47 +51,47 @@ static void demo_queue_num(void)
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        queue.push(&queue, &data[i]);
+        queue->push(queue, &data[i]);
     }
 
     printf("----- after pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == queue.pop(&queue, &temp))
+        if (true == queue->pop(queue, &temp))
         {
             printf("pop = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
 
-            if (true == queue.front(&queue, &temp))
+            if (true == queue->front(queue, &temp))
             {
                 printf("front = ");
-                queue.print_obj(&temp);
+                queue->print_obj(&temp);
             }
 
-            if (queue.back(&queue, &temp))
+            if (queue->back(queue, &temp))
             {
                 printf("back = ");
-                queue.print_obj(&temp);
+                queue->print_obj(&temp);
             }
 
-            printf("size = %2d\n", queue.size(&queue));
+            printf("size = %2d\n", queue->size(queue));
         }
         else
         {
             printf("pop failed! because it is empty\n");
         }
 
-        if (queue.empty(&queue))
+        if (queue->empty(queue))
         {
             printf("----- empty -----\n");
         }
     }
 
     printf("----- print -----\n");
-    queue.print(&queue);
+    queue->print(queue);
     printf("\n");
 
-    queue.destory(&queue);
+    queue_free(&queue);
 }
 
 
@@ -102,44 +102,43 @@ static void demo_queue_char(void)
     char temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    struct _queue queue;
-    // queue_init2(&queue, sizeof(char), 64);
-    queue_init2(&queue, sizeof(char), 10);
-    queue.print_obj = print_char;
+    queue_t queue = queue_new();
+    queue_init2(queue, sizeof(char), 10);
+    queue->print_obj = print_char;
 
     printf("\n\n----- demo_queue_char -----\n");
 
     printf("----- after push-----\n");
     for (i = 0; i < len; i++)
     {
-        if(queue.push(&queue, &data[i]))
+        if(queue->push(queue, &data[i]))
         {
-            queue.front(&queue, &temp);
+            queue->front(queue, &temp);
             printf("front = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
 
-            queue.back(&queue, &temp);
+            queue->back(queue, &temp);
             printf("\tback = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
 
-            printf("\tsize = %2d\n", queue.size(&queue));
+            printf("\tsize = %2d\n", queue->size(queue));
         }
         else
         {
             printf("push failed! because it is full\n");
         }
 
-        if(queue.full(&queue))
+        if(queue->full(queue))
         {
             printf("----- full -----\n");
         }
     }
     printf("----- print -----\n");
-    queue.print(&queue);
+    queue->print(queue);
     printf("\n");
 
-    queue.clear(&queue);
-    if (queue.empty(&queue))
+    queue->clear(queue);
+    if (queue->empty(queue))
     {
         printf("----- empty -----\n");
     }
@@ -147,63 +146,63 @@ static void demo_queue_char(void)
     printf("----- push -----\n");
     for (i = 0; i < len; i++)
     {
-        queue.push(&queue, &data[i]);
+        queue->push(queue, &data[i]);
     }
 
     printf("----- after pop -----\n");
-    while(!queue.empty(&queue))
+    while(!queue->empty(queue))
     {
-        if (true == queue.pop(&queue, &temp))
+        if (true == queue->pop(queue, &temp))
         {
             printf("pop = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
 
-            if (true == queue.front(&queue, &temp))
+            if (true == queue->front(queue, &temp))
             {
                 printf("front = ");
-                queue.print_obj(&temp);
+                queue->print_obj(&temp);
             }
 
-            if (queue.back(&queue, &temp))
+            if (queue->back(queue, &temp))
             {
                 printf("back = ");
-                queue.print_obj(&temp);
+                queue->print_obj(&temp);
             }
 
-            printf("size = %2d\n", queue.size(&queue));
+            printf("size = %2d\n", queue->size(queue));
         }
     }
 
-    if (true == queue.pop(&queue, &temp))
+    if (true == queue->pop(queue, &temp))
     {
         printf("pop = ");
-        queue.print_obj(&temp);
+        queue->print_obj(&temp);
 
-        if (true == queue.front(&queue, &temp))
+        if (true == queue->front(queue, &temp))
         {
             printf("front = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
         }
 
-        if (queue.back(&queue, &temp))
+        if (queue->back(queue, &temp))
         {
             printf("back = ");
-            queue.print_obj(&temp);
+            queue->print_obj(&temp);
         }
 
-        printf("size = %2d\n", queue.size(&queue));
+        printf("size = %2d\n", queue->size(queue));
     }
 
-    if (queue.empty(&queue))
+    if (queue->empty(queue))
     {
         printf("----- empty -----\n");
     }
 
     printf("----- print -----\n");
-    queue.print(&queue);
+    queue->print(queue);
     printf("\n");
 
-    queue.destory(&queue);
+    queue_free(&queue);
 }
 
 static void demo_queue_struct(void)

@@ -1,14 +1,14 @@
 /**
- * @file demo_deque.c
+ * @file test_deque.c
  * @author wenjf (Orig5826@163.com)
  * @brief 
  * @version 0.1
- * @date 2024-06-23
+ * @date 2024-09-01
  * 
  * @copyright Copyright (c) 2024
  * 
  */
-#include "demo.h"
+#include "test.h"
 
 static void demo_deque_num(void)
 {
@@ -17,33 +17,33 @@ static void demo_deque_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new();
-    deque_init(deque, sizeof(int));
-    deque->print_obj = print_num;
+    struct _deque dq;
+    deque_init(&dq, sizeof(int));
+    dq.print_obj = print_num;
 
     printf("\n\n----- demo_deque_num -----\n");
 
     printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_back(deque, &data[i]);
+        dq.push_back(&dq, &data[i]);
 
-        deque->front(deque, &temp);
+        dq.front(&dq, &temp);
         printf("front = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        deque->back(deque, &temp);
+        dq.back(&dq, &temp);
         printf("\tback = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        printf("\tsize = %2d\n", deque->size(deque));
+        printf("\tsize = %2d\n", dq.size(&dq));
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
-    deque->clear(deque);
-    if (deque->empty(deque))
+    dq.clear(&dq);
+    if (dq.empty(&dq))
     {
         printf("----- empty -----\n");
     }
@@ -51,37 +51,37 @@ static void demo_deque_num(void)
     printf("----- push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_back(deque, &data[i]);
+        dq.push_back(&dq, &data[i]);
     }
 
     printf("----- after pop_back -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == deque->pop_back(deque, &temp))
+        if (true == dq.pop_back(&dq, &temp))
         {
             printf("pop = ");
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
 
-            if (true == deque->front(deque, &temp))
+            if (true == dq.front(&dq, &temp))
             {
                 printf("front = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            if (deque->back(deque, &temp))
+            if (dq.back(&dq, &temp))
             {
                 printf("back = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            printf("size = %2d\n", deque->size(deque));
+            printf("size = %2d\n", dq.size(&dq));
         }
         else
         {
             printf("pop failed! because it is empty\n");
         }
 
-        if (deque->empty(deque))
+        if (dq.empty(&dq))
         {
             printf("----- empty -----\n");
         }
@@ -90,24 +90,24 @@ static void demo_deque_num(void)
     printf("----- after push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
 
-        deque->front(deque, &temp);
+        dq.front(&dq, &temp);
         printf("front = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        deque->back(deque, &temp);
+        dq.back(&dq, &temp);
         printf("\tback = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        printf("\tsize = %2d\n", deque->size(deque));
+        printf("\tsize = %2d\n", dq.size(&dq));
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
-    deque->clear(deque);
-    if (deque->empty(deque))
+    dq.clear(&dq);
+    if (dq.empty(&dq))
     {
         printf("----- empty -----\n");
     }
@@ -115,67 +115,67 @@ static void demo_deque_num(void)
     printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
     }
 
     for (i = 0; i < len + 1; i++)
     {
-        if (true == deque->pop_front(deque, &temp))
+        if (true == dq.pop_front(&dq, &temp))
         {
             printf("pop = ");
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
 
-            if (true == deque->front(deque, &temp))
+            if (true == dq.front(&dq, &temp))
             {
                 printf("front = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            if (deque->back(deque, &temp))
+            if (dq.back(&dq, &temp))
             {
                 printf("back = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            printf("size = %2d\n", deque->size(deque));
+            printf("size = %2d\n", dq.size(&dq));
         }
     }
 
     printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
     printf("----- set -----\n");
     temp = 11;
-    deque->set(deque, 0, &temp);
+    dq.set(&dq, 0, &temp);
 
     temp = 22;
-    deque->set(deque, len/2, &temp);
+    dq.set(&dq, len/2, &temp);
 
     temp = 33;
-    deque->set(deque, len - 1, &temp);
+    dq.set(&dq, len - 1, &temp);
 
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
     printf("----- get -----\n");
     for (i = 0; i < len; i++)
     {
-        if (true == deque->get(deque, i, &temp))
+        if (true == dq.get(&dq, i, &temp))
         {
             printf("deque[%2d] = ", i);
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
             printf("\n");
         }
     }
 
-    deque_free(&deque);
+    dq.destory(&dq);
 }
 
 static void demo_deque_struct(void)
@@ -189,33 +189,33 @@ static void demo_deque_struct(void)
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new();
-    deque_init(deque, sizeof(struct _student));
-    deque->print_obj = print_struct;
+    struct _deque dq;
+    deque_init(&dq, sizeof(struct _student));
+    dq.print_obj = print_struct;
 
     printf("\n\n----- demo_deque_struct -----\n");
 
     printf("----- after push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_back(deque, &data[i]);
+        dq.push_back(&dq, &data[i]);
 
-        deque->front(deque, &temp);
+        dq.front(&dq, &temp);
         printf("front = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        deque->back(deque, &temp);
+        dq.back(&dq, &temp);
         printf("\tback = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        printf("\tsize = %2d\n", deque->size(deque));
+        printf("\tsize = %2d\n", dq.size(&dq));
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
-    deque->clear(deque);
-    if (deque->empty(deque))
+    dq.clear(&dq);
+    if (dq.empty(&dq))
     {
         printf("----- empty -----\n");
     }
@@ -223,37 +223,37 @@ static void demo_deque_struct(void)
     printf("----- push_back -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_back(deque, &data[i]);
+        dq.push_back(&dq, &data[i]);
     }
 
     printf("----- after pop_back -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        if (true == deque->pop_back(deque, &temp))
+        if (true == dq.pop_back(&dq, &temp))
         {
             printf("pop = ");
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
 
-            if (true == deque->front(deque, &temp))
+            if (true == dq.front(&dq, &temp))
             {
                 printf("front = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            if (deque->back(deque, &temp))
+            if (dq.back(&dq, &temp))
             {
                 printf("back = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            printf("size = %2d\n", deque->size(deque));
+            printf("size = %2d\n", dq.size(&dq));
         }
         else
         {
             printf("pop failed! because it is empty\n");
         }
 
-        if (deque->empty(deque))
+        if (dq.empty(&dq))
         {
             printf("----- empty -----\n");
         }
@@ -262,24 +262,24 @@ static void demo_deque_struct(void)
     printf("----- after push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
 
-        deque->front(deque, &temp);
+        dq.front(&dq, &temp);
         printf("front = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        deque->back(deque, &temp);
+        dq.back(&dq, &temp);
         printf("\tback = ");
-        deque->print_obj(&temp);
+        dq.print_obj(&temp);
 
-        printf("\tsize = %2d\n", deque->size(deque));
+        printf("\tsize = %2d\n", dq.size(&dq));
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
-    deque->clear(deque);
-    if (deque->empty(deque))
+    dq.clear(&dq);
+    if (dq.empty(&dq))
     {
         printf("----- empty -----\n");
     }
@@ -287,69 +287,69 @@ static void demo_deque_struct(void)
     printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
     }
 
     for (i = 0; i < len + 1; i++)
     {
-        if (true == deque->pop_front(deque, &temp))
+        if (true == dq.pop_front(&dq, &temp))
         {
             printf("pop = ");
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
 
-            if (true == deque->front(deque, &temp))
+            if (true == dq.front(&dq, &temp))
             {
                 printf("front = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            if (deque->back(deque, &temp))
+            if (dq.back(&dq, &temp))
             {
                 printf("back = ");
-                deque->print_obj(&temp);
+                dq.print_obj(&temp);
             }
 
-            printf("size = %2d\n", deque->size(deque));
+            printf("size = %2d\n", dq.size(&dq));
         }
     }
 
     printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
-        deque->push_front(deque, &data[i]);
+        dq.push_front(&dq, &data[i]);
     }
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 
 #if 0
     printf("----- set -----\n");
     temp = 11;
-    deque->set(deque, 0, &temp);
+    dq.set(&dq, 0, &temp);
 
     temp = 22;
-    deque->set(deque, len / 2, &temp);
+    dq.set(&dq, len / 2, &temp);
 
     temp = 33;
-    deque->set(deque, len - 1, &temp);
+    dq.set(&dq, len - 1, &temp);
 
     printf("----- print -----\n");
-    deque->print(deque);
+    dq.print(&dq);
     printf("\n");
 #endif
 
     printf("----- get -----\n");
     for (i = 0; i < len; i++)
     {
-        if (true == deque->get(deque, i, &temp))
+        if (true == dq.get(&dq, i, &temp))
         {
             printf("deque[%2d] = ", i);
-            deque->print_obj(&temp);
+            dq.print_obj(&temp);
             printf("\n");
         }
     }
 
-    deque_free(&deque);
+    dq.destory(&dq);
 }
 
 void demo_deque(void)
