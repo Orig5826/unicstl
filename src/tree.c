@@ -1483,22 +1483,12 @@ void* tree_begin(struct _tree* self)
     case ORDER_LEFT_PRE:
     {
         struct _tree_node* node = NULL;
-
         self->cur_node = self->_root;
-        if(!self->stack->empty(self->stack) || self->cur_node != NULL)
-        {
-            if(self->cur_node != NULL)
-            {
-                node = self->cur_node;
-                self->stack->push(self->stack, &self->cur_node);
-            }
-            else
-            {
-                self->stack->pop(self->stack, &self->cur_node);
-                self->cur_node = self->cur_node->right;
-            }
-        }
-        return node;
+
+        self->stack->clear(self->stack);
+        node = self->cur_node;
+        self->stack->push(self->stack, &self->cur_node);
+        return node->obj;
     }break;
     case ORDER_LEFT_IN:
     {
@@ -1542,7 +1532,7 @@ void* tree_next(struct _tree* self)
     case ORDER_LEFT_PRE:
     {
         struct _tree_node* node = NULL;
-        if(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
         {
             if(self->cur_node != NULL)
             {
@@ -1555,7 +1545,7 @@ void* tree_next(struct _tree* self)
                 self->cur_node = self->cur_node->right;
             }
         }
-        return node;
+        return node->obj;
     }break;
     case ORDER_LEFT_IN:
     {
@@ -1598,8 +1588,7 @@ void* tree_end(struct _tree* self)
     {
     case ORDER_LEFT_PRE:
     {
-        struct _tree_node* node = NULL;
-        return node;
+        return NULL;
     }break;
     case ORDER_LEFT_IN:
     {
@@ -1647,6 +1636,7 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     // self->_ratio = 2;
 
     self->_right_priority = false;
+    self->_order = ORDER_PRE;
 
     self->insert = tree_avl_insert;
     self->delete = tree_avl_delete;

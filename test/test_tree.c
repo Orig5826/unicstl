@@ -467,10 +467,10 @@ void test_rbtree_struct(void)
 static void test_tree_iter(void)
 {
     uint32_t i = 0;
-    // int data[] = { 2,1,3,4};
+    int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
-    int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
+    // int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int buff[32];
     int count = 0;
     int temp = 0;
@@ -493,10 +493,11 @@ static void test_tree_iter(void)
         // printf("\n");
     }
 
+    printf("\niter test\n");
     int * iter = NULL;
     for(iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
     {
-        printf("%d ", *iter);
+        printf("%d \n", *iter);
 
         buff[count++] = *iter;
     }
