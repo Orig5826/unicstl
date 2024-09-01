@@ -13,10 +13,31 @@
 
 #include "common.h"
 
+#include "stack.h"
+#include "queue.h"
+
+
 typedef enum {
     RBT_RED = 0x00,
     RBT_BLACK = 0x01,
 }rbt_color;
+
+enum _order{
+    ORDER_LEFT_PRE = 0x00,
+    ORDER_LEFT_IN = 0x01,
+    ORDER_LEFT_POST = 0x02,
+    ORDER_LEFT_BREADTH = 0x03,
+
+    ORDER_RIGHT_PRE = 0x04,
+    ORDER_RIGHT_IN = 0x05,
+    ORDER_RIGHT_POST = 0x06,
+    ORDER_RIGHT_BREADTH = 0x07,
+
+    ORDER_PRE = ORDER_LEFT_PRE,
+    ORDER_IN = ORDER_LEFT_IN,
+    ORDER_POST = ORDER_LEFT_POST,
+    ORDER_BREADTH = ORDER_LEFT_BREADTH,
+};
 
 struct _tree_node
 {
@@ -41,7 +62,12 @@ struct _tree
     uint32_t _capacity;
     uint32_t _ratio;
 
+    enum _order _order;
     bool _right_priority;
+
+    stack_t stack;
+    queue_t queue;
+    struct _tree_node * cur_node;
 
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
@@ -57,9 +83,20 @@ struct _tree
     bool (*min)(struct _tree* self, void* obj);
     bool (*max)(struct _tree* self, void* obj);
 
+    // base
     bool (*clear)(struct _tree* self);
     bool (*empty)(struct _tree* self);
     uint32_t (*size)(struct _tree* self);
+
+    // iter
+    /**
+     * @brief 
+     * 
+     */
+    void (*set_order)(struct _tree* self, enum _order order);
+    void* (*begin)(struct _tree* self);
+    void* (*next)(struct _tree* self);
+    void* (*end)(struct _tree* self);
 
     /**
      * @brief obj compare with obj2

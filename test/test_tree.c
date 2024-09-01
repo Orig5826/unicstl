@@ -463,9 +463,58 @@ void test_rbtree_struct(void)
 }
 #endif
 
+
+static void test_tree_iter(void)
+{
+    uint32_t i = 0;
+    // int data[] = { 2,1,3,4};
+    // int data[] = { 1,2,3,4,5,6};
+    // int data[] = { 5,2,3,1,7,8,6 };
+    int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
+    int buff[32];
+    int count = 0;
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    tree_t tree = tree_new();
+    tree_avl_init(tree, sizeof(int));
+    tree->print_obj = print_num;
+    tree->compare = compare_num;
+
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        tree->insert(tree, &temp);
+
+        // printf("insert = ");
+        // tree->print_obj(&temp);
+        // printf("size = %2d : ", tree->size(tree));
+        // tree->preorder(tree, tree->_root);
+        // printf("\n");
+    }
+
+    int * iter = NULL;
+    for(iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
+    {
+        printf("%d ", *iter);
+
+        buff[count++] = *iter;
+    }
+    TEST_ASSERT_EQUAL_INT_ARRAY(data, buff, count);
+
+    TEST_ASSERT_FALSE(tree->empty(tree));
+    TEST_ASSERT_TRUE(tree->clear(tree));
+    TEST_ASSERT_TRUE(tree->empty(tree));
+    TEST_ASSERT_TRUE(tree->clear(tree));
+    tree_free(&tree);
+    TEST_ASSERT_NULL(tree);
+}
+
 void test_tree(void)
 {
     // RUN_TEST(test_avltree_num);
     // RUN_TEST(test_rbtree_num);
     // RUN_TEST(test_rbtree_struct);
+
+    RUN_TEST(test_tree_iter);
 }
