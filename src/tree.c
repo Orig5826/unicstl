@@ -1538,7 +1538,35 @@ void* tree_begin(struct _tree* self)
     }break;
     case ORDER_LEFT_POST:
     {
+        struct _tree_node* node = self->_root;
+        stack_t stack = stack_new();
+        stack_init(stack, sizeof(struct _tree_node*));
+        while(!stack->empty(stack) || node != NULL)
+        {
+            if(node != NULL)
+            {
+                self->stack->push(self->stack, &node);
 
+                stack->push(stack, &node);
+                node = node->right;
+            }
+            else
+            {
+                stack->pop(stack, &node);
+                node = node->left;
+            }
+        }
+        stack_free(&stack);
+
+        if(!self->stack->empty(self->stack))
+        {
+            self->stack->pop(self->stack, &self->cur_node);
+        }
+        else
+        {
+            self->cur_node = NULL;
+        }
+        return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_LEFT_BREADTH:
     {
@@ -1624,7 +1652,15 @@ void* tree_next(struct _tree* self)
     }break;
     case ORDER_LEFT_POST:
     {
-
+        if(!self->stack->empty(self->stack))
+        {
+            self->stack->pop(self->stack, &self->cur_node);
+        }
+        else
+        {
+            self->cur_node = NULL;
+        }
+        return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_LEFT_BREADTH:
     {
@@ -1667,27 +1703,27 @@ void* tree_end(struct _tree* self)
     }break;
     case ORDER_LEFT_POST:
     {
-
+        return NULL;
     }break;
     case ORDER_LEFT_BREADTH:
     {
-
+        return NULL;
     }break;
     case ORDER_RIGHT_PRE:
     {
-
+        return NULL;
     }break;
     case ORDER_RIGHT_IN:
     {
-
+        return NULL;
     }break;
     case ORDER_RIGHT_POST:
     {
-
+        return NULL;
     }break;
     case ORDER_RIGHT_BREADTH:
     {
-
+        return NULL;
     }break;
     default:
     {
