@@ -558,8 +558,9 @@ static void test_tree_iter(void)
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i], buff, count);
     }
 
+    tree->order(tree, true);
     printf("\n\nactual data = \n");
-    tree->breadth(tree, tree->_root);
+    tree->preorder(tree, tree->_root);
     printf("\n");
 
     // set order
@@ -567,7 +568,8 @@ static void test_tree_iter(void)
     // tree->set_order(tree, ORDER_LEFT_IN);
     // tree->set_order(tree, ORDER_LEFT_POST);
     // tree->set_order(tree, ORDER_LEFT_BREADTH);
-    tree->set_order(tree, ORDER_RIGHT_BREADTH);
+    tree->set_order(tree, ORDER_RIGHT_PRE);
+    // tree->set_order(tree, ORDER_RIGHT_BREADTH);
     printf("\n ----- iter data -----\n");
     for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
     {

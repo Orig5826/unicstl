@@ -1,21 +1,21 @@
 /**
  * @file tree.c
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-06-23
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include "tree.h"
 #include "queue.h"
 #include "stack.h"
 
-static void tree_set_balance(struct _tree* self, struct _tree_node * node)
+static void tree_set_balance(struct _tree* self, struct _tree_node* node)
 {
     assert(self != NULL);
-    if(node == NULL)
+    if (node == NULL)
     {
         return;
     }
@@ -27,22 +27,22 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->right;
-    if(node == NULL)
+    if (node == NULL)
     {
         return root;
     }
 
-    if(root->parent == NULL)
+    if (root->parent == NULL)
     {
         self->_root = node;                     // step1
     }
     else
     {
-        if(root->parent->left == root) 
+        if (root->parent->left == root)
         {
             root->parent->left = node;          // step1
         }
-        else if(root->parent->right == root)
+        else if (root->parent->right == root)
         {
             root->parent->right = node;         // setp1
         }
@@ -51,12 +51,12 @@ static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* 
     root->parent = node;                // step3
 
     root->right = node->left;           // step4
-    if(node->left != NULL)
+    if (node->left != NULL)
     {
         node->left->parent = root;      // step5
     }
     node->left = root;                  // step6
-    
+
     tree_set_balance(self, root);
     tree_set_balance(self, node);
     return node;
@@ -67,22 +67,22 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->left;
-    if(node == NULL)
+    if (node == NULL)
     {
         return root;
     }
 
-    if(root->parent == NULL)
+    if (root->parent == NULL)
     {
         self->_root = node;                     // step1
     }
     else
     {
-        if(root->parent->left == root)
+        if (root->parent->left == root)
         {
             root->parent->left = node;          // step1
         }
-        else if(root->parent->right == root)
+        else if (root->parent->right == root)
         {
             root->parent->right = node;         // setp1
         }
@@ -91,12 +91,12 @@ static struct _tree_node* tree_turn_right(struct _tree* self, struct _tree_node*
     root->parent = node;                // step3
 
     root->left = node->right;           // step4
-    if(node->right != NULL)
+    if (node->right != NULL)
     {
         node->right->parent = root;     // step5
     }
     node->right = root;                 // step6
-    
+
     tree_set_balance(self, root);
     tree_set_balance(self, node);
     return node;
@@ -107,7 +107,7 @@ static struct _tree_node* tree_turn_left_then_right(struct _tree* self, struct _
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->left;
-    if(node != NULL)
+    if (node != NULL)
     {
         tree_turn_left(self, node);
     }
@@ -120,7 +120,7 @@ static struct _tree_node* tree_turn_right_then_left(struct _tree* self, struct _
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->right;
-    if(node != NULL)
+    if (node != NULL)
     {
         tree_turn_right(self, node);
     }
@@ -132,7 +132,7 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return 0;
     }
@@ -141,7 +141,7 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
     return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
 #else
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return 0;
     }
@@ -154,19 +154,19 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
     queue_init(queue, sizeof(struct _tree_node*));
 
     queue->push(queue, &node);
-    while(!queue->empty(queue))
+    while (!queue->empty(queue))
     {
         queue->pop(queue, &node);
-        if(node->left != NULL)
+        if (node->left != NULL)
         {
             queue->push(queue, &node->left);
         }
-        if(node->right != NULL)
+        if (node->right != NULL)
         {
             queue->push(queue, &node->right);
         }
 
-        if(count_cur_level == count_next_level)
+        if (count_cur_level == count_next_level)
         {
             count_next_level = queue->size(queue);
             height++;
@@ -183,30 +183,30 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
 }
 
 /**
- * @brief 
- * 
- * if balance = rigth - left，so 
- * 
+ * @brief
+ *
+ * if balance = rigth - left，so
+ *
  * | case | root->balance | node->balance | function |
  * | ---- | ------------ | -------------- | -------- |
  * | 1    |  2           | >= 0           | left rotation
  * | 2    |  2           | < 0            | first right rotation, then left rotation
  * | 3    | -2           | <= 0           | right rotation
  * | 4    | -2           | > 0            | forth left rotation, then right rotation
- * 
- * @param self 
- * @return true 
- * @return false 
+ *
+ * @param self
+ * @return true
+ * @return false
  */
 static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return false;
     }
-    if(root->left == NULL && root->right == NULL)
+    if (root->left == NULL && root->right == NULL)
     {
         return false;
     }
@@ -214,9 +214,9 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     // self->print_obj(root->obj);
     tree_set_balance(self, root);
     int balance = root->balance;
-    if(balance == 2)
+    if (balance == 2)
     {
-        if(root->right->balance >= 0)
+        if (root->right->balance >= 0)
         {
             root = tree_turn_left(self, root);
         }
@@ -225,9 +225,9 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
             root = tree_turn_right_then_left(self, root);
         }
     }
-    else if(balance == -2)
+    else if (balance == -2)
     {
-        if(root->left->balance <= 0)
+        if (root->left->balance <= 0)
         {
             root = tree_turn_right(self, root);
         }
@@ -236,8 +236,8 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
             root = tree_turn_left_then_right(self, root);
         }
     }
-    
-    if(root->parent != NULL)
+
+    if (root->parent != NULL)
     {
         tree_avl_rebalance(self, root->parent);
     }
@@ -248,11 +248,11 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     return true;
 #else
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return false;
     }
-    if(root->left == NULL && root->right == NULL)
+    if (root->left == NULL && root->right == NULL)
     {
         return false;
     }
@@ -262,9 +262,9 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
     {
         tree_set_balance(self, root);
         balance = root->balance;
-        if(balance == 2)
+        if (balance == 2)
         {
-            if(root->right->balance >= 0)
+            if (root->right->balance >= 0)
             {
                 root = tree_turn_left(self, root);
             }
@@ -273,9 +273,9 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
                 root = tree_turn_right_then_left(self, root);
             }
         }
-        else if(balance == -2)
+        else if (balance == -2)
         {
-            if(root->left->balance <= 0)
+            if (root->left->balance <= 0)
             {
                 root = tree_turn_right(self, root);
             }
@@ -286,23 +286,23 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         }
 
         // if node become the new root
-        if(root->parent == NULL)
+        if (root->parent == NULL)
         {
             break;
         }
         root = root->parent;
-    }while(root != NULL);
-    
+    } while (root != NULL);
+
     self->_root = root;
     return true;
 #endif
 }
 
-static struct _tree_node * tree_node_new(struct _tree* self, void* obj)
+static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
     assert(self != NULL);
 
-    void * obj_new = malloc(self->_obj_size);
+    void* obj_new = malloc(self->_obj_size);
     if (obj_new == NULL)
     {
         goto done;
@@ -310,7 +310,7 @@ static struct _tree_node * tree_node_new(struct _tree* self, void* obj)
     memmove(obj_new, obj, self->_obj_size);
 
     struct _tree_node* node_new = (struct _tree_node*)malloc(sizeof(struct _tree_node));
-    if(node_new == NULL)
+    if (node_new == NULL)
     {
         goto done;
     }
@@ -322,11 +322,11 @@ static struct _tree_node * tree_node_new(struct _tree* self, void* obj)
 
     return node_new;
 done:
-    if(obj_new != NULL)
+    if (obj_new != NULL)
     {
         free(obj_new);
     }
-    if(node_new != NULL)
+    if (node_new != NULL)
     {
         free(node_new);
     }
@@ -335,9 +335,9 @@ done:
 
 static bool tree_node_free(struct _tree_node* node)
 {
-    if(node != NULL)
+    if (node != NULL)
     {
-        if(node->obj != NULL)
+        if (node->obj != NULL)
         {
             free(node->obj);
         }
@@ -348,25 +348,25 @@ static bool tree_node_free(struct _tree_node* node)
 
 /**
  * @brief find the position to insert or find object
- * 
- * @param self 
+ *
+ * @param self
  * @param obj
  */
-struct _tree_node * tree_find_pos(struct _tree* self, void* obj)
+struct _tree_node* tree_find_pos(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     assert(self->compare != NULL);
 
     struct _tree_node* root = self->_root;
-    while(root != NULL)
+    while (root != NULL)
     {
-        if(self->compare(obj, root->obj) == 0)
+        if (self->compare(obj, root->obj) == 0)
         {
             break;
         }
-        else if(self->compare(obj, root->obj) < 0)
+        else if (self->compare(obj, root->obj) < 0)
         {
-            if(root->left == NULL)
+            if (root->left == NULL)
             {
                 break;
             }
@@ -374,7 +374,7 @@ struct _tree_node * tree_find_pos(struct _tree* self, void* obj)
         }
         else
         {
-            if(root->right == NULL)
+            if (root->right == NULL)
             {
                 break;
             }
@@ -392,13 +392,13 @@ bool tree_avl_insert(struct _tree* self, void* obj)
     assert(self->compare != NULL);
 
     struct _tree_node* node = tree_node_new(self, obj);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
 
     // if no root
-    if(self->_root == NULL)
+    if (self->_root == NULL)
     {
         self->_root = node;
     }
@@ -406,12 +406,12 @@ bool tree_avl_insert(struct _tree* self, void* obj)
     {
         // insert the node
         struct _tree_node* root = tree_find_pos(self, obj);
-        if(self->compare(obj, root->obj) < 0)
+        if (self->compare(obj, root->obj) < 0)
         {
             root->left = node;
             node->parent = root;
         }
-        else if(self->compare(obj, root->obj) > 0)
+        else if (self->compare(obj, root->obj) > 0)
         {
             root->right = node;
             node->parent = root;
@@ -434,14 +434,14 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
     assert(self != NULL);
     assert(node != NULL);
 
-    if(node->parent == NULL)
+    if (node->parent == NULL)
     {
-        if(node->left != NULL)
+        if (node->left != NULL)
         {
             node->left->parent = node->parent;      // step1 : NULL for root
             self->_root = node->left;               // step2
         }
-        else if(node->right != NULL)
+        else if (node->right != NULL)
         {
             node->right->parent = node->parent;     // step1 : NULL for root
             self->_root = node->right;              // step2
@@ -453,14 +453,14 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
     }
     else
     {
-        if(node->parent->left == node)
+        if (node->parent->left == node)
         {
-            if(node->left != NULL)
+            if (node->left != NULL)
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->left = node->left;        // step2
             }
-            else if(node->right != NULL)
+            else if (node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->left = node->right;       // step2
@@ -470,14 +470,14 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
                 node->parent->left = NULL;
             }
         }
-        else if(node->parent->right == node)
+        else if (node->parent->right == node)
         {
-            if(node->left != NULL)
+            if (node->left != NULL)
             {
                 node->left->parent = node->parent;      // step1
                 node->parent->right = node->left;       // step2
             }
-            else if(node->right != NULL)
+            else if (node->right != NULL)
             {
                 node->right->parent = node->parent;     // step1
                 node->parent->right = node->right;      // step2
@@ -499,7 +499,7 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
     assert(self != NULL);
     assert(node != NULL);
     struct _tree_node* tmp = self->find_min(self, node->right);
-    if(tmp != NULL)
+    if (tmp != NULL)
     {
         memmove(node->obj, tmp->obj, self->_obj_size);
         tree_avl_delete_single_child(self, tmp);
@@ -513,18 +513,18 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     assert(obj != NULL);
     assert(self->compare != NULL);
 
-    if(self->empty(self))
+    if (self->empty(self))
     {
         return false;
     }
 
     struct _tree_node* node = self->find(self, obj);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
 
-    if((node->left != NULL) && (node->right != NULL))
+    if ((node->left != NULL) && (node->right != NULL))
     {
         // have two child
         tree_avl_delete_double_child(self, node);
@@ -539,17 +539,17 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     return true;
 }
 
-struct _tree_node * tree_find(struct _tree* self, void* obj)
+struct _tree_node* tree_find(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* root = self->_root;
-    while(root != NULL)
+    while (root != NULL)
     {
-        if(self->compare(obj, root->obj) == 0)
+        if (self->compare(obj, root->obj) == 0)
         {
             return root;
         }
-        else if(self->compare(obj, root->obj) < 0)
+        else if (self->compare(obj, root->obj) < 0)
         {
             root = root->left;
         }
@@ -564,7 +564,7 @@ struct _tree_node * tree_find(struct _tree* self, void* obj)
 bool tree_clear(struct _tree* self)
 {
     assert(self != NULL);
-    if(self->_root == NULL)
+    if (self->_root == NULL)
     {
         // return false;
         return true;
@@ -575,14 +575,14 @@ bool tree_clear(struct _tree* self)
     queue_init(queue, sizeof(struct _tree_node*));
 
     queue->push(queue, &node);
-    while(!queue->empty(queue))
+    while (!queue->empty(queue))
     {
         queue->pop(queue, &node);
-        if(node->left != NULL)
+        if (node->left != NULL)
         {
             queue->push(queue, &node->left);
         }
-        if(node->right != NULL)
+        if (node->right != NULL)
         {
             queue->push(queue, &node->right);
         }
@@ -613,11 +613,11 @@ void tree_destory(struct _tree* self)
     self->clear(self);
     self->_root = NULL;
 
-    if(self->stack != NULL)
+    if (self->stack != NULL)
     {
         stack_free(&self->stack);
     }
-    if(self->queue != NULL)
+    if (self->queue != NULL)
     {
         queue_free(&self->queue);
     }
@@ -633,19 +633,19 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
 
-    if(!self->_right_priority)
+    if (!self->_right_priority)
     {
         self->print_obj(root->obj);
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_preorder(self, root->left);
         }
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             tree_preorder(self, root->right);
         }
@@ -653,18 +653,18 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
     else
     {
         self->print_obj(root->obj);
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             tree_preorder(self, root->right);
         }
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_preorder(self, root->left);
         }
     }
 #else
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
@@ -673,11 +673,11 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
 
-    if(!self->_right_priority)          // left priority
+    if (!self->_right_priority)          // left priority
     {
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 self->print_obj(node->obj);
 
@@ -693,9 +693,9 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
     }
     else
     {
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 self->print_obj(node->obj);
 
@@ -717,52 +717,52 @@ void tree_inorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
 
-    if(!self->_right_priority)
+    if (!self->_right_priority)
     {
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_inorder(self, root->left);
         }
         self->print_obj(root->obj);
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
-            tree_inorder(self, root->right);  
+            tree_inorder(self, root->right);
         }
     }
     else
     {
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             tree_inorder(self, root->right);
         }
         self->print_obj(root->obj);
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_inorder(self, root->left);
         }
     }
 #else
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
 
-    struct _tree_node *node = root;
+    struct _tree_node* node = root;
 
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
 
-    if(!self->_right_priority)         // left priority
+    if (!self->_right_priority)         // left priority
     {
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 stack->push(stack, &node);
                 node = node->left;
@@ -778,9 +778,9 @@ void tree_inorder(struct _tree* self, struct _tree_node* root)
     }
     else
     {
-        while(node != NULL || !stack->empty(stack))
+        while (node != NULL || !stack->empty(stack))
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 stack->push(stack, &node);
                 node = node->right;
@@ -802,18 +802,18 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
 
-    if(!self->_right_priority)
+    if (!self->_right_priority)
     {
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_postorder(self, root->left);
         }
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             tree_postorder(self, root->right);
         }
@@ -821,11 +821,11 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
     }
     else
     {
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             tree_postorder(self, root->right);
         }
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             tree_postorder(self, root->left);
         }
@@ -833,7 +833,7 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
     }
 #else
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
@@ -846,11 +846,11 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
     stack_t stack = stack_new();
     stack_init(stack, sizeof(struct _tree_node*));
 
-    if(!self->_right_priority)          // left priority
+    if (!self->_right_priority)          // left priority
     {
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 stack2->push(stack2, &node);
 
@@ -866,9 +866,9 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
     }
     else
     {
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 stack2->push(stack2, &node);
 
@@ -883,7 +883,7 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
         }
     }
 
-    while(!stack2->empty(stack2))
+    while (!stack2->empty(stack2))
     {
         stack2->pop(stack2, &node);
         self->print_obj(node->obj);
@@ -898,7 +898,7 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
 void tree_breadth(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return;
     }
@@ -907,30 +907,30 @@ void tree_breadth(struct _tree* self, struct _tree_node* root)
     queue_t queue = queue_new();
     queue_init(queue, sizeof(struct _tree_node*));
 
-    if(node != NULL)
+    if (node != NULL)
     {
         queue->push(queue, &node);
-        while(!queue->empty(queue))
+        while (!queue->empty(queue))
         {
             queue->pop(queue, &node);
-            if(!self->_right_priority)
+            if (!self->_right_priority)
             {
-                if(node->left != NULL)
+                if (node->left != NULL)
                 {
                     queue->push(queue, &node->left);
                 }
-                if(node->right != NULL)
+                if (node->right != NULL)
                 {
                     queue->push(queue, &node->right);
                 }
             }
             else
             {
-                if(node->right != NULL)
+                if (node->right != NULL)
                 {
                     queue->push(queue, &node->right);
                 }
-                if(node->left != NULL)
+                if (node->left != NULL)
                 {
                     queue->push(queue, &node->left);
                 }
@@ -945,19 +945,19 @@ static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* r
 {
     assert(self != NULL);
 #if 0
-    if(root == NULL)
+    if (root == NULL)
     {
         return NULL;
     }
-    if(root->left == NULL)
+    if (root->left == NULL)
     {
         return root;
     }
     return tree_find_min(self, root->left);
 #else
-    while(root != NULL)
+    while (root != NULL)
     {
-        if(root->left != NULL)
+        if (root->left != NULL)
         {
             root = root->left;
         }
@@ -974,19 +974,19 @@ static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* r
 {
 #if 0
     assert(self != NULL);
-    if(root == NULL)
+    if (root == NULL)
     {
         return NULL;
     }
-    if(root->right == NULL)
+    if (root->right == NULL)
     {
         return root;
     }
     return tree_find_max(self, root->right);
 #else
-    while(root != NULL)
+    while (root != NULL)
     {
-        if(root->right != NULL)
+        if (root->right != NULL)
         {
             root = root->right;
         }
@@ -1003,7 +1003,7 @@ bool tree_min(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* node = tree_find_min(self, self->_root);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
@@ -1015,7 +1015,7 @@ bool tree_max(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* node = tree_find_max(self, self->_root);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
@@ -1044,22 +1044,22 @@ static struct _tree_node* tree_rb_turn_left(struct _tree* self, struct _tree_nod
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->right;
-    if(node == NULL)
+    if (node == NULL)
     {
         return root;
     }
 
-    if(root->parent == NULL)
+    if (root->parent == NULL)
     {
         self->_root = node;                     // step1
     }
     else
     {
-        if(root->parent->left == root) 
+        if (root->parent->left == root)
         {
             root->parent->left = node;          // step1
         }
-        else if(root->parent->right == root)
+        else if (root->parent->right == root)
         {
             root->parent->right = node;         // setp1
         }
@@ -1068,7 +1068,7 @@ static struct _tree_node* tree_rb_turn_left(struct _tree* self, struct _tree_nod
     root->parent = node;                // step3
 
     root->right = node->left;           // step4
-    if(node->left != NULL)
+    if (node->left != NULL)
     {
         node->left->parent = root;      // step5
     }
@@ -1081,22 +1081,22 @@ static struct _tree_node* tree_rb_turn_right(struct _tree* self, struct _tree_no
     assert(self != NULL);
     assert(root != NULL);
     struct _tree_node* node = root->left;
-    if(node == NULL)
+    if (node == NULL)
     {
         return root;
     }
 
-    if(root->parent == NULL)
+    if (root->parent == NULL)
     {
         self->_root = node;                     // step1
     }
     else
     {
-        if(root->parent->left == root)
+        if (root->parent->left == root)
         {
             root->parent->left = node;          // step1
         }
-        else if(root->parent->right == root)
+        else if (root->parent->right == root)
         {
             root->parent->right = node;         // setp1
         }
@@ -1105,7 +1105,7 @@ static struct _tree_node* tree_rb_turn_right(struct _tree* self, struct _tree_no
     root->parent = node;                // step3
 
     root->left = node->right;           // step4
-    if(node->right != NULL)
+    if (node->right != NULL)
     {
         node->right->parent = root;     // step5
     }
@@ -1120,13 +1120,13 @@ bool tree_rb_insert(struct _tree* self, void* obj)
     assert(self->compare != NULL);
 
     struct _tree_node* node = tree_node_new(self, obj);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
 
     // if no root
-    if(self->_root == NULL)
+    if (self->_root == NULL)
     {
         self->_root = node;
     }
@@ -1134,12 +1134,12 @@ bool tree_rb_insert(struct _tree* self, void* obj)
     {
         // insert the node
         struct _tree_node* root = tree_find_pos(self, obj);
-        if(self->compare(obj, root->obj) < 0)
+        if (self->compare(obj, root->obj) < 0)
         {
             root->left = node;
             node->parent = root;
         }
-        else if(self->compare(obj, root->obj) > 0)
+        else if (self->compare(obj, root->obj) > 0)
         {
             root->right = node;
             node->parent = root;
@@ -1154,31 +1154,31 @@ bool tree_rb_insert(struct _tree* self, void* obj)
     }
 
     self->rebalance(self, node);
-    
+
     self->_size++;
     return true;
 }
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * 以 balance = rigth - left 为标准，调整平衡因子
- * 
+ *
  * | 情况 | root->balance | node->balance | 调整方式 |
  * | ---- | ------------ | -------------- | -------- |
  * | 1    |  2           | >= 0           | 左旋
  * | 2    |  2           | < 0            | 先右旋后左旋
  * | 3    | -2           | <= 0           | 右旋
  * | 4    | -2           | > 0            | 先左旋后右旋
- * 
- * @param self 
- * @return true 
- * @return false 
+ *
+ * @param self
+ * @return true
+ * @return false
  */
 static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
 {
     assert(self != NULL);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
@@ -1188,11 +1188,11 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
 
     /**
      * @brief 新插入节点为红色，且父节点为红色的情况下，需要调整。
-     * 
+     *
      * 主要考虑前三种情况[1-3]，其余三种[4-6]对称操作即可
-     * 
+     *
      * 原则只有一个，那就是想办法维持红黑树性质不变
-     * 
+     *
      * | 情况 | 说明 | 调整方式 |
      * | ---- | --- | -------- |
      * | 0 | 父节点为黑色 | 不用处理
@@ -1200,14 +1200,14 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
      * | 2 | 父红，爷黑，叔黑 | （若爷孙在同一边）父黑，爷红，爷左/右旋
      * | 3 | 父红，爷黑，叔黑 | （若爷孙在不同边）先父左右旋，将新父变黑，随后爷红，爷左/右旋
      */
-    while(node->parent != NULL && node->parent->color == RBT_RED)
+    while (node->parent != NULL && node->parent->color == RBT_RED)
     {
         father = node->parent;
         grandfather = father->parent;
-        if(father == grandfather->left)
+        if (father == grandfather->left)
         {
             uncle = grandfather->right;
-            if(uncle != NULL && uncle->color == RBT_RED)        // uncle is red
+            if (uncle != NULL && uncle->color == RBT_RED)        // uncle is red
             {
                 father->color = RBT_BLACK;
                 uncle->color = RBT_BLACK;
@@ -1216,7 +1216,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
             }
             else                                                // uncle is black
             {
-                if(node == father->right)
+                if (node == father->right)
                 {
                     node = tree_rb_turn_left(self, father);
                     node->color = RBT_BLACK;
@@ -1233,7 +1233,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
         else
         {
             uncle = grandfather->left;
-            if(uncle != NULL && uncle->color == RBT_RED)        // uncle is red
+            if (uncle != NULL && uncle->color == RBT_RED)        // uncle is red
             {
                 father->color = RBT_BLACK;
                 uncle->color = RBT_BLACK;
@@ -1242,7 +1242,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
             }
             else                                                // uncle is black
             {
-                if(node == father->left)
+                if (node == father->left)
                 {
                     node = tree_rb_turn_right(self, father);
                     node->color = RBT_BLACK;
@@ -1258,7 +1258,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
         }
     }
 
-    if(node->parent == NULL)
+    if (node->parent == NULL)
     {
         self->_root = node;
         node->color = RBT_BLACK;
@@ -1272,19 +1272,19 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
     struct _tree_node* father = NULL;
     struct _tree_node* brother = NULL;
     struct _tree_node* tmp = NULL;
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
 
     // the color of node is black
-    while(node->parent != NULL && node->color == RBT_BLACK)
+    while (node->parent != NULL && node->color == RBT_BLACK)
     {
         father = node->parent;
-        if(father->left == node)
+        if (father->left == node)
         {
             brother = father->right;
-            if(brother->color == RBT_RED)
+            if (brother->color == RBT_RED)
             {
                 // case 1
                 // father is black, brother is red
@@ -1296,7 +1296,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // After deleting the node, it became unbalanced
                 // so convert to case5
             }
-            else if(brother->right != NULL && brother->right->color == RBT_RED)
+            else if (brother->right != NULL && brother->right->color == RBT_RED)
             {
                 // case 2
                 brother->color = father->color;
@@ -1306,7 +1306,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 // After deleting the node, it remains balanced
                 break;
             }
-            else if(brother->left != NULL && brother->left->color == RBT_RED)
+            else if (brother->left != NULL && brother->left->color == RBT_RED)
             {
                 // case 3
                 brother->color = RBT_RED;
@@ -1316,7 +1316,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else
             {
-                if(father->color == RBT_BLACK)
+                if (father->color == RBT_BLACK)
                 {
                     // case 4
                     // father is black, brother has no children
@@ -1339,14 +1339,14 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
         {
             // symmetric
             brother = father->left;
-            if(brother->color == RBT_RED)
+            if (brother->color == RBT_RED)
             {
                 // case1
                 brother->color = RBT_BLACK;
                 father->color = RBT_RED;
                 tmp = tree_rb_turn_right(self, father);
             }
-            else if(brother->left != NULL && brother->left->color == RBT_RED)
+            else if (brother->left != NULL && brother->left->color == RBT_RED)
             {
                 // case2
                 brother->color = father->color;
@@ -1355,7 +1355,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
                 node = tree_rb_turn_right(self, father);
                 break;
             }
-            else if(brother->right != NULL && brother->right->color == RBT_RED)
+            else if (brother->right != NULL && brother->right->color == RBT_RED)
             {
                 // case3
                 brother->color = RBT_RED;
@@ -1365,7 +1365,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
             else
             {
-                if(father->color == RBT_BLACK)
+                if (father->color == RBT_BLACK)
                 {
                     // case4
                     brother->color = RBT_RED;
@@ -1381,13 +1381,13 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
             }
         }
 
-        if(tmp != NULL && tmp->parent == NULL)
+        if (tmp != NULL && tmp->parent == NULL)
         {
             self->_root = tmp;
         }
     }
-    
-    if(node->parent == NULL)
+
+    if (node->parent == NULL)
     {
         self->_root = node;
     }
@@ -1401,33 +1401,33 @@ bool tree_rb_delete(struct _tree* self, void* obj)
     assert(obj != NULL);
     assert(self->compare != NULL);
 
-    if(self->empty(self))
+    if (self->empty(self))
     {
         return false;
     }
 
     struct _tree_node* node = self->find(self, obj);
-    if(node == NULL)
+    if (node == NULL)
     {
         return false;
     }
 
     struct _tree_node* tmp = NULL;
-    if(node->left == NULL && node->right == NULL)
+    if (node->left == NULL && node->right == NULL)
     {
         tmp = node;
     }
-    else if(node->left != NULL && node->right == NULL)
+    else if (node->left != NULL && node->right == NULL)
     {
         // node->left must be red
         tmp = node->left;
-        memmove(node->obj,tmp->obj, self->_obj_size);
+        memmove(node->obj, tmp->obj, self->_obj_size);
     }
-    else if(node->left == NULL && node->right != NULL)
+    else if (node->left == NULL && node->right != NULL)
     {
         // node->right must be red
         tmp = node->right;
-        memmove(node->obj,tmp->obj, self->_obj_size);
+        memmove(node->obj, tmp->obj, self->_obj_size);
     }
     else
     {
@@ -1436,7 +1436,7 @@ bool tree_rb_delete(struct _tree* self, void* obj)
         // 3. delete the min node
         tmp = self->find_min(self, node->right);
         memmove(node->obj, tmp->obj, self->_obj_size);
-        if(tmp->right != NULL)
+        if (tmp->right != NULL)
         {
             // tmp->right must be red
             memmove(tmp->obj, tmp->right->obj, self->_obj_size);
@@ -1444,14 +1444,14 @@ bool tree_rb_delete(struct _tree* self, void* obj)
         }
     }
 
-    if(tmp->color == RBT_BLACK)
+    if (tmp->color == RBT_BLACK)
     {
         tree_rb_delete_fix(self, tmp);
     }
 
-    if(tmp->parent != NULL)
+    if (tmp->parent != NULL)
     {
-        if(tmp->parent->left == tmp)
+        if (tmp->parent->left == tmp)
         {
             tmp->parent->left = NULL;
         }
@@ -1482,29 +1482,54 @@ void* tree_begin(struct _tree* self)
     switch (self->_order)
     {
     case ORDER_LEFT_PRE:
+    case ORDER_RIGHT_PRE:
     {
         struct _tree_node* node = NULL;
         self->cur_node = self->_root;
         self->stack->clear(self->stack);
 
-        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        if (self->_order == ORDER_LEFT_PRE)
         {
-            if(self->cur_node != NULL)
+            while (!self->stack->empty(self->stack) || self->cur_node != NULL)
             {
-                node = self->cur_node;
+                if (self->cur_node != NULL)
+                {
+                    node = self->cur_node;
 
-                self->stack->push(self->stack, &self->cur_node);
-                self->cur_node = self->cur_node->left;
+                    self->stack->push(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->left;
 
-                break;
-            }
-            else
-            {
-                self->stack->pop(self->stack, &self->cur_node);
-                self->cur_node = self->cur_node->right;
+                    break;
+                }
+                else
+                {
+                    self->stack->pop(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->right;
+                }
             }
         }
-        if(node == NULL)
+        else
+        {
+            while (!self->stack->empty(self->stack) || self->cur_node != NULL)
+            {
+                if (self->cur_node != NULL)
+                {
+                    node = self->cur_node;
+
+                    self->stack->push(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->right;
+
+                    break;
+                }
+                else
+                {
+                    self->stack->pop(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->left;
+                }
+            }
+        }
+
+        if (node == NULL)
         {
             return NULL;
         }
@@ -1516,9 +1541,9 @@ void* tree_begin(struct _tree* self)
         self->cur_node = self->_root;
         self->stack->clear(self->stack);
 
-        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        while (!self->stack->empty(self->stack) || self->cur_node != NULL)
         {
-            if(self->cur_node != NULL)
+            if (self->cur_node != NULL)
             {
                 self->stack->push(self->stack, &self->cur_node);
                 self->cur_node = self->cur_node->left;
@@ -1532,7 +1557,7 @@ void* tree_begin(struct _tree* self)
                 break;
             }
         }
-        if(node == NULL)
+        if (node == NULL)
         {
             return NULL;
         }
@@ -1545,9 +1570,9 @@ void* tree_begin(struct _tree* self)
 
         stack_t stack = stack_new();
         stack_init(stack, sizeof(struct _tree_node*));
-        while(!stack->empty(stack) || node != NULL)
+        while (!stack->empty(stack) || node != NULL)
         {
-            if(node != NULL)
+            if (node != NULL)
             {
                 self->stack->push(self->stack, &node);
 
@@ -1562,7 +1587,7 @@ void* tree_begin(struct _tree* self)
         }
         stack_free(&stack);
 
-        if(!self->stack->empty(self->stack))
+        if (!self->stack->empty(self->stack))
         {
             self->stack->pop(self->stack, &self->cur_node);
         }
@@ -1579,30 +1604,30 @@ void* tree_begin(struct _tree* self)
         self->queue->clear(self->queue);
 
         queue_t queue = self->queue;
-        if(node != NULL)
+        if (node != NULL)
         {
             queue->push(queue, &node);
-            if(!queue->empty(queue))
+            if (!queue->empty(queue))
             {
                 queue->pop(queue, &node);
-                if(self->_order == ORDER_LEFT_BREADTH)
+                if (self->_order == ORDER_LEFT_BREADTH)
                 {
-                    if(node->left != NULL)
+                    if (node->left != NULL)
                     {
                         queue->push(queue, &node->left);
                     }
-                    if(node->right != NULL)
+                    if (node->right != NULL)
                     {
                         queue->push(queue, &node->right);
                     }
                 }
                 else
                 {
-                    if(node->right != NULL)
+                    if (node->right != NULL)
                     {
                         queue->push(queue, &node->right);
                     }
-                    if(node->left != NULL)
+                    if (node->left != NULL)
                     {
                         queue->push(queue, &node->left);
                     }
@@ -1615,10 +1640,6 @@ void* tree_begin(struct _tree* self)
             }
         }
         return self->cur_node == NULL ? NULL : self->cur_node->obj;
-    }break;
-    case ORDER_RIGHT_PRE:
-    {
-
     }break;
     case ORDER_RIGHT_IN:
     {
@@ -1640,26 +1661,51 @@ void* tree_next(struct _tree* self)
     switch (self->_order)
     {
     case ORDER_LEFT_PRE:
+    case ORDER_RIGHT_PRE:
     {
         struct _tree_node* node = NULL;
-        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        if (self->_order == ORDER_LEFT_PRE)
         {
-            if(self->cur_node != NULL)
+            while (!self->stack->empty(self->stack) || self->cur_node != NULL)
             {
-                node = self->cur_node;
+                if (self->cur_node != NULL)
+                {
+                    node = self->cur_node;
 
-                self->stack->push(self->stack, &self->cur_node);
-                self->cur_node = self->cur_node->left;
+                    self->stack->push(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->left;
 
-                break;
-            }
-            else
-            {
-                self->stack->pop(self->stack, &self->cur_node);
-                self->cur_node = self->cur_node->right;
+                    break;
+                }
+                else
+                {
+                    self->stack->pop(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->right;
+                }
             }
         }
-        if(node == NULL)
+        else
+        {
+            while (!self->stack->empty(self->stack) || self->cur_node != NULL)
+            {
+                if (self->cur_node != NULL)
+                {
+                    node = self->cur_node;
+
+                    self->stack->push(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->right;
+
+                    break;
+                }
+                else
+                {
+                    self->stack->pop(self->stack, &self->cur_node);
+                    self->cur_node = self->cur_node->left;
+                }
+            }
+        }
+
+        if (node == NULL)
         {
             return NULL;
         }
@@ -1668,9 +1714,9 @@ void* tree_next(struct _tree* self)
     case ORDER_LEFT_IN:
     {
         struct _tree_node* node = NULL;
-        while(!self->stack->empty(self->stack) || self->cur_node != NULL)
+        while (!self->stack->empty(self->stack) || self->cur_node != NULL)
         {
-            if(self->cur_node != NULL)
+            if (self->cur_node != NULL)
             {
                 self->stack->push(self->stack, &self->cur_node);
                 self->cur_node = self->cur_node->left;
@@ -1684,7 +1730,7 @@ void* tree_next(struct _tree* self)
                 break;
             }
         }
-        if(node == NULL)
+        if (node == NULL)
         {
             return NULL;
         }
@@ -1692,7 +1738,7 @@ void* tree_next(struct _tree* self)
     }break;
     case ORDER_LEFT_POST:
     {
-        if(!self->stack->empty(self->stack))
+        if (!self->stack->empty(self->stack))
         {
             self->stack->pop(self->stack, &self->cur_node);
         }
@@ -1707,27 +1753,27 @@ void* tree_next(struct _tree* self)
     {
         struct _tree_node* node = self->cur_node;
         queue_t queue = self->queue;
-        if(!queue->empty(queue) && node != NULL)
+        if (!queue->empty(queue) && node != NULL)
         {
             queue->pop(queue, &node);
-            if(self->_order == ORDER_LEFT_BREADTH)
+            if (self->_order == ORDER_LEFT_BREADTH)
             {
-                if(node->left != NULL)
+                if (node->left != NULL)
                 {
                     queue->push(queue, &node->left);
                 }
-                if(node->right != NULL)
+                if (node->right != NULL)
                 {
                     queue->push(queue, &node->right);
                 }
             }
             else
             {
-                if(node->right != NULL)
+                if (node->right != NULL)
                 {
                     queue->push(queue, &node->right);
                 }
-                if(node->left != NULL)
+                if (node->left != NULL)
                 {
                     queue->push(queue, &node->left);
                 }
@@ -1739,10 +1785,6 @@ void* tree_next(struct _tree* self)
             self->cur_node = NULL;
         }
         return self->cur_node == NULL ? NULL : self->cur_node->obj;
-    }break;
-    case ORDER_RIGHT_PRE:
-    {
-
     }break;
     case ORDER_RIGHT_IN:
     {
@@ -1803,7 +1845,7 @@ void* tree_end(struct _tree* self)
 
 
 
-bool tree_avl_init(struct _tree *self, uint32_t obj_size)
+bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
 
@@ -1842,13 +1884,13 @@ bool tree_avl_init(struct _tree *self, uint32_t obj_size)
     self->_root = NULL;
 
     self->stack = stack_new();
-    if(self->stack == NULL)
+    if (self->stack == NULL)
     {
         goto done;
     }
     stack_init(self->stack, sizeof(struct _tree_node*));
     self->queue = queue_new();
-    if(self->queue == NULL)
+    if (self->queue == NULL)
     {
         goto done1;
     }
@@ -1864,7 +1906,7 @@ done:
     return true;
 }
 
-bool tree_rb_init(struct _tree *self, uint32_t obj_size)
+bool tree_rb_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
     self->_obj_size = obj_size;
@@ -1878,7 +1920,7 @@ bool tree_rb_init(struct _tree *self, uint32_t obj_size)
     self->insert = tree_rb_insert;
     self->delete = tree_rb_delete;
     self->rebalance = tree_rb_rebalance;
-    
+
     self->clear = tree_clear;
     self->empty = tree_empty;
     self->size = tree_size;
@@ -1903,13 +1945,13 @@ bool tree_rb_init(struct _tree *self, uint32_t obj_size)
     self->_root = NULL;
 
     self->stack = stack_new();
-    if(self->stack == NULL)
+    if (self->stack == NULL)
     {
         goto done;
     }
     stack_init(self->stack, sizeof(struct _tree_node*));
     self->queue = queue_new();
-    if(self->queue == NULL)
+    if (self->queue == NULL)
     {
         goto done1;
     }
@@ -1930,7 +1972,7 @@ tree_t tree_new(void)
 
 void tree_free(tree_t* tree)
 {
-    if(*tree != NULL)
+    if (*tree != NULL)
     {
         (*tree)->destory(*tree);
         free(*tree);
