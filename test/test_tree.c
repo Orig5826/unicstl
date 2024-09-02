@@ -545,7 +545,7 @@ static void test_tree_iter(void)
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
     }
 
-    for(i = 1; i < 5; i++)
+    for(i = 1; i < 9; i++)
     {
         tree->set_order(tree, i);  //ORDER_LEFT_IN
         // printf("\n ----- iter test -----\n");
@@ -558,9 +558,10 @@ static void test_tree_iter(void)
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i], buff, count);
     }
 
+#if 0
     tree->order(tree, true);
     printf("\n\nactual data = \n");
-    tree->preorder(tree, tree->_root);
+    tree->postorder(tree, tree->_root);
     printf("\n");
 
     // set order
@@ -568,7 +569,9 @@ static void test_tree_iter(void)
     // tree->set_order(tree, ORDER_LEFT_IN);
     // tree->set_order(tree, ORDER_LEFT_POST);
     // tree->set_order(tree, ORDER_LEFT_BREADTH);
-    tree->set_order(tree, ORDER_RIGHT_PRE);
+    // tree->set_order(tree, ORDER_RIGHT_PRE);
+    // tree->set_order(tree, ORDER_RIGHT_IN);
+    tree->set_order(tree, ORDER_RIGHT_POST);
     // tree->set_order(tree, ORDER_RIGHT_BREADTH);
     printf("\n ----- iter data -----\n");
     for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
@@ -578,6 +581,7 @@ static void test_tree_iter(void)
     }
     printf("\n");
     TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[tree->_order], buff, count);
+#endif
 
     TEST_ASSERT_FALSE(tree->empty(tree));
     TEST_ASSERT_TRUE(tree->clear(tree));
