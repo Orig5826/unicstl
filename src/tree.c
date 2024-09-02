@@ -1570,7 +1570,30 @@ void* tree_begin(struct _tree* self)
     }break;
     case ORDER_LEFT_BREADTH:
     {
+        struct _tree_node* node = self->_root;
+        self->queue->clear(self->queue);
 
+        queue_t queue = self->queue;
+        if(node != NULL)
+        {
+            queue->push(queue, &node);
+            while(!queue->empty(queue))
+            {
+                queue->pop(queue, &node);
+                if(node->left != NULL)
+                {
+                    queue->push(queue, &node->left);
+                }
+                if(node->right != NULL)
+                {
+                    queue->push(queue, &node->right);
+                }
+                // self->print_obj(node->obj);
+                break;
+            }
+        }
+        self->cur_node = node;
+        return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_RIGHT_PRE:
     {
@@ -1664,7 +1687,27 @@ void* tree_next(struct _tree* self)
     }break;
     case ORDER_LEFT_BREADTH:
     {
+        struct _tree_node* node = self->cur_node;
+        queue_t queue = self->queue;
+        if(!queue->empty(queue) && node != NULL)
+        {
+            queue->pop(queue, &node);
+            if(node->left != NULL)
+            {
+                queue->push(queue, &node->left);
+            }
+            if(node->right != NULL)
+            {
+                queue->push(queue, &node->right);
+            }
 
+            self->cur_node = node;
+        }
+        else
+        {
+            self->cur_node = NULL;
+        }
+        return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_RIGHT_PRE:
     {
