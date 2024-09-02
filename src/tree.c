@@ -1485,6 +1485,7 @@ void* tree_begin(struct _tree* self)
     {
         struct _tree_node* node = NULL;
         self->cur_node = self->_root;
+        self->stack->clear(self->stack);
 
         while(!self->stack->empty(self->stack) || self->cur_node != NULL)
         {
@@ -1513,6 +1514,7 @@ void* tree_begin(struct _tree* self)
     {
         struct _tree_node* node = NULL;
         self->cur_node = self->_root;
+        self->stack->clear(self->stack);
 
         while(!self->stack->empty(self->stack) || self->cur_node != NULL)
         {
@@ -1539,6 +1541,8 @@ void* tree_begin(struct _tree* self)
     case ORDER_LEFT_POST:
     {
         struct _tree_node* node = self->_root;
+        self->stack->clear(self->stack);
+
         stack_t stack = stack_new();
         stack_init(stack, sizeof(struct _tree_node*));
         while(!stack->empty(stack) || node != NULL)
@@ -1569,6 +1573,7 @@ void* tree_begin(struct _tree* self)
         return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_LEFT_BREADTH:
+    case ORDER_RIGHT_BREADTH:
     {
         struct _tree_node* node = self->_root;
         self->queue->clear(self->queue);
@@ -1577,22 +1582,38 @@ void* tree_begin(struct _tree* self)
         if(node != NULL)
         {
             queue->push(queue, &node);
-            while(!queue->empty(queue))
+            if(!queue->empty(queue))
             {
                 queue->pop(queue, &node);
-                if(node->left != NULL)
+                if(self->_order == ORDER_LEFT_BREADTH)
                 {
-                    queue->push(queue, &node->left);
+                    if(node->left != NULL)
+                    {
+                        queue->push(queue, &node->left);
+                    }
+                    if(node->right != NULL)
+                    {
+                        queue->push(queue, &node->right);
+                    }
                 }
-                if(node->right != NULL)
+                else
                 {
-                    queue->push(queue, &node->right);
+                    if(node->right != NULL)
+                    {
+                        queue->push(queue, &node->right);
+                    }
+                    if(node->left != NULL)
+                    {
+                        queue->push(queue, &node->left);
+                    }
                 }
-                // self->print_obj(node->obj);
-                break;
+                self->cur_node = node;
+            }
+            else
+            {
+                self->cur_node = NULL;
             }
         }
-        self->cur_node = node;
         return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_RIGHT_PRE:
@@ -1604,10 +1625,6 @@ void* tree_begin(struct _tree* self)
 
     }break;
     case ORDER_RIGHT_POST:
-    {
-
-    }break;
-    case ORDER_RIGHT_BREADTH:
     {
 
     }break;
@@ -1686,21 +1703,35 @@ void* tree_next(struct _tree* self)
         return self->cur_node == NULL ? NULL : self->cur_node->obj;
     }break;
     case ORDER_LEFT_BREADTH:
+    case ORDER_RIGHT_BREADTH:
     {
         struct _tree_node* node = self->cur_node;
         queue_t queue = self->queue;
         if(!queue->empty(queue) && node != NULL)
         {
             queue->pop(queue, &node);
-            if(node->left != NULL)
+            if(self->_order == ORDER_LEFT_BREADTH)
             {
-                queue->push(queue, &node->left);
+                if(node->left != NULL)
+                {
+                    queue->push(queue, &node->left);
+                }
+                if(node->right != NULL)
+                {
+                    queue->push(queue, &node->right);
+                }
             }
-            if(node->right != NULL)
+            else
             {
-                queue->push(queue, &node->right);
+                if(node->right != NULL)
+                {
+                    queue->push(queue, &node->right);
+                }
+                if(node->left != NULL)
+                {
+                    queue->push(queue, &node->left);
+                }
             }
-
             self->cur_node = node;
         }
         else
@@ -1718,10 +1749,6 @@ void* tree_next(struct _tree* self)
 
     }break;
     case ORDER_RIGHT_POST:
-    {
-
-    }break;
-    case ORDER_RIGHT_BREADTH:
     {
 
     }break;
