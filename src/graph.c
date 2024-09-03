@@ -75,6 +75,31 @@ static void graph_destory(struct _graph *self)
     }
 }
 
+static void graph_print(struct _graph *self)
+{
+    if(self == NULL || self->_head == NULL || self->print_obj == NULL)
+    {
+        return;
+    }
+
+    printf("\n     ");
+    for(uint32_t i = 0; i < self->_capacity; i++)
+    {
+        self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+    }
+    printf("\n");
+    for(uint32_t i = 0; i < self->_capacity; i++)
+    {
+        self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+        for(uint32_t j = 0; j < self->_capacity; j++)
+        {
+            printf(" %2d   ", self->_head->edge[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 static void graph_init2(struct _graph *self)
 {
     if(self == NULL || self->_head == NULL)
@@ -84,6 +109,7 @@ static void graph_init2(struct _graph *self)
 
     for(uint32_t i = 0; i < self->_capacity; i++)
     {
+        *((int *)self->_head->obj + i) = i;
         for(uint32_t j = 0; j < self->_capacity; j++)
         {
             self->_head->edge[i][j] = 0;
@@ -115,6 +141,9 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
     graph->size = graph_size;
     graph->capacity = graph_capacity;
     graph->clear = graph_clear;
+
+    graph->print_obj = NULL;
+    graph->print = graph_print;
 
     graph->_head = (struct _graph_node *)malloc(sizeof(struct _graph_node));
     if(graph->_head == NULL)

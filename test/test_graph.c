@@ -12,13 +12,26 @@
 
 void test_graph_new(void)
 {
-    graph_t g = graph_new2(sizeof(int), 10);
-    TEST_ASSERT(g != NULL);
-    graph_free(&g);
-    TEST_ASSERT(g == NULL);
+    graph_t graph = graph_new2(sizeof(int), 10);
+    TEST_ASSERT_NOT_NULL(graph);
+    graph_free(&graph);
+    TEST_ASSERT_NULL(graph);
+}
+
+void test_graph_print(void)
+{
+    graph_t graph = graph_new2(sizeof(int), 10);
+    TEST_ASSERT_NOT_NULL(graph);
+    graph->print_obj = print_num;
+
+    graph->print(graph);
+
+    graph_free(&graph);
+    TEST_ASSERT_NULL(graph);
 }
 
 void test_graph(void)
 {
     RUN_TEST(test_graph_new);
+    RUN_TEST(test_graph_print);
 }

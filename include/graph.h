@@ -29,6 +29,7 @@ struct _graph {
 
     // init
     void (*init)(struct _graph *self);
+    void (*from_matrix)(struct _graph *self, uint32_t **edges, uint32_t size);
 
     // kernel
     bool (*add)(struct _graph *self, void *obj);
@@ -45,6 +46,9 @@ struct _graph {
     // 
     bool (*clear)(struct _graph *self);
     void (*destory)(struct _graph *self);
+
+    void (*print)(struct _graph *self);
+    void (*print_obj)(void *obj);
 };
 typedef struct _graph* graph_t;
 
