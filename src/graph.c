@@ -100,6 +100,32 @@ static void graph_print(struct _graph *self)
     printf("\n");
 }
 
+static bool graph_from_matrix(struct _graph *self, void *obj, uint32_t *edges, uint32_t size)
+{
+    if(self == NULL || self->_head == NULL)
+    {
+        return false;
+    }
+
+    if(size > self->_capacity || obj == NULL || edges == NULL)
+    {
+        return false;
+    }
+
+    for(uint32_t i = 0; i < size; i++)
+    {
+        memmove((char *)self->_head->obj + i * self->_obj_size, (char *)obj + i * self->_obj_size, self->_obj_size);
+    }
+    for(uint32_t i = 0; i < size; i++)
+    {
+        for(uint32_t j = 0; j < size; j++)
+        {
+            self->_head->edge[i][j] = edges[i * size + j];
+        }
+    }
+    return true;
+}
+
 static void graph_init2(struct _graph *self)
 {
     if(self == NULL || self->_head == NULL)
@@ -141,6 +167,8 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
     graph->size = graph_size;
     graph->capacity = graph_capacity;
     graph->clear = graph_clear;
+
+    graph->from_matrix = graph_from_matrix;
 
     graph->print_obj = NULL;
     graph->print = graph_print;

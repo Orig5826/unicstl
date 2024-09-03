@@ -29,7 +29,7 @@ struct _graph {
 
     // init
     void (*init)(struct _graph *self);
-    void (*from_matrix)(struct _graph *self, uint32_t **edges, uint32_t size);
+    bool (*from_matrix)(struct _graph *self, void *obj, uint32_t *edges, uint32_t size);
 
     // kernel
     bool (*add)(struct _graph *self, void *obj);
