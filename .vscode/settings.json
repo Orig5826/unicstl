@@ -22,6 +22,7 @@
         "unity.h": "c",
         "unity_config.h": "c",
         "unity_internals.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "graph.h": "c"
     }
 }

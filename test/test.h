@@ -47,5 +47,6 @@ void test_list(void);
 void test_deque(void);
 void test_tree(void);
 void test_heap(void);
+void test_graph(void);
 
 #endif // _TEST_H_

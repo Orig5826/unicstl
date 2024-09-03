@@ -15,7 +15,7 @@
 
 struct _graph_node {
     void *obj;
-    struct _graph_node *next;
+    uint32_t **edge;
 };
 
 struct _graph {

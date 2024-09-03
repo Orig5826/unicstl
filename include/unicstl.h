@@ -17,5 +17,6 @@
 #include "deque.h"
 #include "tree.h"
 #include "heap.h"
+#include "graph.h"
 
 #endif // _UNICSTL_H_

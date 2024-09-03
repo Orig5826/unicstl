@@ -84,6 +84,7 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_deque);
     TEST_ADD(test_heap);
     TEST_ADD(test_tree);
+    TEST_ADD(test_graph);
     
     return UNITY_END();
 }
