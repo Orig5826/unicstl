@@ -47,9 +47,9 @@ void test_graph_from_matrix(void)
     TEST_ASSERT_NOT_NULL(graph);
     graph->print_obj = print_num;
 
-    graph->print(graph);
+    // graph->print(graph);
     graph->from_matrix(graph, vertexs, matrix, size);
-    graph->print(graph);
+    // graph->print(graph);
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);

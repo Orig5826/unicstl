@@ -43,6 +43,9 @@ struct _graph {
     bool (*empty)(struct _graph *self);
     bool (*full)(struct _graph *self);
 
+    bool (*dfs)(struct _graph *self, uint32_t idx);
+    bool (*bfs)(struct _graph *self, uint32_t idx);
+
     // 
     bool (*clear)(struct _graph *self);
     void (*destory)(struct _graph *self);

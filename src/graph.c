@@ -9,6 +9,8 @@
  * 
  */
 #include "graph.h"
+#include "queue.h"
+#include "stack.h"
 
 static uint32_t graph_size(struct _graph* self)
 {
@@ -126,6 +128,44 @@ static bool graph_from_matrix(struct _graph *self, void *obj, uint32_t *edges, u
     return true;
 }
 
+static bool graph_bfs(struct _graph *self, uint32_t idx)
+{
+    if(self == NULL || self->_head == NULL)
+    {
+        return false;
+    }
+
+    if(idx >= self->_size || idx >= self->_capacity)
+    {
+        return false;
+    }
+
+    queue_t queue = queue_new();
+    queue_init(queue, sizeof(int));
+#if 0
+    queue->push(queue, &node);
+    while (!queue->empty(queue))
+    {
+        queue->pop(queue, &node);
+        if (node->left != NULL)
+        {
+            queue->push(queue, &node->left);
+        }
+        if (node->right != NULL)
+        {
+            queue->push(queue, &node->right);
+        }
+    }
+#endif
+    queue_free(&queue);
+    return true;
+}
+
+static bool graph_dfs(struct _graph *self, uint32_t idx)
+{
+
+}
+
 static void graph_init2(struct _graph *self)
 {
     if(self == NULL || self->_head == NULL)
@@ -169,6 +209,8 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
     graph->clear = graph_clear;
 
     graph->from_matrix = graph_from_matrix;
+    graph->bfs = graph_bfs;
+    graph->dfs = graph_dfs;
 
     graph->print_obj = NULL;
     graph->print = graph_print;
