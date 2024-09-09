@@ -16,6 +16,7 @@
 struct _graph_node {
     void *obj;
     uint32_t **edge;
+    uint8_t *visited;
 };
 
 struct _graph {

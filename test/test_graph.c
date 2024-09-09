@@ -34,7 +34,7 @@ void test_graph_from_matrix(void)
 {
     // const uint32_t size = 10;
 #define size 5
-    int vertexs[size] = {1,2,3,4,5};
+    int vertexs[size] = {0, 1, 2, 3, 4};
     int matrix[size * size] = {
         0, 1, 0, 0, 0, 
         1, 0, 1, 0, 0, 
@@ -49,7 +49,9 @@ void test_graph_from_matrix(void)
 
     // graph->print(graph);
     graph->from_matrix(graph, vertexs, matrix, size);
-    // graph->print(graph);
+    graph->print(graph);
+
+    graph->bfs(graph, 1);
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);

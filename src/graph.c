@@ -125,6 +125,8 @@ static bool graph_from_matrix(struct _graph *self, void *obj, uint32_t *edges, u
             self->_head->edge[i][j] = edges[i * size + j];
         }
     }
+
+    self->_size = size;
     return true;
 }
 
@@ -142,21 +144,20 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
 
     queue_t queue = queue_new();
     queue_init(queue, sizeof(int));
-#if 0
-    queue->push(queue, &node);
+
+    queue->push(queue, &idx);
     while (!queue->empty(queue))
     {
-        queue->pop(queue, &node);
-        if (node->left != NULL)
+        queue->pop(queue, &idx);
+        for(uint32_t i = 0; i < self->_size; i++)
         {
-            queue->push(queue, &node->left);
-        }
-        if (node->right != NULL)
-        {
-            queue->push(queue, &node->right);
+            if(self->_head->edge[idx][i] == 1 && self->_head->visited[i] == 0)
+            {
+                queue->push(queue, &i);
+                self->_head->visited[i] == 1;
+            }
         }
     }
-#endif
     queue_free(&queue);
     return true;
 }
@@ -243,10 +244,18 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
         }
     }
 
+    graph->_head->visited = (uint8_t *)calloc(1, graph->_capacity * sizeof(uint8_t));
+    if(graph->_head->visited == NULL)
+    {
+        goto done5;
+    }
+
     // init graph
     graph->init(graph);
 
     return graph;
+done5:
+
 done4:
     for(uint32_t j = 0; j < i; j++)
     {
