@@ -54,7 +54,7 @@ static bool queue_push(struct _queue* self, void* obj)
 
     struct _queue_node* node_new = queue_node_new(obj, self->_obj_size);
     if(node_new == NULL)
-    {
+    { 
         return false;
     }
 
@@ -80,6 +80,7 @@ static bool queue_pop(struct _queue* self, void* obj)
     {
         return false;
     }
+    printf("#pop start!\n");
     struct _queue_node* node = self->_front;
     if(obj != NULL)
     {
@@ -87,8 +88,14 @@ static bool queue_pop(struct _queue* self, void* obj)
     }
     self->_front = node->next;
     self->_size--;
+    printf("#pop mid!\n");
 
-    queue_node_free(&node);
+    // queue_node_free(&node);
+    printf("%x\n", node->obj);
+    free(node->obj);
+    printf("#free node->obj ok!\n");
+    free(node);
+    printf("#pop end!\n");
     return true;
 }
 

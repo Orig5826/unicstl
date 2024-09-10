@@ -157,10 +157,15 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
     queue_t queue = queue_new();
     queue_init(queue, sizeof(uint32_t));
 
+    printf("queue ok.\n");
     queue->push(queue, &idx);
+    printf("queue push.\n");
     while (!queue->empty(queue))
     {
+        printf("queue not empty.\n");
         queue->pop(queue, &idx);
+        printf("queue pop.\n");
+
         self->_head->visited[idx] = 1;
         for(uint32_t i = 0; i < self->_size; i++)
         {
@@ -171,10 +176,15 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
                     queue->push(queue, &i);
                 }
 
+                printf("@");
                 self->print_obj((char *)self->_head->obj + idx * self->_obj_size);
                 printf("->");
                 self->print_obj((char *)self->_head->obj + i * self->_obj_size);
                 printf(", ");
+            }
+            else
+            {
+                printf(".");
             }
         }
         printf("\n");
