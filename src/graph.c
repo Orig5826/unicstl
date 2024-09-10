@@ -56,6 +56,11 @@ static void graph_destory(struct _graph *self)
     self->clear(self);
     if(self->_head != NULL)
     {
+        if(self->_head->visited != NULL)
+        {
+            free(self->_head->visited);
+        }
+
         if(self->_head->obj != NULL)
         {
             free(self->_head->obj);
@@ -100,6 +105,7 @@ static void graph_print(struct _graph *self)
         printf("\n");
     }
     printf("\n");
+    printf("print done.\n");
 }
 
 static bool graph_from_matrix(struct _graph *self, void *obj, uint32_t *edges, uint32_t size)
@@ -142,23 +148,39 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
         return false;
     }
 
+    for(uint32_t i = 0; i < self->_size; i++)
+    {
+        self->_head->visited[i] = 0;
+    }
+    printf("bfs start.\n");
+
     queue_t queue = queue_new();
-    queue_init(queue, sizeof(int));
+    queue_init(queue, sizeof(uint32_t));
 
     queue->push(queue, &idx);
     while (!queue->empty(queue))
     {
         queue->pop(queue, &idx);
+        self->_head->visited[idx] = 1;
         for(uint32_t i = 0; i < self->_size; i++)
         {
-            if(self->_head->edge[idx][i] == 1 && self->_head->visited[i] == 0)
+            if(self->_head->edge[idx][i] == 1)
             {
-                queue->push(queue, &i);
-                self->_head->visited[i] == 1;
+                if(self->_head->visited[i] == 0)
+                {
+                    queue->push(queue, &i);
+                }
+
+                self->print_obj((char *)self->_head->obj + idx * self->_obj_size);
+                printf("->");
+                self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+                printf(", ");
             }
         }
+        printf("\n");
     }
     queue_free(&queue);
+    printf("bfs done.\n");
     return true;
 }
 
