@@ -92,7 +92,7 @@ static bool queue_pop(struct _queue* self, void* obj)
 
     // queue_node_free(&node);
     printf("%x\n", node->obj);
-    free(node->obj);
+    // free(node->obj);
     printf("#free node->obj ok!\n");
     free(node);
     printf("#pop end!\n");
