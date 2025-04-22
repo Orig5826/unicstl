@@ -1,14 +1,12 @@
 /* =========================================================================
     Unity - A Test Framework for C
     ThrowTheSwitch.org
-    Copyright (c) 2007-24 Mike Karlesky, Mark VanderVoord, & Greg Williams
+    Copyright (c) 2007-25 Mike Karlesky, Mark VanderVoord, & Greg Williams
     SPDX-License-Identifier: MIT
 ========================================================================= */
 
 #ifndef UNITY_INTERNALS_H
 #define UNITY_INTERNALS_H
-
-#define UNITY_INCLUDE_CONFIG_H
 
 #ifdef UNITY_INCLUDE_CONFIG_H
 #include "unity_config.h"
@@ -817,7 +815,7 @@ extern const char UnityStrErrShorthand[];
 #ifndef RUN_TEST
 #ifdef UNITY_SUPPORT_VARIADIC_MACROS
 #define RUN_TEST(...) RUN_TEST_AT_LINE(__VA_ARGS__, __LINE__, throwaway)
-#define RUN_TEST_AT_LINE(func, line, ...) UnitySetTestFile(__FILE__);UnityDefaultTestRun(func, #func, line)
+#define RUN_TEST_AT_LINE(func, line, ...) UnityDefaultTestRun(func, #func, line)
 #endif
 #endif
 

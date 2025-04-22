@@ -493,6 +493,8 @@ static void test_stack2_struct(void)
 
 void test_stack(void)
 {
+    UnitySetTestFile(__FILE__);
+
     RUN_TEST(test_stack_init);
     RUN_TEST(test_stack_new);
     RUN_TEST(test_stack_push);

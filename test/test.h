@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define UNITY_INCLUDE_CONFIG_H
 #include "unicstl.h"
 #include "unity.h"
 

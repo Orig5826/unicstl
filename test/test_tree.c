@@ -916,6 +916,8 @@ static void test_rbtree_delete(void)
 
 void test_tree(void)
 {
+    UnitySetTestFile(__FILE__);
+
     RUN_TEST(test_avltree_iter);
     RUN_TEST(test_avltree_insert);
     RUN_TEST(test_avltree_delete);

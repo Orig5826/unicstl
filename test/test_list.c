@@ -356,6 +356,8 @@ static void test_list_iter(void)
 
 void test_list(void)
 {
+    UnitySetTestFile(__FILE__);
+
     RUN_TEST(test_list_init2);
     RUN_TEST(test_list_new);
     RUN_TEST(test_list_append);

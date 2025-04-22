@@ -135,6 +135,8 @@ static void test_heap_struct(void)
 
 void test_heap(void)
 {
+    UnitySetTestFile(__FILE__);
+
     RUN_TEST(test_heap_num);
     RUN_TEST(test_heap_struct);
 }

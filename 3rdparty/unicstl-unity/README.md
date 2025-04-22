@@ -1,12 +1,12 @@
 
-# ÎÊÌâºÍ½â¾ö·½°¸
+# é—®é¢˜å’Œè§£å†³æ–¹æ¡ˆ
 
-## 1. Ìí¼ÓÅäÖÃÎÄ¼þ
-ÔÚunity_internals.hÎÄ¼þÖÐÌí¼ÓÁËºê¶¨Òå£¬·½±ãÊ¹ÓÃunity_config.hÎÄ¼þ¡£
+## 1. æ·»åŠ é…ç½®æ–‡ä»¶
+åœ¨unity_internals.hæ–‡ä»¶ä¸­æ·»åŠ äº†å®å®šä¹‰ï¼Œæ–¹ä¾¿ä½¿ç”¨unity_config.hæ–‡ä»¶ã€‚
 ```c
 #define UNITY_INCLUDE_CONFIG_H
 ```
 
-## 2. ¶àÎÄ¼þ´òÓ¡²âÊÔÎÄ¼þÂ·¾¶²»ºÏÀíµÄÎÊÌâ
-ÐÞ¸Ä`RUN_TEST`ºê£¬ÔÚ²âÊÔÎÄ¼þÂ·¾¶Ç°Ìí¼Ó`__FILE__`¡£
-½èÖú`UnitySetTestFile`º¯Êý£¬´òÓ¡µÄÂ·¾¶ÐÅÏ¢¶Ô¶àÎÄ¼þ²âÊÔÒ²ÓÐÐ§¡£
+## 2. å¤šæ–‡ä»¶æ‰“å°æµ‹è¯•æ–‡ä»¶è·¯å¾„ä¸åˆç†çš„é—®é¢˜
+ä¿®æ”¹`RUN_TEST`å®ï¼Œåœ¨æµ‹è¯•æ–‡ä»¶è·¯å¾„å‰æ·»åŠ `__FILE__`ã€‚
+å€ŸåŠ©`UnitySetTestFile`å‡½æ•°ï¼Œæ‰“å°çš„è·¯å¾„ä¿¡æ¯å¯¹å¤šæ–‡ä»¶æµ‹è¯•ä¹Ÿæœ‰æ•ˆã€‚

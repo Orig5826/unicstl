@@ -269,6 +269,8 @@ static void test_deque_struct(void)
 
 void test_deque(void)
 {
+    UnitySetTestFile(__FILE__);
+
     RUN_TEST(test_deque_num);
     RUN_TEST(test_deque_struct);
 }

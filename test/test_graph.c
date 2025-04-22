@@ -59,7 +59,9 @@ void test_graph_from_matrix(void)
 
 void test_graph(void)
 {
-    // RUN_TEST(test_graph_new);
+    UnitySetTestFile(__FILE__);
+
+    RUN_TEST(test_graph_new);
     // RUN_TEST(test_graph_print);
     // RUN_TEST(test_graph_from_matrix);
 }
