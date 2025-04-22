@@ -152,7 +152,7 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
     {
         self->_head->visited[i] = 0;
     }
-    printf("bfs start.\n");
+    // printf("bfs start.\n");
 
     queue_t queue = queue_new();
     queue_init(queue, sizeof(uint32_t));
@@ -171,16 +171,16 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
                     queue->push(queue, &i);
                 }
 
-                self->print_obj((char *)self->_head->obj + idx * self->_obj_size);
-                printf("->");
-                self->print_obj((char *)self->_head->obj + i * self->_obj_size);
-                printf(", ");
+                // self->print_obj((char *)self->_head->obj + idx * self->_obj_size);
+                // printf("->");
+                // self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+                // printf(", ");
             }
         }
-        printf("\n");
+        // printf("\n");
     }
     queue_free(&queue);
-    printf("bfs done.\n");
+    // printf("bfs done.\n");
     return true;
 }
 
