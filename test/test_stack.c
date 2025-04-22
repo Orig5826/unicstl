@@ -11,59 +11,24 @@
 #include "test.h"
 
 
-static void test_stack_init(void)
-{
-    struct _stack stack;
-
-    // ------------------------------
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(stack_init(NULL, sizeof(int)));
-    TEST_ASSERT_FALSE(stack_init(&stack, 0));
-#endif
-    TEST_ASSERT_TRUE(stack_init(&stack, sizeof(int)));
-    stack.destory(&stack);
-
-    // ------------------------------
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(stack_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(stack_init2(&stack, 0, 1));
-    TEST_ASSERT_FALSE(stack_init2(&stack, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(stack_init2(&stack, sizeof(int), 1));
-    stack.destory(&stack);
-}
-
 static void test_stack_new(void)
 {
     stack_t stack = NULL;
-    stack = stack_new();
-    stack_free(&stack);
-
     // ------------------------------
-    stack = stack_new();
+    stack = stack_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(stack);
-
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(stack_init(NULL, sizeof(int)));
-    TEST_ASSERT_FALSE(stack_init(stack, 0));
-#endif
-    TEST_ASSERT_TRUE(stack_init(stack, sizeof(int)));
     stack_free(&stack);
-
-    // ------------------------------
-    stack = stack_new();
-    TEST_ASSERT_NOT_NULL(stack);
-
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(stack_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(stack_init2(stack, 0, 1));
-    TEST_ASSERT_FALSE(stack_init2(stack, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(stack_init2(stack, sizeof(int), 1));
-    stack_free(&stack);
-
     TEST_ASSERT_NULL(stack);
-    stack_free(&stack); // stack_free(NULL);
+
+    // ------------------------------
+    stack = stack_new2(sizeof(int), 10);
+    TEST_ASSERT_NOT_NULL(stack);
+    stack_free(&stack);
+    TEST_ASSERT_NULL(stack);
+
+    // ------------------------------
+    stack_free(&stack);
+    TEST_ASSERT_NULL(stack);
 }
 
 static void test_stack_push(void)
@@ -76,8 +41,7 @@ static void test_stack_push(void)
     stack_t stack = NULL;
 
     // ------------------------------
-    stack = stack_new();
-    stack_init(stack, sizeof(int));
+    stack = stack_new(sizeof(int));
     TEST_ASSERT_TRUE(stack->empty(stack));
     for(i = 0; i < len; i++)
     {
@@ -92,8 +56,7 @@ static void test_stack_push(void)
     stack_free(&stack);
 
     // ------------------------------
-    stack = stack_new();
-    stack_init2(stack, sizeof(int), len);
+    stack = stack_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(stack->empty(stack));
     for(i = 0; i < len; i++)
     {
@@ -109,8 +72,7 @@ static void test_stack_push(void)
 
     // ------------------------------
     // if capacity is less than data len
-    stack = stack_new();
-    stack_init2(stack, sizeof(int), len - 2);
+    stack = stack_new2(sizeof(int), len - 2);
     for(i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(stack->push(stack, &data[i]));
@@ -129,8 +91,7 @@ static void test_stack_pop(void)
     stack_t stack = NULL;
 
     // ------------------------------
-    stack = stack_new();
-    stack_init(stack, sizeof(int));
+    stack = stack_new(sizeof(int));
     for(i = 0; i < len; i++)
     {
         stack->push(stack, &data[i]);
@@ -157,8 +118,7 @@ static void test_stack_pop(void)
     stack_free(&stack);
 
     // ------------------------------
-    stack = stack_new();
-    stack_init2(stack, sizeof(int), len);
+    stack = stack_new2(sizeof(int), len);
     for(i = 0; i < len; i++)
     {
         stack->push(stack, &data[i]);
@@ -186,8 +146,7 @@ static void test_stack_pop(void)
 
     // ------------------------------
     // if capacity is less than data len
-    stack = stack_new();
-    stack_init2(stack, sizeof(int), len - 2);
+    stack = stack_new2(sizeof(int), len - 2);
     for(i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(stack->push(stack, &data[i]));
@@ -229,8 +188,7 @@ static void test_stack_clear(void)
     stack_t stack = NULL;
 
     // ------------------------------
-    stack = stack_new();
-    stack_init(stack, sizeof(int));
+    stack = stack_new(sizeof(int));
     for(i = 0; i < len; i++)
     {
         stack->push(stack, &data[i]);
@@ -247,8 +205,7 @@ static void test_stack_clear(void)
     stack_free(&stack);
 
     // ------------------------------
-    stack = stack_new();
-    stack_init2(stack, sizeof(int), len);
+    stack = stack_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(stack->clear(stack));
     for(i = 0; i < len; i++)
     {
@@ -269,10 +226,8 @@ static void test_stack_num(void)
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
     stack_t stack = NULL;
-    stack = stack_new();
+    stack = stack_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(stack);
-
-    TEST_ASSERT_TRUE(stack_init(stack, sizeof(int)));
     stack->print_obj = print_num;
 
     TEST_ASSERT_FALSE(stack->peek(stack, &temp));
@@ -324,12 +279,10 @@ static void test_stack_struct(void)
     struct _student temp;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    stack_t stack = stack_new();
+    stack_t stack = stack_new(sizeof(struct _student));
     TEST_ASSERT_NOT_NULL(stack);
-
-    stack_init(stack, sizeof(struct _student));
     stack->print_obj = print_struct;
-
+ 
     TEST_ASSERT_FALSE(stack->peek(stack, &temp));
     TEST_ASSERT_TRUE(stack->clear(stack));
     for (i = 0; i < len; i++)
@@ -381,10 +334,8 @@ static void test_stack2_num(void)
     uint32_t capacity = len;
 
     stack_t stack = NULL;
-    stack = stack_new();
+    stack = stack_new2(sizeof(int), capacity);
     TEST_ASSERT_NOT_NULL(stack);
-    
-    TEST_ASSERT_TRUE(stack_init2(stack, sizeof(int), capacity));
     stack->print_obj = print_num;
 
     TEST_ASSERT_FALSE(stack->peek(stack, &temp));
@@ -438,10 +389,8 @@ static void test_stack2_struct(void)
     uint32_t capacity = len - 2;
 
     stack_t stack = NULL;
-    stack = stack_new();
+    stack = stack_new2(sizeof(struct _student), capacity);
     TEST_ASSERT_NOT_NULL(stack);
-
-    TEST_ASSERT_TRUE(stack_init2(stack, sizeof(struct _student), capacity));
     stack->print_obj = print_struct;
 
     TEST_ASSERT_FALSE(stack->peek(stack, &temp));
@@ -495,7 +444,6 @@ void test_stack(void)
 {
     UnitySetTestFile(__FILE__);
 
-    RUN_TEST(test_stack_init);
     RUN_TEST(test_stack_new);
     RUN_TEST(test_stack_push);
     RUN_TEST(test_stack_pop);

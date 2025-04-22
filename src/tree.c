@@ -670,8 +670,7 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
     }
     struct _tree_node* node = root;
 
-    stack_t stack = stack_new();
-    stack_init(stack, sizeof(struct _tree_node*));
+    stack_t stack = stack_new(sizeof(struct _tree_node*));
 
     if (!self->_right_priority)          // left priority
     {
@@ -755,8 +754,7 @@ void tree_inorder(struct _tree* self, struct _tree_node* root)
 
     struct _tree_node* node = root;
 
-    stack_t stack = stack_new();
-    stack_init(stack, sizeof(struct _tree_node*));
+    stack_t stack = stack_new(sizeof(struct _tree_node*));
 
     if (!self->_right_priority)         // left priority
     {
@@ -839,12 +837,10 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
     }
     struct _tree_node* node = root;
 
-    stack_t stack2 = stack_new();
-    stack_init(stack2, sizeof(struct _tree_node*));
+    stack_t stack2 = stack_new(sizeof(struct _tree_node*));
 
     // because: left:postorder == right:the reverse of preorder 
-    stack_t stack = stack_new();
-    stack_init(stack, sizeof(struct _tree_node*));
+    stack_t stack = stack_new(sizeof(struct _tree_node*));
 
     if (!self->_right_priority)          // left priority
     {
@@ -1592,8 +1588,7 @@ void* tree_begin(struct _tree* self)
         struct _tree_node* node = self->_root;
         self->stack->clear(self->stack);
 
-        stack_t stack = stack_new();
-        stack_init(stack, sizeof(struct _tree_node*));
+        stack_t stack = stack_new(sizeof(struct _tree_node*));
         if (self->_order == ORDER_LEFT_POST)
         {
             while (!stack->empty(stack) || node != NULL)
@@ -1936,12 +1931,11 @@ bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 
     self->_root = NULL;
 
-    self->stack = stack_new();
+    self->stack = stack_new(sizeof(struct _tree_node*));
     if (self->stack == NULL)
     {
         goto done;
     }
-    stack_init(self->stack, sizeof(struct _tree_node*));
     self->queue = queue_new();
     if (self->queue == NULL)
     {
@@ -1997,12 +1991,11 @@ bool tree_rb_init(struct _tree* self, uint32_t obj_size)
 
     self->_root = NULL;
 
-    self->stack = stack_new();
+    self->stack = stack_new(sizeof(struct _tree_node*));
     if (self->stack == NULL)
     {
         goto done;
     }
-    stack_init(self->stack, sizeof(struct _tree_node*));
     self->queue = queue_new();
     if (self->queue == NULL)
     {

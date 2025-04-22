@@ -254,7 +254,7 @@ static void stack2_print(struct _stack* self)
 }
 
 
-bool stack_init(struct _stack* self, uint32_t obj_size)
+static bool stack_init(struct _stack* self, uint32_t obj_size)
 {
     assert(self != NULL);
     assert(obj_size != 0);
@@ -298,7 +298,7 @@ bool stack_init(struct _stack* self, uint32_t obj_size)
     return true;
 }
 
-bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
+static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
 
@@ -343,9 +343,34 @@ bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-stack_t stack_new(void)
+stack_t stack_new(uint32_t obj_size)
 {
-    return (struct _stack*)calloc(1, sizeof(struct _stack));
+    stack_t stack = NULL;
+    stack = (struct _stack*)calloc(1, sizeof(struct _stack));
+    if (stack != NULL)
+    {
+        if(stack_init(stack, obj_size) != true)
+        {
+            free(stack);
+            stack = NULL;
+        }
+    }
+    return stack;
+}
+
+stack_t stack_new2(uint32_t obj_size, uint32_t capacity)
+{
+    stack_t stack = NULL;
+    stack = (struct _stack*)calloc(1, sizeof(struct _stack));
+    if (stack != NULL)
+    {
+        if(stack_init2(stack, obj_size, capacity) != true)
+        {
+            free(stack);
+            stack = NULL;
+        }
+    }
+    return stack;
 }
 
 void stack_free(stack_t *stack)

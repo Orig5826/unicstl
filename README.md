@@ -13,8 +13,8 @@
 |数据结构 | 原理 |说明 |
 |---|---|---|
 | **stack**   | | **栈** |
-| stack_init  | 链表 | |
-| stack_init2 | 动态数组 | |
+| stack_new  | 链表 | |
+| stack_new2 | 动态数组 | |
 | **list**   | | **列表**
 | list_init2  | 动态数组 | |
 | **queue**   | | **队列**
