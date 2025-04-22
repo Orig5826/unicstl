@@ -154,8 +154,7 @@ static bool graph_bfs(struct _graph *self, uint32_t idx)
     }
     // printf("bfs start.\n");
 
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(uint32_t));
+    queue_t queue = queue_new(sizeof(uint32_t));
 
     queue->push(queue, &idx);
     while (!queue->empty(queue))

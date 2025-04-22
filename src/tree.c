@@ -150,8 +150,7 @@ int32_t tree_height(struct _tree* self, struct _tree_node* root)
     int32_t count_next_level = 0;
 
     struct _tree_node* node = root;
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(struct _tree_node*));
+    queue_t queue = queue_new(sizeof(struct _tree_node*));
 
     queue->push(queue, &node);
     while (!queue->empty(queue))
@@ -571,8 +570,7 @@ bool tree_clear(struct _tree* self)
     }
 
     struct _tree_node* node = self->_root;
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(struct _tree_node*));
+    queue_t queue = queue_new(sizeof(struct _tree_node*));
 
     queue->push(queue, &node);
     while (!queue->empty(queue))
@@ -900,8 +898,7 @@ void tree_breadth(struct _tree* self, struct _tree_node* root)
     }
 
     struct _tree_node* node = root;
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(struct _tree_node*));
+    queue_t queue = queue_new(sizeof(struct _tree_node*));
 
     if (node != NULL)
     {
@@ -1936,12 +1933,11 @@ bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     {
         goto done;
     }
-    self->queue = queue_new();
+    self->queue = queue_new(sizeof(struct _tree_node*));
     if (self->queue == NULL)
     {
         goto done1;
     }
-    queue_init(self->queue, sizeof(struct _tree_node*));
     self->cur_node = NULL;
 
     return true;
@@ -1996,12 +1992,11 @@ bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     {
         goto done;
     }
-    self->queue = queue_new();
+    self->queue = queue_new(sizeof(struct _tree_node*));
     if (self->queue == NULL)
     {
         goto done1;
     }
-    queue_init(self->queue, sizeof(struct _tree_node*));
     self->cur_node = NULL;
 
     return true;

@@ -17,8 +17,7 @@ static void demo_queue_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(int));
+    queue_t queue = queue_new(sizeof(int));
     queue->print_obj = print_num;
 
     printf("\n\n----- demo_queue_num -----\n");
@@ -102,8 +101,7 @@ static void demo_queue_char(void)
     char temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    queue_t queue = queue_new();
-    queue_init2(queue, sizeof(char), 10);
+    queue_t queue = queue_new2(sizeof(char), 10);
     queue->print_obj = print_char;
 
     printf("\n\n----- demo_queue_char -----\n");
@@ -215,8 +213,7 @@ static void demo_queue_struct(void)
     struct _student temp;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    queue_t queue = queue_new();
-    queue_init(queue, sizeof(struct _student));
+    queue_t queue = queue_new(sizeof(struct _student));
     queue->print_obj = print_struct;
 
     printf("\n\n----- demo_queue_struct -----\n");

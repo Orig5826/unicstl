@@ -55,10 +55,10 @@ struct _queue
 };
 typedef struct _queue* queue_t;
 
-bool queue_init(struct _queue* self, uint32_t obj_size);
-bool queue_init2(struct _queue* self, uint32_t obj_size, uint32_t capacity);
+// create and free queue
+queue_t queue_new(uint32_t obj_size);
+queue_t queue_new2( uint32_t obj_size, uint32_t capacity);
 
-queue_t queue_new(void);
 void queue_free(queue_t* queue);
 
 #endif // _QUEUE_H_

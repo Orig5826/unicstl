@@ -306,7 +306,7 @@ static void queue2_print(struct _queue* self)
     }
 }
 
-bool queue_init(struct _queue * self, uint32_t obj_size)
+static bool queue_init(struct _queue * self, uint32_t obj_size)
 {
     assert(self != NULL);
     assert(obj_size > 0);
@@ -344,7 +344,7 @@ bool queue_init(struct _queue * self, uint32_t obj_size)
     return true;
 }
 
-bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
+static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
     assert(obj_size > 0);
@@ -401,11 +401,59 @@ done:
     return false;
 }
 
-queue_t queue_new(void)
+/**
+ * @brief 创建队列对象
+ *  基于链表
+ * 
+ * @param obj_size 元素大小
+ * 
+ * @return queue_t 队列指针
+ */
+queue_t queue_new(uint32_t obj_size)
 {
-    return (struct _queue *)calloc(1, sizeof(struct _queue));
+    struct _queue * queue = NULL;
+    queue = (struct _queue *)calloc(1, sizeof(struct _queue));
+    if(queue != NULL)
+    {
+        if(queue_init(queue, obj_size) == false)
+        {
+            free(queue);
+            queue = NULL;
+        }
+    }
+    return queue;
 }
 
+/**
+ * @brief 创建队列对象
+ *  基于动态数组
+ * 
+ * @param obj_size 元素大小
+ * @param capacity 容量
+ * 
+ * @return queue_t 队列指针
+ */
+queue_t queue_new2(uint32_t obj_size, uint32_t capacity)
+{
+    struct _queue * queue = NULL;
+    queue = (struct _queue *)calloc(1, sizeof(struct _queue));
+    if(queue != NULL)
+    {
+        if(queue_init2(queue, obj_size, capacity) == false)
+        {
+            free(queue);
+            queue = NULL;
+        }
+    }
+    return queue;
+}
+
+/**
+ * @brief 释放队列对象
+ * 
+ * @param queue 队列指针地址
+ * 
+ */
 void queue_free(queue_t* queue)
 {
     assert(queue != NULL);

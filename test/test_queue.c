@@ -10,61 +10,28 @@
  */
 #include "test.h"
 
-static void test_queue_init(void)
-{
-    struct _queue queue;
-
-    // ------------------------------
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
-    TEST_ASSERT_FALSE(queue_init(&queue, 0));
-#endif
-    TEST_ASSERT_TRUE(queue_init(&queue, sizeof(int)));
-    queue.destory(&queue);
-
-    // ------------------------------
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(queue_init2(&queue, 0, 1));
-    TEST_ASSERT_FALSE(queue_init2(&queue, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(queue_init2(&queue, sizeof(int), 1));
-    queue.destory(&queue);
-}
-
 static void test_queue_new(void)
 {
     queue_t queue = NULL;
-    queue = queue_new();
+    queue = queue_new(sizeof(int));
+    TEST_ASSERT_NOT_NULL(queue);
     queue_free(&queue);
+
+    TEST_ASSERT_NULL(queue_new(0));
 
     // ------------------------------
-    queue = queue_new();
+    queue = queue_new2(sizeof(int), 10);
     TEST_ASSERT_NOT_NULL(queue);
-
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(queue_init(NULL, sizeof(int)));
-    TEST_ASSERT_FALSE(queue_init(queue, 0));
-#endif
-    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
     queue_free(&queue);
+    
+    TEST_ASSERT_NULL(queue_new2(0, 0));
+    TEST_ASSERT_NULL(queue_new2(0, 1));
+    TEST_ASSERT_NULL(queue_new2(sizeof(int), 0));
 
     // ------------------------------
-    queue = queue_new();
-    TEST_ASSERT_NOT_NULL(queue);
-
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(queue_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(queue_init2(queue, 0, 1));
-    TEST_ASSERT_FALSE(queue_init2(queue, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), 1));
-    queue_free(&queue);
-
     TEST_ASSERT_NULL(queue);
-    queue_free(&queue); // queue_free(NULL);
+    queue_free(&queue);
 }
-
 
 static void test_queue_push(void)
 {
@@ -76,8 +43,8 @@ static void test_queue_push(void)
     queue_t queue = NULL;
 
     // ------------------------------
-    queue = queue_new();
-    queue_init(queue, sizeof(int));
+    queue = queue_new(sizeof(int));
+
     TEST_ASSERT_TRUE(queue->empty(queue));
     for(i = 0; i < len; i++)
     {
@@ -95,8 +62,8 @@ static void test_queue_push(void)
     queue_free(&queue);
 
     // ------------------------------
-    queue = queue_new();
-    queue_init2(queue, sizeof(int), len);
+    queue = queue_new2(sizeof(int), len);
+
     TEST_ASSERT_TRUE(queue->empty(queue));
     for(i = 0; i < len; i++)
     {
@@ -115,8 +82,8 @@ static void test_queue_push(void)
 
     // ------------------------------
     // if capacity is less than data len
-    queue = queue_new();
-    queue_init2(queue, sizeof(int), len - 2);
+    queue = queue_new2(sizeof(int), len - 2);
+
     for(i = 0; i < len; i++)
     {
         if(i < queue->capacity(queue))
@@ -147,8 +114,8 @@ static void test_queue_pop(void)
     queue_t queue = NULL;
 
     // ------------------------------
-    queue = queue_new();
-    queue_init(queue, sizeof(int));
+    queue = queue_new(sizeof(int));
+
     for(i = 0; i < len; i++)
     {
         queue->push(queue, &data[i]);
@@ -184,8 +151,8 @@ static void test_queue_pop(void)
     queue_free(&queue);
 
     // ------------------------------
-    queue = queue_new();
-    queue_init2(queue, sizeof(int), len);
+    queue = queue_new2(sizeof(int), len);
+
     for(i = 0; i < len; i++)
     {
         queue->push(queue, &data[i]);
@@ -223,8 +190,8 @@ static void test_queue_pop(void)
 
     // ------------------------------
     // if capacity is less than data len
-    queue = queue_new();
-    queue_init2(queue, sizeof(int), len - 2);
+    queue = queue_new2(sizeof(int), len - 2);
+
     for(i = 0; i < len; i++)
     {
         if(i < queue->capacity(queue))
@@ -287,8 +254,8 @@ static void test_queue_clear(void)
     queue_t queue = NULL;
 
     // ------------------------------
-    queue = queue_new();
-    queue_init(queue, sizeof(int));
+    queue = queue_new(sizeof(int));
+
     for(i = 0; i < len; i++)
     {
         queue->push(queue, &data[i]);
@@ -305,8 +272,8 @@ static void test_queue_clear(void)
     queue_free(&queue);
 
     // ------------------------------
-    queue = queue_new();
-    queue_init2(queue, sizeof(int), len);
+    queue = queue_new2(sizeof(int), len);
+
     TEST_ASSERT_TRUE(queue->clear(queue));
     for(i = 0; i < len; i++)
     {
@@ -328,10 +295,9 @@ static void test_queue_num(void)
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
     queue_t queue = NULL;
-    queue = queue_new();
+    queue = queue_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(queue);
 
-    TEST_ASSERT_TRUE(queue_init(queue, sizeof(int)));
     queue->print_obj = print_num;
 
     TEST_ASSERT_TRUE(queue->clear(queue));
@@ -396,10 +362,9 @@ static void test_queue_struct(void)
     struct _student temp;
     uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    queue_t queue = queue_new();
+    queue_t queue = queue_new(sizeof(struct _student));
     TEST_ASSERT_NOT_NULL(queue);
 
-    queue_init(queue, sizeof(struct _student));
     queue->print_obj = print_struct;
 
     TEST_ASSERT_TRUE(queue->clear(queue));
@@ -468,10 +433,9 @@ static void test_queue2_num(void)
     uint32_t capacity = len;
 
     queue_t queue = NULL;
-    queue = queue_new();
+    queue = queue_new2(sizeof(int), capacity);
     TEST_ASSERT_NOT_NULL(queue);
 
-    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(int), capacity));
     queue->print_obj = print_num;
 
     TEST_ASSERT_TRUE(queue->clear(queue));
@@ -538,10 +502,9 @@ static void test_queue2_struct(void)
     uint32_t capacity = len - 2;
 
     queue_t queue = NULL;
-    queue = queue_new();
+    queue = queue_new2(sizeof(struct _student), capacity);
     TEST_ASSERT_NOT_NULL(queue);
 
-    TEST_ASSERT_TRUE(queue_init2(queue, sizeof(struct _student), capacity));
     queue->print_obj = print_struct;
 
     TEST_ASSERT_TRUE(queue->empty(queue));
@@ -627,7 +590,6 @@ void test_queue(void)
 {
     UnitySetTestFile(__FILE__);
 
-    RUN_TEST(test_queue_init);
     RUN_TEST(test_queue_new);
     RUN_TEST(test_queue_push);
     RUN_TEST(test_queue_pop);
