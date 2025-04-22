@@ -11,7 +11,9 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-// #define NDEBUG 1
+// #ifdef UNICSTL_CONFIG
+#include "unicstl_config.h"
+// #endif
 
 #include <stdint.h>
 #include <stdbool.h>

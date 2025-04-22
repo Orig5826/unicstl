@@ -11,6 +11,8 @@
 #ifndef _UNICSTL_H_
 #define _UNICSTL_H_
 
+#include "common.h"
+
 #include "list.h"
 #include "stack.h"
 #include "queue.h"

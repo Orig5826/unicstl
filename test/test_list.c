@@ -16,8 +16,8 @@ static void test_list_init2(void)
     // ------------------------------
 #ifdef NDEBUG
     TEST_ASSERT_FALSE(list_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(list_init2(list, 0, 1));
-    TEST_ASSERT_FALSE(list_init2(list, sizeof(int), 0));
+    TEST_ASSERT_FALSE(list_init2(&list, 0, 1));
+    TEST_ASSERT_FALSE(list_init2(&list, sizeof(int), 0));
 #endif
     TEST_ASSERT_TRUE(list_init2(&list, sizeof(int), 1));
     list.destory(&list);
