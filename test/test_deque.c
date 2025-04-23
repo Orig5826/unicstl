@@ -17,10 +17,8 @@ static void test_deque_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new();
+    deque_t deque = deque_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(deque);
-
-    deque_init(deque, sizeof(int));
     deque->print_obj = print_num;
 
     for (i = 0; i < len; i++)
@@ -148,10 +146,8 @@ static void test_deque_struct(void)
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new();
+    deque_t deque = deque_new(sizeof(struct _student));
     TEST_ASSERT_NOT_NULL(deque);
-
-    deque_init(deque, sizeof(struct _student));
     deque->print_obj = print_struct;
 
     for (i = 0; i < len; i++)

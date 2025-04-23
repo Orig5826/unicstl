@@ -10,7 +10,7 @@
  */
 #include "deque.h"
 
-bool deque_push_back(struct _deque* self, void* obj)
+static bool deque_push_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     struct _deque_node* front = NULL;
@@ -54,7 +54,7 @@ bool deque_push_back(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_push_front(struct _deque* self, void* obj)
+static bool deque_push_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     struct _deque_node* front = NULL;
@@ -98,7 +98,7 @@ bool deque_push_front(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_pop_back(struct _deque* self, void* obj)
+static bool deque_pop_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     struct _deque_node* node = NULL;
@@ -135,7 +135,7 @@ bool deque_pop_back(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_pop_front(struct _deque* self, void* obj)
+static bool deque_pop_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     struct _deque_node* node = NULL;
@@ -172,7 +172,7 @@ bool deque_pop_front(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_back(struct _deque* self, void* obj)
+static bool deque_back(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -185,7 +185,7 @@ bool deque_back(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_front(struct _deque* self, void* obj)
+static bool deque_front(struct _deque* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -198,27 +198,27 @@ bool deque_front(struct _deque* self, void* obj)
     return true;
 }
 
-bool deque_insert(struct _deque* self, int index, void* obj)
+static bool deque_insert(struct _deque* self, int index, void* obj)
 {
     return true;
 }
 
-bool deque_erase(struct _deque* self, int index, void* obj)
+static bool deque_erase(struct _deque* self, int index, void* obj)
 {
     return true;
 }
 
-int deque_index(struct _deque* self, void* obj)
+static int deque_index(struct _deque* self, void* obj)
 {
     return -1;
 }
 
-bool deque_remove(struct _deque* self, void* obj)
+static bool deque_remove(struct _deque* self, void* obj)
 {
     return true;
 }
 
-bool deque_clear(struct _deque* self)
+static bool deque_clear(struct _deque* self)
 {
     while (!self->empty(self))
     {
@@ -227,7 +227,7 @@ bool deque_clear(struct _deque* self)
     return true;
 }
 
-bool deque_get(struct _deque* self, int index, void* obj)
+static bool deque_get(struct _deque* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -243,7 +243,7 @@ bool deque_get(struct _deque* self, int index, void* obj)
     return true;
 }
 
-bool deque_set(struct _deque* self, int index, void* obj) 
+static bool deque_set(struct _deque* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -259,19 +259,19 @@ bool deque_set(struct _deque* self, int index, void* obj)
     return true;
 }
 
-uint32_t deque_size(struct _deque* self)
+static uint32_t deque_size(struct _deque* self)
 {
     assert(self != NULL);
     return self->_size;
 }
 
-bool deque_empty(struct _deque* self)
+static bool deque_empty(struct _deque* self)
 {
     assert(self != NULL);
     return !self->size(self);
 }
 
-void deque_destory(struct _deque* self)
+static void deque_destory(struct _deque* self)
 {
     assert(self != NULL);
     self->clear(self);
@@ -282,7 +282,7 @@ void deque_destory(struct _deque* self)
     }
 }
 
-void deque_print(struct _deque* self)
+static void deque_print(struct _deque* self)
 {
     assert(self != NULL);
 
@@ -295,7 +295,7 @@ void deque_print(struct _deque* self)
     }
 }
 
-bool deque_init(struct _deque* self, uint32_t obj_size)
+static bool deque_init(struct _deque* self, uint32_t obj_size)
 {
     // attribute
     self->_obj_size = obj_size;
@@ -328,9 +328,19 @@ bool deque_init(struct _deque* self, uint32_t obj_size)
     return true;
 }
 
-deque_t deque_new(void)
+deque_t deque_new(uint32_t obj_size)
 {
-    return (struct _deque*)malloc(sizeof(struct _deque));
+    struct _deque* deque = NULL;
+    deque = (struct _deque*)malloc(sizeof(struct _deque));
+    if(deque != NULL)
+    {
+        if(deque_init(deque, obj_size) != true)
+        {
+            free(deque);
+            deque = NULL;
+        }
+    }
+    return deque;
 }
 
 void deque_free(deque_t *deque)
