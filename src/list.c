@@ -10,7 +10,7 @@
  */
 #include "list.h"
 
-bool list_append(struct _list* self, void* obj)
+static bool list_append(struct _list* self, void* obj)
 {
     assert(self != NULL);
     assert(self->obj != NULL);
@@ -35,7 +35,7 @@ bool list_append(struct _list* self, void* obj)
     return true;
 }
 
-bool list_insert(struct _list* self, int index, void* obj)
+static bool list_insert(struct _list* self, int index, void* obj)
 {
     assert(index >= 0 && index < (int)self->size(self));
 
@@ -58,7 +58,7 @@ bool list_insert(struct _list* self, int index, void* obj)
     return true;
 }
 
-bool list_pop(struct _list* self, int index, void* obj)
+static bool list_pop(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
@@ -85,25 +85,25 @@ bool list_pop(struct _list* self, int index, void* obj)
     return true;
 }
 
-int list_index(struct _list* self, void* obj)
+static int list_index(struct _list* self, void* obj)
 {
     return 0;
 }
 
-bool list_remove(struct _list* self, void* obj)
+static bool list_remove(struct _list* self, void* obj)
 {
     assert(self != NULL);
     return true;
 }
 
-bool list_clear(struct _list* self)
+static bool list_clear(struct _list* self)
 {
     assert(self != NULL);
     self->_size = 0;
     return true;
 }
 
-bool list_get(struct _list* self, int index, void* obj)
+static bool list_get(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -118,7 +118,7 @@ bool list_get(struct _list* self, int index, void* obj)
     return true;
 }
 
-bool list_set(struct _list* self, int index, void* obj)
+static bool list_set(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
@@ -131,29 +131,29 @@ bool list_set(struct _list* self, int index, void* obj)
     return true;
 }
 
-uint32_t list_size(struct _list* self)
+static uint32_t list_size(struct _list* self)
 {
     return self->_size;
 }
 
-bool list_empty(struct _list* self)
+static bool list_empty(struct _list* self)
 {
     assert(self != NULL);
     return !self->size(self);
 }
 
-bool list_reverse(struct _list* self)
+static bool list_reverse(struct _list* self)
 {
     return true;
 }
 
-bool list_sort(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2))
+static bool list_sort(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2))
 {
     return true;
 }
 
 // free
-void list_destory(struct _list* self)
+static void list_destory(struct _list* self)
 {
     assert(self != NULL);
     if (self->obj != NULL)
@@ -163,7 +163,7 @@ void list_destory(struct _list* self)
 }
 
 // print
-void list_print(struct _list* self)
+static void list_print(struct _list* self)
 {
     assert(self != NULL);
 
@@ -179,18 +179,18 @@ void list_print(struct _list* self)
     }
 }
 
-void* list_begin(struct _list* self)
+static void* list_begin(struct _list* self)
 {
     self->_cur = 0;
     return self->obj;
 }
 
-void* list_end(struct _list* self)
+static void* list_end(struct _list* self)
 {
     return (char*)self->obj + self->_size * self->_obj_size;
 }
 
-void* list_next(struct _list* self)
+static void* list_next(struct _list* self)
 {
     void *obj = NULL;
     // if add this, can't go to end
@@ -202,7 +202,7 @@ void* list_next(struct _list* self)
     return obj;
 }
 
-bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
+static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
     assert(list != NULL);
     assert(obj_size > 0);
@@ -250,9 +250,19 @@ bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-list_t list_new(void)
+list_t list_new2(uint32_t obj_size, uint32_t capacity)
 {
-    return (struct _list*)calloc(1, sizeof(struct _list));
+    struct _list* list = NULL;
+    list = (struct _list*)calloc(1, sizeof(struct _list));
+    if(list != NULL)
+    {
+        if(list_init2(list, obj_size, capacity) != true)
+        {
+            free(list);
+            list = NULL;
+        }
+    }
+    return list;
 }
 
 void list_free(list_t* list)

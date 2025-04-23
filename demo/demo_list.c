@@ -18,8 +18,7 @@ static void demo_list_num(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    list_t list = list_new();
-    list_init2(list, sizeof(int), 64);
+    list_t list = list_new2(sizeof(int), 64);
     list->print_obj = print_num;
 
     printf("\n\n----- list_demo_num -----\n");
@@ -154,8 +153,7 @@ static void demo_list_struct(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    list_t list = list_new();
-    list_init2(list, sizeof(struct _student), 64);
+    list_t list = list_new2(sizeof(struct _student), 64);
     list->print_obj = print_struct;
 
     printf("\n\n----- list_demo_num -----\n");

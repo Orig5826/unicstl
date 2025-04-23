@@ -10,39 +10,20 @@
  */
 #include "test.h"
 
-static void test_list_init2(void)
-{
-    struct _list list;
-    // ------------------------------
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(list_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(list_init2(&list, 0, 1));
-    TEST_ASSERT_FALSE(list_init2(&list, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(list_init2(&list, sizeof(int), 1));
-    list.destory(&list);
-}
-
 static void test_list_new(void)
 {
     list_t list = NULL;
-    list = list_new();
-    list_free(&list);
-
-    // ------------------------------
-    list = list_new();
+    list = list_new2(sizeof(int), 1);
     TEST_ASSERT_NOT_NULL(list);
-
-#ifdef NDEBUG
-    TEST_ASSERT_FALSE(list_init2(NULL, sizeof(int), 1));
-    TEST_ASSERT_FALSE(list_init2(list, 0, 1));
-    TEST_ASSERT_FALSE(list_init2(list, sizeof(int), 0));
-#endif
-    TEST_ASSERT_TRUE(list_init2(list, sizeof(int), 1));
-    list_free(&list);
-
+    list_free(&list);   
     TEST_ASSERT_NULL(list);
+
     list_free(&list); // list_free(NULL);
+    TEST_ASSERT_NULL(list);
+
+    // 
+    TEST_ASSERT_NULL(list_new2(0, 1));
+    TEST_ASSERT_NULL(list_new2(sizeof(int), 0));
 }
 
 
@@ -56,8 +37,7 @@ static void test_list_append(void)
     list_t list = NULL;
 
     // ------------------------------
-    list = list_new();
-    list_init2(list, sizeof(int), len);
+    list = list_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(list->empty(list));
     for(i = 0; i < len; i++)
     {
@@ -73,8 +53,7 @@ static void test_list_append(void)
 
     // ------------------------------
     // if capacity is less than data len
-    list = list_new();
-    list_init2(list, sizeof(int), len - 2);
+    list = list_new2(sizeof(int), len - 2);
     for(i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
@@ -94,8 +73,7 @@ static void test_list_pop(void)
     list_t list = NULL;
 
     // ------------------------------
-    list = list_new();
-    list_init2(list, sizeof(int), len);
+    list = list_new2(sizeof(int), len);
     for(i = 0; i < len; i++)
     {
         list->append(list, &data[i]);
@@ -120,8 +98,7 @@ static void test_list_clear(void)
     list_t list = NULL;
 
     // ------------------------------
-    list = list_new();
-    list_init2(list, sizeof(int), len);
+    list = list_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(list->clear(list));
     for(i = 0; i < len; i++)
     {
@@ -143,10 +120,9 @@ static void test_list_num(void)
     int len = sizeof(data) / sizeof(data[0]);
 
     list_t list = NULL;
-    list = list_new();
+    list = list_new2(sizeof(int), 64);
     TEST_ASSERT_TRUE(list != NULL);
 
-    list_init2(list, sizeof(int), 64);
     list->print_obj = print_num;
 
     for (i = 0; i < len; i++)
@@ -230,8 +206,7 @@ static void test_list_struct(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    list_t list = list_new();
-    list_init2(list, sizeof(struct _student), 64);
+    list_t list = list_new2(sizeof(struct _student), 64);
     list->print_obj = print_struct;
 
     for (i = 0; i < len; i++)
@@ -322,8 +297,7 @@ static void test_list_iter(void)
     list_t list = NULL;
 
     // ------------------------------
-    list = list_new();
-    list_init2(list, sizeof(int), len);
+    list = list_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(list->clear(list));
     for(i = 0; i < len; i++)
     {
@@ -358,7 +332,6 @@ void test_list(void)
 {
     UnitySetTestFile(__FILE__);
 
-    RUN_TEST(test_list_init2);
     RUN_TEST(test_list_new);
     RUN_TEST(test_list_append);
     RUN_TEST(test_list_pop);
