@@ -56,9 +56,9 @@ struct _heap
 };
 typedef struct _heap* heap_t;
 
-bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity);
+// create and free heap
+heap_t heap_new2(uint32_t obj_size, uint32_t capacity);
 
-heap_t heap_new(void);
 void heap_free(heap_t* heap);
  
 #endif  // _HEAP_H_

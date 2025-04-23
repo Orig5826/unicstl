@@ -16,17 +16,17 @@
 | stack_new  | 链表 | |
 | stack_new2 | 动态数组 | |
 | **list**   | | **列表**
-| list_init2  | 动态数组 | |
+| list_new2  | 动态数组 | |
 | **queue**   | | **队列**
-| queue_init  | 单向链表 | |
-| queue_init2 | 数组 | FIFO/空/满 |
+| queue_new  | 单向链表 | |
+| queue_new2 | 数组 | FIFO/空/满 |
 | **deque**   | |**双端队列** |
-| deque_init  | 双向循环链表 | |
+| deque_new  | 双向循环链表 | |
 | **tree**    | |**树** |
-| tree_avl_init | 二叉搜索树 | AVL树 |
-| tree_rb_init  | 二叉搜索树 | 红黑树 |
+| tree_avl_new | 二叉搜索树 | AVL树 |
+| tree_rb_new  | 二叉搜索树 | 红黑树 |
 | **heap**    | |**堆** |
-| heap_init2   | 数组 | 最大堆/最小堆 |
+| heap_new2   | 数组 | 最大堆/最小堆 |
 
 ## 特点
 | 原理 | 说明 |

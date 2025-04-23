@@ -27,7 +27,7 @@ static int parent(int i)
     return (i-1) >> 1;
 }
 
-bool heap_peek(struct _heap* self, void* obj)
+static bool heap_peek(struct _heap* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -101,7 +101,7 @@ static void heap_fixed_up(struct _heap* self, int i)
     }
 }
 
-bool heap_push(struct _heap* self, void* obj)
+static bool heap_push(struct _heap* self, void* obj)
 {
     assert(self != NULL);
     if(self->size(self) > self->_capacity)
@@ -174,7 +174,7 @@ static void heap_fixed_down(struct _heap* self, int i)
     }
 }
 
-bool heap_pop(struct _heap* self, void* obj)
+static bool heap_pop(struct _heap* self, void* obj)
 {
     assert(self != NULL);
     if(self->empty(self))
@@ -192,32 +192,32 @@ bool heap_pop(struct _heap* self, void* obj)
     return true;
 }
 
-void heap_setmin(struct _heap* self, bool min_flag)
+static void heap_setmin(struct _heap* self, bool min_flag)
 {
     assert(self != NULL);
     self->_min_flag = min_flag;
 }
 
-uint32_t heap_size(struct _heap* self)
+static uint32_t heap_size(struct _heap* self)
 {
     assert(self != NULL);
     return self->_size;
 }
 
-bool heap_empty(struct _heap* self)
+static bool heap_empty(struct _heap* self)
 {
     assert(self != NULL);
     return self->size(self) == 0;
 }
 
-bool heap_clear(struct _heap* self)
+static bool heap_clear(struct _heap* self)
 {
     assert(self != NULL);
     self->_size = 0;
     return true;
 }
 
-void heap_destory(struct _heap* self)
+static void heap_destory(struct _heap* self)
 {
     assert(self != NULL);
     self->clear(self);
@@ -227,7 +227,7 @@ void heap_destory(struct _heap* self)
     }
 }
 
-void heap_print(struct _heap* self)
+static void heap_print(struct _heap* self)
 {
     assert(self != NULL);
     assert(self->obj != NULL);
@@ -243,7 +243,7 @@ void heap_print(struct _heap* self)
     }
 }
 
-bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
+static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
 
@@ -271,9 +271,19 @@ bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-heap_t heap_new(void)
+heap_t heap_new2(uint32_t obj_size, uint32_t capacity)
 {
-    return (struct _heap*)malloc(sizeof(struct _heap));
+    heap_t heap = NULL;
+    heap = (struct _heap*)malloc(sizeof(struct _heap));
+    if(heap != NULL)
+    {
+        if(heap_init2(heap, obj_size, capacity) != true)
+        {
+            free(heap);
+            heap = NULL;
+        }
+    }
+    return heap;
 }
 
 void heap_free(heap_t* heap)

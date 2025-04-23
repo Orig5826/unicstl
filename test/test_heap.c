@@ -46,10 +46,8 @@ static void test_heap_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    heap_t heap = heap_new();
+    heap_t heap = heap_new2(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
-
-    heap_init2(heap, sizeof(int), 64);
     heap->print_obj = print_num;
     heap->compare = compare_num;
 
@@ -95,10 +93,8 @@ static void test_heap_struct(void)
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    heap_t heap = heap_new();
+    heap_t heap = heap_new2(sizeof(struct _student), 64);
     TEST_ASSERT_NOT_NULL(heap);
-
-    heap_init2(heap, sizeof(struct _student), 64);
     heap->print_obj = print_struct;
     heap->compare = compare_struct;
 
