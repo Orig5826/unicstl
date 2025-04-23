@@ -328,6 +328,47 @@ static void test_list_iter(void)
     list_free(&list);
 }
 
+void list_iter_test(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    TEST_ASSERT_TRUE(list->empty(list));
+    list->print_obj = print_num;
+
+    for(i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
+
+        TEST_ASSERT_TRUE(list->get(list, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        TEST_ASSERT_FALSE(list->empty(list));
+    }
+
+    iterator_t it = list->iter(list);
+    printf("iter start\n");
+    list->print(list);
+
+    printf("\n");
+    while(it->hasnext(it))
+    {
+        int dd = *(int*)it->data(it);
+        printf("%d ", dd);
+        it->next(it);
+    }
+    printf("\niter end\n");
+
+    list_free(&list);
+}
+
 void test_list(void)
 {
     UnitySetTestFile(__FILE__);
@@ -341,4 +382,6 @@ void test_list(void)
     RUN_TEST(test_list_struct);
 
     RUN_TEST(test_list_iter);
+
+    RUN_TEST(list_iter_test);
 }

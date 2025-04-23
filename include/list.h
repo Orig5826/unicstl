@@ -12,6 +12,7 @@
 #define _LIST_H_
 
 #include "common.h"
+#include "iter.h"
 
 struct _list
 {
@@ -22,6 +23,9 @@ struct _list
     uint32_t _capacity;
     uint32_t _ratio;
     uint32_t _cur;
+
+    struct _iterator _iter;
+    iterator_t (*iter)(struct _list* self);
 
     // kernel
     bool (*append)(struct _list* self, void* obj);                      // Append object to the end of the list.
