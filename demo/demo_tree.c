@@ -38,8 +38,7 @@ void demo_avltree_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new();
-    tree_avl_init(tree, sizeof(int));
+    tree_t tree = tree_avl_new(sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -210,8 +209,7 @@ void demo_rbtree_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new();
-    tree_rb_init(tree, sizeof(int));
+    tree_t tree = tree_rb_new(sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -342,8 +340,7 @@ void demo_rbtree_struct(void)
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new();
-    tree_rb_init(tree, sizeof(struct _student));
+    tree_t tree = tree_rb_new(sizeof(struct _student));
     tree->print_obj = print_struct;
     tree->compare = compare_struct;
 

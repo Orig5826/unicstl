@@ -128,7 +128,7 @@ static struct _tree_node* tree_turn_right_then_left(struct _tree* self, struct _
     return node;
 }
 
-int32_t tree_height(struct _tree* self, struct _tree_node* root)
+static int32_t tree_height(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
@@ -384,7 +384,7 @@ struct _tree_node* tree_find_pos(struct _tree* self, void* obj)
 }
 
 
-bool tree_avl_insert(struct _tree* self, void* obj)
+static bool tree_avl_insert(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -506,7 +506,7 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
     return true;
 }
 
-bool tree_avl_delete(struct _tree* self, void* obj)
+static bool tree_avl_delete(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -538,7 +538,7 @@ bool tree_avl_delete(struct _tree* self, void* obj)
     return true;
 }
 
-struct _tree_node* tree_find(struct _tree* self, void* obj)
+static struct _tree_node* tree_find(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* root = self->_root;
@@ -560,7 +560,7 @@ struct _tree_node* tree_find(struct _tree* self, void* obj)
     return NULL;
 }
 
-bool tree_clear(struct _tree* self)
+static bool tree_clear(struct _tree* self)
 {
     assert(self != NULL);
     if (self->_root == NULL)
@@ -592,20 +592,20 @@ bool tree_clear(struct _tree* self)
     return true;
 }
 
-bool tree_empty(struct _tree* self)
+static bool tree_empty(struct _tree* self)
 {
     assert(self != NULL);
     return !self->size(self);
 }
 
-uint32_t tree_size(struct _tree* self)
+static uint32_t tree_size(struct _tree* self)
 {
     assert(self != NULL);
     return self->_size;
 }
 
 // free
-void tree_destory(struct _tree* self)
+static void tree_destory(struct _tree* self)
 {
     assert(self != NULL);
     self->clear(self);
@@ -621,13 +621,13 @@ void tree_destory(struct _tree* self)
     }
 }
 
-void tree_order(struct _tree* self, bool right_priority)
+static void tree_order(struct _tree* self, bool right_priority)
 {
     assert(self != NULL);
     self->_right_priority = right_priority;
 }
 
-void tree_preorder(struct _tree* self, struct _tree_node* root)
+static void tree_preorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
@@ -710,7 +710,7 @@ void tree_preorder(struct _tree* self, struct _tree_node* root)
 #endif
 }
 
-void tree_inorder(struct _tree* self, struct _tree_node* root)
+static void tree_inorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
@@ -794,7 +794,7 @@ void tree_inorder(struct _tree* self, struct _tree_node* root)
 #endif
 }
 
-void tree_postorder(struct _tree* self, struct _tree_node* root)
+static void tree_postorder(struct _tree* self, struct _tree_node* root)
 {
 #if 0
     assert(self != NULL);
@@ -889,7 +889,7 @@ void tree_postorder(struct _tree* self, struct _tree_node* root)
 }
 
 // traversal breadth
-void tree_breadth(struct _tree* self, struct _tree_node* root)
+static void tree_breadth(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
     if (root == NULL)
@@ -992,7 +992,7 @@ static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* r
 #endif
 }
 
-bool tree_min(struct _tree* self, void* obj)
+static bool tree_min(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* node = tree_find_min(self, self->_root);
@@ -1004,7 +1004,7 @@ bool tree_min(struct _tree* self, void* obj)
     return true;
 }
 
-bool tree_max(struct _tree* self, void* obj)
+static bool tree_max(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     struct _tree_node* node = tree_find_max(self, self->_root);
@@ -1018,13 +1018,13 @@ bool tree_max(struct _tree* self, void* obj)
 
 
 
-rbt_color tree_color(struct _tree_node* node)
+static rbt_color tree_color(struct _tree_node* node)
 {
     assert(node != NULL);
     return node->color;
 }
 
-bool tree_set_color(struct _tree_node* node, rbt_color color)
+static bool tree_set_color(struct _tree_node* node, rbt_color color)
 {
     assert(node != NULL);
     node->color = color;
@@ -1106,7 +1106,7 @@ static struct _tree_node* tree_rb_turn_right(struct _tree* self, struct _tree_no
     return node;
 }
 
-bool tree_rb_insert(struct _tree* self, void* obj)
+static bool tree_rb_insert(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -1259,7 +1259,7 @@ static bool tree_rb_rebalance(struct _tree* self, struct _tree_node* node)
     return true;
 }
 
-bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
+static bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
 {
     assert(self != NULL);
     struct _tree_node* father = NULL;
@@ -1388,7 +1388,7 @@ bool tree_rb_delete_fix(struct _tree* self, struct _tree_node* node)
     return true;
 }
 
-bool tree_rb_delete(struct _tree* self, void* obj)
+static bool tree_rb_delete(struct _tree* self, void* obj)
 {
     assert(self != NULL);
     assert(obj != NULL);
@@ -1463,13 +1463,13 @@ bool tree_rb_delete(struct _tree* self, void* obj)
     return true;
 }
 
-void tree_set_order(struct _tree* self, enum _order order)
+static void tree_set_order(struct _tree* self, enum _order order)
 {
     assert(self != NULL);
     self->_order = order;
 }
 
-void* tree_begin(struct _tree* self)
+static void* tree_begin(struct _tree* self)
 {
     assert(self != NULL);
     switch (self->_order)
@@ -1684,7 +1684,7 @@ void* tree_begin(struct _tree* self)
     }
 }
 
-void* tree_next(struct _tree* self)
+static void* tree_next(struct _tree* self)
 {
     assert(self != NULL);
     switch (self->_order)
@@ -1845,7 +1845,7 @@ void* tree_next(struct _tree* self)
     }
 }
 
-void* tree_end(struct _tree* self)
+static void* tree_end(struct _tree* self)
 {
     assert(self != NULL);
     switch (self->_order)
@@ -1888,9 +1888,7 @@ void* tree_end(struct _tree* self)
     }
 }
 
-
-
-bool tree_avl_init(struct _tree* self, uint32_t obj_size)
+static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
 
@@ -1949,7 +1947,7 @@ done:
     return true;
 }
 
-bool tree_rb_init(struct _tree* self, uint32_t obj_size)
+static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
     self->_obj_size = obj_size;
@@ -2006,9 +2004,33 @@ done:
     return false;
 }
 
-tree_t tree_new(void)
+tree_t tree_avl_new(uint32_t obj_size)
 {
-    return (struct _tree*)malloc(sizeof(struct _tree));
+    tree_t tree = NULL;
+    tree = (struct _tree*)malloc(sizeof(struct _tree));
+    if(tree != NULL)
+    {
+        if(tree_avl_init(tree, obj_size) != true)
+        {
+            free(tree);
+            tree = NULL;
+        }
+    }
+    return tree;
+}
+tree_t tree_rb_new(uint32_t obj_size)
+{
+    tree_t tree = NULL;
+    tree = (struct _tree*)malloc(sizeof(struct _tree));
+    if(tree != NULL)
+    {
+        if(tree_rb_init(tree, obj_size) != true)
+        {
+            free(tree);
+            tree = NULL;
+        }
+    }
+    return tree;
 }
 
 void tree_free(tree_t* tree)

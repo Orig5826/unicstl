@@ -39,8 +39,7 @@ void test_avltree_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new, ;
-    tree_avl_init(tree, sizeof(int));
+    tree_t tree = tree_avl_new(sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -211,8 +210,7 @@ void test_rbtree_num(void)
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new, ;
-    tree_rb_init(tree, sizeof(int));
+    tree_t tree = tree_rb_new(sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -343,8 +341,7 @@ void test_rbtree_struct(void)
     struct _student temp = { 0 };
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
-    tree_t tree = tree_new, ;
-    tree_rb_init(tree, sizeof(struct _student));
+    tree_t tree = tree_rb_new(sizeof(struct _student));
     tree->print_obj = print_struct;
     tree->compare = compare_struct;
 
@@ -526,10 +523,8 @@ static void test_avltree_iter(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
-    tree_avl_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -605,10 +600,9 @@ static void test_avltree_insert(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
 
-    tree_avl_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -652,10 +646,9 @@ static void test_avltree_delete(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
 
-    tree_avl_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -753,10 +746,9 @@ static void test_rbtree_iter(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
 
-    tree_rb_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -832,10 +824,9 @@ static void test_rbtree_insert(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
 
-    tree_rb_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -879,10 +870,9 @@ static void test_rbtree_delete(void)
     int * iter = NULL;
     int count = 0;
 
-    tree_t tree = tree_new();
+    tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
 
-    tree_rb_init(tree, sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;
 

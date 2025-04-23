@@ -125,11 +125,10 @@ struct _tree
 };
 typedef struct _tree* tree_t;
 
-// bst_tree
-bool tree_avl_init(struct _tree *self, uint32_t obj_size);
-bool tree_rb_init(struct _tree *self, uint32_t obj_size);
+// create and free tree
+tree_t tree_avl_new(uint32_t obj_size);
+tree_t tree_rb_new(uint32_t obj_size);
 
-tree_t tree_new(void);
 void tree_free(tree_t* tree);
 
 #endif // _TREE_H_
