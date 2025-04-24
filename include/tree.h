@@ -55,6 +55,7 @@ struct _tree_node
 
 struct _tree
 {
+    // -------------------- private -------------------- 
     struct _tree_node * _root;
 
     uint32_t _size;
@@ -69,6 +70,9 @@ struct _tree
     queue_t queue;
     struct _tree_node * cur_node;
 
+    struct _iterator _iter;
+
+    // -------------------- public -------------------- 
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
@@ -89,6 +93,8 @@ struct _tree
     uint32_t (*size)(struct _tree* self);
 
     // iter
+    iterator_t (*iter)(struct _tree* self);
+
     /**
      * @brief 
      * 
@@ -111,7 +117,7 @@ struct _tree
     // free
     void (*destory)(struct _tree* self);
 
-    // ----- print -----
+    // -------------------- debug -------------------- 
     // traversal depth
     void (*order)(struct _tree* self, bool right_priority);
 

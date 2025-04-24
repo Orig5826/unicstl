@@ -1888,6 +1888,51 @@ static void* tree_end(struct _tree* self)
     }
 }
 
+
+iterator_t tree_iter(struct _tree* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_cur = 0;
+    iter->_cur_node = self->_root;
+    return iter;
+}
+
+bool tree_iter_hasnext(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    tree_t self = (tree_t)iter->_parent;
+    if(iter->_cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+const void* tree_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    tree_t self = (tree_t)iter->_parent;
+    void *obj = NULL;
+    
+    // base on linklist
+    struct _tree_node * node = (struct _tree_node *)iter->_cur_node;
+    if(node != NULL)
+    {
+        obj = node->obj;
+        // iter->_cur_node = node->next;
+    }
+    self->_iter._cur += 1;
+    return obj;
+}
+
+
 static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
