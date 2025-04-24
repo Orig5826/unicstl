@@ -586,6 +586,84 @@ static void test_queue2_struct(void)
     TEST_ASSERT_NULL(queue);
 }
 
+
+static void test_queue_iter(void)
+{
+    uint32_t i = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    queue_t queue = NULL;
+    queue = queue_new(sizeof(int));
+    TEST_ASSERT_NOT_NULL(queue);
+    queue->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+
+    iterator_t iter = queue->iter(queue);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        // printf("%d ", temp);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+
+    queue_free(&queue);
+    TEST_ASSERT_NULL(queue);
+}
+
+
+static void test_queue2_iter(void)
+{
+    uint32_t i = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t capacity = len;
+
+    queue_t queue = NULL;
+    queue = queue_new2(sizeof(int), capacity);
+    TEST_ASSERT_NOT_NULL(queue);
+    queue->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(queue->push(queue, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, queue->size(queue));
+
+        TEST_ASSERT_TRUE(queue->front(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+        TEST_ASSERT_TRUE(queue->back(queue, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+
+    iterator_t iter = queue->iter(queue);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+
+    queue_free(&queue);
+    TEST_ASSERT_NULL(queue);
+}
+
 void test_queue(void)
 {
     UnitySetTestFile(__FILE__);
@@ -600,4 +678,7 @@ void test_queue(void)
 
     RUN_TEST(test_queue2_num);
     RUN_TEST(test_queue2_struct);
+
+    RUN_TEST(test_queue_iter);
+    RUN_TEST(test_queue2_iter);
 }

@@ -337,24 +337,30 @@ static const void* queue_iter_next(struct _iterator* iter)
 
     queue_t self = (queue_t)iter->_parent;
     void *obj = NULL;
-
-    if(self->_front->obj == NULL)
-    {
-        // base on linklist
-        struct _queue_node * node = (struct _queue_node *)iter->_cur_node;
-        if(node != NULL)
-        {
-            obj = node->obj;
-            iter->_cur_node = node->next;
-        }
-    }
-    else
-    {
-        // base on array
-        uint32_t index = self->size(self) - 1 - self->_iter._cur;
-        obj = self->_front->obj + self->_obj_size * index;
-    }
     
+    // base on linklist
+    struct _queue_node * node = (struct _queue_node *)iter->_cur_node;
+    if(node != NULL)
+    {
+        obj = node->obj;
+        iter->_cur_node = node->next;
+    }
+    self->_iter._cur += 1;
+    return obj;
+}
+
+static const void* queue2_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    queue_t self = (queue_t)iter->_parent;
+    void *obj = NULL;
+
+    // base on array
+    uint32_t index = self->_iter._cur;
+    obj = self->_front->obj + self->_obj_size * index;
+
     self->_iter._cur += 1;
     return obj;
 }
@@ -399,6 +405,9 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
     self->capacity = queue_capacity;
     self->clear = queue_clear;
 
+    // iter
+    self->iter = queue_iter;
+
     // -------------------- debug -------------------- 
     self->print = queue_print;
     
@@ -427,7 +436,7 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
         return false;
     }
     self->_back = self->_front;
-
+    
     // use self->_front->obj as obj_array
     // 
     // self->_front->obj = calloc(self->_capacity, self->_obj_size);
@@ -445,7 +454,7 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
 
     // iter
     self->_iter.hasnext = queue_iter_hasnext;
-    self->_iter.next = queue_iter_next;
+    self->_iter.next = queue2_iter_next;
 
     // -------------------- public -------------------- 
     // kernel
