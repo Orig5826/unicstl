@@ -30,6 +30,7 @@ struct _heap
     uint32_t _ratio;
 
     heap_type _type;
+    struct _iterator _iter;
 
     void (*_destory)(struct _heap* self);
 
@@ -43,6 +44,9 @@ struct _heap
     // base
     uint32_t(*size)(struct _heap* self);
     bool (*clear)(struct _heap* self);
+
+    // iter
+    iterator_t (*iter)(struct _heap* self);
     
     // config
     // !!! you have to implement this function

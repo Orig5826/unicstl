@@ -249,6 +249,46 @@ static void heap_print(struct _heap* self)
     }
 }
 
+
+iterator_t heap_iter(struct _heap* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_cur = 0;
+    iter->_cur_node = self->obj;
+    return iter;
+}
+
+bool heap_iter_hasnext(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    heap_t self = (heap_t)iter->_parent;
+    if(iter->_cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+const void* heap_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    heap_t self = (heap_t)iter->_parent;
+    void *obj = NULL;
+
+    uint32_t index = self->_iter._cur;
+    obj = self->obj + self->_obj_size * index;
+
+    self->_iter._cur += 1;
+    return obj;
+}
+
 static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
@@ -265,6 +305,9 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
         return false;
     }
 
+    self->_iter.hasnext = heap_iter_hasnext;
+    self->_iter.next = heap_iter_next;
+    
     self->_destory = heap_destory;
 
     // -------------------- public -------------------- 
@@ -277,6 +320,9 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     // base
     self->size = heap_size;
     self->clear = heap_clear;
+
+    // iter
+    self->iter = heap_iter;
 
     // config
     self->compare = NULL;
