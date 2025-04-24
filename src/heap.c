@@ -247,42 +247,72 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
 
-    // 1. set attr
+    // -------------------- private -------------------- 
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = capacity;
     self->_ratio = 2;
-
-    self->peek = heap_peek;
-    self->push = heap_push;
-    self->pop = heap_pop;
-    self->size = heap_size;
-    self->empty = heap_empty;
-    self->clear = heap_clear;
-    self->destory = heap_destory;
-    self->setmin = heap_setmin;
-    self->print = heap_print;
 
     self->obj = (void*)malloc(self->_capacity * self->_obj_size);
     if(self->obj == NULL)
     {
         return false;
     }
+
+    self->destory = heap_destory;
+    
+    // -------------------- public -------------------- 
+    // kernel
+    self->peek = heap_peek;
+    self->push = heap_push;
+    self->pop = heap_pop;
+    self->empty = heap_empty;
+
+    // base
+    self->size = heap_size;
+    self->clear = heap_clear;
+    
+    // -------------------- debug -------------------- 
+    self->setmin = heap_setmin;
+    self->print = heap_print;
     return true;
 }
 
-heap_t heap_new2(uint32_t obj_size, uint32_t capacity)
+heap_t heap_max_new2(uint32_t obj_size, uint32_t capacity)
 {
     heap_t heap = NULL;
     heap = (struct _heap*)malloc(sizeof(struct _heap));
-    if(heap != NULL)
+    if(heap == NULL)
     {
-        if(heap_init2(heap, obj_size, capacity) != true)
-        {
-            free(heap);
-            heap = NULL;
-        }
+        return NULL;
     }
+
+    if(heap_init2(heap, obj_size, capacity) != true)
+    {
+        free(heap);
+        return NULL;
+    }
+
+    heap->_min_flag = false;
+    return heap;
+}
+
+heap_t heap_min_new2(uint32_t obj_size, uint32_t capacity)
+{
+    heap_t heap = NULL;
+    heap = (struct _heap*)malloc(sizeof(struct _heap));
+    if(heap == NULL)
+    {
+        return NULL;
+    }
+
+    if(heap_init2(heap, obj_size, capacity) != true)
+    {
+        free(heap);
+        return NULL;
+    }
+
+    heap->_min_flag = true;
     return heap;
 }
 

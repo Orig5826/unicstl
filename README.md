@@ -79,5 +79,18 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 # 带a或者b后缀，表示当前版本发布前的测试版。如果发布后，则直接更新版本号了
 ```
 
-## 更新日志
+## 修改日志
 
+### Unicstl 0.0.01 (2025-04-24)
+new features:
+    - add stack
+    - add queue
+    - add deque
+    - add list
+    - add heap
+    - add tree
+    - add graph
+bugfixed: 
+    - none
+others:
+    - none
