@@ -27,7 +27,8 @@
  * @brief debug 
  * 
  */
-#define NDEBUG
+#define NDEBUG       // assert disable
+
 #define UNICSTL_DEBUG
 
 #ifdef UNICSTL_DEBUG

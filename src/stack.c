@@ -300,6 +300,9 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
 
 const void* stack_iter_next(struct _iterator* iter)
 {
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
     stack_t self = (stack_t)iter->parent;
     void *obj = self->_head->obj + self->_iter._cur * self->_obj_size;
     self->_iter._cur += 1;
@@ -308,8 +311,10 @@ const void* stack_iter_next(struct _iterator* iter)
 
 bool stack_iter_hasnext(struct _iterator* iter)
 {
-    stack_t self = (stack_t)iter->parent;
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
 
+    stack_t self = (stack_t)iter->parent;
     if(self->_iter._cur < self->size(self))
     {
         return true;
@@ -320,14 +325,10 @@ bool stack_iter_hasnext(struct _iterator* iter)
 iterator_t stack_iter(struct _stack* self)
 {
     assert(self != NULL);
-    if (self == NULL)
-    {
-        return NULL;
-    }
+    self->_iter.parent = self;
     self->_iter._cur = 0;
     return &self->_iter;
 }
-
 
 static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
