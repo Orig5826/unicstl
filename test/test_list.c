@@ -284,6 +284,7 @@ static void test_list_struct(void)
     TEST_ASSERT_NULL(list);
 }
 
+#if 0
 static void test_list_iter(void)
 {
     int temp = 0;
@@ -327,8 +328,8 @@ static void test_list_iter(void)
     TEST_ASSERT_TRUE(list->clear(list));
     list_free(&list);
 }
-
-void list_iter_test(void)
+#else
+void test_list_iter(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -359,12 +360,13 @@ void list_iter_test(void)
     while(iter->hasnext(iter))
     {
         iter_data = *(int*)iter->next(iter);
-        // printf("%d ", dd);
+        // printf("%d ", iter_data);
         TEST_ASSERT_EQUAL_INT(data[idx], iter_data);
         idx++;
     }
     list_free(&list);
 }
+#endif
 
 void test_list(void)
 {
@@ -379,6 +381,4 @@ void test_list(void)
     RUN_TEST(test_list_struct);
 
     RUN_TEST(test_list_iter);
-
-    RUN_TEST(list_iter_test);
 }

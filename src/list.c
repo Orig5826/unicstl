@@ -179,27 +179,30 @@ static void list_print(struct _list* self)
     }
 }
 
-static void* list_begin(struct _list* self)
+static const void* list_iter_next(struct _iterator* iter)
 {
-    self->_cur = 0;
-    return self->obj;
-}
-
-static void* list_end(struct _list* self)
-{
-    return (char*)self->obj + self->_size * self->_obj_size;
-}
-
-static void* list_next(struct _list* self)
-{
-    void *obj = NULL;
-    // if add this, can't go to end
-    // if(self->_cur < self->_size - 1)
-    {
-        self->_cur += 1;
-    }
-    obj = (char*)self->obj + self->_cur * self->_obj_size;
+    list_t self = (list_t)iter->parent;
+    void *obj = self->obj + self->_iter._cur * self->_obj_size;
+    self->_iter._cur += 1;
     return obj;
+}
+
+static bool list_iter_hasnext(struct _iterator* iter)
+{
+    list_t self = (list_t)iter->parent;
+
+    if(self->_iter._cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+iterator_t list_iter(struct _list* self)
+{
+    self->_iter.parent = self;
+    self->_iter._cur = 0;
+    return &self->_iter;
 }
 
 static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
@@ -236,9 +239,10 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     list->size = list_size;
     list->sort = list_sort;
 
-    list->begin = list_begin;
-    list->next = list_next;
-    list->end = list_end;
+    // iterator 
+    list->iter = list_iter;
+    list->_iter.next = list_iter_next;
+    list->_iter.hasnext = list_iter_hasnext;
 
     // 3. set array
     // list->obj = (void*)calloc(list->_capacity, list->_obj_size);
@@ -250,50 +254,20 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-static const void* list_iter_next(struct _iterator* iter)
-{
-    list_t self = (list_t)iter->parent;
-    void *obj = self->obj + self->_iter._cur * self->_obj_size;
-    self->_iter._cur += 1;
-    return obj;
-}
-
-static bool list_iter_hasnext(struct _iterator* iter)
-{
-    list_t self = (list_t)iter->parent;
-
-    if(self->_iter._cur < self->size(self))
-    {
-        return true;
-    }
-    return false;
-}
-
-iterator_t list_iter(struct _list* self)
-{
-    self->_iter.parent = self;
-    self->_iter._cur = 0;
-
-    self->_iter.next = list_iter_next;
-    self->_iter.hasnext = list_iter_hasnext;
-    return &self->_iter;
-}
-
 list_t list_new2(uint32_t obj_size, uint32_t capacity)
 {
     struct _list* list = NULL;
     list = (struct _list*)calloc(1, sizeof(struct _list));
-    if(list != NULL)
+    if(list == NULL)
     {
-        if(list_init2(list, obj_size, capacity) != true)
-        {
-            free(list);
-            // list = NULL;
-            return NULL;
-        }
+        return NULL;
     }
-
-    list->iter = list_iter;
+    
+    if(list_init2(list, obj_size, capacity) != true)
+    {
+        free(list);
+        return NULL;
+    }
     return list;
 }
 

@@ -25,7 +25,6 @@ struct _list
     uint32_t _cur;
 
     struct _iterator _iter;
-    iterator_t (*iter)(struct _list* self);
 
     // kernel
     bool (*append)(struct _list* self, void* obj);                      // Append object to the end of the list.
@@ -39,9 +38,7 @@ struct _list
     bool (*set)(struct _list* self, int index, void* obj);
 
     // iter
-    void* (*begin)(struct _list* self);
-    void* (*next)(struct _list* self);
-    void* (*end)(struct _list* self);
+    iterator_t (*iter)(struct _list* self);
 
     // base
     uint32_t(*size)(struct _list* self);
