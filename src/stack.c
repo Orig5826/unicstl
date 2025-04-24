@@ -254,20 +254,14 @@ static void stack2_print(struct _stack* self)
     }
 }
 
-const void* stack2_iter_next(struct _iterator* iter)
-{
-    assert(iter != NULL);
-    assert(iter->parent != NULL);
-
-    stack_t self = (stack_t)iter->_parent;
-    // from top to bottom
-    uint32_t index = self->size(self) - 1 - self->_iter._cur;
-
-    void *obj = self->_head->obj + self->_obj_size * index;
-    self->_iter._cur += 1;
-    return obj;
-}
-
+/**
+ * @brief iterator next
+ *  from top to bottom
+ * 
+ * @param iter 
+ * @return const void* 
+ *  the value of return is const, so you can't modify it.
+ */
 const void* stack_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
@@ -276,13 +270,23 @@ const void* stack_iter_next(struct _iterator* iter)
     stack_t self = (stack_t)iter->_parent;
     void *obj = NULL;
 
-    // from top to bottom
-    struct _stack_node* node = (struct _stack_node *)self->_iter._cur_node;
-    if(node != NULL)
+    if(self->_head->obj == NULL)
     {
-        obj = node->obj;
-        self->_iter._cur_node = node->next;
+        // base on linklist
+        struct _stack_node* node = (struct _stack_node *)self->_iter._cur_node;
+        if(node != NULL)
+        {
+            obj = node->obj;
+            self->_iter._cur_node = node->next;
+        }
     }
+    else
+    {
+        // base on array
+        uint32_t index = self->size(self) - 1 - self->_iter._cur;
+        obj = self->_head->obj + self->_obj_size * index;
+    }
+    
     self->_iter._cur += 1;
     return obj;
 }
@@ -386,7 +390,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
         return false;
     }
 
-    self->_iter.next = stack2_iter_next;
+    self->_iter.next = stack_iter_next;
     self->_iter.hasnext = stack_iter_hasnext;
 
     self->_destory = stack2_destory;

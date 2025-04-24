@@ -21,7 +21,12 @@ struct _stack_node
 
 struct _stack
 {
-    // ---------- private ---------- 
+    // -------------------- private -------------------- 
+    /**
+     * @brief head pointer of stack
+     * 1. linklist: head->next is valid, head->obj is NULL
+     * 2. array: head->obj is valid, head->next is NULL, 
+     */
     struct _stack_node * _head;
     
     uint32_t _size;
@@ -33,7 +38,7 @@ struct _stack
 
     void (*_destory)(struct _stack* self);
 
-    // ---------- public ---------- 
+    // -------------------- public -------------------- 
     // kernel
     bool (*push)(struct _stack* self, void* obj);
     bool (*pop)(struct _stack* self, void* obj);
