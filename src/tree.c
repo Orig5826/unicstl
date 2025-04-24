@@ -1904,6 +1904,74 @@ iterator_t tree_iter(struct _tree* self, enum _order order)
     self->queue->clear(self->queue);
 
     self->_order = order;
+
+    switch (self->_order)
+    {
+    case ORDER_LEFT_PRE:
+    case ORDER_RIGHT_PRE:
+    {
+        // pass
+    }break;
+    case ORDER_LEFT_IN:
+    case ORDER_RIGHT_IN:
+    {
+        // pass
+    }break;
+    case ORDER_LEFT_POST:
+    case ORDER_RIGHT_POST:
+    {
+        struct _tree_node* node = self->_root;
+        self->stack->clear(self->stack);
+
+        stack_t stack = stack_new(sizeof(struct _tree_node*));
+        if (self->_order == ORDER_LEFT_POST)
+        {
+            while (!stack->empty(stack) || node != NULL)
+            {
+                if (node != NULL)
+                {
+                    self->stack->push(self->stack, &node);
+
+                    stack->push(stack, &node);
+                    node = node->right;
+                }
+                else
+                {
+                    stack->pop(stack, &node);
+                    node = node->left;
+                }
+            }
+        }
+        else
+        {
+            while (!stack->empty(stack) || node != NULL)
+            {
+                if (node != NULL)
+                {
+                    self->stack->push(self->stack, &node);
+
+                    stack->push(stack, &node);
+                    node = node->left;
+                }
+                else
+                {
+                    stack->pop(stack, &node);
+                    node = node->right;
+                }
+            }
+        }
+        stack_free(&stack);
+    }break;
+    case ORDER_LEFT_BREADTH:
+    case ORDER_RIGHT_BREADTH:
+    {
+        // pass
+    }break;
+    default:
+    {
+    }break;
+    }
+
     return iter;
 }
 
@@ -1936,6 +2004,7 @@ const void* tree_iter_next(struct _iterator* iter)
     //     // iter->_cur_node = node->next;
     // }
 
+    self->_iter._cur += 1;
     switch (self->_order)
     {
     case ORDER_LEFT_PRE:
@@ -2092,8 +2161,6 @@ const void* tree_iter_next(struct _iterator* iter)
     {
     }break;
     }
-
-    self->_iter._cur += 1;
     return obj;
 }
 
