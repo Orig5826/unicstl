@@ -440,6 +440,44 @@ static void test_stack2_struct(void)
     TEST_ASSERT_NULL(stack);
 }
 
+static void test_stack_iter(void)
+{
+    uint32_t i = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    stack_t stack = NULL;
+    stack = stack_new(sizeof(int));
+    TEST_ASSERT_NOT_NULL(stack);
+    stack->print_obj = print_num;
+
+    TEST_ASSERT_FALSE(stack->peek(stack, &temp));
+    TEST_ASSERT_TRUE(stack->clear(stack));
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(stack->push(stack, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, stack->size(stack));
+
+        TEST_ASSERT_TRUE(stack->peek(stack, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    
+    iterator_t iter = stack->iter(stack);
+    TEST_ASSERT_NOT_NULL(iter);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        // printf("%d ", temp);
+        TEST_ASSERT_EQUAL_INT(data[len - 1 - i], temp);
+        i++;
+    }
+
+    stack_free(&stack);
+    TEST_ASSERT_NULL(stack);
+}
+
 static void test_stack2_iter(void)
 {
     uint32_t i = 0;
@@ -493,5 +531,6 @@ void test_stack(void)
     RUN_TEST(test_stack2_num);
     RUN_TEST(test_stack2_struct);
 
+    RUN_TEST(test_stack_iter);
     RUN_TEST(test_stack2_iter);
 }

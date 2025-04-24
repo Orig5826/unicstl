@@ -253,52 +253,7 @@ static void stack2_print(struct _stack* self)
     }
 }
 
-
-static bool stack_init(struct _stack* self, uint32_t obj_size)
-{
-    assert(self != NULL);
-    assert(obj_size != 0);
-    if(self == NULL || obj_size == 0)
-    {
-        return false;
-    }
-
-    // 1. set attr
-    self->_obj_size = obj_size;
-    self->_size = 0;
-    self->_capacity = UINT32_MAX;
-    self->_ratio = 1;
-    
-    // 2. set function
-    // kernel
-    self->push = stack_push;
-    self->pop = stack_pop;
-    self->peek = stack_peek;
-
-    // base
-    self->size = stack_size;
-    self->empty = stack_empty;
-    self->capacity = stack_capacity;
-
-    // clear and free node
-    self->clear = stack_clear;
-    self->_destory = stack_destory;
-    // print
-    self->print = stack_print;
-
-    // 3. set node
-    self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
-    if (self->_head == NULL)
-    {
-        return false;
-    }
-    self->_head->obj = NULL;
-    self->_head->next = NULL;
-
-    return true;
-}
-
-const void* stack_iter_next(struct _iterator* iter)
+const void* stack2_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
     assert(iter->parent != NULL);
@@ -308,6 +263,25 @@ const void* stack_iter_next(struct _iterator* iter)
     uint32_t index = self->size(self) - 1 - self->_iter._cur;
 
     void *obj = self->_head->obj + self->_obj_size * index;
+    self->_iter._cur += 1;
+    return obj;
+}
+
+const void* stack_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    stack_t self = (stack_t)iter->parent;
+    void *obj = NULL;
+
+    // from top to bottom
+    struct _stack_node* node = (struct _stack_node *)self->_iter._cur_node;
+    if(node != NULL)
+    {
+        obj = node->obj;
+        self->_iter._cur_node = node->next;
+    }
     self->_iter._cur += 1;
     return obj;
 }
@@ -330,22 +304,71 @@ iterator_t stack_iter(struct _stack* self)
     assert(self != NULL);
     self->_iter.parent = self;
     self->_iter._cur = 0;
+    self->_iter._cur_node = self->_head->next;
     return &self->_iter;
+}
+
+static bool stack_init(struct _stack* self, uint32_t obj_size)
+{
+    // assert(self != NULL);
+    // assert(obj_size != 0);
+    if(self == NULL || obj_size == 0)
+    {
+        return false;
+    }
+
+    // ---------- private ----------
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    self->_capacity = UINT32_MAX;
+    self->_ratio = 1;
+
+    self->_head = (struct _stack_node *)malloc(sizeof(struct _stack_node));
+    if (self->_head == NULL)
+    {
+        return false;
+    }
+    self->_head->obj = NULL;
+    self->_head->next = NULL;
+
+    self->_iter.next = stack_iter_next;
+    self->_iter.hasnext = stack_iter_hasnext;
+
+    self->_destory = stack_destory;
+
+    // ---------- public ----------
+    // kernel
+    self->push = stack_push;
+    self->pop = stack_pop;
+    self->peek = stack_peek;
+    self->empty = stack_empty;
+
+    // base
+    self->size = stack_size;
+    self->capacity = stack_capacity;
+    self->clear = stack_clear;
+
+    // iter
+    self->iter = stack_iter;
+    
+    // ---------- debug ----------
+    self->print = stack_print;
+    return true;
 }
 
 static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(self != NULL);
+    // assert(self != NULL);
+    if(self == NULL || obj_size == 0 || capacity == 0)
+    {
+        return false;
+    }
 
-    // ---------- private ---------- 
-    // 1. set attr
+    // ---------- private ----------
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = capacity;
     self->_ratio = 2;
-
-    self->_iter.next = stack_iter_next;
-    self->_iter.hasnext = stack_iter_hasnext;
 
     self->_head = (struct _stack_node*)malloc(sizeof(struct _stack_node));
     if (self->_head == NULL)
@@ -354,7 +377,6 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
     }
     self->_head->next = NULL;
 
-    // 4. set array
     self->_head->obj = (void *)calloc(self->_capacity, self->_obj_size);
     if (self->_head->obj == NULL)
     {
@@ -363,10 +385,12 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
         return false;
     }
 
+    self->_iter.next = stack2_iter_next;
+    self->_iter.hasnext = stack_iter_hasnext;
+
     self->_destory = stack2_destory;
 
-    // ---------- public ---------- 
-    // 2. set function
+    // ---------- public ----------
     // kernel
     self->push = stack2_push;
     self->pop = stack2_pop;
@@ -381,7 +405,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
     // iter
     self->iter = stack_iter;
 
-    // ---------- debug ---------- 
+    // ---------- debug ----------
     self->print = stack2_print;
     return true;
 }

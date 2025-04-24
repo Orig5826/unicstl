@@ -16,6 +16,7 @@
 struct _iterator
 {
     void* parent;
+    void* _cur_node;
     uint32_t _cur;
 
     bool (*hasnext)(struct _iterator* self);
