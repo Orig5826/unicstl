@@ -56,10 +56,11 @@ static void test_heap_min_num(void)
         temp = data[i];
         TEST_ASSERT_TRUE(heap->push(heap, &temp));
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
-    }
-    TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-    TEST_ASSERT_EQUAL_INT(*(int *)get_min(heap, data, 0, heap->size(heap)), temp);
 
+        TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+        TEST_ASSERT_EQUAL_INT(*(int *)get_min(heap, data, 0, heap->size(heap)), temp);
+    }
+    
     TEST_ASSERT_TRUE(heap->clear(heap));
     TEST_ASSERT_TRUE(heap->empty(heap));
     for (i = 0; i < len; i++)
@@ -83,8 +84,14 @@ static void test_heap_min_struct(void)
 {
     uint32_t i = 0;
     struct _student data[] = {
-        {"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
-        "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
+        {"sun", 1003}, 
+        {"zhou", 1005}, 
+        {"wu", 1006}, 
+        {"zhao", 1001}, 
+        {"qian", 1002}, 
+        {"li", 1004},
+        {"zheng", 1007}, 
+        {"wang", 1008},
     };
     struct _student temp = {0};
     uint32_t len = sizeof(data) / sizeof(data[0]);
@@ -99,13 +106,13 @@ static void test_heap_min_struct(void)
         temp = data[i];
         TEST_ASSERT_TRUE(heap->push(heap, &temp));
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
-    }
 
+        TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+        TEST_ASSERT_EQUAL_INT(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->name, temp.name);
+    }
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-    
-    TEST_ASSERT_EQUAL_INT(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->id, temp.id);
-    TEST_ASSERT_EQUAL_STRING(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->name, temp.name);
 
     TEST_ASSERT_TRUE(heap->clear(heap));
     TEST_ASSERT_TRUE(heap->empty(heap));
@@ -146,9 +153,10 @@ static void test_heap_max_num(void)
         temp = data[i];
         TEST_ASSERT_TRUE(heap->push(heap, &temp));
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
+
+        TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+        TEST_ASSERT_EQUAL_INT(*(int *)get_max(heap, data, 0, heap->size(heap)), temp);
     }
-    TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-    TEST_ASSERT_EQUAL_INT(*(int *)get_max(heap, data, 0, heap->size(heap)), temp);
 
     TEST_ASSERT_TRUE(heap->clear(heap));
     TEST_ASSERT_TRUE(heap->empty(heap));
@@ -169,6 +177,64 @@ static void test_heap_max_num(void)
     TEST_ASSERT_NULL(heap);
 }
 
+
+static void test_heap_max_struct(void)
+{
+    uint32_t i = 0;
+    struct _student data[] = {
+        {"sun", 1003}, 
+        {"zhou", 1005}, 
+        {"wu", 1006}, 
+        {"zhao", 1001}, 
+        {"qian", 1002}, 
+        {"li", 1004},
+        {"zheng", 1007}, 
+        {"wang", 1008},
+    };
+    struct _student temp = {0};
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    heap_t heap = heap_max_new2(sizeof(struct _student), 64);
+    TEST_ASSERT_NOT_NULL(heap);
+    heap->print_obj = print_struct;
+    heap->compare = compare_struct;
+
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        TEST_ASSERT_TRUE(heap->push(heap, &temp));
+        TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
+
+        TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+        TEST_ASSERT_EQUAL_INT(((struct _student*)get_max(heap, data, 0, heap->size(heap)))->id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_max(heap, data, 0, heap->size(heap)))->name, temp.name);
+
+        // heap->print_obj(&temp);
+        // printf("\n");
+    }
+    TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+    TEST_ASSERT_TRUE(heap->peek(heap, &temp));
+
+    TEST_ASSERT_TRUE(heap->clear(heap));
+    TEST_ASSERT_TRUE(heap->empty(heap));
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        TEST_ASSERT_TRUE(heap->push(heap, &temp));
+    }
+
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        TEST_ASSERT_TRUE(heap->pop(heap, &temp));
+    }
+    TEST_ASSERT_TRUE(heap->empty(heap));
+
+    heap_free(&heap);
+    TEST_ASSERT_NULL(heap);
+}
+
+
 void test_heap(void)
 {
     UnitySetTestFile(__FILE__);
@@ -177,4 +243,5 @@ void test_heap(void)
     RUN_TEST(test_heap_min_struct);
 
     RUN_TEST(test_heap_max_num);
+    RUN_TEST(test_heap_max_struct);
 }
