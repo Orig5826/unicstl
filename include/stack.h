@@ -53,7 +53,7 @@ struct _stack
     // iter
     iterator_t (*iter)(struct _stack* self);
 
-    // ---------- debug ---------- 
+    // -------------------- debug -------------------- 
     void (*print)(struct _stack* self);
     void (*print_obj)(void* obj);
 };

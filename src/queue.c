@@ -334,7 +334,7 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
     self->size = queue_size;
     self->capacity = queue_capacity;
 
-    self->destory = queue_destory;
+    self->_destory = queue_destory;
     self->print = queue_print;
     
     // init front & back
@@ -373,7 +373,7 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
     self->size = queue_size;
     self->capacity = queue_capacity;
 
-    self->destory = queue2_destory;
+    self->_destory = queue2_destory;
     self->print = queue2_print;
 
     // init front & back
@@ -413,13 +413,15 @@ queue_t queue_new(uint32_t obj_size)
 {
     struct _queue * queue = NULL;
     queue = (struct _queue *)calloc(1, sizeof(struct _queue));
-    if(queue != NULL)
+    if(queue == NULL)
     {
-        if(queue_init(queue, obj_size) == false)
-        {
-            free(queue);
-            queue = NULL;
-        }
+        return NULL;
+    }
+
+    if(queue_init(queue, obj_size) != true)
+    {
+        free(queue);
+        return NULL;
     }
     return queue;
 }
@@ -437,13 +439,15 @@ queue_t queue_new2(uint32_t obj_size, uint32_t capacity)
 {
     struct _queue * queue = NULL;
     queue = (struct _queue *)calloc(1, sizeof(struct _queue));
-    if(queue != NULL)
+    if(queue == NULL)
     {
-        if(queue_init2(queue, obj_size, capacity) == false)
-        {
-            free(queue);
-            queue = NULL;
-        }
+        return NULL;
+    }
+
+    if(queue_init2(queue, obj_size, capacity) != true)
+    {
+        free(queue);
+        return NULL;
     }
     return queue;
 }
@@ -459,9 +463,9 @@ void queue_free(queue_t* queue)
     assert(queue != NULL);
     if(queue != NULL && *queue != NULL)
     {
-        if((*queue)->destory != NULL)
+        if((*queue)->_destory != NULL)
         {
-            (*queue)->destory(*queue);
+            (*queue)->_destory(*queue);
         }
         free(*queue);
         *queue = NULL;

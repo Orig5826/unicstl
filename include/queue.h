@@ -21,6 +21,7 @@ struct _queue_node
 
 struct _queue
 {
+    // -------------------- private -------------------- 
     struct _queue_node * _front;
     struct _queue_node * _back;
 
@@ -32,24 +33,23 @@ struct _queue
     uint32_t _capacity;
     uint32_t _ratio;
 
+    void (*_destory)(struct _queue* self);
+
+    // -------------------- public -------------------- 
     // kernel
     bool (*push)(struct _queue* self, void* obj);
     bool (*pop)(struct _queue* self, void* obj);
-
     bool (*back)(struct _queue* self, void* obj);
     bool (*front)(struct _queue* self, void* obj);
-
-    // base
     bool (*empty)(struct _queue* self);
     bool (*full)(struct _queue* self);
+
+    // base
     uint32_t (*size)(struct _queue* self);
     uint32_t (*capacity)(struct _queue* self);
-    
-    // clear and free node
     bool (*clear)(struct _queue* self);
-    void (*destory)(struct _queue* self);
 
-    // print
+    // -------------------- debug -------------------- 
     void (*print)(struct _queue* self);
     void (*print_obj)(void* obj);
 };
