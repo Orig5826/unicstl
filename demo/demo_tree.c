@@ -55,7 +55,7 @@ void demo_avltree_num(void)
         tree->print_obj(&temp);
         printf("size = %2d : ", tree->size(tree));
 
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(int *)iter->next(iter);
@@ -88,7 +88,7 @@ void demo_avltree_num(void)
     }
 
     printf("----- preorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -97,7 +97,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- inorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_IN);
+    iter = tree->iter(tree, ORDER_IN);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -106,7 +106,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- postorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_POST);
+    iter = tree->iter(tree, ORDER_POST);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -115,7 +115,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- breadth -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -124,7 +124,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- preorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_PRE);
+    iter = tree->iter(tree, ORDER_PRE_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -133,7 +133,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- inorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_IN);
+    iter = tree->iter(tree, ORDER_IN_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -142,7 +142,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- postorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_POST);
+    iter = tree->iter(tree, ORDER_POST_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -151,7 +151,7 @@ void demo_avltree_num(void)
     printf("\n");
 
     printf("----- breadth(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -161,7 +161,7 @@ void demo_avltree_num(void)
 
 
     printf("----- preorder(left) -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -179,7 +179,7 @@ void demo_avltree_num(void)
         tree->print_obj(&temp);
         printf("size = %2d : ", tree->size(tree));
 
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(int *)iter->next(iter);
@@ -279,7 +279,7 @@ void demo_rbtree_num(void)
         tree->print_obj(&temp);
         printf("size = %2d : ", tree->size(tree));
 
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(int *)iter->next(iter);
@@ -318,7 +318,7 @@ void demo_rbtree_num(void)
     }
 
     printf("----- preorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -327,7 +327,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- inorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_IN);
+    iter = tree->iter(tree, ORDER_IN);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -336,7 +336,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- postorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_POST);
+    iter = tree->iter(tree, ORDER_POST);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -345,7 +345,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- breadth -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -354,7 +354,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- preorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_PRE);
+    iter = tree->iter(tree, ORDER_PRE_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -363,7 +363,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- inorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_IN);
+    iter = tree->iter(tree, ORDER_IN_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -372,7 +372,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- postorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_POST);
+    iter = tree->iter(tree, ORDER_POST_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -381,7 +381,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- breadth(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH_R);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -390,7 +390,7 @@ void demo_rbtree_num(void)
     printf("\n");
 
     printf("----- preorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
@@ -409,7 +409,7 @@ void demo_rbtree_num(void)
 
         printf("size = %2d : ", tree->size(tree));
 
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(int *)iter->next(iter);
@@ -461,7 +461,7 @@ void demo_rbtree_struct(void)
         tree->print_obj(&temp);
         printf("size = %2d : ", tree->size(tree));
         
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(struct _student *)iter->next(iter);
@@ -500,7 +500,7 @@ void demo_rbtree_struct(void)
     }
 
     printf("----- preorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -509,7 +509,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- inorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_IN);
+    iter = tree->iter(tree, ORDER_IN);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -518,7 +518,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- postorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_POST);
+    iter = tree->iter(tree, ORDER_POST);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -527,7 +527,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- breadth -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -536,7 +536,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- preorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_PRE);
+    iter = tree->iter(tree, ORDER_PRE_R);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -545,7 +545,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- inorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_IN);
+    iter = tree->iter(tree, ORDER_IN_R);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -554,7 +554,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- postorder(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_POST);
+    iter = tree->iter(tree, ORDER_POST_R);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -563,7 +563,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- breadth(right) -----\n");
-    iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
+    iter = tree->iter(tree, ORDER_BREADTH_R);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -572,7 +572,7 @@ void demo_rbtree_struct(void)
     printf("\n");
 
     printf("----- preorder -----\n");
-    iter = tree->iter(tree, ORDER_LEFT_PRE);
+    iter = tree->iter(tree, ORDER_PRE);
     while(iter->hasnext(iter))
     {
         temp = *(struct _student *)iter->next(iter);
@@ -591,7 +591,7 @@ void demo_rbtree_struct(void)
 
         printf("size = %2d : ", tree->size(tree));
 
-        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        iter = tree->iter(tree, ORDER_PRE);
         while(iter->hasnext(iter))
         {
             temp = *(struct _student *)iter->next(iter);

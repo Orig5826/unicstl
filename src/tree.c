@@ -1165,24 +1165,24 @@ static iterator_t tree_iter(struct _tree* self, enum _order order)
 
     switch (self->_order)
     {
-    case ORDER_LEFT_PRE:
-    case ORDER_RIGHT_PRE:
+    case ORDER_PRE:
+    case ORDER_PRE_R:
     {
         // pass
     }break;
-    case ORDER_LEFT_IN:
-    case ORDER_RIGHT_IN:
+    case ORDER_IN:
+    case ORDER_IN_R:
     {
         // pass
     }break;
-    case ORDER_LEFT_POST:
-    case ORDER_RIGHT_POST:
+    case ORDER_POST:
+    case ORDER_POST_R:
     {
         struct _tree_node* node = self->_root;
         self->stack->clear(self->stack);
 
         stack_t stack = stack_new(sizeof(struct _tree_node*));
-        if (self->_order == ORDER_LEFT_POST)
+        if (self->_order == ORDER_POST)
         {
             while (!stack->empty(stack) || node != NULL)
             {
@@ -1220,8 +1220,8 @@ static iterator_t tree_iter(struct _tree* self, enum _order order)
         }
         stack_free(&stack);
     }break;
-    case ORDER_LEFT_BREADTH:
-    case ORDER_RIGHT_BREADTH:
+    case ORDER_BREADTH:
+    case ORDER_BREADTH_R:
     {
         // pass
         self->queue->push(self->queue, &self->_root);
@@ -1260,11 +1260,11 @@ static const void* tree_iter_next(struct _iterator* iter)
     struct _tree_node* cur_node = self->_iter._cur_node;
     switch (self->_order)
     {
-    case ORDER_LEFT_PRE:
-    case ORDER_RIGHT_PRE:
+    case ORDER_PRE:
+    case ORDER_PRE_R:
     {
         struct _tree_node* node = NULL;
-        if (self->_order == ORDER_LEFT_PRE)
+        if (self->_order == ORDER_PRE)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1313,11 +1313,11 @@ static const void* tree_iter_next(struct _iterator* iter)
         self->_iter._cur_node = cur_node;
         obj = node->obj;
     }break;
-    case ORDER_LEFT_IN:
-    case ORDER_RIGHT_IN:
+    case ORDER_IN:
+    case ORDER_IN_R:
     {
         struct _tree_node* node = NULL;
-        if (self->_order == ORDER_LEFT_IN)
+        if (self->_order == ORDER_IN)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1363,8 +1363,8 @@ static const void* tree_iter_next(struct _iterator* iter)
         self->_iter._cur_node = cur_node;
         obj = node->obj;
     }break;
-    case ORDER_LEFT_POST:
-    case ORDER_RIGHT_POST:
+    case ORDER_POST:
+    case ORDER_POST_R:
     {
         if (!self->stack->empty(self->stack))
         {
@@ -1381,15 +1381,15 @@ static const void* tree_iter_next(struct _iterator* iter)
             obj = cur_node->obj;
         }
     }break;
-    case ORDER_LEFT_BREADTH:
-    case ORDER_RIGHT_BREADTH:
+    case ORDER_BREADTH:
+    case ORDER_BREADTH_R:
     {
         struct _tree_node* node = cur_node;
         queue_t queue = self->queue;
         if (!queue->empty(queue) && node != NULL)
         {
             queue->pop(queue, &node);
-            if (self->_order == ORDER_LEFT_BREADTH)
+            if (self->_order == ORDER_BREADTH)
             {
                 if (node->left != NULL)
                 {

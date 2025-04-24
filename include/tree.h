@@ -18,25 +18,33 @@
 
 
 typedef enum {
-    RBT_RED = 0x00,
-    RBT_BLACK = 0x01,
+    RBT_RED,
+    RBT_BLACK,
 }rbt_color;
 
+/**
+ * @brief dfs amd bfs traversal order
+ * 
+ *  pre-order traversal
+ *   in-order traversal
+ *  post-order traversal
+ *  breadth-first search traversal [BFS]
+ * 
+ *  right-first pre-order traversal
+ *  right-first in-order traversal
+ *  right-first post-order traversal
+ *  breadth-first search traversal [BFS]
+ */
 enum _order{
-    ORDER_LEFT_PRE = 0x01,
-    ORDER_LEFT_IN = 0x02,
-    ORDER_LEFT_POST = 0x03,
-    ORDER_LEFT_BREADTH = 0x04,
+    ORDER_PRE,
+    ORDER_IN,
+    ORDER_POST,
+    ORDER_BREADTH,
 
-    ORDER_RIGHT_PRE = 0x05,
-    ORDER_RIGHT_IN = 0x06,
-    ORDER_RIGHT_POST = 0x07,
-    ORDER_RIGHT_BREADTH = 0x08,
-
-    ORDER_PRE = ORDER_LEFT_PRE,
-    ORDER_IN = ORDER_LEFT_IN,
-    ORDER_POST = ORDER_LEFT_POST,
-    ORDER_BREADTH = ORDER_LEFT_BREADTH,
+    ORDER_PRE_R,
+    ORDER_IN_R,
+    ORDER_POST_R,
+    ORDER_BREADTH_R,
 };
 
 struct _tree_node
