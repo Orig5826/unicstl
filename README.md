@@ -83,7 +83,7 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 ## 修改日志
 
 ### Unicstl 0.0.01 (2025-04-24)
-new features:
+- new features
     - add stack
     - add queue
     - add deque
@@ -91,7 +91,8 @@ new features:
     - add heap
     - add tree
     - add graph
-bugfixed: 
+    - add iterator
+- bugfixed: 
     - none
-others:
+- others:
     - none
