@@ -470,7 +470,7 @@ static void test_stack2_iter(void)
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        printf("%d ", temp);
+        // printf("%d ", temp);
         TEST_ASSERT_EQUAL_INT(data[len - 1 - i], temp);
         i++;
     }

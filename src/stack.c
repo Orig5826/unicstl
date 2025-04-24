@@ -282,7 +282,7 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
 
     // clear and free node
     self->clear = stack_clear;
-    self->destory = stack_destory;
+    self->_destory = stack_destory;
     // print
     self->print = stack_print;
 
@@ -304,7 +304,10 @@ const void* stack_iter_next(struct _iterator* iter)
     assert(iter->parent != NULL);
 
     stack_t self = (stack_t)iter->parent;
-    void *obj = self->_head->obj + self->_iter._cur * self->_obj_size;
+    // from top to bottom
+    uint32_t index = self->size(self) - 1 - self->_iter._cur;
+
+    void *obj = self->_head->obj + self->_obj_size * index;
     self->_iter._cur += 1;
     return obj;
 }
@@ -360,7 +363,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
         return false;
     }
 
-    self->destory = stack2_destory;
+    self->_destory = stack2_destory;
 
     // ---------- public ---------- 
     // 2. set function
@@ -418,9 +421,9 @@ void stack_free(stack_t *stack)
     assert(stack != NULL);
     if(stack != NULL && *stack != NULL)
     {
-        if((*stack)->destory != NULL)
+        if((*stack)->_destory != NULL)
         {
-            (*stack)->destory(*stack);
+            (*stack)->_destory(*stack);
         }
         free(*stack);
         *stack = NULL;

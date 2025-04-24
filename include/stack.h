@@ -31,7 +31,7 @@ struct _stack
 
     struct _iterator _iter;
 
-    void (*destory)(struct _stack* self);
+    void (*_destory)(struct _stack* self);
 
     // ---------- public ---------- 
     // kernel
