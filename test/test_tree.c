@@ -508,75 +508,54 @@ static const int expected_int_array_orderpre_delete[15][15] = {
     { 13, },
 };
 
+static const enum _order order[8] = { 
+    ORDER_LEFT_PRE, ORDER_LEFT_IN, ORDER_LEFT_POST, ORDER_LEFT_BREADTH,
+    ORDER_RIGHT_PRE, ORDER_RIGHT_IN, ORDER_RIGHT_POST, ORDER_RIGHT_BREADTH
+};
+
+static uint32_t iter2array_num(iterator_t iter, int *data)
+{
+    uint32_t count = 0;
+    while(iter->hasnext(iter))
+    {
+        data[count] = *(int *)iter->next(iter);
+        count++;
+    }
+    return count;
+}
+
 static void test_avltree_iter(void)
 {
     uint32_t i = 0;
-    // int data[] = { 2,1,3,4};
-    // int data[] = { 1,2,3,4,5,6};
-    // int data[] = { 5,2,3,1,7,8,6 };
-    // int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
-    int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
+    int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
+    int buff[15];
+    uint32_t len = sizeof(data) / sizeof(int);
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
     int count = 0;
+    iterator_t iter = NULL;
 
     tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
+    memcpy(data, expected_int_array[0], len);
     for (i = 0; i < len; i++)
     {
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
         
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-        }
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
     }
 
-    for(i = 1; i < 9; i++)
+    for(i = 0; i < 8; i++)
     {
-        tree->set_order(tree, i);  //ORDER_LEFT_IN
-        // printf("\n ----- iter test -----\n");
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            // printf("(%2d ) ", *iter);
-            buff[count++] = *iter;
-        }
-        // printf("\n");
-        TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i], buff, count);
+        iter = tree->iter(tree, order[i]);
+        count = iter2array_num(iter, buff);
+        TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i + 1], buff, count);
     }
-
-#if 0
-    tree->order(tree, true);
-    printf("\n\nactual data = \n");
-    tree->postorder(tree, tree->_root);
-    printf("\n");
-
-    // set order
-    // tree->set_order(tree, ORDER_LEFT_PRE);
-    // tree->set_order(tree, ORDER_LEFT_IN);
-    // tree->set_order(tree, ORDER_LEFT_POST);
-    // tree->set_order(tree, ORDER_LEFT_BREADTH);
-    // tree->set_order(tree, ORDER_RIGHT_PRE);
-    // tree->set_order(tree, ORDER_RIGHT_IN);
-    tree->set_order(tree, ORDER_RIGHT_POST);
-    // tree->set_order(tree, ORDER_RIGHT_BREADTH);
-    printf("\n ----- iter data -----\n");
-    for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-    {
-        printf("(%2d ) ", *iter);
-        buff[count++] = *iter;
-    }
-    printf("\n");
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[tree->_order], buff, count);
-#endif
 
     TEST_ASSERT_FALSE(tree->empty(tree));
     TEST_ASSERT_TRUE(tree->clear(tree));
@@ -589,46 +568,34 @@ static void test_avltree_iter(void)
 static void test_avltree_insert(void)
 {
     uint32_t i = 0;
-    // int data[] = { 2,1,3,4};
-    // int data[] = { 1,2,3,4,5,6};
-    // int data[] = { 5,2,3,1,7,8,6 };
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
+    int buff[15];
+    uint32_t len = sizeof(data) / sizeof(int);
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
     int count = 0;
+    iterator_t iter = NULL;
 
     tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
+    memcpy(data, expected_int_array[0], len);
     for (i = 0; i < len; i++)
     {
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
 
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-        }
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
     }
 
-    for(i = 1; i < 9; i++)
+    for(i = 0; i < 8; i++)
     {
-        tree->set_order(tree, i);  //ORDER_LEFT_IN
-        // printf("\n ----- iter test -----\n");
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            // printf("(%2d ) ", *iter);
-            buff[count++] = *iter;
-        }
-        // printf("\n");
-        TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i], buff, count);
+        iter = tree->iter(tree, order[i]);
+        count = iter2array_num(iter, buff);
+        TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[i + 1], buff, count);
     }
     
     tree_free(&tree);
@@ -638,20 +605,19 @@ static void test_avltree_insert(void)
 static void test_avltree_delete(void)
 {
     uint32_t i = 0;
-    int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
+    int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
+    int buff[15];
+    uint32_t len = sizeof(data) / sizeof(int);
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
     int count = 0;
+    iterator_t iter = NULL;
 
     tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
+    memcpy(data, expected_int_array[0], len);
     for (i = 0; i < len; i++)
     {
         temp = data[i];
@@ -660,19 +626,13 @@ static void test_avltree_delete(void)
 
     for (i = 0; i < len; i++)
     {
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-            // printf("(%2d ) ", *iter);
-        }
-        // printf("\n");
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_delete[i], buff, count);
 
         temp = data[i];
-        // delete
         TEST_ASSERT_TRUE(tree->delete(tree, &temp));
     }
-    // 
     TEST_ASSERT_FALSE(tree->delete(tree, &temp));
 
     tree_free(&tree);
@@ -734,21 +694,15 @@ static const int rbt_expected_int_array_orderpre_delete[15][15] = {
 static void test_rbtree_iter(void)
 {
     uint32_t i = 0;
-    // int data[] = { 2,1,3,4};
-    // int data[] = { 1,2,3,4,5,6};
-    // int data[] = { 5,2,3,1,7,8,6 };
-    // int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
-    int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
+    int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
+    int buff[15];
+    uint32_t len = sizeof(data) / sizeof(int);
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
     int count = 0;
-
+    iterator_t iter = NULL;
+    
     tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -757,50 +711,17 @@ static void test_rbtree_iter(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
         
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-        }
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_insert[i], buff, count);
     }
 
-    for(i = 1; i < 9; i++)
+    for(i = 0; i < 8; i++)
     {
-        tree->set_order(tree, i);  //ORDER_LEFT_IN
-        // printf("\n ----- iter test -----\n");
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            // printf("(%2d ) ", *iter);
-            buff[count++] = *iter;
-        }
-        // printf("\n");
-        TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[i], buff, count);
+        iter = tree->iter(tree, order[i]);
+        count = iter2array_num(iter, buff);
+        TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[i + 1], buff, count);
     }
-
-#if 0
-    tree->order(tree, true);
-    printf("\n\nactual data = \n");
-    tree->postorder(tree, tree->_root);
-    printf("\n");
-
-    // set order
-    // tree->set_order(tree, ORDER_LEFT_PRE);
-    // tree->set_order(tree, ORDER_LEFT_IN);
-    // tree->set_order(tree, ORDER_LEFT_POST);
-    // tree->set_order(tree, ORDER_LEFT_BREADTH);
-    // tree->set_order(tree, ORDER_RIGHT_PRE);
-    // tree->set_order(tree, ORDER_RIGHT_IN);
-    tree->set_order(tree, ORDER_RIGHT_POST);
-    // tree->set_order(tree, ORDER_RIGHT_BREADTH);
-    printf("\n ----- iter data -----\n");
-    for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-    {
-        printf("(%2d ) ", *iter);
-        buff[count++] = *iter;
-    }
-    printf("\n");
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array[tree->_order], buff, count);
-#endif
 
     TEST_ASSERT_FALSE(tree->empty(tree));
     TEST_ASSERT_TRUE(tree->clear(tree));
@@ -813,20 +734,15 @@ static void test_rbtree_iter(void)
 static void test_rbtree_insert(void)
 {
     uint32_t i = 0;
-    // int data[] = { 2,1,3,4};
-    // int data[] = { 1,2,3,4,5,6};
-    // int data[] = { 5,2,3,1,7,8,6 };
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
+    int buff[15];
+    uint32_t len = sizeof(data) / sizeof(int);
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
     int count = 0;
+    iterator_t iter = NULL;
 
     tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -835,24 +751,16 @@ static void test_rbtree_insert(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
 
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-        }
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_insert[i], buff, count);
     }
 
-    for(i = 1; i < 9; i++)
+    for(i = 0; i < 8; i++)
     {
-        tree->set_order(tree, i);  //ORDER_LEFT_IN
-        // printf("\n ----- iter test -----\n");
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            // printf("(%2d ) ", *iter);
-            buff[count++] = *iter;
-        }
-        // printf("\n");
-        TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[i], buff, count);
+        iter = tree->iter(tree, order[i]);
+        count = iter2array_num(iter, buff);
+        TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[i + 1], buff, count);
     }
     
     tree_free(&tree);
@@ -863,16 +771,18 @@ static void test_rbtree_delete(void)
 {
     uint32_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
-    int temp = 0;
+    int buff[15];
     uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    int * iter = NULL;
+    int temp = 0;
     int count = 0;
+    iterator_t iter = NULL;
+    enum _order order[8] = { 
+        ORDER_LEFT_PRE, ORDER_LEFT_IN, ORDER_LEFT_POST, ORDER_LEFT_BREADTH,
+        ORDER_RIGHT_PRE, ORDER_RIGHT_IN, ORDER_RIGHT_POST, ORDER_RIGHT_BREADTH
+    };
 
     tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
-
     tree->print_obj = print_num;
     tree->compare = compare_num;
 
@@ -884,138 +794,15 @@ static void test_rbtree_delete(void)
 
     for (i = 0; i < len; i++)
     {
-        for (count = 0, iter = tree->begin(tree); iter != tree->end(tree); iter = tree->next(tree))
-        {
-            buff[count++] = *iter;
-            // printf("(%2d ) ", *iter);
-        }
-        // printf("\n");
+        iter = tree->iter(tree, ORDER_LEFT_PRE);
+        count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_delete[i], buff, count);
 
         temp = data[i];
-        // delete
         TEST_ASSERT_TRUE(tree->delete(tree, &temp));
     }
-    // 
     TEST_ASSERT_FALSE(tree->delete(tree, &temp));
 
-    tree_free(&tree);
-    TEST_ASSERT_NULL(tree);
-}
-
-
-static void test_avltree_iter_2(void)
-{
-    uint32_t i = 0;
-    int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
-    int buff[32];
-    int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    int count = 0;
-
-    tree_t tree = tree_avl_new(sizeof(int));
-    TEST_ASSERT_NOT_NULL(tree);
-    tree->print_obj = print_num;
-    tree->compare = compare_num;
-
-    for (i = 0; i < len; i++)
-    {
-        temp = data[i];
-        TEST_ASSERT_TRUE(tree->insert(tree, &temp));
-    }
-
-    iterator_t iter = tree->iter(tree, ORDER_LEFT_PRE);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[1], buff, count);
-
-    iter = tree->iter(tree, ORDER_LEFT_IN);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[2], buff, count);
-
-    iter = tree->iter(tree, ORDER_LEFT_POST);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-        
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[3], buff, count);
-
-    iter = tree->iter(tree, ORDER_LEFT_BREADTH);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[4], buff, count);
-
-
-    iter = tree->iter(tree, ORDER_RIGHT_PRE);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[5], buff, count);
-
-
-    iter = tree->iter(tree, ORDER_RIGHT_IN);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[6], buff, count);
-
-
-    iter = tree->iter(tree, ORDER_RIGHT_POST);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[7], buff, count);
-
-    iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
-    count = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        // tree->print_obj(&temp);
-
-        buff[count++] = temp;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[8], buff, count);
-
-    TEST_ASSERT_TRUE(tree->clear(tree));
     tree_free(&tree);
     TEST_ASSERT_NULL(tree);
 }
@@ -1035,6 +822,4 @@ void test_tree(void)
     // RUN_TEST(test_avltree_num);
     // RUN_TEST(test_rbtree_num);
     // RUN_TEST(test_rbtree_struct);
-
-    RUN_TEST(test_avltree_iter_2);
 }

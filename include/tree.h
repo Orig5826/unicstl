@@ -96,15 +96,6 @@ struct _tree
     iterator_t (*iter)(struct _tree* self, enum _order);
 
     /**
-     * @brief 
-     * 
-     */
-    void (*set_order)(struct _tree* self, enum _order order);
-    void* (*begin)(struct _tree* self);
-    void* (*next)(struct _tree* self);
-    void* (*end)(struct _tree* self);
-
-    /**
      * @brief obj compare with obj2
      * 
      * @return
