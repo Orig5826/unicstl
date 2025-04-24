@@ -297,6 +297,86 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
 #endif
 }
 
+static struct _tree_node* tree_find(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    struct _tree_node* root = self->_root;
+    while (root != NULL)
+    {
+        if (self->compare(obj, root->obj) == 0)
+        {
+            return root;
+        }
+        else if (self->compare(obj, root->obj) < 0)
+        {
+            root = root->left;
+        }
+        else
+        {
+            root = root->right;
+        }
+    }
+    return NULL;
+}
+
+static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* root)
+{
+    assert(self != NULL);
+#if 0
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    if (root->left == NULL)
+    {
+        return root;
+    }
+    return tree_find_min(self, root->left);
+#else
+    while (root != NULL)
+    {
+        if (root->left != NULL)
+        {
+            root = root->left;
+        }
+        else
+        {
+            return root;
+        }
+    }
+    return root;
+#endif
+}
+
+static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* root)
+{
+#if 0
+    assert(self != NULL);
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    if (root->right == NULL)
+    {
+        return root;
+    }
+    return tree_find_max(self, root->right);
+#else
+    while (root != NULL)
+    {
+        if (root->right != NULL)
+        {
+            root = root->right;
+        }
+        else
+        {
+            return root;
+        }
+    }
+    return root;
+#endif
+}
+
 static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
     assert(self != NULL);
@@ -497,7 +577,7 @@ static bool tree_avl_delete_double_child(struct _tree* self, struct _tree_node* 
 {
     assert(self != NULL);
     assert(node != NULL);
-    struct _tree_node* tmp = self->find_min(self, node->right);
+    struct _tree_node* tmp = tree_find_min(self, node->right);
     if (tmp != NULL)
     {
         memmove(node->obj, tmp->obj, self->_obj_size);
@@ -517,7 +597,7 @@ static bool tree_avl_delete(struct _tree* self, void* obj)
         return false;
     }
 
-    struct _tree_node* node = self->find(self, obj);
+    struct _tree_node* node = tree_find(self, obj);
     if (node == NULL)
     {
         return false;
@@ -536,28 +616,6 @@ static bool tree_avl_delete(struct _tree* self, void* obj)
 
     self->_size--;
     return true;
-}
-
-static struct _tree_node* tree_find(struct _tree* self, void* obj)
-{
-    assert(self != NULL);
-    struct _tree_node* root = self->_root;
-    while (root != NULL)
-    {
-        if (self->compare(obj, root->obj) == 0)
-        {
-            return root;
-        }
-        else if (self->compare(obj, root->obj) < 0)
-        {
-            root = root->left;
-        }
-        else
-        {
-            root = root->right;
-        }
-    }
-    return NULL;
 }
 
 static bool tree_clear(struct _tree* self)
@@ -619,64 +677,6 @@ static void tree_destory(struct _tree* self)
     {
         queue_free(&self->queue);
     }
-}
-
-static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* root)
-{
-    assert(self != NULL);
-#if 0
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    if (root->left == NULL)
-    {
-        return root;
-    }
-    return tree_find_min(self, root->left);
-#else
-    while (root != NULL)
-    {
-        if (root->left != NULL)
-        {
-            root = root->left;
-        }
-        else
-        {
-            return root;
-        }
-    }
-    return root;
-#endif
-}
-
-static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* root)
-{
-#if 0
-    assert(self != NULL);
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    if (root->right == NULL)
-    {
-        return root;
-    }
-    return tree_find_max(self, root->right);
-#else
-    while (root != NULL)
-    {
-        if (root->right != NULL)
-        {
-            root = root->right;
-        }
-        else
-        {
-            return root;
-        }
-    }
-    return root;
-#endif
 }
 
 static bool tree_min(struct _tree* self, void* obj)
@@ -1086,7 +1086,7 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
         return false;
     }
 
-    struct _tree_node* node = self->find(self, obj);
+    struct _tree_node* node = tree_find(self, obj);
     if (node == NULL)
     {
         return false;
@@ -1114,7 +1114,7 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
         // 1. find the min node in right subtree
         // 2. replace the node with min node
         // 3. delete the min node
-        tmp = self->find_min(self, node->right);
+        tmp = tree_find_min(self, node->right);
         memmove(node->obj, tmp->obj, self->_obj_size);
         if (tmp->right != NULL)
         {
@@ -1150,7 +1150,7 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
     return true;
 }
 
-iterator_t tree_iter(struct _tree* self, enum _order order)
+static iterator_t tree_iter(struct _tree* self, enum _order order)
 {
     assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -1234,7 +1234,7 @@ iterator_t tree_iter(struct _tree* self, enum _order order)
     return iter;
 }
 
-bool tree_iter_hasnext(struct _iterator* iter)
+static bool tree_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
     assert(iter->parent != NULL);
@@ -1247,7 +1247,7 @@ bool tree_iter_hasnext(struct _iterator* iter)
     return false;
 }
 
-const void* tree_iter_next(struct _iterator* iter)
+static const void* tree_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
     assert(iter->parent != NULL);
@@ -1428,7 +1428,7 @@ const void* tree_iter_next(struct _iterator* iter)
     {
     }break;
     }
-    
+
     return obj;
 }
 
@@ -1481,9 +1481,6 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     self->iter = tree_iter;
 
     // others
-    self->find = tree_find;
-    self->find_max = tree_find_max;
-    self->find_min = tree_find_min;
     self->max = tree_max;
     self->min = tree_min;
 
@@ -1538,9 +1535,6 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     self->iter = tree_iter;
 
     // others
-    self->find = tree_find;
-    self->find_max = tree_find_max;
-    self->find_min = tree_find_min;
     self->max = tree_max;
     self->min = tree_min;
 

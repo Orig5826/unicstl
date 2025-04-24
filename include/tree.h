@@ -71,20 +71,14 @@ struct _tree
 
     struct _iterator _iter;
 
+    void (*destory)(struct _tree* self);
+
     // -------------------- public -------------------- 
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
-
-    struct _tree_node* (*find)(struct _tree* self, void* obj);
-    struct _tree_node* (*find_min)(struct _tree* self, struct _tree_node* root);
-    struct _tree_node* (*find_max)(struct _tree* self, struct _tree_node* root);
-
     bool (*rebalance)(struct _tree* self, struct _tree_node* root);
     int32_t (*height)(struct _tree* self, struct _tree_node* root);
-
-    bool (*min)(struct _tree* self, void* obj);
-    bool (*max)(struct _tree* self, void* obj);
 
     // base
     bool (*clear)(struct _tree* self);
@@ -94,18 +88,12 @@ struct _tree
     // iter
     iterator_t (*iter)(struct _tree* self, enum _order);
 
-    /**
-     * @brief obj compare with obj2
-     * 
-     * @return
-     *      obj < obj2 return -1
-     *      obj == obj2 return 0
-     *      obj > obj2 return 1
-     */
-    int (*compare)(void* obj, void* obj2);
+    // others
+    bool (*min)(struct _tree* self, void* obj);
+    bool (*max)(struct _tree* self, void* obj);
 
-    // free
-    void (*destory)(struct _tree* self);
+    // config 
+    compare_fun_t compare;  // !!! you have to implement this function
 
     // -------------------- debug -------------------- 
     void (*print_obj)(void* obj);
