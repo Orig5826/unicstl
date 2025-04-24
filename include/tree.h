@@ -68,7 +68,6 @@ struct _tree
 
     stack_t stack;
     queue_t queue;
-    struct _tree_node * cur_node;
 
     struct _iterator _iter;
 
