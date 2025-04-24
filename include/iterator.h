@@ -15,10 +15,12 @@
 
 struct _iterator
 {
-    void* parent;
+    // ---------- private ---------- 
+    void* _parent;
     void* _cur_node;
     uint32_t _cur;
 
+    // ---------- public ---------- 
     bool (*hasnext)(struct _iterator* self);
     const void* (*next)(struct _iterator* self);
 };

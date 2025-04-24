@@ -124,6 +124,7 @@ static uint32_t stack_capacity(struct _stack* self)
 static bool stack_clear(struct _stack* self)
 {
     assert(self != NULL);
+    assert(self->_head != NULL);
     if (self->empty(self))
     {
         return true;
@@ -258,7 +259,7 @@ const void* stack2_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    stack_t self = (stack_t)iter->parent;
+    stack_t self = (stack_t)iter->_parent;
     // from top to bottom
     uint32_t index = self->size(self) - 1 - self->_iter._cur;
 
@@ -272,7 +273,7 @@ const void* stack_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    stack_t self = (stack_t)iter->parent;
+    stack_t self = (stack_t)iter->_parent;
     void *obj = NULL;
 
     // from top to bottom
@@ -291,7 +292,7 @@ bool stack_iter_hasnext(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    stack_t self = (stack_t)iter->parent;
+    stack_t self = (stack_t)iter->_parent;
     if(self->_iter._cur < self->size(self))
     {
         return true;
@@ -302,7 +303,7 @@ bool stack_iter_hasnext(struct _iterator* iter)
 iterator_t stack_iter(struct _stack* self)
 {
     assert(self != NULL);
-    self->_iter.parent = self;
+    self->_iter._parent = self;
     self->_iter._cur = 0;
     self->_iter._cur_node = self->_head->next;
     return &self->_iter;
@@ -414,13 +415,15 @@ stack_t stack_new(uint32_t obj_size)
 {
     stack_t stack = NULL;
     stack = (struct _stack*)calloc(1, sizeof(struct _stack));
-    if (stack != NULL)
+    if(stack == NULL)
     {
-        if(stack_init(stack, obj_size) != true)
-        {
-            free(stack);
-            stack = NULL;
-        }
+        return NULL;
+    }
+
+    if(stack_init(stack, obj_size) != true)
+    {
+        free(stack);
+        return NULL;
     }
     return stack;
 }
@@ -429,13 +432,15 @@ stack_t stack_new2(uint32_t obj_size, uint32_t capacity)
 {
     stack_t stack = NULL;
     stack = (struct _stack*)calloc(1, sizeof(struct _stack));
-    if (stack != NULL)
+    if (stack == NULL)
     {
-        if(stack_init2(stack, obj_size, capacity) != true)
-        {
-            free(stack);
-            stack = NULL;
-        }
+        return NULL;
+    }
+
+    if(stack_init2(stack, obj_size, capacity) != true)
+    {
+        free(stack);
+        return NULL;
     }
     return stack;
 }
