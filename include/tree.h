@@ -93,7 +93,7 @@ struct _tree
     uint32_t (*size)(struct _tree* self);
 
     // iter
-    iterator_t (*iter)(struct _tree* self);
+    iterator_t (*iter)(struct _tree* self, enum _order);
 
     /**
      * @brief 

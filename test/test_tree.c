@@ -904,6 +904,40 @@ static void test_rbtree_delete(void)
 }
 
 
+static void test_avltree_iter_2(void)
+{
+    uint32_t i = 0;
+    int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
+    int buff[32];
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    // int * iter = NULL;
+    int count = 0;
+
+    tree_t tree = tree_avl_new(sizeof(int));
+    TEST_ASSERT_NOT_NULL(tree);
+    tree->print_obj = print_num;
+    tree->compare = compare_num;
+
+    for (i = 0; i < len; i++)
+    {
+        temp = data[i];
+        TEST_ASSERT_TRUE(tree->insert(tree, &temp));
+    }
+
+    iterator_t iter = tree->iter(tree, ORDER_LEFT_PRE);
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        tree->print_obj(&temp);
+    }
+
+    TEST_ASSERT_TRUE(tree->clear(tree));
+    tree_free(&tree);
+    TEST_ASSERT_NULL(tree);
+}
+
 void test_tree(void)
 {
     UnitySetTestFile(__FILE__);
@@ -919,4 +953,6 @@ void test_tree(void)
     // RUN_TEST(test_avltree_num);
     // RUN_TEST(test_rbtree_num);
     // RUN_TEST(test_rbtree_struct);
+
+    RUN_TEST(test_avltree_iter_2);
 }
