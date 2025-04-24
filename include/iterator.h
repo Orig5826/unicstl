@@ -15,17 +15,11 @@
 
 struct _iterator
 {
-    void* obj;
-    void* self;
     void* parent;
-
-    void* (*begin)(struct _iterator* self);
-    void* (*next)(struct _iterator* self);
-    void* (*end)(struct _iterator* self);
+    uint32_t _cur;
 
     bool (*hasnext)(struct _iterator* self);
-
-    void* (*data)(struct _iterator* self);
+    const void* (*next)(struct _iterator* self);
 };
 typedef struct _iterator* iterator_t;
 

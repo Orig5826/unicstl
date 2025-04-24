@@ -250,55 +250,33 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-iterator_t list_iter(struct _list* self)
-{
-    self->_cur = 0;
-    self->_iter.obj = self->obj;
-    return &self->_iter;
-}
-
-static void* list_iter_begin(struct _iterator* iter)
+static const void* list_iter_next(struct _iterator* iter)
 {
     list_t self = (list_t)iter->parent;
-    self->_cur = 0;
-    iter->obj = self->obj;
-    return iter;
-}
-
-static void* list_iter_end(struct _iterator* iter)
-{
-    list_t self = (list_t)iter->parent;
-    iter->obj = (char*)self->obj + self->_size * self->_obj_size;
-    return iter;
-}
-
-static void* list_iter_next(struct _iterator* iter)
-{
-    list_t self = (list_t)iter->parent;
-
-    // if add this, can't go to end
-    // if(self->_cur < self->_size - 1)
-    {
-        self->_cur += 1;
-    }
-    iter->obj = (char*)self->obj + self->_cur * self->_obj_size;
-    return iter;
+    void *obj = self->obj + self->_iter._cur * self->_obj_size;
+    self->_iter._cur += 1;
+    return obj;
 }
 
 static bool list_iter_hasnext(struct _iterator* iter)
 {
     list_t self = (list_t)iter->parent;
 
-    if(self->_cur < self->_size)
+    if(self->_iter._cur < self->size(self))
     {
         return true;
     }
     return false;
 }
 
-static void* list_iter_data(struct _iterator* iter)
+iterator_t list_iter(struct _list* self)
 {
-    return iter->obj;
+    self->_iter.parent = self;
+    self->_iter._cur = 0;
+
+    self->_iter.next = list_iter_next;
+    self->_iter.hasnext = list_iter_hasnext;
+    return &self->_iter;
 }
 
 list_t list_new2(uint32_t obj_size, uint32_t capacity)
@@ -314,15 +292,6 @@ list_t list_new2(uint32_t obj_size, uint32_t capacity)
             return NULL;
         }
     }
-
-    list->_iter.self = &list->iter;
-    list->_iter.parent = list;
-
-    list->_iter.begin = list_iter_begin;
-    list->_iter.next = list_iter_next;
-    list->_iter.end = list_iter_end;
-    list->_iter.data = list_iter_data;
-    list->_iter.hasnext = list_iter_hasnext;
 
     list->iter = list_iter;
     return list;

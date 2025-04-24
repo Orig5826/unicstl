@@ -25,6 +25,7 @@
         "stdarg.h": "c",
         "graph.h": "c",
         "unicstl_config.h": "c",
-        "iter.h": "c"
+        "iter.h": "c",
+        "iterator.h": "c"
     }
 }

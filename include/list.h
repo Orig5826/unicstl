@@ -12,7 +12,7 @@
 #define _LIST_H_
 
 #include "common.h"
-#include "iter.h"
+#include "iterator.h"
 
 struct _list
 {

@@ -353,19 +353,16 @@ void list_iter_test(void)
         TEST_ASSERT_FALSE(list->empty(list));
     }
 
-    iterator_t it = list->iter(list);
-    printf("iter start\n");
-    list->print(list);
-
-    printf("\n");
-    while(it->hasnext(it))
+    iterator_t iter = list->iter(list);
+    int iter_data = 0;
+    int idx = 0;
+    while(iter->hasnext(iter))
     {
-        int dd = *(int*)it->data(it);
-        printf("%d ", dd);
-        it->next(it);
+        iter_data = *(int*)iter->next(iter);
+        // printf("%d ", dd);
+        TEST_ASSERT_EQUAL_INT(data[idx], iter_data);
+        idx++;
     }
-    printf("\niter end\n");
-
     list_free(&list);
 }
 
