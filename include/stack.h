@@ -21,6 +21,7 @@ struct _stack_node
 
 struct _stack
 {
+    // ---------- private ---------- 
     struct _stack_node * _head;
     
     uint32_t _size;
@@ -28,21 +29,26 @@ struct _stack
     uint32_t _capacity;
     uint32_t _ratio;
 
+    struct _iterator _iter;
+
+    void (*destory)(struct _stack* self);
+
+    // ---------- public ---------- 
     // kernel
     bool (*push)(struct _stack* self, void* obj);
     bool (*pop)(struct _stack* self, void* obj);
     bool (*peek)(struct _stack* self, void* obj);
+    bool (*empty)(struct _stack* self);
 
     // base
     uint32_t (*size)(struct _stack* self);
-    bool (*empty)(struct _stack* self);
     uint32_t (*capacity)(struct _stack* self);
-    
-    // clear and free node
     bool (*clear)(struct _stack* self);
-    void (*destory)(struct _stack* self);
+    
+    // iter
+    iterator_t (*iter)(struct _stack* self);
 
-    // print
+    // ---------- debug ---------- 
     void (*print)(struct _stack* self);
     void (*print_obj)(void* obj);
 };

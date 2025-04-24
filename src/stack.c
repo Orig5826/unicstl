@@ -298,48 +298,87 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
     return true;
 }
 
+const void* stack_iter_next(struct _iterator* iter)
+{
+    stack_t self = (stack_t)iter->parent;
+    void *obj = self->_head->obj + self->_iter._cur * self->_obj_size;
+    self->_iter._cur += 1;
+    return obj;
+}
+
+bool stack_iter_hasnext(struct _iterator* iter)
+{
+    stack_t self = (stack_t)iter->parent;
+
+    if(self->_iter._cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+iterator_t stack_iter(struct _stack* self)
+{
+    assert(self != NULL);
+    if (self == NULL)
+    {
+        return NULL;
+    }
+    self->_iter._cur = 0;
+    return &self->_iter;
+}
+
+
 static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
 
+    // ---------- private ---------- 
     // 1. set attr
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = capacity;
     self->_ratio = 2;
 
-    // 2. set function
-    // kernel
-    self->push = stack2_push;
-    self->pop = stack2_pop;
-    self->peek = stack2_peek;
-    
-    // others
-    self->empty = stack_empty;
-    self->size = stack_size;
-    self->capacity = stack_capacity;
+    self->_iter.next = stack_iter_next;
+    self->_iter.hasnext = stack_iter_hasnext;
 
-    // clear and free node
-    self->clear = stack_clear;
-    self->destory = stack2_destory;
-    // print
-    self->print = stack2_print;
-
-    // 3. set node
     self->_head = (struct _stack_node*)malloc(sizeof(struct _stack_node));
     if (self->_head == NULL)
     {
         return false;
     }
-    // self->_head->obj = NULL;
     self->_head->next = NULL;
 
     // 4. set array
     self->_head->obj = (void *)calloc(self->_capacity, self->_obj_size);
     if (self->_head->obj == NULL)
     {
+        free(self->_head);
+        self->_head = NULL;
         return false;
     }
+
+    self->destory = stack2_destory;
+
+    // ---------- public ---------- 
+    // 2. set function
+    // kernel
+    self->push = stack2_push;
+    self->pop = stack2_pop;
+    self->peek = stack2_peek;
+    self->empty = stack_empty;
+
+    // base
+    self->size = stack_size;
+    self->capacity = stack_capacity;
+    self->clear = stack_clear;
+
+    // iter
+    self->iter = stack_iter;
+
+    // ---------- debug ---------- 
+    self->print = stack2_print;
     return true;
 }
 

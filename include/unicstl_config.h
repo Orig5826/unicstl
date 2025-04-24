@@ -21,6 +21,7 @@
 #define UNICSTL_TREE
 #define UNICSTL_HEAP
 #define UNICSTL_GRAPH
+#define UNICSTL_ITERATOR
 
 /**
  * @brief debug 
@@ -29,5 +30,14 @@
 #define NDEBUG
 #define UNICSTL_DEBUG
 
+#ifdef UNICSTL_DEBUG
+    #define UNICSTL_DEBUG_STACK
+    #define UNICSTL_DEBUG_QUEUE
+    #define UNICSTL_DEBUG_DEQUE
+    #define UNICSTL_DEBUG_TREE
+    #define UNICSTL_DEBUG_HEAP
+    #define UNICSTL_DEBUG_GRAPH
+    // #define UNICSTL_DEBUG_ITERATOR
+#endif
 
 #endif

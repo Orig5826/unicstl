@@ -11,9 +11,11 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-// #ifdef UNICSTL_CONFIG
+#define UNICSTL_CONFIG
+
+#ifdef UNICSTL_CONFIG
 #include "unicstl_config.h"
-// #endif
+#endif
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -22,5 +24,9 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+
+#ifdef UNICSTL_ITERATOR
+#include "iterator.h"
+#endif
 
 #endif // _COMMON_H_
