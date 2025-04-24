@@ -911,8 +911,6 @@ static void test_avltree_iter_2(void)
     int buff[32];
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
-
-    // int * iter = NULL;
     int count = 0;
 
     tree_t tree = tree_avl_new(sizeof(int));
@@ -926,71 +924,96 @@ static void test_avltree_iter_2(void)
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
     }
 
-    printf("\n");
-
     iterator_t iter = tree->iter(tree, ORDER_LEFT_PRE);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[1], buff, count);
 
     iter = tree->iter(tree, ORDER_LEFT_IN);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[2], buff, count);
 
     iter = tree->iter(tree, ORDER_LEFT_POST);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+        
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[3], buff, count);
 
     iter = tree->iter(tree, ORDER_LEFT_BREADTH);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[4], buff, count);
+
 
     iter = tree->iter(tree, ORDER_RIGHT_PRE);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[5], buff, count);
+
 
     iter = tree->iter(tree, ORDER_RIGHT_IN);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[6], buff, count);
+
 
     iter = tree->iter(tree, ORDER_RIGHT_POST);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[7], buff, count);
 
     iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
+    count = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        tree->print_obj(&temp);
+        // tree->print_obj(&temp);
+
+        buff[count++] = temp;
     }
-    printf("\n");
+    TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array[8], buff, count);
 
     TEST_ASSERT_TRUE(tree->clear(tree));
     tree_free(&tree);

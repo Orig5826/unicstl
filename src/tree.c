@@ -2294,13 +2294,15 @@ tree_t tree_avl_new(uint32_t obj_size)
 {
     tree_t tree = NULL;
     tree = (struct _tree*)malloc(sizeof(struct _tree));
-    if(tree != NULL)
+    if(tree == NULL)
     {
-        if(tree_avl_init(tree, obj_size) != true)
-        {
-            free(tree);
-            tree = NULL;
-        }
+        return NULL;
+    }
+
+    if(tree_avl_init(tree, obj_size) != true)
+    {
+        free(tree);
+        return NULL;
     }
     return tree;
 }
@@ -2308,13 +2310,15 @@ tree_t tree_rb_new(uint32_t obj_size)
 {
     tree_t tree = NULL;
     tree = (struct _tree*)malloc(sizeof(struct _tree));
-    if(tree != NULL)
+    if(tree == NULL)
     {
-        if(tree_rb_init(tree, obj_size) != true)
-        {
-            free(tree);
-            tree = NULL;
-        }
+        return NULL;
+    }
+
+    if(tree_rb_init(tree, obj_size) != true)
+    {
+        free(tree);
+        return NULL;
     }
     return tree;
 }
