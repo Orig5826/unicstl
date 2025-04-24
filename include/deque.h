@@ -22,6 +22,7 @@ struct _deque_node
 
 struct _deque
 {
+    // -------------------- private -------------------- 
     struct _deque_node* _head;
     struct _deque_node* _tail;
 
@@ -30,6 +31,11 @@ struct _deque
     // uint32_t _capacity;
     // uint32_t _ratio;
 
+    struct _iterator _iter;
+
+    void (*_destory)(struct _deque* self);
+
+    // -------------------- public -------------------- 
     // kernel
     bool (*push_back)(struct _deque* self, void* obj);
     bool (*push_front)(struct _deque* self, void* obj);
@@ -37,30 +43,30 @@ struct _deque
     bool (*pop_front)(struct _deque* self, void* obj);
     bool (*back)(struct _deque* self, void* obj);
     bool (*front)(struct _deque* self, void* obj);
+    bool (*empty)(struct _deque* self);
 
+    // base
+    uint32_t(*size)(struct _deque* self);
+    bool (*clear)(struct _deque* self);
+
+    // iter
+    iterator_t (*iter)(struct _deque* self);
+
+    // ohters
     bool (*insert)(struct _deque* self, int index, void* obj);
     bool (*erase)(struct _deque* self, int index, void* obj);
 
     int (*index)(struct _deque* self, void* obj);
     bool (*remove)(struct _deque* self, void* obj);
 
-    bool (*clear)(struct _deque* self);
-
     bool (*get)(struct _deque* self, int index, void* obj);
     bool (*set)(struct _deque* self, int index, void* obj);
-
-    // size
-    uint32_t(*size)(struct _deque* self);
-    bool (*empty)(struct _deque* self);
-
-    // free
-    void (*destory)(struct _deque* self);
 
     // compare
     int (*cmp)(void* obj, void* obj2);
     bool (*sort)(struct _deque* self, uint8_t reserve);
 
-    // print
+    // -------------------- debug -------------------- 
     void (*print)(struct _deque* self);
     void (*print_obj)(void* obj);
 };

@@ -295,35 +295,99 @@ static void deque_print(struct _deque* self)
     }
 }
 
+iterator_t deque_iter(struct _deque* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_cur = 0;
+    iter->_cur_node = self->_head;
+    return iter;
+}
+
+bool deque_iter_hasnext(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    deque_t self = (deque_t)iter->_parent;
+    if(iter->_cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+const void* deque_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    deque_t self = (deque_t)iter->_parent;
+    void *obj = NULL;
+    
+    // base on linklist
+    struct _deque_node * node = (struct _deque_node *)iter->_cur_node;
+    if(node != NULL)
+    {
+        obj = node->obj;
+        iter->_cur_node = node->next;
+    }
+    self->_iter._cur += 1;
+    return obj;
+}
+
 static bool deque_init(struct _deque* self, uint32_t obj_size)
 {
-    // attribute
+    assert(self != NULL);
+    if(obj_size == 0)
+    {
+        return false;
+    }
+    // -------------------- private -------------------- 
     self->_obj_size = obj_size;
     self->_size = 0;
     // self->_capacity = 64;
     // self->_ratio = 2;
 
-    // function
-    self->back = deque_back;
-    self->clear = deque_clear;
-    self->destory = deque_destory;
-    self->empty = deque_empty;
-    self->erase = deque_erase;
-    self->front = deque_front;
-    self->get = deque_get;
-    self->index = deque_index;
-    self->insert = deque_insert;
-    self->pop_back = deque_pop_back;
-    self->pop_front = deque_pop_front;
-    self->push_back = deque_push_back;
-    self->push_front = deque_push_front;
-    self->print = deque_print;
-    self->remove = deque_remove;
-    self->set = deque_set;
-    self->size = deque_size;
-
     self->_head = NULL;
     self->_tail = NULL;
+
+    self->_iter.hasnext = deque_iter_hasnext;
+    self->_iter.next = deque_iter_next;
+
+    self->_destory = deque_destory;
+
+    // -------------------- public -------------------- 
+    // kernel
+    self->push_back = deque_push_back;
+    self->push_front = deque_push_front;
+    self->pop_back = deque_pop_back;
+    self->pop_front = deque_pop_front;
+    self->back = deque_back;
+    self->front = deque_front;
+    self->empty = deque_empty;
+
+    // base
+    self->clear = deque_clear;
+    self->size = deque_size;
+
+    // iter
+    self->iter = deque_iter;
+
+    // others
+    self->insert = deque_insert;
+    self->erase = deque_erase;
+    
+    self->index = deque_index;
+    self->remove = deque_remove;
+
+    self->set = deque_set;
+    self->get = deque_get;
+
+    // -------------------- debug -------------------- 
+    self->print = deque_print;
     
     return true;
 }
@@ -332,13 +396,15 @@ deque_t deque_new(uint32_t obj_size)
 {
     struct _deque* deque = NULL;
     deque = (struct _deque*)malloc(sizeof(struct _deque));
-    if(deque != NULL)
+    if(deque == NULL)
     {
-        if(deque_init(deque, obj_size) != true)
-        {
-            free(deque);
-            deque = NULL;
-        }
+        return NULL;
+    }
+
+    if(deque_init(deque, obj_size) != true)
+    {
+        free(deque);
+        return NULL;
     }
     return deque;
 }
@@ -347,7 +413,7 @@ void deque_free(deque_t *deque)
 {
     if(*deque != NULL)
     {
-        (*deque)->destory(*deque);
+        (*deque)->_destory(*deque);
         free(*deque);
     }
     *deque = NULL;
