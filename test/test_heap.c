@@ -98,6 +98,10 @@ static void test_heap_struct(void)
     heap->print_obj = print_struct;
     heap->compare = compare_struct;
 
+    // default: maxheap
+    // maxheap or minheap
+    heap->setmin(heap, true);
+
     for (i = 0; i < len; i++)
     {
         temp = data[i];
@@ -107,7 +111,7 @@ static void test_heap_struct(void)
 
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-    // debug ：Why is it occasionally incorrect here?
+    
     TEST_ASSERT_EQUAL_INT(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->id, temp.id);
     TEST_ASSERT_EQUAL_STRING(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->name, temp.name);
 
