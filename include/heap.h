@@ -44,15 +44,11 @@ struct _heap
     uint32_t(*size)(struct _heap* self);
     bool (*clear)(struct _heap* self);
     
-    /**
-     * @brief obj compare with obj2
-     *
-     * @return
-     *      obj < obj2 return -1
-     *      obj == obj2 return 0
-     *      obj > obj2 return 1
-     */
-    int (*compare)(void* obj, void* obj2);
+    // config
+    // !!! you have to implement this function
+    compare_fun_t compare;
+    // register function
+    // void (*register_compare)(struct _heap* self, compare_fun_t cmp_fun);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _heap* self);

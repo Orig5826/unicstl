@@ -70,7 +70,14 @@ static void heap_swap(struct _heap* self, int i, int j)
 static void heap_fixed_up(struct _heap* self, int i)
 {
     assert(self != NULL);
+    assert(self->compare != NULL);
     int p = 0;
+
+    if(self->compare == NULL)
+    {
+        return ;
+    }
+    
     if(self->_type == HEAP_MAX)
     {
         while(1)
@@ -121,6 +128,11 @@ static void heap_fixed_down(struct _heap* self, int i)
     assert(self != NULL);
     int l = 0,r = 0;
     int max = 0, min = 0;
+
+    if(self->compare == NULL)
+    {
+        return;
+    }
 
     if(self->_type == HEAP_MAX)
     {
@@ -265,6 +277,9 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     // base
     self->size = heap_size;
     self->clear = heap_clear;
+
+    // config
+    self->compare = NULL;
     
     // -------------------- debug -------------------- 
     self->print = heap_print;

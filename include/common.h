@@ -37,6 +37,6 @@
  *      obj == obj2 return 0
  *      obj > obj2 return 1
  */
-typedef int (*cmp_fun_t)(void* obj, void* obj2);
+typedef int (*compare_fun_t)(void* obj, void* obj2);
 
 #endif // _COMMON_H_
