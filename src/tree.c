@@ -1744,6 +1744,7 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
 
+    // -------------------- private -------------------- 
     self->_obj_size = obj_size;
     self->_size = 0;
     // self->_capacity = 64;
@@ -1752,48 +1753,47 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     self->_right_priority = false;
     self->_order = ORDER_PRE;
 
-    self->insert = tree_avl_insert;
-    self->delete = tree_avl_delete;
-    self->clear = tree_clear;
-    self->empty = tree_empty;
-    self->size = tree_size;
-    self->destory = tree_destory;
-    self->preorder = tree_preorder;
-    self->inorder = tree_inorder;
-    self->postorder = tree_postorder;
-    self->breadth = tree_breadth;
-    self->order = tree_order;
-    self->find = tree_find;
-    self->height = tree_height;
-    self->rebalance = tree_avl_rebalance;
-    self->find_max = tree_find_max;
-    self->find_min = tree_find_min;
-    self->max = tree_max;
-    self->min = tree_min;
-
     self->_root = NULL;
 
     self->stack = stack_new(sizeof(struct _tree_node*));
     if (self->stack == NULL)
     {
-        goto done;
+        return false;
     }
     self->queue = queue_new(sizeof(struct _tree_node*));
     if (self->queue == NULL)
     {
-        goto done1;
+        stack_free(&self->stack);
+        return false;
     }
     self->cur_node = NULL;
 
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
+
+    self->destory = tree_destory;
+
+    // -------------------- public --------------------
+    // kernel
+    self->insert = tree_avl_insert;
+    self->delete = tree_avl_delete;
+    self->rebalance = tree_avl_rebalance;
+    self->height = tree_height;
+
+    // base
+    self->clear = tree_clear;
+    self->empty = tree_empty;
+    self->size = tree_size;
+    
+    // iter
     self->iter = tree_iter;
 
-    return true;
-done1:
-    stack_free(&self->stack);
-done:
-    return false;
+    // others
+    self->find = tree_find;
+    self->find_max = tree_find_max;
+    self->find_min = tree_find_min;
+    self->max = tree_max;
+    self->min = tree_min;
 
     return true;
 }
@@ -1801,57 +1801,59 @@ done:
 static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
 {
     assert(self != NULL);
+
+    // -------------------- private -------------------- 
     self->_obj_size = obj_size;
     self->_size = 0;
     // self->_capacity = 64;
     // self->_ratio = 2;
 
+    self->_root = NULL;
+
     self->_right_priority = false;
     self->_order = ORDER_PRE;
-
-    self->insert = tree_rb_insert;
-    self->delete = tree_rb_delete;
-    self->rebalance = tree_rb_rebalance;
-
-    self->clear = tree_clear;
-    self->empty = tree_empty;
-    self->size = tree_size;
-    self->destory = tree_destory;
-    self->preorder = tree_preorder;
-    self->inorder = tree_inorder;
-    self->postorder = tree_postorder;
-    self->breadth = tree_breadth;
-    self->order = tree_order;
-    self->find = tree_find;
-    self->height = tree_height;
-    self->find_max = tree_find_max;
-    self->find_min = tree_find_min;
-    self->max = tree_max;
-    self->min = tree_min;
-
-    self->_root = NULL;
 
     self->stack = stack_new(sizeof(struct _tree_node*));
     if (self->stack == NULL)
     {
-        goto done;
+        return false;
     }
     self->queue = queue_new(sizeof(struct _tree_node*));
     if (self->queue == NULL)
     {
-        goto done1;
+        stack_free(&self->stack);
+        return false;
     }
     self->cur_node = NULL;
 
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
+
+    self->destory = tree_destory;
+
+    // -------------------- public --------------------
+    // kernel
+    self->insert = tree_rb_insert;
+    self->delete = tree_rb_delete;
+    self->rebalance = tree_rb_rebalance;
+    self->height = tree_height;
+
+    // base
+    self->clear = tree_clear;
+    self->empty = tree_empty;
+    self->size = tree_size;
+
+    // iter
     self->iter = tree_iter;
 
+    // others
+    self->find = tree_find;
+    self->find_max = tree_find_max;
+    self->find_min = tree_find_min;
+    self->max = tree_max;
+    self->min = tree_min;
+
     return true;
-done1:
-    stack_free(&self->stack);
-done:
-    return false;
 }
 
 tree_t tree_avl_new(uint32_t obj_size)
@@ -1870,6 +1872,7 @@ tree_t tree_avl_new(uint32_t obj_size)
     }
     return tree;
 }
+
 tree_t tree_rb_new(uint32_t obj_size)
 {
     tree_t tree = NULL;

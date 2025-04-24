@@ -109,15 +109,6 @@ struct _tree
     void (*destory)(struct _tree* self);
 
     // -------------------- debug -------------------- 
-    // traversal depth
-    void (*order)(struct _tree* self, bool right_priority);
-
-    void (*preorder)(struct _tree* self, struct _tree_node* root);
-    void (*inorder)(struct _tree* self, struct _tree_node* root);
-    void (*postorder)(struct _tree* self, struct _tree_node* root);
-    // traversal breadth
-    void (*breadth)(struct _tree* self, struct _tree_node* root);
-
     void (*print_obj)(void* obj);
 };
 typedef struct _tree* tree_t;
