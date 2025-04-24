@@ -48,18 +48,19 @@
 ## 规范
 ### 版本说明
 
-| 版本 | 范围 | 更新说明 |
-|:----:|:----:|:----:|
-| 主版本号 | 0 ~ 99 | 代码框架大改，完全不兼容旧版 |
-| 次版本号 | 0 ~ 99 | 代码框架尽量兼容旧版，增信大功能、修复重大bug等 |
-| 小版本号 | 0 ~ 99 | 代码框架兼容旧版，新增小功能、修复bug等 |
+| 命名 |版本说明 | 范围 | 更新说明 |
+|:----: |:----:|:----:|:----:|
+| `VERSION_MAJOR` | 主版本号 | 0 ~ 99 | 代码框架大改，完全不兼容旧版 |
+| `VERSION_MINOR` | 次版本号 | 0 ~ 99 | 代码框架尽量兼容旧版，增信大功能、修复重大bug等 |
+| `VERSION_MICRO` | 小版本号 | 0 ~ 99 | 代码框架兼容旧版，新增小功能、修复bug等 |
 
 举例说明：
 ```c
 // 若 major > 0 ，则代表正式发布版本
-#define VER_MAJOR 1
-#define VER_MINOR 2
-#define VER_MICRO 5
+#define UNICSTL_VERSION_MAJOR    1
+#define UNICSTL_VERSION_MINOR    2
+#define UNICSTL_VERSION_MICRO    5
+#define UNICSTL_VERSION          ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
 ```
 
 ### 工程命名

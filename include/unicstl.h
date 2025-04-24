@@ -11,6 +11,11 @@
 #ifndef _UNICSTL_H_
 #define _UNICSTL_H_
 
+#define UNICSTL_VERSION_MAJOR    0
+#define UNICSTL_VERSION_MINOR    0
+#define UNICSTL_VERSION_MICRO    1
+#define UNICSTL_VERSION          ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
+
 #include "common.h"
 
 #include "list.h"
