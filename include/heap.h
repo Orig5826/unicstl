@@ -15,8 +15,8 @@
 
 typedef enum
 {
-    MIN_HEAP = 0, 
-    MAX_HEAP = 1,
+    HEAP_MIN = 0, 
+    HEAP_MAX = 1,
 }heap_type;
 
 struct _heap
@@ -30,9 +30,8 @@ struct _heap
     uint32_t _ratio;
 
     heap_type _type;
-    bool _min_flag;
 
-    void (*destory)(struct _heap* self);
+    void (*_destory)(struct _heap* self);
 
     // -------------------- public -------------------- 
     // kernel
@@ -40,9 +39,6 @@ struct _heap
     bool (*push)(struct _heap* self, void* obj);
     bool (*pop)(struct _heap* self, void* obj);
     bool (*empty)(struct _heap* self);
-
-    // default: max heap
-    void (*setmin)(struct _heap* self, bool min_flag);
 
     // base
     uint32_t(*size)(struct _heap* self);
@@ -57,7 +53,7 @@ struct _heap
      *      obj > obj2 return 1
      */
     int (*compare)(void* obj, void* obj2);
-    
+
     // -------------------- debug -------------------- 
     void (*print)(struct _heap* self);
     void (*print_obj)(void* obj);

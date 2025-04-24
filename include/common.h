@@ -29,4 +29,14 @@
 #include "iterator.h"
 #endif
 
+/**
+ * @brief obj compare with obj2
+ *
+ * @return
+ *      obj < obj2 return -1
+ *      obj == obj2 return 0
+ *      obj > obj2 return 1
+ */
+typedef int (*cmp_fun_t)(void* obj, void* obj2);
+
 #endif // _COMMON_H_

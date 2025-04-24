@@ -71,7 +71,7 @@ static void heap_fixed_up(struct _heap* self, int i)
 {
     assert(self != NULL);
     int p = 0;
-    if(self->_min_flag != true)
+    if(self->_type == HEAP_MAX)
     {
         while(1)
         {
@@ -85,7 +85,7 @@ static void heap_fixed_up(struct _heap* self, int i)
             i = p;
         }
     }
-    else
+    else /* if(self->_type == HEAP_MIN) */
     {
         while(1)
         {
@@ -122,7 +122,7 @@ static void heap_fixed_down(struct _heap* self, int i)
     int l = 0,r = 0;
     int max = 0, min = 0;
 
-    if(self->_min_flag != true)
+    if(self->_type == HEAP_MAX)
     {
         while(1)
         {
@@ -147,7 +147,7 @@ static void heap_fixed_down(struct _heap* self, int i)
             i = max;
         }
     }
-    else
+    else /* if(self->_type == HEAP_MIN) */
     {
         while(1)
         {
@@ -190,12 +190,6 @@ static bool heap_pop(struct _heap* self, void* obj)
     self->_size--;
     heap_fixed_down(self, 0);
     return true;
-}
-
-static void heap_setmin(struct _heap* self, bool min_flag)
-{
-    assert(self != NULL);
-    self->_min_flag = min_flag;
 }
 
 static uint32_t heap_size(struct _heap* self)
@@ -259,8 +253,8 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
         return false;
     }
 
-    self->destory = heap_destory;
-    
+    self->_destory = heap_destory;
+
     // -------------------- public -------------------- 
     // kernel
     self->peek = heap_peek;
@@ -273,7 +267,6 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     self->clear = heap_clear;
     
     // -------------------- debug -------------------- 
-    self->setmin = heap_setmin;
     self->print = heap_print;
     return true;
 }
@@ -293,7 +286,7 @@ heap_t heap_max_new2(uint32_t obj_size, uint32_t capacity)
         return NULL;
     }
 
-    heap->_min_flag = false;
+    heap->_type = HEAP_MAX;
     return heap;
 }
 
@@ -312,7 +305,7 @@ heap_t heap_min_new2(uint32_t obj_size, uint32_t capacity)
         return NULL;
     }
 
-    heap->_min_flag = true;
+    heap->_type = HEAP_MIN;
     return heap;
 }
 
@@ -320,7 +313,7 @@ void heap_free(heap_t* heap)
 {
     if(*heap != NULL)
     {
-        (*heap)->destory(*heap);
+        (*heap)->_destory(*heap);
         free(*heap);
     }
     *heap = NULL;
