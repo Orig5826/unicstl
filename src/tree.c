@@ -1966,6 +1966,7 @@ iterator_t tree_iter(struct _tree* self, enum _order order)
     case ORDER_RIGHT_BREADTH:
     {
         // pass
+        self->queue->push(self->queue, &self->_root);
     }break;
     default:
     {

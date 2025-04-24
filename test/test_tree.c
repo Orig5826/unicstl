@@ -952,13 +952,13 @@ static void test_avltree_iter_2(void)
     }
     printf("\n");
 
-    // iter = tree->iter(tree, ORDER_LEFT_BREADTH);
-    // while(iter->hasnext(iter))
-    // {
-    //     temp = *(int *)iter->next(iter);
-    //     tree->print_obj(&temp);
-    // }
-    // printf("\n");
+    iter = tree->iter(tree, ORDER_LEFT_BREADTH);
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        tree->print_obj(&temp);
+    }
+    printf("\n");
 
     iter = tree->iter(tree, ORDER_RIGHT_PRE);
     while(iter->hasnext(iter))
@@ -984,13 +984,13 @@ static void test_avltree_iter_2(void)
     }
     printf("\n");
 
-    // iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
-    // while(iter->hasnext(iter))
-    // {
-    //     temp = *(int *)iter->next(iter);
-    //     tree->print_obj(&temp);
-    // }
-    // printf("\n");
+    iter = tree->iter(tree, ORDER_RIGHT_BREADTH);
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        tree->print_obj(&temp);
+    }
+    printf("\n");
 
     TEST_ASSERT_TRUE(tree->clear(tree));
     tree_free(&tree);
