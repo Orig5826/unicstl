@@ -263,10 +263,61 @@ static void test_deque_struct(void)
     TEST_ASSERT_NULL(deque);
 }
 
+
+static void test_deque_iter(void)
+{
+    uint32_t i = 0;
+    int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int temp = 0;
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+
+    deque_t deque = deque_new(sizeof(int));
+    TEST_ASSERT_NOT_NULL(deque);
+    deque->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
+
+        TEST_ASSERT_TRUE(deque->front(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+        TEST_ASSERT_TRUE(deque->back(deque, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
+    }
+
+    iterator_t iter = deque->iter(deque);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        // printf("%d ", temp);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+
+    iter = deque->iter(deque);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        // printf("%d ", temp);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+
+    deque_free(&deque);
+    TEST_ASSERT_NULL(deque);
+}
+
 void test_deque(void)
 {
     UnitySetTestFile(__FILE__);
 
     RUN_TEST(test_deque_num);
     RUN_TEST(test_deque_struct);
+
+    RUN_TEST(test_deque_iter);
 }
