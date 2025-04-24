@@ -33,6 +33,8 @@ struct _queue
     uint32_t _capacity;
     uint32_t _ratio;
 
+    struct _iterator _iter;
+
     void (*_destory)(struct _queue* self);
 
     // -------------------- public -------------------- 
@@ -49,6 +51,9 @@ struct _queue
     uint32_t (*capacity)(struct _queue* self);
     bool (*clear)(struct _queue* self);
 
+    // iter
+    iterator_t (*iter)(struct _queue* self);
+    
     // -------------------- debug -------------------- 
     void (*print)(struct _queue* self);
     void (*print_obj)(void* obj);

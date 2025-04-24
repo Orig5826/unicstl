@@ -306,6 +306,59 @@ static void queue2_print(struct _queue* self)
     }
 }
 
+static iterator_t queue_iter(struct _queue* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_cur = 0;
+    iter->_cur_node = self->_front;
+    return iter;
+}
+
+static bool queue_iter_hasnext(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    queue_t self = (queue_t)iter->_parent;
+    if(iter->_cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+static const void* queue_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    queue_t self = (queue_t)iter->_parent;
+    void *obj = NULL;
+
+    if(self->_front->obj == NULL)
+    {
+        // base on linklist
+        struct _queue_node * node = (struct _queue_node *)iter->_cur_node;
+        if(node != NULL)
+        {
+            obj = node->obj;
+            iter->_cur_node = node->next;
+        }
+    }
+    else
+    {
+        // base on array
+        uint32_t index = self->size(self) - 1 - self->_iter._cur;
+        obj = self->_front->obj + self->_obj_size * index;
+    }
+    
+    self->_iter._cur += 1;
+    return obj;
+}
+
 static bool queue_init(struct _queue * self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -315,32 +368,40 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
         return false;
     }
 
-    // attribute init
+    // -------------------- private -------------------- 
     self->_size = 0;
     self->_obj_size = obj_size;
     self->_capacity = UINT32_MAX;
     self->_ratio = 1;
 
-    // function init
-    self->push = queue_push;
-    self->pop = queue_pop;
-
-    self->back = queue_back;
-    self->front = queue_front;
-
-    self->clear = queue_clear;
-    self->empty = queue_empty;
-    self->full = queue_full;
-    self->size = queue_size;
-    self->capacity = queue_capacity;
-
-    self->_destory = queue_destory;
-    self->print = queue_print;
-    
-    // init front & back
+    // front & back pointer init
     self->_front = NULL;
     self->_back = NULL;
 
+    // base
+    self->_destory = queue_destory;
+
+    // iter
+    self->_iter.hasnext = queue_iter_hasnext;
+    self->_iter.next = queue_iter_next;
+
+    // -------------------- public -------------------- 
+    // kernel
+    self->push = queue_push;
+    self->pop = queue_pop;
+    self->back = queue_back;
+    self->front = queue_front;
+    self->empty = queue_empty;
+    self->full = queue_full;
+
+    // base
+    self->size = queue_size;
+    self->capacity = queue_capacity;
+    self->clear = queue_clear;
+
+    // -------------------- debug -------------------- 
+    self->print = queue_print;
+    
     return true;
 }
 
@@ -354,51 +415,59 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
         return false;
     }
 
-    // attribute init
+     // -------------------- private -------------------- 
     self->_size = 0;
     self->_obj_size = obj_size;
     self->_capacity = capacity;
     self->_ratio = 2;
 
-    // function init
-    self->push = queue2_push;
-    self->pop = queue2_pop;
-
-    self->back = queue2_back;
-    self->front = queue2_front;
-
-    self->clear = queue2_clear;
-    self->empty = queue_empty;
-    self->full = queue_full;
-    self->size = queue_size;
-    self->capacity = queue_capacity;
-
-    self->_destory = queue2_destory;
-    self->print = queue2_print;
-
-    // init front & back
     self->_front = (struct _queue_node *)malloc(sizeof(struct _queue_node));
     if(self->_front == NULL)
     {
-        goto done;
+        return false;
     }
     self->_back = self->_front;
 
     // use self->_front->obj as obj_array
+    // 
     // self->_front->obj = calloc(self->_capacity, self->_obj_size);
     self->_front->obj = malloc(self->_capacity * self->_obj_size);
     if(self->_front->obj == NULL)
     {
-        goto done1;
+        free(self->_front);
+        return false;
     }
     self->_index_front = 0;
     self->_index_back = 0;
 
+    // 
+    self->_destory = queue2_destory;
+
+    // iter
+    self->_iter.hasnext = queue_iter_hasnext;
+    self->_iter.next = queue_iter_next;
+
+    // -------------------- public -------------------- 
+    // kernel
+    self->push = queue2_push;
+    self->pop = queue2_pop;
+    self->back = queue2_back;
+    self->front = queue2_front;
+    self->empty = queue_empty;
+    self->full = queue_full;
+
+    // base
+    self->size = queue_size;
+    self->capacity = queue_capacity;
+    self->clear = queue2_clear;
+
+    // iter
+    self->iter = queue_iter;
+
+    // -------------------- debug -------------------- 
+    self->print = queue2_print;
+
     return true;
-done1:
-    free(self->_front);
-done:
-    return false;
 }
 
 /**
