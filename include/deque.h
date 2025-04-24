@@ -63,8 +63,8 @@ struct _deque
     bool (*set)(struct _deque* self, int index, void* obj);
 
     // compare
-    int (*cmp)(void* obj, void* obj2);
-    bool (*sort)(struct _deque* self, uint8_t reserve);
+    // int (*compare)(void* obj, void* obj2);
+    // bool (*sort)(struct _deque* self, uint8_t reserve);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _deque* self);

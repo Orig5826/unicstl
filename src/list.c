@@ -215,42 +215,51 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
         return false;
     }
 
-    // 1. set attr
+    // -------------------- private -------------------- 
     list->_obj_size = obj_size;
     list->_size = 0;
     list->_capacity = capacity;
     list->_ratio = 2;
     list->_cur = 0;
 
-    // 2. set function
-    // kernel
-    list->append = list_append;
-    list->get = list_get;
-    list->clear = list_clear;
-    list->destory = list_destory;
-    list->empty = list_empty;
-    list->index = list_index;
-    list->insert = list_insert;
-    list->pop = list_pop;
-    list->print = list_print;
-    list->remove = list_remove;
-    list->reverse = list_reverse;
-    list->set = list_set;
-    list->size = list_size;
-    list->sort = list_sort;
-
-    // iterator 
-    list->iter = list_iter;
-    list->_iter.next = list_iter_next;
-    list->_iter.hasnext = list_iter_hasnext;
-
-    // 3. set array
-    // list->obj = (void*)calloc(list->_capacity, list->_obj_size);
     list->obj = (void*)malloc(list->_capacity * list->_obj_size);
     if (list->obj == NULL)
     {
         return false;
     }
+
+    list->_iter.next = list_iter_next;
+    list->_iter.hasnext = list_iter_hasnext;
+
+    list->_destory = list_destory;
+
+    // -------------------- public -------------------- 
+    // kernel
+    list->append = list_append;
+    list->insert = list_insert;
+    list->pop = list_pop;
+
+    list->empty = list_empty;
+
+    // base
+    list->clear = list_clear;
+    list->size = list_size;
+
+    // iter
+    list->iter = list_iter;
+
+    // others
+    list->index = list_index;
+    list->remove = list_remove;
+    list->get = list_get;
+    list->set = list_set;
+
+    // list->reverse = list_reverse;
+    // list->sort = list_sort;
+
+    // -------------------- debug -------------------- 
+    list->print = list_print;
+    
     return true;
 }
 
@@ -276,9 +285,9 @@ void list_free(list_t* list)
     assert(list != NULL);
     if(list != NULL && *list != NULL)
     {
-        if((*list)->destory != NULL)
+        if((*list)->_destory != NULL)
         {
-            (*list)->destory(*list);
+            (*list)->_destory(*list);
         }
         free(*list);
         *list = NULL;

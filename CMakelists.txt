@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.29)
 
 # 0. 项目信息
-project(demo VERSION 0.0.01)
+project(demo VERSION 0.0.02)
 
 # 2. 支持GDB
 set(CMAKE_BUILD_TYPE "Debug")

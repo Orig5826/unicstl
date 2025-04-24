@@ -1463,7 +1463,7 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
 
-    self->destory = tree_destory;
+    self->_destory = tree_destory;
 
     // -------------------- public --------------------
     // kernel
@@ -1517,7 +1517,7 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
 
-    self->destory = tree_destory;
+    self->_destory = tree_destory;
 
     // -------------------- public --------------------
     // kernel
@@ -1579,7 +1579,7 @@ void tree_free(tree_t* tree)
 {
     if (*tree != NULL)
     {
-        (*tree)->destory(*tree);
+        (*tree)->_destory(*tree);
         free(*tree);
     }
     *tree = NULL;

@@ -49,11 +49,8 @@ struct _heap
     iterator_t (*iter)(struct _heap* self);
     
     // config
-    // !!! you have to implement this function
-    compare_fun_t compare;
-    // register function
-    // void (*register_compare)(struct _heap* self, compare_fun_t cmp_fun);
-
+    compare_fun_t compare;      // !!! you have to implement this function
+    
     // -------------------- debug -------------------- 
     void (*print)(struct _heap* self);
     void (*print_obj)(void* obj);

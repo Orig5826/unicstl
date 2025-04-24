@@ -16,6 +16,7 @@
 
 struct _list
 {
+    // -------------------- private -------------------- 
     void * obj;
 
     uint32_t _obj_size;
@@ -26,6 +27,9 @@ struct _list
 
     struct _iterator _iter;
 
+    void (*_destory)(struct _list* self);
+
+    // -------------------- public -------------------- 
     // kernel
     bool (*append)(struct _list* self, void* obj);                      // Append object to the end of the list.
     bool (*insert)(struct _list* self, int index, void* obj);           // Insert object before index.
@@ -37,30 +41,25 @@ struct _list
     bool (*get)(struct _list* self, int index, void* obj);
     bool (*set)(struct _list* self, int index, void* obj);
 
-    // iter
-    iterator_t (*iter)(struct _list* self);
-
     // base
     uint32_t(*size)(struct _list* self);
     bool (*empty)(struct _list* self);
-
-    // clear and free node
     bool (*clear)(struct _list* self);
-    void (*destory)(struct _list* self);
 
+    // iter
+    iterator_t (*iter)(struct _list* self);
 
     // sort
-    bool (*reverse)(struct _list* self);        // Reverse *IN PLACE*.
-
+    // bool (*reverse)(struct _list* self);        // Reverse *IN PLACE*.
     /**
         Sort the list in ascending order and return false.
         The sort is in-place (i.e. the list itself is modified) and stable (i.e. the
         order of two equal elements is maintained).
         The reverse flag can be set to sort in descending order.
     */
-    bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
+    // bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
 
-    // print
+    // -------------------- debug -------------------- 
     void (*print)(struct _list* self);
     void (*print_obj)(void* obj);
 };

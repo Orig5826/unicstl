@@ -71,7 +71,7 @@ struct _tree
 
     struct _iterator _iter;
 
-    void (*destory)(struct _tree* self);
+    void (*_destory)(struct _tree* self);
 
     // -------------------- public -------------------- 
     // kernel
@@ -107,4 +107,3 @@ tree_t tree_rb_new(uint32_t obj_size);
 void tree_free(tree_t* tree);
 
 #endif // _TREE_H_
-
