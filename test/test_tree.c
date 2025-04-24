@@ -103,7 +103,7 @@ static void test_avltree_iter(void)
     {
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
-        
+
         iter = tree->iter(tree, ORDER_LEFT_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
