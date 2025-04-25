@@ -188,12 +188,70 @@ static bool graph_dfs(struct _graph *self, uint32_t idx)
 
 }
 
-static void graph_init2(struct _graph *self)
+static bool graph_init2(struct _graph *self, uint32_t obj_size, uint32_t capacity)
 {
-    if(self == NULL || self->_head == NULL)
+    assert(self != NULL);
+    if(self == NULL)
     {
-        return;
+        return false;
     }
+    uint32_t edges = 0;
+
+    // -------------------- private -------------------- 
+    self->_size = 0;
+    self->_obj_size = obj_size;
+    self->_capacity = capacity;
+    self->_ratio = 1;
+
+    self->_head = (struct _graph_node *)malloc(sizeof(struct _graph_node));
+    if(self->_head == NULL)
+    {
+        goto done;
+    }
+
+    self->_head->obj = (void *)malloc(self->_obj_size);
+    if(self->_head->obj == NULL)
+    {
+        goto done1;
+    }
+
+    self->_head->edge = (uint32_t **)malloc(self->_capacity * sizeof(uint32_t *));
+    if(self->_head->edge == NULL)
+    {
+        goto done2;
+    }
+
+    uint32_t i = 0;
+    for(i = 0; i < self->_capacity; i++)
+    {
+        self->_head->edge[i] = (uint32_t *)malloc(self->_capacity * sizeof(uint32_t));
+        if(self->_head->edge[i] == NULL)
+        {
+            edges += 1;
+            goto done3;
+        }
+    }
+
+    self->_head->visited = (uint8_t *)calloc(1, self->_capacity * sizeof(uint8_t));
+    if(self->_head->visited == NULL)
+    {
+        goto done4;
+    }
+
+    self->_destory = graph_destory;
+
+    // -------------------- public -------------------- 
+    self->size = graph_size;
+    self->capacity = graph_capacity;
+    self->clear = graph_clear;
+
+    self->from_matrix = graph_from_matrix;
+    self->bfs = graph_bfs;
+    self->dfs = graph_dfs;
+
+    // -------------------- debug -------------------- 
+    self->print_obj = NULL;
+    self->print = graph_print;
 
     for(uint32_t i = 0; i < self->_capacity; i++)
     {
@@ -203,94 +261,38 @@ static void graph_init2(struct _graph *self)
             self->_head->edge[i][j] = 0;
         }
     }
+
+    return true;
+done4:
+done3:
+    for(uint32_t j = 0; j < edges; j++)
+    {
+        free(self->_head->edge[j]);
+    }
+    free(self->_head->edge);
+done2:
+    free(self->_head->obj);
+done1:
+    free(self->_head);
+done:
+    return false;
 }
 
 graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
 {
-    if(obj_size == 0 || capacity == 0)
+    graph_t graph = NULL;
+    graph = malloc(sizeof(struct _graph));
+    if(graph == NULL)
     {
         return NULL;
     }
 
-    graph_t graph = malloc(sizeof(struct _graph));
-    if(graph == NULL)
+    if(graph_init2(graph, obj_size, capacity) != true)
     {
-        goto done;
+        free(graph);
+        return NULL;
     }
-
-    graph->_size = 0;
-    graph->_obj_size = obj_size;
-    graph->_capacity = capacity;
-    graph->_ratio = 1;
-
-    graph->init = graph_init2;
-    graph->destory = graph_destory;
-
-    graph->size = graph_size;
-    graph->capacity = graph_capacity;
-    graph->clear = graph_clear;
-
-    graph->from_matrix = graph_from_matrix;
-    graph->bfs = graph_bfs;
-    graph->dfs = graph_dfs;
-
-    graph->print_obj = NULL;
-    graph->print = graph_print;
-
-    graph->_head = (struct _graph_node *)malloc(sizeof(struct _graph_node));
-    if(graph->_head == NULL)
-    {
-        goto done1;
-    }
-
-    graph->_head->obj = (void *)malloc(graph->_obj_size);
-    if(graph->_head->obj == NULL)
-    {
-        goto done2;
-    }
-
-    graph->_head->edge = (uint32_t **)malloc(graph->_capacity * sizeof(uint32_t *));
-    if(graph->_head->edge == NULL)
-    {
-        goto done3;
-    }
-
-    uint32_t i = 0;
-    for(i = 0; i < graph->_capacity; i++)
-    {
-        graph->_head->edge[i] = (uint32_t *)malloc(graph->_capacity * sizeof(uint32_t));
-        if(graph->_head->edge[i] == NULL)
-        {
-            goto done4;
-        }
-    }
-
-    graph->_head->visited = (uint8_t *)calloc(1, graph->_capacity * sizeof(uint8_t));
-    if(graph->_head->visited == NULL)
-    {
-        goto done5;
-    }
-
-    // init graph
-    graph->init(graph);
-
     return graph;
-done5:
-
-done4:
-    for(uint32_t j = 0; j < i; j++)
-    {
-        free(graph->_head->edge[j]);
-    }
-    free(graph->_head->edge);
-done3:
-    free(graph->_head->obj);
-done2:
-    free(graph->_head);
-done1:
-    free(graph);
-done:
-    return NULL;
 }
 
 void graph_free(graph_t *graph)
@@ -300,7 +302,7 @@ void graph_free(graph_t *graph)
         return;
     }
 
-    (*graph)->destory(*graph);
+    (*graph)->_destory(*graph);
     free(*graph);
     *graph = NULL;
 }

@@ -20,6 +20,7 @@ struct _graph_node {
 };
 
 struct _graph {
+    // -------------------- private -------------------- 
     struct _graph_node *_head;
     uint32_t **edges;
 
@@ -28,29 +29,29 @@ struct _graph {
     uint32_t _capacity;
     uint32_t _ratio;
 
-    // init
-    void (*init)(struct _graph *self);
-    bool (*from_matrix)(struct _graph *self, void *obj, uint32_t *edges, uint32_t size);
+    void (*_destory)(struct _graph *self);
 
+    // -------------------- public -------------------- 
     // kernel
     bool (*add)(struct _graph *self, void *obj);
     bool (*get)(struct _graph *self, uint32_t idx, void *obj);
     bool (*remove)(struct _graph *self, uint32_t idx);
-    
-    // base
-    uint32_t (*size)(struct _graph *self);
-    uint32_t (*capacity)(struct _graph *self);
 
-    bool (*empty)(struct _graph *self);
-    bool (*full)(struct _graph *self);
-
+    // traverse
     bool (*dfs)(struct _graph *self, uint32_t idx);
     bool (*bfs)(struct _graph *self, uint32_t idx);
 
-    // 
+    // base
+    uint32_t (*size)(struct _graph *self);
+    uint32_t (*capacity)(struct _graph *self);
     bool (*clear)(struct _graph *self);
-    void (*destory)(struct _graph *self);
+    bool (*empty)(struct _graph *self);
+    bool (*full)(struct _graph *self);
 
+    // others
+    bool (*from_matrix)(struct _graph *self, void *obj, uint32_t *edges, uint32_t size);
+
+    // -------------------- debug -------------------- 
     void (*print)(struct _graph *self);
     void (*print_obj)(void *obj);
 };
