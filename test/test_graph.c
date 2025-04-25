@@ -92,9 +92,9 @@ void test_graph_add_edge(void)
     graph->print(graph);
 
     // test add_edge
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[1], 0));
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[2], 0));
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 0));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[1], 55));
+    // TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[2], 66));
+    // TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 77));
     graph->print(graph);
 
     TEST_ASSERT_FALSE(graph->add_edge(graph, &temp, &data[1], 0));

@@ -625,56 +625,42 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
         return false;
     }
 
-    // add edge
+    // from_node add edge
+    struct _graph_edge* new_edge = graph_edge_new();
+    if (new_edge == NULL)
+    {
+        return false;
+    }
+    new_edge->weight = weight;
+    new_edge->target = to_node;
+
     if (from_node->edge == NULL)
     {
-        struct _graph_edge* new_edge = graph_edge_new();
-        if (new_edge == NULL)
-        {
-            return false;
-        }
-        new_edge->weight = weight;
-        new_edge->target = to_node;
-
         from_node->edge = new_edge;
     }
     else
     {
-        struct _graph_edge* new_edge = graph_edge_new();
-        if (new_edge == NULL)
-        {
-            return false;
-        }
-        new_edge->weight = weight;
-        new_edge->target = to_node;
-
         new_edge->next = from_node->edge->next;
         from_node->edge->next = new_edge;
     }
 
     // if graph is undirected
+    struct _graph_edge* new_edge2 = graph_edge_new();
+    if (new_edge2 == NULL)
+    {
+        return false;
+    }
+    new_edge2->weight = weight;
+    new_edge2->target = from_node;
+
     if (to_node->edge == NULL)
     {
-        to_node->edge = graph_edge_new();
-        if (to_node->edge == NULL)
-        {
-            return false;
-        }
-        to_node->edge->weight = weight;
-        to_node->edge->target = from_node;
+        to_node->edge = new_edge2;
     }
     else
     {
-        struct _graph_edge* new_edge = graph_edge_new();
-        if (new_edge == NULL)
-        {
-            return false;
-        }
-        new_edge->weight = weight;
-        new_edge->target = from_node;
-
-        new_edge->next = to_node->edge->next;
-        to_node->edge->next = new_edge;
+        new_edge2->next = to_node->edge->next;
+        to_node->edge->next = new_edge2;
     }
 
     return true;
