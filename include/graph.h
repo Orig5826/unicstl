@@ -15,14 +15,15 @@
 
 struct _graph_edge
 {
-    struct _graph_edge* _next;
     uint32_t weight;
+    struct _graph_edge* next;
     void *target;
 };
 
 struct _graph_vertex
 {
     void* obj;
+    struct _graph_vertex* next;
     struct _graph_edge* edges;
     bool visited;
 };
@@ -78,7 +79,9 @@ struct _graph
 };
 typedef struct _graph* graph_t;
 
+graph_t graph_new(uint32_t obj_size);
 graph_t graph_new2(uint32_t obj_size, uint32_t capacity);
+
 void graph_free(graph_t* graph);
 
 #endif

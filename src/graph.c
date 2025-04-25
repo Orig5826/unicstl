@@ -278,7 +278,6 @@ done1:
 done:
     return false;
 }
-#endif
 
 graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
 {
@@ -294,6 +293,216 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
     //     free(graph);
     //     return NULL;
     // }
+    return graph;
+}
+
+void graph_free(graph_t *graph)
+{
+    if(graph == NULL || *graph == NULL)
+    {
+        return;
+    }
+
+    (*graph)->_destory(*graph);
+    free(*graph);
+    *graph = NULL;
+}
+
+#endif
+
+static uint32_t graph_size(struct _graph* self)
+{
+    if(self == NULL)
+    {
+        return 0;
+    }
+    return self->_size;
+}
+
+static uint32_t graph_capacity(struct _graph* self)
+{
+    if(self == NULL)
+    {
+        return 0;
+    }
+    return self->_capacity;
+}
+
+static bool graph_clear(struct _graph *self)
+{
+    if(self == NULL && self->_head == NULL)
+    {
+        return 0;
+    }
+    // for(uint32_t i = 0; i < self->_capacity; i++)
+    // {
+    //     for(uint32_t j = 0; j < self->_capacity; j++)
+    //     {
+    //         self->_head->edge[i][j] = 0;
+    //     }
+    // }
+    self->_size = 0;
+    return true;
+}
+
+static void graph_destory(struct _graph *self)
+{
+    if(self == NULL)
+    {
+        return;
+    }
+    self->clear(self);
+    // if(self->_head != NULL)
+    // {
+    //     if(self->_head->visited != NULL)
+    //     {
+    //         free(self->_head->visited);
+    //     }
+
+    //     if(self->_head->obj != NULL)
+    //     {
+    //         free(self->_head->obj);
+    //     }
+
+    //     if(self->_head->edge != NULL)
+    //     {
+    //         for(uint32_t i = 0; i < self->_capacity; i++)
+    //         {
+    //             if(self->_head->edge[i] != NULL)
+    //             {
+    //                 free(self->_head->edge[i]);
+    //             }
+    //         }
+    //         free(self->_head->edge);
+    //     }
+    //     free(self->_head);
+    //     self->_head = NULL;
+    // }
+}
+
+static void graph_print(struct _graph *self)
+{
+    if(self == NULL || self->_head == NULL || self->print_obj == NULL)
+    {
+        return;
+    }
+
+    // printf("\n     ");
+    // for(uint32_t i = 0; i < self->_capacity; i++)
+    // {
+    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+    // }
+    // printf("\n");
+    // for(uint32_t i = 0; i < self->_capacity; i++)
+    // {
+    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+    //     for(uint32_t j = 0; j < self->_capacity; j++)
+    //     {
+    //         printf(" %2d   ", self->_head->edge[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n");
+    printf("print done.\n");
+}
+
+static bool graph_add_vertex(struct _graph* self, void* obj)
+{
+    return true;
+}
+
+static bool graph_del_vertex(struct _graph* self, void* obj)
+{
+    return true;
+}
+
+static bool graph_find_vertex(struct _graph* self, void* obj)
+{
+    return true;
+}
+
+static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t weight)
+{
+    return true;
+}
+
+static bool graph_del_edge(struct _graph* self, void* from, void* to)
+{
+    return true;
+}
+
+static bool graph_find_edge(struct _graph* self, void* from, void* to)
+{
+    return true;
+}
+
+static bool graph_init(struct _graph *self, uint32_t obj_size)
+{
+    assert(self != NULL);
+    if(self == NULL)
+    {
+        return false;
+    }
+
+    // -------------------- private -------------------- 
+    self->_size = 0;
+    self->_obj_size = obj_size;
+    self->_capacity = UINT32_MAX;
+    self->_ratio = 1;
+
+    self->_head = (struct _graph_vertex *)malloc(sizeof(struct _graph_vertex));
+    if(self->_head == NULL)
+    {
+        return false;
+    }
+    self->_head->visited = false; 
+    self->_head->obj = NULL;
+    self->_head->edges = NULL;
+    self->_head->next = NULL;
+
+    self->_destory = graph_destory;
+
+    // -------------------- public -------------------- 
+    // kernel
+    // -> vertex
+    self->add_vertex = graph_add_vertex;
+    self->del_vertex = graph_del_vertex;
+    self->find_vertex = graph_find_vertex;
+    // -> edge
+    self->add_edge = graph_add_edge;
+    self->del_edge = graph_del_edge;
+    self->find_edge = graph_find_edge;
+
+    // base
+    self->size = graph_size;
+    self->capacity = graph_capacity;
+    self->clear = graph_clear;
+
+    self->from_matrix = NULL;
+    self->bfs = NULL;
+    self->dfs = NULL;
+
+    // -------------------- debug -------------------- 
+    self->print_obj = NULL;
+    self->print = graph_print;
+
+    return true;
+}
+
+graph_t graph_new(uint32_t obj_size)
+{
+    graph_t graph = NULL;
+    graph = malloc(sizeof(struct _graph));
+    if(graph == NULL)
+    {
+        return NULL;
+    }
+
+    if(graph_init(graph, obj_size) != true)
+    {
+        free(graph);
+        return NULL;
+    }
     return graph;
 }
 
