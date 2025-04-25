@@ -310,119 +310,9 @@ void graph_free(graph_t *graph)
 
 #endif
 
-static uint32_t graph_size(struct _graph* self)
-{
-    if(self == NULL)
-    {
-        return 0;
-    }
-    return self->_size;
-}
 
-static bool graph_empty(struct _graph* self)
-{
-    if(self == NULL)
-    {
-        return 0;
-    }
-    return self->size(self) == 0;
-}
 
-static uint32_t graph_capacity(struct _graph* self)
-{
-    if(self == NULL)
-    {
-        return 0;
-    }
-    return self->_capacity;
-}
 
-static bool graph_clear(struct _graph *self)
-{
-    if(self == NULL && self->_head == NULL)
-    {
-        return 0;
-    }
-    // for(uint32_t i = 0; i < self->_capacity; i++)
-    // {
-    //     for(uint32_t j = 0; j < self->_capacity; j++)
-    //     {
-    //         self->_head->edge[i][j] = 0;
-    //     }
-    // }
-    self->_size = 0;
-    return true;
-}
-
-static void graph_destory(struct _graph *self)
-{
-    if(self == NULL)
-    {
-        return;
-    }
-    self->clear(self);
-    // if(self->_head != NULL)
-    // {
-    //     if(self->_head->visited != NULL)
-    //     {
-    //         free(self->_head->visited);
-    //     }
-
-    //     if(self->_head->obj != NULL)
-    //     {
-    //         free(self->_head->obj);
-    //     }
-
-    //     if(self->_head->edge != NULL)
-    //     {
-    //         for(uint32_t i = 0; i < self->_capacity; i++)
-    //         {
-    //             if(self->_head->edge[i] != NULL)
-    //             {
-    //                 free(self->_head->edge[i]);
-    //             }
-    //         }
-    //         free(self->_head->edge);
-    //     }
-    //     free(self->_head);
-    //     self->_head = NULL;
-    // }
-}
-
-static void graph_print(struct _graph *self)
-{
-    if(self == NULL || self->_head == NULL || self->print_obj == NULL)
-    {
-        return;
-    }
-
-    printf("vertex : \n");
-    struct _graph_node * cur = self->_head->next;
-    while(cur != NULL)
-    {
-        self->print_obj(cur->obj);
-        cur = cur->next;
-    }
-
-    // printf("\n     ");
-    // for(uint32_t i = 0; i < self->_capacity; i++)
-    // {
-    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
-    // }
-    // printf("\n");
-    // for(uint32_t i = 0; i < self->_capacity; i++)
-    // {
-    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
-    //     for(uint32_t j = 0; j < self->_capacity; j++)
-    //     {
-    //         printf(" %2d   ", self->_head->edge[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    printf("\n");
-    printf("print done.\n");
-}
 
 static struct _graph_node* graph_node_new(void *obj, uint32_t obj_size)
 {
@@ -467,6 +357,103 @@ static void greph_node_free(struct _graph_node** node)
 
         *node = NULL;
     }
+}
+
+static uint32_t graph_size(struct _graph* self)
+{
+    if(self == NULL)
+    {
+        return 0;
+    }
+    return self->_size;
+}
+
+static bool graph_empty(struct _graph* self)
+{
+    if(self == NULL)
+    {
+        return 0;
+    }
+    return self->size(self) == 0;
+}
+
+static uint32_t graph_capacity(struct _graph* self)
+{
+    if(self == NULL)
+    {
+        return 0;
+    }
+    return self->_capacity;
+}
+
+static bool graph_clear(struct _graph *self)
+{
+    if(self == NULL && self->_head == NULL)
+    {
+        return 0;
+    }
+
+    struct _graph_node *cur = self->_head->next;
+    struct _graph_node *next = NULL;
+    while(cur != NULL)
+    {
+        next = cur->next;
+        greph_node_free(&cur);
+        cur = next;
+    }
+
+    self->_head->next = NULL;
+    self->_size = 0;
+    return true;
+}
+
+static void graph_destory(struct _graph *self)
+{
+    if(self == NULL)
+    {
+        return;
+    }
+    self->clear(self);
+    if(self->_head != NULL)
+    {
+        free(self->_head);
+        self->_head = NULL;
+    }
+}
+
+static void graph_print(struct _graph *self)
+{
+    if(self == NULL || self->_head == NULL || self->print_obj == NULL)
+    {
+        return;
+    }
+
+    printf("vertex : \n");
+    struct _graph_node * cur = self->_head->next;
+    while(cur != NULL)
+    {
+        self->print_obj(cur->obj);
+        cur = cur->next;
+    }
+
+    // printf("\n     ");
+    // for(uint32_t i = 0; i < self->_capacity; i++)
+    // {
+    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+    // }
+    // printf("\n");
+    // for(uint32_t i = 0; i < self->_capacity; i++)
+    // {
+    //     self->print_obj((char *)self->_head->obj + i * self->_obj_size);
+    //     for(uint32_t j = 0; j < self->_capacity; j++)
+    //     {
+    //         printf(" %2d   ", self->_head->edge[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+    printf("\n");
+    printf("print done.\n");
 }
 
 static bool graph_add_vertex(struct _graph* self, void* obj)

@@ -32,17 +32,38 @@ void test_graph_add_vertex(void)
     graph->compare = compare_num;
     graph->print_obj = print_num;
 
+    // test add_vertex
     for(i = 0; i < size; i++)
     {
         TEST_ASSERT_TRUE(graph->add_vertex(graph, &data[i]));
     }
-    graph->print(graph);
+    // graph->print(graph);
 
     TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[0]));
     TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[9]));
     TEST_ASSERT_FALSE(graph->find_vertex(graph, &temp));
 
-    
+    // test del_vertex
+    TEST_ASSERT_TRUE(graph->del_vertex(graph, &data[0]));
+    TEST_ASSERT_FALSE(graph->find_vertex(graph, &data[0]));
+    // graph->print(graph);
+
+    for(i = 1; i < size; i++)
+    {
+        TEST_ASSERT_TRUE(graph->del_vertex(graph, &data[i]));
+    }
+    TEST_ASSERT_TRUE(graph->empty(graph));
+
+    // test clear
+    for(i = 0; i < size; i++)
+    {
+        TEST_ASSERT_TRUE(graph->add_vertex(graph, &data[i]));
+    }
+    // graph->print(graph);
+
+    graph->clear(graph);
+    // graph->print(graph);
+    TEST_ASSERT_TRUE(graph->empty(graph));
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);
