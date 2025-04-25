@@ -372,7 +372,7 @@ static struct _graph_edge* graph_edge_new(void *target, uint32_t weight)
     return new_edge;
 }
 
-static void greph_edge_free(struct _graph_edge** edge)
+static void graph_edge_free(struct _graph_edge** edge)
 {
     if (edge != NULL && *edge != NULL)
     {
@@ -631,11 +631,6 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
         return false;
     }
 
-    // printf("print from and to obj start \n");
-    // self->print_obj(from_node->obj);
-    // self->print_obj(to_node->obj);
-    // printf("print from and to obj end \n");
-
     // from_node add edge
     struct _graph_edge* new_edge = graph_edge_new(to_node, weight);
     if (new_edge == NULL)
@@ -652,22 +647,25 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
         from_node->edgehead->next = new_edge;
     }
 
-    // if graph is undirected
-    // to_node add edge
-    struct _graph_edge* new_edge2 = graph_edge_new(from_node, weight);
-    if (new_edge2 == NULL)
+    if(self->_type == GRAPH_UNDIRECTED)
     {
-        return false;
-    }
+        // if graph is undirected
+        // to_node add edge
+        struct _graph_edge* new_edge2 = graph_edge_new(from_node, weight);
+        if (new_edge2 == NULL)
+        {
+            return false;
+        }
 
-    if (to_node->edgehead == NULL)
-    {
-        to_node->edgehead = new_edge2;
-    }
-    else
-    {
-        new_edge2->next = to_node->edgehead->next;
-        to_node->edgehead->next = new_edge2;
+        if (to_node->edgehead == NULL)
+        {
+            to_node->edgehead = new_edge2;
+        }
+        else
+        {
+            new_edge2->next = to_node->edgehead->next;
+            to_node->edgehead->next = new_edge2;
+        }
     }
 
     return true;
@@ -675,11 +673,102 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
 
 static bool graph_del_edge(struct _graph* self, void* from, void* to)
 {
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+
+    struct _graph_node* from_node = self->_head->next;
+    struct _graph_node* to_node = self->_head->next;
+    from_node = find_node(self, from);
+    if (from_node == NULL)
+    {
+        return false;
+    }
+
+    to_node = find_node(self, to);
+    if (to_node == NULL)
+    {
+        return false;
+    }
+
+    struct _graph_edge* cur = from_node->edgehead;
+    struct _graph_edge* pre = from_node->edgehead;
+    while(cur != NULL)
+    {
+        if(cur->target == to_node)
+        {
+            pre->next = cur->next;
+            if(pre == cur)
+            {
+                from_node->edgehead = cur->next;
+            }
+            graph_edge_free(&cur);
+            break;
+        }
+        pre = cur;
+        cur = cur->next;
+    }
+
+    if(self->_type == GRAPH_UNDIRECTED)
+    {
+        struct _graph_edge* cur2 = to_node->edgehead;
+        struct _graph_edge* pre2 = to_node->edgehead;
+        while(cur2 != NULL)
+        {
+            if(cur2->target == from_node)
+            {
+                pre2->next = cur2->next;
+                if(pre2 == cur2)
+                {
+                    to_node->edgehead = cur2->next;
+                }
+                graph_edge_free(&cur2);
+                break;
+            }
+            pre2 = cur2;
+            cur2 = cur2->next;
+        }
+    }
     return true;
 }
 
 static bool graph_find_edge(struct _graph* self, void* from, void* to)
 {
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    struct _graph_node* from_node = self->_head->next;
+    struct _graph_node* to_node = self->_head->next;
+    from_node = find_node(self, from);
+    if (from_node == NULL)
+    {
+        return false;
+    }
+
+    to_node = find_node(self, to);
+    if (to_node == NULL)
+    {
+        return false;
+    }
+
+    struct _graph_edge* cur = from_node->edgehead;
+    while(cur != NULL)
+    {
+        if(cur->target == to_node)
+        {
+            // found edge
+            break;
+        }
+        cur = cur->next;
+    }
+    if(cur == NULL)
+    {
+        return false;
+    }
     return true;
 }
 
@@ -706,6 +795,9 @@ static bool graph_init(struct _graph* self, uint32_t obj_size)
     self->_head->obj = NULL;
     self->_head->edgehead = NULL;
     self->_head->next = NULL;
+
+    self->_type = GRAPH_UNDIRECTED;
+    // self->_type = GRAPH_DIRECTED;
 
     self->_destory = graph_destory;
 

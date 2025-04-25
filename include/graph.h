@@ -13,6 +13,14 @@
 
 #include "common.h"
 
+enum _graph_type
+{
+    GRAPH_UNDIRECTED,
+    GRAPH_DIRECTED,
+    // GRAPH_UNDIRECTED_WEIGHT,
+    // GRAPH_DIRECTED_WEIGHT,
+};
+
 struct _graph_edge
 {
     uint32_t weight;
@@ -38,6 +46,7 @@ struct _graph
     uint32_t _capacity;
     uint32_t _ratio;
 
+    enum _graph_type _type;
     struct _iterator _iter;
     
     void (*_destory)(struct _graph* self);
@@ -83,7 +92,7 @@ struct _graph
 typedef struct _graph* graph_t;
 
 graph_t graph_new(uint32_t obj_size);
-graph_t graph_new2(uint32_t obj_size, uint32_t capacity);
+// graph_t graph_new2(uint32_t obj_size, uint32_t capacity);
 
 void graph_free(graph_t* graph);
 

@@ -39,6 +39,7 @@ void test_graph_add_vertex(void)
     }
     // graph->print(graph);
 
+    // test find_vertex
     TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[0]));
     TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[9]));
     TEST_ASSERT_FALSE(graph->find_vertex(graph, &temp));
@@ -92,12 +93,27 @@ void test_graph_add_edge(void)
     graph->print(graph);
 
     // test add_edge
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[1], 55));
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[2], 66));
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 77));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[1], 12));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[2], 13));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 24));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[5], &data[6], 67));
+    TEST_ASSERT_FALSE(graph->add_edge(graph, &temp, &data[1], 0));
     graph->print(graph);
 
-    TEST_ASSERT_FALSE(graph->add_edge(graph, &temp, &data[1], 0));
+    // test find_edge
+    TEST_ASSERT_TRUE(graph->find_edge(graph, &data[0], &data[1]));
+    TEST_ASSERT_TRUE(graph->find_edge(graph, &data[1], &data[3]));
+    TEST_ASSERT_TRUE(graph->find_edge(graph, &data[6], &data[5]));  // undirected graph
+    TEST_ASSERT_FALSE(graph->find_edge(graph, &data[4], &data[3]));
+    TEST_ASSERT_FALSE(graph->find_edge(graph, &data[0], &temp));
+
+    // test del_edge
+    TEST_ASSERT_TRUE(graph->del_edge(graph, &data[0], &data[1]));
+    graph->print(graph);
+
+    TEST_ASSERT_FALSE(graph->find_edge(graph, &data[0], &data[1]));
+    TEST_ASSERT_TRUE(graph->del_edge(graph, &data[5], &data[6]));
+    graph->print(graph);
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);
