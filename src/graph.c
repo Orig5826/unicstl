@@ -359,7 +359,7 @@ static void greph_node_free(struct _graph_node** node)
     }
 }
 
-static struct _graph_edge* graph_edge_new(void *obj, uint32_t obj_size)
+static struct _graph_edge* graph_edge_new(void)
 {
     struct _graph_edge* new_edge = (struct _graph_edge*)malloc(sizeof(struct _graph_edge));
     if (new_edge == NULL)
@@ -583,8 +583,98 @@ static bool graph_find_vertex(struct _graph* self, void* obj)
     return cur == NULL ? false: true;
 }
 
+static struct _graph_node* find_node(struct _graph* self, void* obj)
+{
+    struct _graph_node * cur = self->_head->next;
+    while(cur != NULL)
+    {
+        if(self->compare(cur->obj, obj) == 0)
+        {
+            // obj is found
+            break;
+        }
+        cur = cur->next;
+    }
+    return cur;
+}
+
+
 static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t weight)
 {
+    assert(self != NULL);
+    if(self->empty(self))
+    {
+        return false;
+    }
+
+    struct _graph_node * from_node = self->_head->next;
+    struct _graph_node * to_node = self->_head->next;
+    from_node = find_node(self, from);
+    if(from_node == NULL)
+    {
+        return false;
+    }
+
+    to_node = find_node(self, from);
+    if(to_node == NULL)
+    {
+        return false;
+    }
+
+    // add edge
+    if(from_node->edge == NULL)
+    {
+        from_node->edge = graph_edge_new();
+        if(from_node->edge == NULL)
+        {
+            return false;
+        }
+        from_node->edge->weight = weight;
+        from_node->edge->target = to_node;
+    }
+    else
+    {
+        struct _graph_edge* next_edge = from_node->edge->next;
+        struct _graph_edge* pre_edge = NULL;
+        struct _graph_edge* new_edge = graph_edge_new();
+        if(new_edge == NULL)
+        {
+            return false;
+        }
+        new_edge->weight = weight;
+        new_edge->target = to_node;
+        
+        new_edge->next = next_edge;
+        from_node->edge->next = new_edge;
+    }
+
+    // if graph is undirected
+    if(to_node->edge == NULL)
+    {
+        to_node->edge = graph_edge_new();
+        if(to_node->edge == NULL)
+        {
+            return false;
+        }
+        to_node->edge->weight = weight;
+        to_node->edge->target = from_node;
+    }
+    else
+    {
+        struct _graph_edge* next_edge = to_node->edge->next;
+        struct _graph_edge* pre_edge = NULL;
+        struct _graph_edge* new_edge = graph_edge_new();
+        if(new_edge == NULL)
+        {
+            return false;
+        }
+        new_edge->weight = weight;
+        new_edge->target = from_node;
+        
+        new_edge->next = next_edge;
+        to_node->edge->next = new_edge;
+    }
+    
     return true;
 }
 
