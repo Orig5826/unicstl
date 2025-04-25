@@ -625,16 +625,16 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
         return false;
     }
 
-    to_node = find_node(self, from);
+    to_node = find_node(self, to);
     if (to_node == NULL)
     {
         return false;
     }
 
-    printf("print from and to obj start \n");
-    self->print_obj(from_node->obj);
-    self->print_obj(to_node->obj);
-    printf("print from and to obj end \n");
+    // printf("print from and to obj start \n");
+    // self->print_obj(from_node->obj);
+    // self->print_obj(to_node->obj);
+    // printf("print from and to obj end \n");
 
     // from_node add edge
     struct _graph_edge* new_edge = graph_edge_new(to_node, weight);
@@ -653,6 +653,7 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
     }
 
     // if graph is undirected
+    // to_node add edge
     struct _graph_edge* new_edge2 = graph_edge_new(from_node, weight);
     if (new_edge2 == NULL)
     {
