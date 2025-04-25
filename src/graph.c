@@ -387,6 +387,14 @@ static void graph_print(struct _graph *self)
         return;
     }
 
+    printf("vertex : \n");
+    struct _graph_node * cur = self->_head->next;
+    while(cur != NULL)
+    {
+        self->print_obj(cur->obj);
+        cur = cur->next;
+    }
+
     // printf("\n     ");
     // for(uint32_t i = 0; i < self->_capacity; i++)
     // {
@@ -402,12 +410,103 @@ static void graph_print(struct _graph *self)
     //     }
     //     printf("\n");
     // }
-    // printf("\n");
+    
+    printf("\n");
     printf("print done.\n");
+}
+
+static struct _graph_node* stack_node_new(void *obj, uint32_t obj_size)
+{
+    void* new_obj = (void*)calloc(1, obj_size);
+    if (new_obj == NULL)
+    {
+        return NULL;
+    }
+    memmove(new_obj, obj, obj_size);
+
+    struct _graph_node* new_node = (struct _graph_node*)malloc(sizeof(struct _graph_node));
+    if (new_node == NULL)
+    {
+        free(new_obj);
+        return NULL;
+    }
+    new_node->obj = new_obj;
+    new_node->next = NULL;
+    new_node->edge = NULL;
+    new_node->visited = false;
+
+    return new_node;
+}
+
+static void stack_node_free(struct _graph_node** node)
+{
+    if(node != NULL && *node != NULL)
+    {
+        if((*node)->obj != NULL)
+        {
+            free((*node)->obj);
+            (*node)->obj = NULL;
+        }
+
+        if((*node)->edge != NULL)
+        {
+            free((*node)->edge);
+            (*node)->edge = NULL;
+        }
+
+        free(*node);
+
+        *node = NULL;
+    }
 }
 
 static bool graph_add_vertex(struct _graph* self, void* obj)
 {
+    assert(self != NULL);
+    if(self->_size >= self->_capacity)
+    {
+        return false;
+    }
+
+    if(self->_head->next == NULL)
+    {
+        // no vertex
+        struct _graph_node * new_node = stack_node_new(obj, self->_obj_size);
+        if(new_node == NULL)
+        {
+            return false;
+        }
+        self->_head->next = new_node;
+    }
+    else
+    {
+        struct _graph_node * cur = self->_head->next;
+
+        // find if exist
+        while(cur != NULL)
+        {
+            if(self->compare((char *)cur->obj, (char *)obj) == 0)
+            {
+                return true;
+            }
+            cur = cur->next;
+        }
+
+        struct _graph_node * new_node = stack_node_new(obj, self->_obj_size);
+        if(new_node == NULL)
+        {
+            return false;
+        }
+
+        // add to tail
+        cur = self->_head->next;
+        while(cur->next != NULL)
+        {
+            cur = cur->next;
+        }
+        cur->next = new_node;
+    }
+
     return true;
 }
 
@@ -450,14 +549,14 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
     self->_capacity = UINT32_MAX;
     self->_ratio = 1;
 
-    self->_head = (struct _graph_vertex *)malloc(sizeof(struct _graph_vertex));
+    self->_head = (struct _graph_node *)malloc(sizeof(struct _graph_node));
     if(self->_head == NULL)
     {
         return false;
     }
     self->_head->visited = false; 
     self->_head->obj = NULL;
-    self->_head->edges = NULL;
+    self->_head->edge = NULL;
     self->_head->next = NULL;
 
     self->_destory = graph_destory;
@@ -481,6 +580,8 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
     self->from_matrix = NULL;
     self->bfs = NULL;
     self->dfs = NULL;
+
+    self->compare = NULL;
 
     // -------------------- debug -------------------- 
     self->print_obj = NULL;

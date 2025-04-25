@@ -20,18 +20,18 @@ struct _graph_edge
     void *target;
 };
 
-struct _graph_vertex
+struct _graph_node
 {
     void* obj;
-    struct _graph_vertex* next;
-    struct _graph_edge* edges;
+    struct _graph_node* next;
+    struct _graph_edge* edge;
     bool visited;
 };
 
 struct _graph
 {
     // -------------------- private -------------------- 
-    struct _graph_vertex* _head;
+    struct _graph_node* _head;
 
     uint32_t _size;
     uint32_t _obj_size;
@@ -69,6 +69,9 @@ struct _graph
 
     // iter
     iterator_t (*iter)(struct _graph* self);
+
+    // config 
+    compare_fun_t compare;  // !!! you have to implement this function
 
     // others
     bool (*from_matrix)(struct _graph* self, void* obj, uint32_t* edges, uint32_t size);
