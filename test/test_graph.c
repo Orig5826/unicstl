@@ -24,6 +24,7 @@ void test_graph_add_vertex(void)
     int data[10] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
+    int temp = 11;
     uint32_t i = 0;
 
     graph_t graph = graph_new(sizeof(int));
@@ -33,9 +34,15 @@ void test_graph_add_vertex(void)
 
     for(i = 0; i < size; i++)
     {
-        graph->add_vertex(graph, &data[i]);
+        TEST_ASSERT_TRUE(graph->add_vertex(graph, &data[i]));
     }
     graph->print(graph);
+
+    TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[0]));
+    TEST_ASSERT_TRUE(graph->find_vertex(graph, &data[9]));
+    TEST_ASSERT_FALSE(graph->find_vertex(graph, &temp));
+
+    
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);
