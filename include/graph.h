@@ -1,63 +1,80 @@
 /**
  * @file graph.h
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-09-03
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #ifndef _GRAPH_H
 #define _GRAPH_H
 
 #include "common.h"
 
-struct _graph_node {
-    void *obj;
-    uint32_t **edge;
-    uint8_t *visited;
+struct _graph_edge
+{
+    struct _graph_edge* _next;
+    uint32_t weight;
 };
 
-struct _graph {
+struct _graph_vertex
+{
+    void* obj;
+    struct _graph_edge* edge;
+    bool* visited;
+};
+
+struct _graph_node
+{
+    struct _graph_vertex* edge;
+};
+
+struct _graph
+{
     // -------------------- private -------------------- 
-    struct _graph_node *_head;
-    uint32_t **edges;
+    struct _graph_node* _head;
 
     uint32_t _size;
     uint32_t _obj_size;
     uint32_t _capacity;
     uint32_t _ratio;
 
-    void (*_destory)(struct _graph *self);
+    struct _iterator _iter;
+    
+    void (*_destory)(struct _graph* self);
 
     // -------------------- public -------------------- 
     // kernel
-    bool (*add)(struct _graph *self, void *obj);
-    bool (*get)(struct _graph *self, uint32_t idx, void *obj);
-    bool (*remove)(struct _graph *self, uint32_t idx);
+    bool (*add)(struct _graph* self, void* obj);
+    bool (*get)(struct _graph* self, uint32_t idx, void* obj);
+    bool (*remove)(struct _graph* self, uint32_t idx);
 
     // traverse
-    bool (*dfs)(struct _graph *self, uint32_t idx);
-    bool (*bfs)(struct _graph *self, uint32_t idx);
+    bool (*dfs)(struct _graph* self, uint32_t idx);
+    bool (*bfs)(struct _graph* self, uint32_t idx);
 
     // base
-    uint32_t (*size)(struct _graph *self);
-    uint32_t (*capacity)(struct _graph *self);
-    bool (*clear)(struct _graph *self);
-    bool (*empty)(struct _graph *self);
-    bool (*full)(struct _graph *self);
+    uint32_t(*size)(struct _graph* self);
+    uint32_t(*capacity)(struct _graph* self);
+    bool (*clear)(struct _graph* self);
+    bool (*empty)(struct _graph* self);
+    bool (*full)(struct _graph* self);
+
+    // iter
+    iterator_t (*iter)(struct _graph* self);
 
     // others
-    bool (*from_matrix)(struct _graph *self, void *obj, uint32_t *edges, uint32_t size);
+    bool (*from_matrix)(struct _graph* self, void* obj, uint32_t* edges, uint32_t size);
 
     // -------------------- debug -------------------- 
-    void (*print)(struct _graph *self);
-    void (*print_obj)(void *obj);
+    void (*print)(struct _graph* self);
+    void (*print_obj)(void* obj);
 };
 typedef struct _graph* graph_t;
 
 graph_t graph_new2(uint32_t obj_size, uint32_t capacity);
-void graph_free(graph_t *graph);
+void graph_free(graph_t* graph);
 
 #endif
