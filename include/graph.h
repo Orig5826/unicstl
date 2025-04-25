@@ -17,24 +17,20 @@ struct _graph_edge
 {
     struct _graph_edge* _next;
     uint32_t weight;
+    void *target;
 };
 
 struct _graph_vertex
 {
     void* obj;
-    struct _graph_edge* edge;
-    bool* visited;
-};
-
-struct _graph_node
-{
-    struct _graph_vertex* edge;
+    struct _graph_edge* edges;
+    bool visited;
 };
 
 struct _graph
 {
     // -------------------- private -------------------- 
-    struct _graph_node* _head;
+    struct _graph_vertex* _head;
 
     uint32_t _size;
     uint32_t _obj_size;
@@ -47,13 +43,21 @@ struct _graph
 
     // -------------------- public -------------------- 
     // kernel
-    bool (*add)(struct _graph* self, void* obj);
-    bool (*get)(struct _graph* self, uint32_t idx, void* obj);
-    bool (*remove)(struct _graph* self, uint32_t idx);
+    // -> vertex
+    bool (*add_vertex)(struct _graph* self, void* obj);
+    bool (*del_vertex)(struct _graph* self, void* obj);
+    bool (*find_vertex)(struct _graph* self, void* obj);
+    // -> edge
+    bool (*add_edge)(struct _graph* self, void* from, void* to, uint32_t weight);
+    bool (*del_edge)(struct _graph* self, void* from, void* to);
+    bool (*find_edge)(struct _graph* self, void* from, void* to);
 
     // traverse
     bool (*dfs)(struct _graph* self, uint32_t idx);
     bool (*bfs)(struct _graph* self, uint32_t idx);
+
+    bool (*get)(struct _graph* self, uint32_t idx, void* obj);
+    bool (*remove)(struct _graph* self, uint32_t idx);
 
     // base
     uint32_t(*size)(struct _graph* self);

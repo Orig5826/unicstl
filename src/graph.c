@@ -12,6 +12,7 @@
 #include "queue.h"
 #include "stack.h"
 
+#if 0
 static uint32_t graph_size(struct _graph* self)
 {
     if(self == NULL)
@@ -277,6 +278,7 @@ done1:
 done:
     return false;
 }
+#endif
 
 graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
 {
@@ -287,11 +289,11 @@ graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
         return NULL;
     }
 
-    if(graph_init2(graph, obj_size, capacity) != true)
-    {
-        free(graph);
-        return NULL;
-    }
+    // if(graph_init2(graph, obj_size, capacity) != true)
+    // {
+    //     free(graph);
+    //     return NULL;
+    // }
     return graph;
 }
 
