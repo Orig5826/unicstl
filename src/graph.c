@@ -359,6 +359,28 @@ static void greph_node_free(struct _graph_node** node)
     }
 }
 
+static struct _graph_edge* graph_edge_new(void *obj, uint32_t obj_size)
+{
+    struct _graph_edge* new_edge = (struct _graph_edge*)malloc(sizeof(struct _graph_edge));
+    if (new_edge == NULL)
+    {
+        return NULL;
+    }
+    new_edge->next = NULL;
+    new_edge->weight = 0;
+    new_edge->target = NULL;
+    return new_edge;
+}
+
+static void greph_edge_free(struct _graph_edge** edge)
+{
+    if(edge != NULL && *edge != NULL)
+    {
+        free(*edge);
+        *edge = NULL;
+    }
+}
+
 static uint32_t graph_size(struct _graph* self)
 {
     if(self == NULL)
