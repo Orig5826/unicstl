@@ -331,7 +331,7 @@ static struct _graph_node* graph_node_new(void* obj, uint32_t obj_size)
     }
     new_node->obj = new_obj;
     new_node->next = NULL;
-    new_node->edge = NULL;
+    new_node->edgehead = NULL;
     new_node->visited = false;
 
     return new_node;
@@ -347,10 +347,10 @@ static void greph_node_free(struct _graph_node** node)
             (*node)->obj = NULL;
         }
 
-        if ((*node)->edge != NULL)
+        if ((*node)->edgehead != NULL)
         {
-            free((*node)->edge);
-            (*node)->edge = NULL;
+            free((*node)->edgehead);
+            (*node)->edgehead = NULL;
         }
 
         free(*node);
@@ -359,7 +359,7 @@ static void greph_node_free(struct _graph_node** node)
     }
 }
 
-static struct _graph_edge* graph_edge_new(void)
+static struct _graph_edge* graph_edge_new(void *target, uint32_t weight)
 {
     struct _graph_edge* new_edge = (struct _graph_edge*)malloc(sizeof(struct _graph_edge));
     if (new_edge == NULL)
@@ -367,8 +367,8 @@ static struct _graph_edge* graph_edge_new(void)
         return NULL;
     }
     new_edge->next = NULL;
-    new_edge->weight = 0;
-    new_edge->target = NULL;
+    new_edge->weight = weight;
+    new_edge->target = target;
     return new_edge;
 }
 
@@ -463,18 +463,24 @@ static void graph_print(struct _graph* self)
     cur = self->_head->next;
     while (cur != NULL)
     {
-        struct _graph_edge* edge = cur->edge;
-        while (edge != NULL)
+        if(cur->edgehead != NULL)
         {
-            struct _graph_node* target = (struct _graph_node*)edge->target;
+            // struct _graph_edge* edge = cur->edgehead->next;
+            struct _graph_edge* edge = cur->edgehead;
+            while (edge != NULL)
+            {
+                struct _graph_node* target = (struct _graph_node*)edge->target;
 
-            printf("from ");
-            self->print_obj(cur->obj);
-            printf(" to ");
-            self->print_obj(target->obj);
-            printf(": %d \n", edge->weight);
-            edge = edge->next;
+                printf("from ");
+                self->print_obj(cur->obj);
+                printf(" to ");
+                self->print_obj(target->obj);
+                printf(": %d \n", edge->weight);
+
+                edge = edge->next;
+            }
         }
+
         // self->print_obj(cur->obj);
         cur = cur->next;
     }
@@ -625,42 +631,42 @@ static bool graph_add_edge(struct _graph* self, void* from, void* to, uint32_t w
         return false;
     }
 
+    printf("print from and to obj start \n");
+    self->print_obj(from_node->obj);
+    self->print_obj(to_node->obj);
+    printf("print from and to obj end \n");
+
     // from_node add edge
-    struct _graph_edge* new_edge = graph_edge_new();
+    struct _graph_edge* new_edge = graph_edge_new(to_node, weight);
     if (new_edge == NULL)
     {
         return false;
     }
-    new_edge->weight = weight;
-    new_edge->target = to_node;
-
-    if (from_node->edge == NULL)
+    if (from_node->edgehead == NULL)
     {
-        from_node->edge = new_edge;
+        from_node->edgehead = new_edge;
     }
     else
     {
-        new_edge->next = from_node->edge->next;
-        from_node->edge->next = new_edge;
+        new_edge->next = from_node->edgehead->next;
+        from_node->edgehead->next = new_edge;
     }
 
     // if graph is undirected
-    struct _graph_edge* new_edge2 = graph_edge_new();
+    struct _graph_edge* new_edge2 = graph_edge_new(from_node, weight);
     if (new_edge2 == NULL)
     {
         return false;
     }
-    new_edge2->weight = weight;
-    new_edge2->target = from_node;
 
-    if (to_node->edge == NULL)
+    if (to_node->edgehead == NULL)
     {
-        to_node->edge = new_edge2;
+        to_node->edgehead = new_edge2;
     }
     else
     {
-        new_edge2->next = to_node->edge->next;
-        to_node->edge->next = new_edge2;
+        new_edge2->next = to_node->edgehead->next;
+        to_node->edgehead->next = new_edge2;
     }
 
     return true;
@@ -697,7 +703,7 @@ static bool graph_init(struct _graph* self, uint32_t obj_size)
     }
     self->_head->visited = false;
     self->_head->obj = NULL;
-    self->_head->edge = NULL;
+    self->_head->edgehead = NULL;
     self->_head->next = NULL;
 
     self->_destory = graph_destory;

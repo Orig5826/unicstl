@@ -24,7 +24,7 @@ struct _graph_node
 {
     void* obj;
     struct _graph_node* next;
-    struct _graph_edge* edge;
+    struct _graph_edge* edgehead;
     bool visited;
 };
 
