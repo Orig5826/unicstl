@@ -158,17 +158,18 @@ void test_graph_iter(void)
     while(iter_vertex->hasnext(iter_vertex))
     {
         temp = *(int *)iter_vertex->next(iter_vertex);
-        // graph->print_obj(&temp);
+        graph->print_obj(&temp);
     }
+    printf("\n");
 
     iter_vertex = graph->iter(graph, GRAPH_DFS, &data[0]);
     TEST_ASSERT_NOT_NULL(iter_vertex);
     while(iter_vertex->hasnext(iter_vertex))
     {
         temp = *(int *)iter_vertex->next(iter_vertex);
-        // printf("temp = %d\n", temp);
-        // graph->print_obj(&temp);
+        graph->print_obj(&temp);
     }
+    printf("\n");
 
     graph_free(&graph);
     TEST_ASSERT_NULL(graph);

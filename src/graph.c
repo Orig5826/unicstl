@@ -776,6 +776,25 @@ static bool graph_find_edge(struct _graph *self, void *from, void *to)
     return true;
 }
 
+static struct _graph_node * graph_find_unvisited_vertex(struct _graph *self)
+{
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+
+    struct _graph_node *node = self->_head->next;
+    while(node != NULL)
+    {
+        if(node->visited == false)
+        {
+            return node;
+        }
+        node = node->next;
+    }
+    return NULL;
+}
 
 static struct _graph_node * graph_find_unvisited_target(struct _graph *self, struct _graph_node *node)
 {
@@ -884,24 +903,29 @@ const void *graph_iter_next(struct _iterator *iter)
 
         queue_t queue = self->queue;
 
+        // 3. [graph special] if queue is empty, find a new root node
         if (queue->empty(queue))
         {
-            cur_node = self->_head->next;
-            while (cur_node != NULL)
+            cur_node = graph_find_unvisited_vertex(self);
+            if(cur_node != NULL)
             {
-                if (cur_node->visited != true)
-                {
-                    queue->push(queue, &cur_node);
-                    break;
-                }
-                cur_node = cur_node->next;
+                queue->push(queue, &cur_node);
             }
         }
 
+        // graph->BFS : similar to breadth-first traversal of a tree
         if (!queue->empty(queue) && node != NULL)
         {
+            // 1. pop the root vertex from queue
             queue->pop(queue, &node);
             node->visited = true;
+
+            // 2. find unvisited target node
+            // target = graph_find_unvisited_target(self, node);
+            // if(target != NULL)
+            // {
+            //     queue->push(queue, &target);
+            // }
 
             cur_edge = node->edgehead;
             while (cur_edge != NULL)
@@ -957,15 +981,10 @@ const void *graph_iter_next(struct _iterator *iter)
                 // 5. find unvisited target node
                 cur_node = graph_find_unvisited_target(self, cur_node);
 
-                // 6. If the graph contains isolated vertices
-                cur_node = self->_head->next;
-                while (cur_node != NULL)
+                // 6. [graph special] If the graph contains isolated vertices
+                if(cur_node == NULL)
                 {
-                    if (cur_node->visited != true)
-                    {
-                        break;
-                    }
-                    cur_node = cur_node->next;
+                    cur_node = graph_find_unvisited_vertex(self);
                 }
             }
         }
