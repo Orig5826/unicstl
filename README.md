@@ -28,11 +28,62 @@
 | **heap**    | |**堆** |
 | heap_new2   | 数组 | 最大堆/最小堆 |
 
+## 接口函数原型
+```c
+// 对外接口
+struct* new(...);                   // 创建
+void free(struct**);                // 释放
+
+// 核心操作
+bool push(const void* obj);         // [栈、队列] 入栈/入队
+bool push_front(const void* obj);   // [双端队列] 头部入队
+bool push_back(const void* obj);    // [双端队列] 尾部入队
+
+bool pop(void* obj);                // [栈、队列] 出栈/出队
+bool pop_front(void* obj);          // [双端队列] 头部出队
+bool pop_back(void* obj);           // [双端队列] 尾部出队
+
+bool peek(void* obj);               // [栈]             查看栈顶元素
+bool front(void* obj);              // [队列、双端队列] 查看头部元素
+bool back(void* obj);               // [队列、双端队列] 查看尾部元素
+
+// 基础操作
+uint32_t size();                    // 获取大小
+bool empty();                       // 判断是否为空
+bool full();                        // 判断是否为满
+void clear();                       // 清空
+uint32_t capacity();                // [动态数组] 获取容量
+
+// 迭代器操作
+iterator_t iter(...);               // 返回迭代器
+bool iter_hasnext();                // 是否有下一个元素
+void* iter_next();                  // 迭代器下一个元素
+
+// 其他操作
+bool append(const void* obj);        // 追加元素 <push_back>
+bool delete(const void *obj);        // 删除元素  
+
+// 扩展操作 <带索引>
+bool insert(uint32_t index, const void* obj);   // 插入元素
+bool remove(uint32_t index);                    // 删除元素
+// bool erase(uint32_t index);                    // 删除元素 <删除元素但不释放内存？> 暂未考虑实现
+bool set(uint32_t index, const void* obj);      // 设置元素
+bool get(uint32_t index, void* obj);            // 获取元素
+uint32_t index(void *obj);          // 获取元素索引
+void* find(const void* obj);        // 查找元素
+
+// 外部接口
+int compare(void* obj1, void* obj2);      // 比较函数，用于排序等操作
+```
+
 ## 特点
-| 原理 | 说明 |
-| --- | --- |
-| 链表 | 有额外指针开销 |
-| 动态数组 | 扩容时数据搬移代价较大 |
+| 原理 | 优势 | 弊端 |
+| --- | --- |--- |
+| 链表 | 插入删除效率高 | 有额外指针开销 |
+| 动态数组 | 随机访问效率高 | 扩容时数据搬移代价较大 |
+| --- | --- | --- |
+| 单链表 | 适用内存受限场景 | 逆向不便 |
+| 双向链表 | 频繁双向遍历的场景（如光标移动） | 空间开销大 |
 
 
 ## 性能比较
