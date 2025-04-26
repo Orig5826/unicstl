@@ -796,12 +796,12 @@ static struct _graph_node * graph_find_unvisited_vertex(struct _graph *self)
     return NULL;
 }
 
-static struct _graph_node * graph_find_unvisited_target(struct _graph *self, struct _graph_node *node)
+static struct _graph_node * graph_find_next_unvisited_target(struct _graph *self, struct _graph_node *node)
 {
     assert(self != NULL);
     if (self->empty(self))
     {
-        return false;
+        return NULL;
     }
 
     if(node == NULL)
@@ -820,7 +820,7 @@ static struct _graph_node * graph_find_unvisited_target(struct _graph *self, str
         }
         edge = edge->next;
     }
-    
+
     return NULL;
 }
 
@@ -920,13 +920,7 @@ const void *graph_iter_next(struct _iterator *iter)
             queue->pop(queue, &node);
             node->visited = true;
 
-            // 2. find unvisited target node
-            // target = graph_find_unvisited_target(self, node);
-            // if(target != NULL)
-            // {
-            //     queue->push(queue, &target);
-            // }
-
+            // 2. find all unvisited target node and push them to queue
             cur_edge = node->edgehead;
             while (cur_edge != NULL)
             {
@@ -934,10 +928,6 @@ const void *graph_iter_next(struct _iterator *iter)
                 if (target != NULL && target->visited != true)
                 {
                     queue->push(queue, &target);
-
-                    // self->print_obj(node->obj);
-                    // printf(" -> ");
-                    // self->print_obj(target->obj);
                 }
                 cur_edge = cur_edge->next;
             }
@@ -970,7 +960,7 @@ const void *graph_iter_next(struct _iterator *iter)
                 cur_node->visited = true;
 
                 // 3. find unvisited target node
-                cur_node = graph_find_unvisited_target(self, cur_node);
+                cur_node = graph_find_next_unvisited_target(self, cur_node);
                 break;
             }
             else
@@ -979,7 +969,7 @@ const void *graph_iter_next(struct _iterator *iter)
                 self->stack->pop(self->stack, &cur_node);
 
                 // 5. find unvisited target node
-                cur_node = graph_find_unvisited_target(self, cur_node);
+                cur_node = graph_find_next_unvisited_target(self, cur_node);
 
                 // 6. [graph special] If the graph contains isolated vertices
                 if(cur_node == NULL)
