@@ -1,13 +1,19 @@
 # unicstl
 
 ## 简介
+基于C语言实现的通用C库，包含常用数据结构和算法。
+
 全称: Universal C standard library
 
-基于C语言实现的通用C库。包含常用数据结构和算法
+作者：`温建峰`
 
-> 标准：--std=c99
+主页：[博客](https://blog.wenjianfeng.top)
 
-[数据结构详细说明](https://blog.wenjianfeng.top)
+邮箱：[orig5826@163.com](mailto:orig5826@163.com)
+
+## 编译环境
+- 编译器：gcc 13.2.0 
+- 标准：--std=c99
 
 ## 数据结构
 |数据结构 | 原理 |说明 |
@@ -153,6 +159,18 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 ```
 
 ## 修改日志
+
+### Unicstl 0.0.02 (2025-04-24)
+- new features
+    - graph add function: add/del/find vertex/edge
+    - graph add function: bfs/dfs
+    - tree remove old iterator and add new iterator
+    - deque add order select
+- bugfixed: 
+    - none
+- others:
+    - none
+
 
 ### Unicstl 0.0.01 (2025-04-24)
 - new features
