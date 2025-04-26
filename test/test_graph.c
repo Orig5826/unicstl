@@ -166,7 +166,8 @@ void test_graph_iter(void)
     while(iter_vertex->hasnext(iter_vertex))
     {
         temp = *(int *)iter_vertex->next(iter_vertex);
-        printf("temp = %d\n", temp);
+        // printf("temp = %d\n", temp);
+        // graph->print_obj(&temp);
     }
 
     graph_free(&graph);

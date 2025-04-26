@@ -776,6 +776,35 @@ static bool graph_find_edge(struct _graph *self, void *from, void *to)
     return true;
 }
 
+
+static struct _graph_node * graph_find_unvisited_target(struct _graph *self, struct _graph_node *node)
+{
+    assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+
+    if(node == NULL)
+    {
+        return NULL;
+    }
+
+    struct _graph_edge *edge = node->edgehead;
+    struct _graph_node *target = NULL;
+    while(edge != NULL)
+    {
+        target = edge->target;
+        if(target != NULL && target->visited != true)
+        {
+            return target;
+        }
+        edge = edge->next;
+    }
+    
+    return NULL;
+}
+
 iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void *start)
 {
     assert(self != NULL);
@@ -901,73 +930,47 @@ const void *graph_iter_next(struct _iterator *iter)
         // self->stack->push(self->stack, iter->_cur_node);
         struct _graph_node *cur_node = self->_iter._cur_node;
         struct _graph_node *node = NULL;
-        struct _graph_edge *cur_edge = cur_node->edgehead;
-        struct _graph_node *target = NULL;
 
         stack_t stack = self->stack;
 
-        // while (!self->stack->empty(self->stack) || cur_node != NULL)
-        do
+        // graph->DFS : similar to the preorder traversal of a tree
+        while (!self->stack->empty(self->stack) || cur_node != NULL)
         {
-            if(cur_node == NULL)
+            if (cur_node != NULL)
             {
-                break;
-            }
-
-            if(cur_node->visited == true)
-            {
-                stack->pop(stack, &cur_node);
-                cur_node->visited = true;
+                // 1. get current node
                 node = cur_node;
+
+                // 2. push current node to stack
+                self->stack->push(self->stack, &cur_node);
+                cur_node->visited = true;
+
+                // 3. find unvisited target node
+                cur_node = graph_find_unvisited_target(self, cur_node);
                 break;
             }
-
-            bool accessible_vertex_exists = false;
-
-            // 1. add cur_node to stack
-            stack->push(stack, &cur_node);
-
-            // 2. find the first unvisited vertex
-            cur_edge = cur_node->edgehead;
-            while(cur_edge != NULL)
+            else
             {
-                target = cur_edge->target;
-                if(target != NULL && target->visited != true)
+                // 4. if cur_node is NULL, pop from stack and find unvisited target node
+                self->stack->pop(self->stack, &cur_node);
+
+                // 5. find unvisited target node
+                cur_node = graph_find_unvisited_target(self, cur_node);
+
+                // 6. If the graph contains isolated vertices
+                cur_node = self->_head->next;
+                while (cur_node != NULL)
                 {
-                    accessible_vertex_exists = true;
-
-                    cur_node = target;
-                    break;
+                    if (cur_node->visited != true)
+                    {
+                        break;
+                    }
+                    cur_node = cur_node->next;
                 }
-                cur_edge = cur_edge->next;
             }
-            
-            iterator_t iter = stack->iter(stack);
-            struct _graph_node *temp_node = NULL;
-            while (iter->hasnext(iter))
-            {
-                temp_node = *(struct _graph_node **)iter->next(iter);
-                self->print_obj(temp_node->obj);
-            }
-            printf("\n");
-
-            if(accessible_vertex_exists != true ||
-                cur_edge == NULL)
-            {
-                // if no accessible vertex, pop from stack
-                stack->pop(stack, &node);
-                node->visited = true;
-
-                stack->peek(stack, &cur_node);
-                break;
-            }
-        }while(!stack->empty(stack));
-
-        printf("--- end ---\n");
+        }
         iter->_cur_node = cur_node;
-        printf("--- end1 ---\n");
         obj = node->obj;
-        printf("--- end2 ---\n");
     }
     break;
     default:
