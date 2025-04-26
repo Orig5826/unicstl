@@ -295,14 +295,22 @@ static void deque_print(struct _deque* self)
     }
 }
 
-iterator_t deque_iter(struct _deque* self)
+iterator_t deque_iter(struct _deque* self, enum _deque_order order)
 {
     assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_parent = self;
     iter->_cur = 0;
-    iter->_cur_node = self->_head;
+    iter->_order = order;
+    if(iter->_order == DEQUE_FORWARD)
+    {
+        iter->_cur_node = self->_head;
+    }
+    else
+    {
+        iter->_cur_node = self->_tail;
+    }
     return iter;
 }
 
@@ -327,13 +335,22 @@ const void* deque_iter_next(struct _iterator* iter)
     deque_t self = (deque_t)iter->_parent;
     void *obj = NULL;
     
-    // base on linklist
-    struct _deque_node * node = (struct _deque_node *)iter->_cur_node;
-    if(node != NULL)
+    struct _deque_node * cur_node = (struct _deque_node *)iter->_cur_node;
+    if(cur_node == NULL)
     {
-        obj = node->obj;
-        iter->_cur_node = node->next;
+        return NULL;
     }
+
+    obj = cur_node->obj;
+    if(iter->_order == DEQUE_FORWARD)
+    {
+        iter->_cur_node = cur_node->next;
+    }
+    else
+    {
+        iter->_cur_node = cur_node->prev;
+    }
+
     self->_iter._cur += 1;
     return obj;
 }

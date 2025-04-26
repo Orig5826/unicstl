@@ -20,6 +20,8 @@ struct _iterator
     void* _cur_node;
     uint32_t _cur;
 
+    uint32_t _order;
+
     // ---------- public ---------- 
     bool (*hasnext)(struct _iterator* self);
     const void* (*next)(struct _iterator* self);

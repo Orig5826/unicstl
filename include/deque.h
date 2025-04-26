@@ -13,6 +13,12 @@
 
 #include "common.h"
 
+enum _deque_order
+{
+    DEQUE_FORWARD,
+    DEQUE_REVERSE,
+};
+
 struct _deque_node
 {
     void* obj;
@@ -50,7 +56,7 @@ struct _deque
     bool (*clear)(struct _deque* self);
 
     // iter
-    iterator_t (*iter)(struct _deque* self);
+    iterator_t (*iter)(struct _deque* self, enum _deque_order order);
 
     // ohters
     bool (*insert)(struct _deque* self, int index, void* obj);

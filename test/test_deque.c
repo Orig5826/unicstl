@@ -267,7 +267,7 @@ static void test_deque_struct(void)
 static void test_deque_iter(void)
 {
     uint32_t i = 0;
-    int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
     uint32_t len = sizeof(data) / sizeof(data[0]);
 
@@ -288,24 +288,31 @@ static void test_deque_iter(void)
         TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
 
-    iterator_t iter = deque->iter(deque);
+    iterator_t iter = deque->iter(deque, DEQUE_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        // printf("%d ", temp);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i++;
     }
 
-    iter = deque->iter(deque);
+    iter = deque->iter(deque, DEQUE_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
-        // printf("%d ", temp);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i++;
+    }
+
+    iter = deque->iter(deque, DEQUE_REVERSE);
+    i = len - 1;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i--;
     }
 
     deque_free(&deque);
