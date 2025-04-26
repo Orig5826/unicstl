@@ -141,7 +141,7 @@ void test_graph_iter(void)
     // graph->print(graph);
 
     // test add_edge
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[1], 12));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[5], 12));
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[0], &data[2], 13));
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 24));
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[5], &data[6], 67));
@@ -149,7 +149,7 @@ void test_graph_iter(void)
     graph->print(graph);
 
     printf("test iter_vertex: \n");
-    iterator_t iter_vertex = graph->iter(graph, &data[0]);
+    iterator_t iter_vertex = graph->iter(graph, GRAPH_BFS, &data[0]);
     TEST_ASSERT_NOT_NULL(iter_vertex);
 
     printf("start\n");
@@ -157,7 +157,7 @@ void test_graph_iter(void)
     {
         printf("next : ");
         temp = *(int *)iter_vertex->next(iter_vertex);
-        printf("%d\n", temp);
+        printf("temp = %d\n", temp);
     }
     printf("end\n");
 

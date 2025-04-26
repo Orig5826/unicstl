@@ -13,6 +13,9 @@
 
 #include "common.h"
 
+#include "stack.h"
+#include "queue.h"
+
 enum _graph_type
 {
     GRAPH_UNDIRECTED,
@@ -20,6 +23,13 @@ enum _graph_type
     // GRAPH_UNDIRECTED_WEIGHT,
     // GRAPH_DIRECTED_WEIGHT,
 };
+
+enum _graph_search
+{
+    GRAPH_DFS,
+    GRAPH_BFS,
+};
+
 
 struct _graph_edge
 {
@@ -47,8 +57,13 @@ struct _graph
     uint32_t _ratio;
 
     enum _graph_type _type;
+    enum _graph_search _search;
+
+    stack_t stack;
+    queue_t queue;
+
     struct _iterator _iter;
-    
+
     void (*_destory)(struct _graph* self);
 
     // -------------------- public -------------------- 
@@ -77,7 +92,7 @@ struct _graph
     bool (*full)(struct _graph* self);
 
     // iter
-    iterator_t (*iter)(struct _graph* self, void *obj);
+    iterator_t (*iter)(struct _graph* self, enum _graph_search search_type, void *obj);
 
     // config 
     compare_fun_t compare;  // !!! you have to implement this function
