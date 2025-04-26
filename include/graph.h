@@ -42,8 +42,9 @@ struct _graph_node
 {
     void* obj;
     struct _graph_node* next;
-    struct _graph_edge* edgehead;
+
     bool visited;
+    struct _graph_edge* edgehead;
 };
 
 struct _graph
@@ -77,22 +78,16 @@ struct _graph
     bool (*del_edge)(struct _graph* self, void* from, void* to);
     bool (*find_edge)(struct _graph* self, void* from, void* to);
 
-    // traverse
-    bool (*dfs)(struct _graph* self, uint32_t idx);
-    bool (*bfs)(struct _graph* self, uint32_t idx);
-
-    bool (*get)(struct _graph* self, uint32_t idx, void* obj);
-    bool (*remove)(struct _graph* self, uint32_t idx);
+    bool (*empty)(struct _graph* self);
+    bool (*full)(struct _graph* self);
 
     // base
     uint32_t(*size)(struct _graph* self);
     uint32_t(*capacity)(struct _graph* self);
     bool (*clear)(struct _graph* self);
-    bool (*empty)(struct _graph* self);
-    bool (*full)(struct _graph* self);
 
     // iter
-    iterator_t (*iter)(struct _graph* self, enum _graph_search search_type, void *obj);
+    iterator_t (*iter)(struct _graph* self, enum _graph_search search, void *obj);
 
     // config 
     compare_fun_t compare;  // !!! you have to implement this function

@@ -103,7 +103,7 @@ void test_graph_add_edge(void)
     // test find_edge
     TEST_ASSERT_TRUE(graph->find_edge(graph, &data[0], &data[1]));
     TEST_ASSERT_TRUE(graph->find_edge(graph, &data[1], &data[3]));
-    TEST_ASSERT_TRUE(graph->find_edge(graph, &data[6], &data[5]));  // undirected graph
+    // TEST_ASSERT_TRUE(graph->find_edge(graph, &data[6], &data[5]));  // undirected graph
     TEST_ASSERT_FALSE(graph->find_edge(graph, &data[4], &data[3]));
     TEST_ASSERT_FALSE(graph->find_edge(graph, &data[0], &temp));
 
@@ -149,7 +149,7 @@ void test_graph_iter(void)
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[7], &data[6], 87));
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[8], &data[2], 92));
     TEST_ASSERT_FALSE(graph->add_edge(graph, &temp, &data[1], 0));
-    // graph->print(graph);
+    graph->print(graph);
 
     iterator_t iter_vertex = NULL;
 

@@ -455,7 +455,7 @@ static void graph_print(struct _graph *self)
         return;
     }
 
-    printf("vertex : \n");
+    printf("\nvertex : \n");
     struct _graph_node *cur = self->_head->next;
     while (cur != NULL)
     {
@@ -470,23 +470,21 @@ static void graph_print(struct _graph *self)
     {
         if (cur->edgehead != NULL)
         {
-            // struct _graph_edge* edge = cur->edgehead->next;
             struct _graph_edge *edge = cur->edgehead;
             while (edge != NULL)
             {
                 struct _graph_node *target = (struct _graph_node *)edge->target;
 
-                printf("from ");
+                // printf("from ");
                 self->print_obj(cur->obj);
-                printf(" to ");
+                // printf(" to ");
+                printf("--> ");
                 self->print_obj(target->obj);
                 printf(": %d \n", edge->weight);
 
                 edge = edge->next;
             }
         }
-
-        // self->print_obj(cur->obj);
         cur = cur->next;
     }
     printf("\n");
@@ -1059,11 +1057,9 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
 
     // others
     self->from_matrix = NULL;
-    self->bfs = NULL;
-    self->dfs = NULL;
+
 
     self->compare = NULL;
-
     // -------------------- debug --------------------
     self->print_obj = NULL;
     self->print = graph_print;
