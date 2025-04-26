@@ -78,12 +78,11 @@ struct _graph
     bool (*del_edge)(struct _graph* self, void* from, void* to);
     bool (*find_edge)(struct _graph* self, void* from, void* to);
 
-    bool (*empty)(struct _graph* self);
-    bool (*full)(struct _graph* self);
-
     // base
     uint32_t(*size)(struct _graph* self);
     uint32_t(*capacity)(struct _graph* self);
+    bool (*empty)(struct _graph* self);
+    bool (*full)(struct _graph* self);
     bool (*clear)(struct _graph* self);
 
     // iter

@@ -1,12 +1,12 @@
 /**
  * @file list.h
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-06-23
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #ifndef _LIST_H_
 #define _LIST_H_
@@ -16,8 +16,8 @@
 
 struct _list
 {
-    // -------------------- private -------------------- 
-    void * obj;
+    // -------------------- private --------------------
+    void *obj;
 
     uint32_t _obj_size;
     uint32_t _size;
@@ -27,27 +27,28 @@ struct _list
 
     struct _iterator _iter;
 
-    void (*_destory)(struct _list* self);
+    void (*_destory)(struct _list *self);
 
-    // -------------------- public -------------------- 
+    // -------------------- public --------------------
     // kernel
-    bool (*append)(struct _list* self, void* obj);                      // Append object to the end of the list.
-    bool (*insert)(struct _list* self, int index, void* obj);           // Insert object before index.
-    bool (*pop)(struct _list* self, int index, void* obj);              // Remove and return item at index.
-    
-    int (*index)(struct _list* self, void* obj);                        // Return first index of obj. Return -1 if the obj is not present.
-    bool (*remove)(struct _list* self, void *obj);                      // Remove first occurrence of obj.
+    bool (*append)(struct _list *self, void *obj);            // Append object to the end of the list.
+    bool (*insert)(struct _list *self, int index, void *obj); // Insert object before index.
+    bool (*pop)(struct _list *self, int index, void *obj);    // Remove and return item at index.
 
-    bool (*get)(struct _list* self, int index, void* obj);
-    bool (*set)(struct _list* self, int index, void* obj);
+    int (*index)(struct _list *self, void *obj);    // Return first index of obj. Return -1 if the obj is not present.
+    bool (*remove)(struct _list *self, void *obj);  // Remove first occurrence of obj.
+
+    bool (*get)(struct _list *self, int index, void *obj);
+    bool (*set)(struct _list *self, int index, void *obj);
 
     // base
-    uint32_t(*size)(struct _list* self);
-    bool (*empty)(struct _list* self);
-    bool (*clear)(struct _list* self);
+    uint32_t (*size)(struct _list *self);
+    uint32_t (*capacity)(struct _list *self);
+    bool (*empty)(struct _list *self);
+    bool (*clear)(struct _list *self);
 
     // iter
-    iterator_t (*iter)(struct _list* self);
+    iterator_t (*iter)(struct _list *self);
 
     // sort
     // bool (*reverse)(struct _list* self);        // Reverse *IN PLACE*.
@@ -59,15 +60,15 @@ struct _list
     */
     // bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
 
-    // -------------------- debug -------------------- 
-    void (*print)(struct _list* self);
-    void (*print_obj)(void* obj);
+    // -------------------- debug --------------------
+    void (*print)(struct _list *self);
+    void (*print_obj)(void *obj);
 };
-typedef struct _list* list_t;
+typedef struct _list *list_t;
 
 // create and free list
 list_t list_new2(uint32_t obj_size, uint32_t capacity);
 
-void list_free(list_t* list);
+void list_free(list_t *list);
 
 #endif // _LIST_H_

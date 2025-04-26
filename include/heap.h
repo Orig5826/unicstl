@@ -36,12 +36,12 @@ struct _heap
 
     // -------------------- public -------------------- 
     // kernel
-    bool (*peek)(struct _heap* self, void* obj);
     bool (*push)(struct _heap* self, void* obj);
     bool (*pop)(struct _heap* self, void* obj);
-    bool (*empty)(struct _heap* self);
+    bool (*peek)(struct _heap* self, void* obj);
 
     // base
+    bool (*empty)(struct _heap* self);
     uint32_t(*size)(struct _heap* self);
     bool (*clear)(struct _heap* self);
 

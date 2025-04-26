@@ -30,10 +30,18 @@
 
 ## 接口函数原型
 ```c
-// 对外接口
+// -------------------- 初始化 --------------------
 struct* new(...);                   // 创建
 void free(struct**);                // 释放
 
+// 内部接口
+// init 初始化  <构造函数>
+// destory 销毁 <析构函数>
+
+// 外部实现
+int compare(void* obj1, void* obj2);// 比较函数，new后立刻配置（树、图必须）
+
+// -------------------- 核心功能 --------------------
 // 核心操作
 bool push(const void* obj);         // [栈、队列] 入栈/入队
 bool push_front(const void* obj);   // [双端队列] 头部入队
@@ -47,6 +55,10 @@ bool peek(void* obj);               // [栈]             查看栈顶元素
 bool front(void* obj);              // [队列、双端队列] 查看头部元素
 bool back(void* obj);               // [队列、双端队列] 查看尾部元素
 
+// bool add_(const void* obj);          // 添加元素 <图：顶点、边>
+// bool del_(const void* obj);          // 删除元素 <图：顶点、边>
+// bool find_(const void* obj);         // 查找元素 <图：顶点、边>
+
 // 基础操作
 uint32_t size();                    // 获取大小
 bool empty();                       // 判断是否为空
@@ -59,21 +71,21 @@ iterator_t iter(...);               // 返回迭代器
 bool iter_hasnext();                // 是否有下一个元素
 void* iter_next();                  // 迭代器下一个元素
 
-// 其他操作
-bool append(const void* obj);        // 追加元素 <push_back>
-bool delete(const void *obj);        // 删除元素  
+// -------------------- 扩展功能 --------------------
+// 元素相关操作
+bool append(const void* obj);        // 追加元素 <push_back> 一般用于list 
+bool delete(const void *obj);        // 删除元素 
+bool find(const void* obj);          // 查找元素
+uint32_t count(const void* obj);     // 统计元素个数
 
-// 扩展操作 <带索引>
+// 索引相关操作
+uint32_t index(void *obj);                      // 获取元素索引
 bool insert(uint32_t index, const void* obj);   // 插入元素
 bool remove(uint32_t index);                    // 删除元素
-// bool erase(uint32_t index);                    // 删除元素 <删除元素但不释放内存？> 暂未考虑实现
+// bool erase(uint32_t index);                  // 删除元素 <删除元素但不释放内存？> 暂未考虑实现
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
-uint32_t index(void *obj);          // 获取元素索引
-void* find(const void* obj);        // 查找元素
 
-// 外部接口
-int compare(void* obj1, void* obj2);      // 比较函数，用于排序等操作
 ```
 
 ## 特点

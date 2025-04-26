@@ -43,11 +43,11 @@ struct _stack
     bool (*push)(struct _stack* self, void* obj);
     bool (*pop)(struct _stack* self, void* obj);
     bool (*peek)(struct _stack* self, void* obj);
-    bool (*empty)(struct _stack* self);
-
+    
     // base
     uint32_t (*size)(struct _stack* self);
     uint32_t (*capacity)(struct _stack* self);
+    bool (*empty)(struct _stack* self);
     bool (*clear)(struct _stack* self);
     
     // iter
