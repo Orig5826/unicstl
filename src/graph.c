@@ -855,6 +855,20 @@ const void *graph_iter_next(struct _iterator *iter)
 
         queue_t queue = self->queue;
 
+        if (queue->empty(queue))
+        {
+            cur_node = self->_head->next;
+            while (cur_node != NULL)
+            {
+                if(cur_node->visited != true)
+                {
+                    queue->push(queue, &cur_node);
+                    break;
+                }
+                cur_node = cur_node->next;
+            }
+        }
+
         if (!queue->empty(queue) && node != NULL)
         {
             queue->pop(queue, &node);
@@ -868,32 +882,14 @@ const void *graph_iter_next(struct _iterator *iter)
                 {
                     queue->push(queue, &target);
                                             
-                    self->print_obj(node->obj);
-                    printf(" -> ");
-                    self->print_obj(target->obj);
+                    // self->print_obj(node->obj);
+                    // printf(" -> ");
+                    // self->print_obj(target->obj);
                 }
                 cur_edge = cur_edge->next;
             }
 
             cur_node = node;
-        }
-        else
-        {
-            // if queue is empty, find next unvisited node
-            cur_node = self->_head->next;
-            while (cur_node != NULL)
-            {
-                if(cur_node->visited != true)
-                {
-                    break;
-                }
-                cur_node = cur_node->next;
-            }
-            if(cur_node != NULL)
-            {
-                queue->push(queue, &cur_node);
-                iter->_cur_node = cur_node;
-            }
         }
 
         iter->_cur_node = cur_node;
