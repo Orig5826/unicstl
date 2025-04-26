@@ -146,17 +146,27 @@ void test_graph_iter(void)
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[1], &data[3], 24));
     TEST_ASSERT_TRUE(graph->add_edge(graph, &data[5], &data[6], 67));
 
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[7], &data[6], 24));
-    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[9], &data[2], 67));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[7], &data[6], 87));
+    TEST_ASSERT_TRUE(graph->add_edge(graph, &data[8], &data[2], 92));
     TEST_ASSERT_FALSE(graph->add_edge(graph, &temp, &data[1], 0));
-    graph->print(graph);
+    // graph->print(graph);
 
-    iterator_t iter_vertex = graph->iter(graph, GRAPH_BFS, &data[0]);
+    iterator_t iter_vertex = NULL;
+
+    iter_vertex = graph->iter(graph, GRAPH_BFS, &data[0]);
     TEST_ASSERT_NOT_NULL(iter_vertex);
     while(iter_vertex->hasnext(iter_vertex))
     {
         temp = *(int *)iter_vertex->next(iter_vertex);
-        graph->print_obj(&temp);
+        // graph->print_obj(&temp);
+    }
+
+    iter_vertex = graph->iter(graph, GRAPH_DFS, &data[0]);
+    TEST_ASSERT_NOT_NULL(iter_vertex);
+    while(iter_vertex->hasnext(iter_vertex))
+    {
+        temp = *(int *)iter_vertex->next(iter_vertex);
+        // graph->print_obj(&temp);
     }
 
     graph_free(&graph);

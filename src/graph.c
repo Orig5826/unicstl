@@ -899,6 +899,43 @@ const void *graph_iter_next(struct _iterator *iter)
     case GRAPH_DFS:
     {
         // self->stack->push(self->stack, iter->_cur_node);
+        struct _graph_node* cur_node = self->_iter._cur_node;
+        struct _graph_node* node = NULL;
+        struct _graph_edge *cur_edge = cur_node->edgehead;
+        struct _graph_node *target = NULL;
+
+        stack_t stack = self->stack;
+ 
+        while (!self->stack->empty(self->stack) || cur_node != NULL)
+        {
+            if (cur_edge != NULL)
+            {
+                target = cur_edge->target;
+                if(target != NULL && target->visited != true)
+                {
+                    stack->push(stack, &target);
+                }
+                cur_edge = cur_edge->next;
+            }
+            else
+            {
+                iterator_t iter = stack->iter(stack);
+                while(iter->hasnext(iter))
+                {
+                    struct _graph_node* g_node = *(struct _graph_node **)iter->next(iter);
+                    self->print_obj(g_node->obj);
+                }
+                printf("\n");
+
+                self->stack->pop(self->stack, &cur_node);
+                node = cur_node;
+                cur_node = cur_node->next;
+                break;
+            }
+        }
+        
+        iter->_cur_node = node;
+        obj = cur_node->obj;
     }
     break;
     default:
