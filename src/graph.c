@@ -772,6 +772,56 @@ static bool graph_find_edge(struct _graph* self, void* from, void* to)
     return true;
 }
 
+
+iterator_t graph_iter(struct _graph* self, void* start_obj)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_cur = 0;
+    iter->_cur_node = self->_head;
+
+    struct _graph_node* start = find_node(self, start_obj);
+    if(start != NULL)
+    {
+        iter->_cur_node = start;
+    }
+    return iter;
+}
+
+bool graph_iter_hasnext(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    graph_t self = (graph_t)iter->_parent;
+    if(iter->_cur < self->size(self))
+    {
+        return true;
+    }
+    return false;
+}
+
+const void* graph_iter_next(struct _iterator* iter)
+{
+    assert(iter != NULL);
+    assert(iter->parent != NULL);
+
+    graph_t self = (graph_t)iter->_parent;
+    void *obj = NULL;
+    
+    // base on linklist
+    struct _graph_node * node = (struct _graph_node *)iter->_cur_node;
+    if(node != NULL)
+    {
+        obj = node->obj;
+        iter->_cur_node = node->next;
+    }
+    self->_iter._cur += 1;
+    return obj;
+}
+
 static bool graph_init(struct _graph* self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -799,6 +849,9 @@ static bool graph_init(struct _graph* self, uint32_t obj_size)
     self->_type = GRAPH_UNDIRECTED;
     // self->_type = GRAPH_DIRECTED;
 
+    self->_iter.hasnext = graph_iter_hasnext;
+    self->_iter.next = graph_iter_next;
+
     self->_destory = graph_destory;
 
     // -------------------- public -------------------- 
@@ -818,6 +871,10 @@ static bool graph_init(struct _graph* self, uint32_t obj_size)
     self->empty = graph_empty;
     self->capacity = graph_capacity;
 
+    // iter
+    self->iter = graph_iter;
+
+    // others
     self->from_matrix = NULL;
     self->bfs = NULL;
     self->dfs = NULL;

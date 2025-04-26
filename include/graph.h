@@ -77,7 +77,7 @@ struct _graph
     bool (*full)(struct _graph* self);
 
     // iter
-    iterator_t (*iter)(struct _graph* self);
+    iterator_t (*iter)(struct _graph* self, void *obj);
 
     // config 
     compare_fun_t compare;  // !!! you have to implement this function
