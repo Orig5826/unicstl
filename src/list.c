@@ -214,8 +214,6 @@ iterator_t list_iter(struct _list* self)
 static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
     assert(list != NULL);
-    assert(obj_size > 0);
-    assert(capacity > 0);
     if(list == NULL || obj_size == 0 || capacity == 0)
     {
         return false;

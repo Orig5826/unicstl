@@ -11,7 +11,7 @@
 #ifndef _UNICSTL_CONFIG_H_
 
 /**
- * @brief unicstl container
+ * @brief unicstl contains which module
  * 
  */
 #define UNICSTL_LIST
@@ -27,7 +27,7 @@
  * @brief debug 
  * 
  */
-#define NDEBUG       // assert disable
+// #define NDEBUG       // assert disable
 
 #define UNICSTL_DEBUG
 
@@ -38,7 +38,6 @@
     #define UNICSTL_DEBUG_TREE
     #define UNICSTL_DEBUG_HEAP
     #define UNICSTL_DEBUG_GRAPH
-    // #define UNICSTL_DEBUG_ITERATOR
 #endif
 
 #endif

@@ -252,7 +252,7 @@ static void heap_print(struct _heap* self)
 bool heap_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     heap_t self = (heap_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -265,7 +265,7 @@ bool heap_iter_hasnext(struct _iterator* iter)
 const void* heap_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     heap_t self = (heap_t)iter->_container;
     void *obj = NULL;

@@ -591,93 +591,6 @@ static bool tree_avl_delete(struct _tree* self, void* obj)
     return true;
 }
 
-static bool tree_clear(struct _tree* self)
-{
-    assert(self != NULL);
-    if (self->_root == NULL)
-    {
-        // return false;
-        return true;
-    }
-
-    struct _tree_node* node = self->_root;
-    queue_t queue = queue_new(sizeof(struct _tree_node*));
-
-    queue->push(queue, &node);
-    while (!queue->empty(queue))
-    {
-        queue->pop(queue, &node);
-        if (node->left != NULL)
-        {
-            queue->push(queue, &node->left);
-        }
-        if (node->right != NULL)
-        {
-            queue->push(queue, &node->right);
-        }
-        tree_node_free(&node);
-    }
-    queue_free(&queue);
-    self->_root = NULL;
-    self->_size = 0;
-    return true;
-}
-
-static bool tree_empty(struct _tree* self)
-{
-    assert(self != NULL);
-    return !self->size(self);
-}
-
-static uint32_t tree_size(struct _tree* self)
-{
-    assert(self != NULL);
-    return self->_size;
-}
-
-// free
-static void tree_destory(struct _tree* self)
-{
-    assert(self != NULL);
-    self->clear(self);
-    self->_root = NULL;
-
-    if (self->stack != NULL)
-    {
-        stack_free(&self->stack);
-    }
-    if (self->queue != NULL)
-    {
-        queue_free(&self->queue);
-    }
-}
-
-static bool tree_min(struct _tree* self, void* obj)
-{
-    assert(self != NULL);
-    struct _tree_node* node = tree_find_min(self, self->_root);
-    if (node == NULL)
-    {
-        return false;
-    }
-    memmove(obj, node->obj, self->_obj_size);
-    return true;
-}
-
-static bool tree_max(struct _tree* self, void* obj)
-{
-    assert(self != NULL);
-    struct _tree_node* node = tree_find_max(self, self->_root);
-    if (node == NULL)
-    {
-        return false;
-    }
-    memmove(obj, node->obj, self->_obj_size);
-    return true;
-}
-
-
-
 static rbt_color tree_color(struct _tree_node* node)
 {
     assert(node != NULL);
@@ -690,7 +603,6 @@ static bool tree_set_color(struct _tree_node* node, rbt_color color)
     node->color = color;
     return true;
 }
-
 
 static struct _tree_node* tree_rb_turn_left(struct _tree* self, struct _tree_node* root)
 {
@@ -1128,15 +1040,100 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
     return true;
 }
 
+static bool tree_empty(struct _tree* self)
+{
+    assert(self != NULL);
+    return !self->size(self);
+}
+
+static uint32_t tree_size(struct _tree* self)
+{
+    assert(self != NULL);
+    return self->_size;
+}
+
+static bool tree_clear(struct _tree* self)
+{
+    assert(self != NULL);
+    if (self->_root == NULL)
+    {
+        // return false;
+        return true;
+    }
+
+    struct _tree_node* node = self->_root;
+    queue_t queue = queue_new(sizeof(struct _tree_node*));
+
+    queue->push(queue, &node);
+    while (!queue->empty(queue))
+    {
+        queue->pop(queue, &node);
+        if (node->left != NULL)
+        {
+            queue->push(queue, &node->left);
+        }
+        if (node->right != NULL)
+        {
+            queue->push(queue, &node->right);
+        }
+        tree_node_free(&node);
+    }
+    queue_free(&queue);
+    self->_root = NULL;
+    self->_size = 0;
+    return true;
+}
+
+static void tree_destory(struct _tree* self)
+{
+    assert(self != NULL);
+    self->clear(self);
+    self->_root = NULL;
+
+    if (self->stack != NULL)
+    {
+        stack_free(&self->stack);
+    }
+    if (self->queue != NULL)
+    {
+        queue_free(&self->queue);
+    }
+}
+
 static uint32_t tree_height(struct _tree* self)
 {
     return tree_height_node(self, self->_root);
 }
 
+
+static bool tree_min(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    struct _tree_node* node = tree_find_min(self, self->_root);
+    if (node == NULL)
+    {
+        return false;
+    }
+    memmove(obj, node->obj, self->_obj_size);
+    return true;
+}
+
+static bool tree_max(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+    struct _tree_node* node = tree_find_max(self, self->_root);
+    if (node == NULL)
+    {
+        return false;
+    }
+    memmove(obj, node->obj, self->_obj_size);
+    return true;
+}
+
 static bool tree_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     tree_t self = (tree_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -1149,7 +1146,7 @@ static bool tree_iter_hasnext(struct _iterator* iter)
 static const void* tree_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     tree_t self = (tree_t)iter->_container;
     void *obj = NULL;

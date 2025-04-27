@@ -298,7 +298,7 @@ static void deque_print(struct _deque* self)
 bool deque_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -311,7 +311,7 @@ bool deque_iter_hasnext(struct _iterator* iter)
 const void* deque_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
     void *obj = NULL;

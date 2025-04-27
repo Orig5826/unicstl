@@ -257,7 +257,7 @@ static void stack2_print(struct _stack* self)
 bool stack_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     stack_t self = (stack_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -274,7 +274,7 @@ bool stack_iter_hasnext(struct _iterator* iter)
 const void* stack_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     stack_t self = (stack_t)iter->_container;
     void *obj = NULL;

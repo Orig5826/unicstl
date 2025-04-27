@@ -309,7 +309,7 @@ static void queue2_print(struct _queue* self)
 static bool queue_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -322,7 +322,7 @@ static bool queue_iter_hasnext(struct _iterator* iter)
 static const void* queue_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
@@ -355,7 +355,7 @@ static iterator_t queue_iter(struct _queue* self)
 static const void* queue2_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
-    assert(iter->parent != NULL);
+    assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
@@ -385,7 +385,6 @@ static iterator_t queue2_iter(struct _queue* self)
 static bool queue_init(struct _queue * self, uint32_t obj_size)
 {
     assert(self != NULL);
-    assert(obj_size > 0);
     if(self == NULL || obj_size == 0)
     {
         return false;
@@ -430,8 +429,6 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
 static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
-    assert(obj_size > 0);
-    assert(capacity > 0);
     if(self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
