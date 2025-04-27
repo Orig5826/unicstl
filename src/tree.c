@@ -12,6 +12,8 @@
 #include "queue.h"
 #include "stack.h"
 
+#define TREE_RECURSIVE_ENABLED 
+
 static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
     assert(self != NULL);
@@ -57,7 +59,7 @@ static void tree_node_free(struct _tree_node** node)
 
 static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
 {
-#if 0
+#ifdef TREE_RECURSIVE_ENABLED
     assert(self != NULL);
     if (root == NULL)
     {
@@ -242,7 +244,7 @@ static struct _tree_node* tree_turn_right_then_left(struct _tree* self, struct _
  */
 static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
 {
-#if 0
+#ifdef TREE_RECURSIVE_ENABLED
     assert(self != NULL);
     if (root == NULL)
     {
@@ -253,7 +255,6 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         return false;
     }
 
-    // self->print_obj(root->obj);
     tree_set_balance(self, root);
     int balance = root->balance;
     if (balance == 2)
@@ -288,6 +289,7 @@ static bool tree_avl_rebalance(struct _tree* self, struct _tree_node* root)
         self->_root = root;
     }
     return true;
+
 #else
     assert(self != NULL);
     if (root == NULL)
@@ -365,59 +367,28 @@ static struct _tree_node* tree_find(struct _tree* self, void* obj)
 static struct _tree_node* tree_find_min(struct _tree* self, struct _tree_node* root)
 {
     assert(self != NULL);
-#if 0
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    if (root->left == NULL)
-    {
-        return root;
-    }
-    return tree_find_min(self, root->left);
-#else
     while (root != NULL)
     {
-        if (root->left != NULL)
+        if (root->left == NULL)
         {
-            root = root->left;
+            break;
         }
-        else
-        {
-            return root;
-        }
+        root = root->left;
     }
     return root;
-#endif
 }
 
 static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* root)
 {
-#if 0
-    assert(self != NULL);
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    if (root->right == NULL)
-    {
-        return root;
-    }
-    return tree_find_max(self, root->right);
-#else
     while (root != NULL)
     {
-        if (root->right != NULL)
+        if (root->right == NULL)
         {
-            root = root->right;
+            break;
         }
-        else
-        {
-            return root;
-        }
+        root = root->right;
     }
     return root;
-#endif
 }
 
 /**
