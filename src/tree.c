@@ -503,7 +503,7 @@ static bool tree_avl_insert(struct _tree* self, void* obj)
             return false;
         }
 
-        self->rebalance(self, root);
+        self->_rebalance(self, root);
     }
     self->_size++;
     return true;
@@ -568,7 +568,7 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
             }
         }
 
-        self->rebalance(self, node->parent);
+        self->_rebalance(self, node->parent);
     }
     tree_node_free(node);
     return true;
@@ -834,7 +834,7 @@ static bool tree_rb_insert(struct _tree* self, void* obj)
 
     }
 
-    self->rebalance(self, node);
+    self->_rebalance(self, node);
 
     self->_size++;
     return true;
@@ -1468,13 +1468,13 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
 
+    self->_rebalance = tree_avl_rebalance;
     self->_destory = tree_destory;
 
     // -------------------- public --------------------
     // kernel
     self->insert = tree_avl_insert;
     self->delete = tree_avl_delete;
-    self->rebalance = tree_avl_rebalance;
     self->height = tree_height;
 
     // base
@@ -1522,13 +1522,13 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     self->_iter.hasnext = tree_iter_hasnext;
     self->_iter.next = tree_iter_next;
 
+    self->_rebalance = tree_rb_rebalance;
     self->_destory = tree_destory;
 
     // -------------------- public --------------------
     // kernel
     self->insert = tree_rb_insert;
     self->delete = tree_rb_delete;
-    self->rebalance = tree_rb_rebalance;
     self->height = tree_height;
 
     // base

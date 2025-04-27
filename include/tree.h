@@ -79,7 +79,7 @@ struct _tree
 
     struct _iterator _iter;
 
-    bool (*rebalance)(struct _tree* self, struct _tree_node* root);
+    bool (*_rebalance)(struct _tree* self, struct _tree_node* root);
     void (*_destory)(struct _tree* self);
 
     // -------------------- public -------------------- 
