@@ -79,14 +79,14 @@ struct _tree
 
     struct _iterator _iter;
 
+    bool (*rebalance)(struct _tree* self, struct _tree_node* root);
     void (*_destory)(struct _tree* self);
 
     // -------------------- public -------------------- 
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
-    bool (*rebalance)(struct _tree* self, struct _tree_node* root);
-    int32_t (*height)(struct _tree* self, struct _tree_node* root);
+    uint32_t (*height)(struct _tree* self);
 
     // base
     bool (*clear)(struct _tree* self);

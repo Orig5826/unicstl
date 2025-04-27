@@ -12,6 +12,60 @@
 #include "queue.h"
 #include "stack.h"
 
+
+static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
+{
+#if 0
+    assert(self != NULL);
+    if (root == NULL)
+    {
+        return 0;
+    }
+    uint32_t left_height = tree_height_node(self, root->left);
+    uint32_t right_height = tree_height_node(self, root->right);
+    return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
+#else
+    assert(self != NULL);
+    if (root == NULL)
+    {
+        return 0;
+    }
+    uint32_t height = 0;
+    int32_t count_cur_level = 0;
+    int32_t count_next_level = 0;
+
+    struct _tree_node* node = root;
+    queue_t queue = queue_new(sizeof(struct _tree_node*));
+
+    queue->push(queue, &node);
+    while (!queue->empty(queue))
+    {
+        queue->pop(queue, &node);
+        if (node->left != NULL)
+        {
+            queue->push(queue, &node->left);
+        }
+        if (node->right != NULL)
+        {
+            queue->push(queue, &node->right);
+        }
+
+        if (count_cur_level == count_next_level)
+        {
+            count_next_level = queue->size(queue);
+            height++;
+            count_cur_level = 1;
+        }
+        else
+        {
+            count_cur_level++;
+        }
+    }
+    queue_free(&queue);
+    return height;
+#endif
+}
+
 static void tree_set_balance(struct _tree* self, struct _tree_node* node)
 {
     assert(self != NULL);
@@ -19,7 +73,7 @@ static void tree_set_balance(struct _tree* self, struct _tree_node* node)
     {
         return;
     }
-    node->balance = self->height(self, node->right) - self->height(self, node->left);
+    node->balance = (int32_t)(tree_height_node(self, node->right) - tree_height_node(self, node->left));
 }
 
 static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* root)
@@ -126,59 +180,6 @@ static struct _tree_node* tree_turn_right_then_left(struct _tree* self, struct _
     }
     node = tree_turn_left(self, root);
     return node;
-}
-
-static int32_t tree_height(struct _tree* self, struct _tree_node* root)
-{
-#if 0
-    assert(self != NULL);
-    if (root == NULL)
-    {
-        return 0;
-    }
-    int32_t left_height = tree_height(self, root->left);
-    int32_t right_height = tree_height(self, root->right);
-    return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
-#else
-    assert(self != NULL);
-    if (root == NULL)
-    {
-        return 0;
-    }
-    int32_t height = 0;
-    int32_t count_cur_level = 0;
-    int32_t count_next_level = 0;
-
-    struct _tree_node* node = root;
-    queue_t queue = queue_new(sizeof(struct _tree_node*));
-
-    queue->push(queue, &node);
-    while (!queue->empty(queue))
-    {
-        queue->pop(queue, &node);
-        if (node->left != NULL)
-        {
-            queue->push(queue, &node->left);
-        }
-        if (node->right != NULL)
-        {
-            queue->push(queue, &node->right);
-        }
-
-        if (count_cur_level == count_next_level)
-        {
-            count_next_level = queue->size(queue);
-            height++;
-            count_cur_level = 1;
-        }
-        else
-        {
-            count_cur_level++;
-        }
-    }
-    queue_free(&queue);
-    return height;
-#endif
 }
 
 /**
@@ -1432,6 +1433,10 @@ static const void* tree_iter_next(struct _iterator* iter)
     return obj;
 }
 
+static uint32_t tree_height(struct _tree* self)
+{
+    return tree_height_node(self, self->_root);
+}
 
 static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
 {
