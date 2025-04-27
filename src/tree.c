@@ -1151,7 +1151,7 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
     return true;
 }
 
-static iterator_t tree_iter(struct _tree* self, enum _order order)
+static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
 {
     assert(self != NULL);
     iterator_t iter = &self->_iter;

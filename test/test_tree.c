@@ -67,7 +67,7 @@ static const int expected_int_array_orderpre_delete[15][15] = {
     { 13, },
 };
 
-static const enum _order order[8] = { 
+static const enum _tree_order order[8] = { 
     ORDER_PRE, ORDER_IN, ORDER_POST, ORDER_BREADTH,
     ORDER_PRE_R, ORDER_IN_R, ORDER_POST_R, ORDER_BREADTH_R
 };
@@ -335,10 +335,6 @@ static void test_rbtree_delete(void)
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
-    enum _order order[8] = { 
-        ORDER_PRE, ORDER_IN, ORDER_POST, ORDER_BREADTH,
-        ORDER_PRE_R, ORDER_IN_R, ORDER_POST_R, ORDER_BREADTH_R
-    };
 
     tree_t tree = tree_rb_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);

@@ -22,29 +22,17 @@ typedef enum {
     RBT_BLACK,
 }rbt_color;
 
-/**
- * @brief dfs amd bfs traversal order
- * 
- *  pre-order traversal
- *   in-order traversal
- *  post-order traversal
- *  breadth-first search traversal [BFS]
- * 
- *  right-first pre-order traversal
- *  right-first in-order traversal
- *  right-first post-order traversal
- *  breadth-first search traversal [BFS]
- */
-enum _order{
-    ORDER_PRE,
-    ORDER_IN,
-    ORDER_POST,
-    ORDER_BREADTH,
+// dfs and bfs traversal order
+enum _tree_order{
+    ORDER_PRE,      // pre-order
+    ORDER_IN,       // in-order
+    ORDER_POST,     // post-order
+    ORDER_BREADTH,  // breadth-first search [BFS]
 
-    ORDER_PRE_R,
-    ORDER_IN_R,
-    ORDER_POST_R,
-    ORDER_BREADTH_R,
+    ORDER_PRE_R,    // right-first pre-order
+    ORDER_IN_R,     // right-first in-order
+    ORDER_POST_R,   // right-first post-order
+    ORDER_BREADTH_R,// right-first breadth-first search [BFS]
 };
 
 struct _tree_node
@@ -71,7 +59,7 @@ struct _tree
     uint32_t _capacity;
     uint32_t _ratio;
 
-    enum _order _order;
+    enum _tree_order _order;
     bool _right_priority;
 
     stack_t stack;
@@ -94,7 +82,7 @@ struct _tree
     uint32_t (*size)(struct _tree* self);
 
     // iter
-    iterator_t (*iter)(struct _tree* self, enum _order);
+    iterator_t (*iter)(struct _tree* self, enum _tree_order);
 
     // others
     bool (*min)(struct _tree* self, void* obj);
