@@ -300,7 +300,7 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
     assert(self != NULL);
     iterator_t iter = &self->_iter;
 
-    iter->_parent = self;
+    iter->_container = self;
     iter->_index = 0;
     iter->_order = order;
     if(iter->_order == DEQUE_FORWARD)
@@ -319,7 +319,7 @@ bool deque_iter_hasnext(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    deque_t self = (deque_t)iter->_parent;
+    deque_t self = (deque_t)iter->_container;
     if(iter->_index < self->size(self))
     {
         return true;
@@ -332,7 +332,7 @@ const void* deque_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    deque_t self = (deque_t)iter->_parent;
+    deque_t self = (deque_t)iter->_container;
     void *obj = NULL;
     
     struct _deque_node * cur_node = (struct _deque_node *)iter->_node;

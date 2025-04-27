@@ -255,7 +255,7 @@ iterator_t heap_iter(struct _heap* self)
     assert(self != NULL);
     iterator_t iter = &self->_iter;
 
-    iter->_parent = self;
+    iter->_container = self;
     iter->_index = 0;
     iter->_node = self->obj;
     return iter;
@@ -266,7 +266,7 @@ bool heap_iter_hasnext(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    heap_t self = (heap_t)iter->_parent;
+    heap_t self = (heap_t)iter->_container;
     if(iter->_index < self->size(self))
     {
         return true;
@@ -279,7 +279,7 @@ const void* heap_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    heap_t self = (heap_t)iter->_parent;
+    heap_t self = (heap_t)iter->_container;
     void *obj = NULL;
 
     uint32_t index = iter->_index;

@@ -1156,7 +1156,7 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
     assert(self != NULL);
     iterator_t iter = &self->_iter;
 
-    iter->_parent = self;
+    iter->_container = self;
     iter->_index = 0;
     iter->_node = self->_root;
 
@@ -1240,7 +1240,7 @@ static bool tree_iter_hasnext(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    tree_t self = (tree_t)iter->_parent;
+    tree_t self = (tree_t)iter->_container;
     if(iter->_index < self->size(self))
     {
         return true;
@@ -1253,7 +1253,7 @@ static const void* tree_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    tree_t self = (tree_t)iter->_parent;
+    tree_t self = (tree_t)iter->_container;
     void *obj = NULL;
 
     struct _tree_node* cur_node = iter->_node;

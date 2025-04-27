@@ -311,7 +311,7 @@ static iterator_t queue_iter(struct _queue* self)
     assert(self != NULL);
     iterator_t iter = &self->_iter;
 
-    iter->_parent = self;
+    iter->_container = self;
     iter->_index = 0;
     iter->_node = self->_front;
     return iter;
@@ -322,7 +322,7 @@ static bool queue_iter_hasnext(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    queue_t self = (queue_t)iter->_parent;
+    queue_t self = (queue_t)iter->_container;
     if(iter->_index < self->size(self))
     {
         return true;
@@ -335,7 +335,7 @@ static const void* queue_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    queue_t self = (queue_t)iter->_parent;
+    queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
     
     // base on linklist
@@ -354,7 +354,7 @@ static const void* queue2_iter_next(struct _iterator* iter)
     assert(iter != NULL);
     assert(iter->parent != NULL);
 
-    queue_t self = (queue_t)iter->_parent;
+    queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
 
     // base on array

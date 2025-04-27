@@ -16,10 +16,10 @@
 struct _iterator
 {
     // ---------- private ---------- 
-    void* _parent;
-    void* _node;
-    uint32_t _index;
+    void* _container;   // pointer to stack/queue/tree ...
 
+    void* _node;        // current node 
+    uint32_t _index;    // current index
     uint32_t _order;
 
     // ---------- public ---------- 
