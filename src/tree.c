@@ -31,8 +31,8 @@ static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
         return 0;
     }
     uint32_t height = 0;
-    int32_t count_cur_level = 0;
-    int32_t count_next_level = 0;
+    uint32_t count_cur_level = 0;
+    uint32_t count_next_level = 0;
 
     struct _tree_node* node = root;
     queue_t queue = queue_new(sizeof(struct _tree_node*));
@@ -1370,14 +1370,7 @@ static const void* tree_iter_next(struct _iterator* iter)
         if (!self->stack->empty(self->stack))
         {
             self->stack->pop(self->stack, &cur_node);
-        }
-        else
-        {
-            cur_node = NULL;
-        }
 
-        if(cur_node != NULL)
-        {
             self->_iter._cur_node = cur_node;
             obj = cur_node->obj;
         }
@@ -1385,44 +1378,36 @@ static const void* tree_iter_next(struct _iterator* iter)
     case ORDER_BREADTH:
     case ORDER_BREADTH_R:
     {
-        struct _tree_node* node = cur_node;
         queue_t queue = self->queue;
-        if (!queue->empty(queue) && node != NULL)
+        if (!queue->empty(queue) && cur_node != NULL)
         {
-            queue->pop(queue, &node);
+            queue->pop(queue, &cur_node);
+
+            self->_iter._cur_node = cur_node;
+            obj = cur_node->obj;
+
             if (self->_order == ORDER_BREADTH)
             {
-                if (node->left != NULL)
+                if (cur_node->left != NULL)
                 {
-                    queue->push(queue, &node->left);
+                    queue->push(queue, &cur_node->left);
                 }
-                if (node->right != NULL)
+                if (cur_node->right != NULL)
                 {
-                    queue->push(queue, &node->right);
+                    queue->push(queue, &cur_node->right);
                 }
             }
             else
             {
-                if (node->right != NULL)
+                if (cur_node->right != NULL)
                 {
-                    queue->push(queue, &node->right);
+                    queue->push(queue, &cur_node->right);
                 }
-                if (node->left != NULL)
+                if (cur_node->left != NULL)
                 {
-                    queue->push(queue, &node->left);
+                    queue->push(queue, &cur_node->left);
                 }
             }
-            cur_node = node;
-        }
-        else
-        {
-            cur_node = NULL;
-        }
-
-        if(cur_node != NULL)
-        {
-            self->_iter._cur_node = cur_node;
-            obj = cur_node->obj;
         }
     }break;
     default:
