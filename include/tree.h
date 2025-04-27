@@ -59,9 +59,6 @@ struct _tree
     uint32_t _capacity;
     uint32_t _ratio;
 
-    enum _tree_order _order;
-    bool _right_priority;
-
     stack_t stack;
     queue_t queue;
 

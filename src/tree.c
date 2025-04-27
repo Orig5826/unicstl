@@ -1160,11 +1160,11 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
     iter->_cur = 0;
     iter->_cur_node = self->_root;
 
-    self->_order = order;
+    iter->_order = order;
     self->stack->clear(self->stack);
     self->queue->clear(self->queue);
 
-    switch (self->_order)
+    switch (iter->_order)
     {
     case ORDER_PRE:
     case ORDER_PRE_R:
@@ -1183,7 +1183,7 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
         self->stack->clear(self->stack);
 
         stack_t stack = stack_new(sizeof(struct _tree_node*));
-        if (self->_order == ORDER_POST)
+        if (iter->_order == ORDER_POST)
         {
             while (!stack->empty(stack) || node != NULL)
             {
@@ -1258,13 +1258,13 @@ static const void* tree_iter_next(struct _iterator* iter)
 
     struct _tree_node* cur_node = self->_iter._cur_node;
     struct _tree_node* target_node = NULL;
-    switch (self->_order)
+    switch (iter->_order)
     {
     case ORDER_PRE:
     case ORDER_PRE_R:
     {
         struct _tree_node* node = NULL;
-        if (self->_order == ORDER_PRE)
+        if (iter->_order == ORDER_PRE)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1306,7 +1306,7 @@ static const void* tree_iter_next(struct _iterator* iter)
     case ORDER_IN:
     case ORDER_IN_R:
     {
-        if (self->_order == ORDER_IN)
+        if (iter->_order == ORDER_IN)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1363,7 +1363,7 @@ static const void* tree_iter_next(struct _iterator* iter)
             queue->pop(queue, &cur_node);
             target_node = cur_node;
 
-            if (self->_order == ORDER_BREADTH)
+            if (iter->_order == ORDER_BREADTH)
             {
                 if (cur_node->left != NULL)
                 {
@@ -1412,9 +1412,6 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     self->_size = 0;
     // self->_capacity = 64;
     // self->_ratio = 2;
-
-    self->_right_priority = false;
-    self->_order = ORDER_PRE;
 
     self->_root = NULL;
 
@@ -1468,9 +1465,6 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     // self->_ratio = 2;
 
     self->_root = NULL;
-
-    self->_right_priority = false;
-    self->_order = ORDER_PRE;
 
     self->stack = stack_new(sizeof(struct _tree_node*));
     if (self->stack == NULL)
