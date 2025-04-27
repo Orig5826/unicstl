@@ -12,7 +12,7 @@
 #include "queue.h"
 #include "stack.h"
 
-#define TREE_RECURSIVE_ENABLED 
+// #define TREE_RECURSIVE_ENABLED 
 
 static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
@@ -50,10 +50,6 @@ static void tree_node_free(struct _tree_node** node)
         }
         free(*node);
         *node = NULL;
-    }
-    else
-    {
-        printf("+++\n");
     }
 }
 
