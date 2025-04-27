@@ -12,6 +12,48 @@
 #include "queue.h"
 #include "stack.h"
 
+static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
+{
+    assert(self != NULL);
+
+    void* obj_new = malloc(self->_obj_size);
+    if (obj_new == NULL)
+    {
+        return NULL;
+    }
+    memmove(obj_new, obj, self->_obj_size);
+
+    struct _tree_node* node_new = (struct _tree_node*)malloc(sizeof(struct _tree_node));
+    if (node_new == NULL)
+    {
+        free(obj_new);
+        return NULL;
+    }
+    node_new->obj = obj_new;
+    node_new->parent = NULL;
+    node_new->left = NULL;
+    node_new->right = NULL;
+    node_new->balance = 0;
+
+    return node_new;
+}
+
+static void tree_node_free(struct _tree_node** node)
+{
+    if (node != NULL && (*node) != NULL)
+    {
+        if ((*node)->obj != NULL)
+        {
+            free((*node)->obj);
+        }
+        free(*node);
+        *node = NULL;
+    }
+    else
+    {
+        printf("+++\n");
+    }
+}
 
 static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
 {
@@ -378,54 +420,6 @@ static struct _tree_node* tree_find_max(struct _tree* self, struct _tree_node* r
 #endif
 }
 
-static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
-{
-    assert(self != NULL);
-
-    void* obj_new = malloc(self->_obj_size);
-    if (obj_new == NULL)
-    {
-        goto done;
-    }
-    memmove(obj_new, obj, self->_obj_size);
-
-    struct _tree_node* node_new = (struct _tree_node*)malloc(sizeof(struct _tree_node));
-    if (node_new == NULL)
-    {
-        goto done;
-    }
-    node_new->obj = obj_new;
-    node_new->parent = NULL;
-    node_new->left = NULL;
-    node_new->right = NULL;
-    node_new->balance = 0;
-
-    return node_new;
-done:
-    if (obj_new != NULL)
-    {
-        free(obj_new);
-    }
-    if (node_new != NULL)
-    {
-        free(node_new);
-    }
-    return NULL;
-}
-
-static bool tree_node_free(struct _tree_node* node)
-{
-    if (node != NULL)
-    {
-        if (node->obj != NULL)
-        {
-            free(node->obj);
-        }
-        free(node);
-    }
-    return true;
-}
-
 /**
  * @brief find the position to insert or find object
  *
@@ -499,7 +493,7 @@ static bool tree_avl_insert(struct _tree* self, void* obj)
         else
         {
             // if obj exist, just return false
-            tree_node_free(node);
+            tree_node_free(&node);
             return false;
         }
 
@@ -570,7 +564,7 @@ static bool tree_avl_delete_single_child(struct _tree* self, struct _tree_node* 
 
         self->_rebalance(self, node->parent);
     }
-    tree_node_free(node);
+    tree_node_free(&node);
     return true;
 }
 
@@ -643,7 +637,7 @@ static bool tree_clear(struct _tree* self)
         {
             queue->push(queue, &node->right);
         }
-        tree_node_free(node);
+        tree_node_free(&node);
     }
     queue_free(&queue);
     self->_root = NULL;
@@ -828,7 +822,7 @@ static bool tree_rb_insert(struct _tree* self, void* obj)
         else
         {
             // if obj exist, just return false
-            tree_node_free(node);
+            tree_node_free(&node);
             return false;
         }
 
@@ -1146,7 +1140,7 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
         self->_root = NULL;
     }
 
-    tree_node_free(tmp);
+    tree_node_free(&tmp);
     self->_size--;
     return true;
 }
