@@ -405,11 +405,7 @@ struct _tree_node* tree_find_pos(struct _tree* self, void* obj)
     struct _tree_node* root = self->_root;
     while (root != NULL)
     {
-        if (self->compare(obj, root->obj) == 0)
-        {
-            break;
-        }
-        else if (self->compare(obj, root->obj) < 0)
+        if (self->compare(obj, root->obj) < 0)
         {
             if (root->left == NULL)
             {
@@ -417,13 +413,18 @@ struct _tree_node* tree_find_pos(struct _tree* self, void* obj)
             }
             root = root->left;
         }
-        else
+        else if(self->compare(obj, root->obj) > 0)
         {
             if (root->right == NULL)
             {
                 break;
             }
             root = root->right;
+        }
+        else
+        {
+            // if obj exist
+            break;
         }
     }
     return root;
@@ -436,40 +437,46 @@ static bool tree_avl_insert(struct _tree* self, void* obj)
     assert(obj != NULL);
     assert(self->compare != NULL);
 
-    struct _tree_node* node = tree_node_new(self, obj);
-    if (node == NULL)
-    {
-        return false;
-    }
-
-    // if no root
     if (self->_root == NULL)
     {
-        self->_root = node;
+        // if tree is empty
+        struct _tree_node* new_node = tree_node_new(self, obj);
+        if (new_node == NULL)
+        {
+            return false;
+        }
+
+        self->_root = new_node;
     }
     else
     {
-        // insert the node
         struct _tree_node* root = tree_find_pos(self, obj);
+        if (self->compare(obj, root->obj) == 0)
+        {
+            // if obj is exist in tree, return false
+            return false;
+        }
+
+        struct _tree_node* new_node = tree_node_new(self, obj);
+        if (new_node == NULL)
+        {
+            return false;
+        }
+
         if (self->compare(obj, root->obj) < 0)
         {
-            root->left = node;
-            node->parent = root;
+            root->left = new_node;
+            new_node->parent = root;
         }
-        else if (self->compare(obj, root->obj) > 0)
+        else /*if (self->compare(obj, root->obj) > 0)*/
         {
-            root->right = node;
-            node->parent = root;
-        }
-        else
-        {
-            // if obj exist, just return false
-            tree_node_free(&node);
-            return false;
+            root->right = new_node;
+            new_node->parent = root;
         }
 
         self->_rebalance(self, root);
     }
+
     self->_size++;
     return true;
 }
@@ -765,41 +772,46 @@ static bool tree_rb_insert(struct _tree* self, void* obj)
     assert(obj != NULL);
     assert(self->compare != NULL);
 
-    struct _tree_node* node = tree_node_new(self, obj);
-    if (node == NULL)
-    {
-        return false;
-    }
-
-    // if no root
+    struct _tree_node* new_node = NULL;
     if (self->_root == NULL)
     {
-        self->_root = node;
-    }
-    else
-    {
-        // insert the node
-        struct _tree_node* root = tree_find_pos(self, obj);
-        if (self->compare(obj, root->obj) < 0)
+        // if tree is empty
+        new_node = tree_node_new(self, obj);
+        if (new_node == NULL)
         {
-            root->left = node;
-            node->parent = root;
-        }
-        else if (self->compare(obj, root->obj) > 0)
-        {
-            root->right = node;
-            node->parent = root;
-        }
-        else
-        {
-            // if obj exist, just return false
-            tree_node_free(&node);
             return false;
         }
 
+        self->_root = new_node;
+    }
+    else
+    {
+        struct _tree_node* root = tree_find_pos(self, obj);
+        if (self->compare(obj, root->obj) == 0)
+        {
+            // if obj is exist in tree, return false
+            return false;
+        }
+
+        new_node = tree_node_new(self, obj);
+        if (new_node == NULL)
+        {
+            return false;
+        }
+
+        if (self->compare(obj, root->obj) < 0)
+        {
+            root->left = new_node;
+            new_node->parent = root;
+        }
+        else /*if (self->compare(obj, root->obj) > 0)*/
+        {
+            root->right = new_node;
+            new_node->parent = root;
+        }
     }
 
-    self->_rebalance(self, node);
+    self->_rebalance(self, new_node);
 
     self->_size++;
     return true;
