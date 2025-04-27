@@ -3,13 +3,13 @@
 ## 简介
 基于C语言实现的通用C库，包含常用数据结构和算法。
 
-全称: Universal C standard library
+**全称：** Universal C standard library
 
-作者：`温建峰`
+**作者：** 温建峰
 
-主页：[博客](https://blog.wenjianfeng.top)
+**主页：** [博客](https://blog.wenjianfeng.top)
 
-邮箱：[orig5826@163.com](mailto:orig5826@163.com)
+**邮箱：**[orig5826@163.com](mailto:orig5826@163.com)
 
 ## 编译环境
 - 编译器：gcc 13.2.0 
@@ -33,6 +33,8 @@
 | tree_rb_new  | 二叉搜索树 | 红黑树 |
 | **heap**    | |**堆** |
 | heap_new2   | 数组 | 最大堆/最小堆 |
+| **graph**    | |**图** |
+| graph_new   | 链表 |  |
 
 ## 接口函数原型
 ```c
@@ -57,13 +59,16 @@ bool pop(void* obj);                // [栈、队列] 出栈/出队
 bool pop_front(void* obj);          // [双端队列] 头部出队
 bool pop_back(void* obj);           // [双端队列] 尾部出队
 
-bool peek(void* obj);               // [栈]             查看栈顶元素
+bool peek(void* obj);               // [栈]            查看栈顶元素
 bool front(void* obj);              // [队列、双端队列] 查看头部元素
 bool back(void* obj);               // [队列、双端队列] 查看尾部元素
 
-// bool add_(const void* obj);          // 添加元素 <图：顶点、边>
-// bool del_(const void* obj);          // 删除元素 <图：顶点、边>
-// bool find_(const void* obj);         // 查找元素 <图：顶点、边>
+// bool insert(const void* obj);       // [树] 插入元素 <insert用于和位置相关操作>
+// bool delete(const void* obj);       // [树] 删除元素
+
+// bool add_(const void* obj);         // [图：顶点、边] 添加元素 <add不考虑位置关系>
+// bool del_(const void* obj);         // [图：顶点、边] 删除元素 
+// bool find_(const void* obj);        // [图：顶点、边] 查找元素
 
 // 基础操作
 uint32_t size();                    // 获取大小
@@ -80,15 +85,16 @@ void* iter_next();                  // 迭代器下一个元素
 // -------------------- 扩展功能 --------------------
 // 元素相关操作
 bool append(const void* obj);        // 追加元素 <push_back> 一般用于list 
-bool delete(const void *obj);        // 删除元素 
-bool find(const void* obj);          // 查找元素
+bool delete(const void* obj);       // 删除元素
+// bool remove(const void *obj);     // 删除元素 <同delete>
+bool find(const void* obj);          // 查找元素 <返回值，bool/uint32_t/void*待定？>
+bool contains(const void* obj);      // 判断元素是否存在 <返回bool>
 uint32_t count(const void* obj);     // 统计元素个数
 
 // 索引相关操作
 uint32_t index(void *obj);                      // 获取元素索引
-bool insert(uint32_t index, const void* obj);   // 插入元素
-bool remove(uint32_t index);                    // 删除元素
-// bool erase(uint32_t index);                  // 删除元素 <删除元素但不释放内存？> 暂未考虑实现
+bool insert(uint32_t index, const void* obj);   // 插入元素 <非树>
+bool erase(uint32_t index);                     // 删除元素
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
 
