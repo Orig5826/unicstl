@@ -312,7 +312,7 @@ static iterator_t queue_iter(struct _queue* self)
     iterator_t iter = &self->_iter;
 
     iter->_parent = self;
-    iter->_cur = 0;
+    iter->_index = 0;
     iter->_cur_node = self->_front;
     return iter;
 }
@@ -323,7 +323,7 @@ static bool queue_iter_hasnext(struct _iterator* iter)
     assert(iter->parent != NULL);
 
     queue_t self = (queue_t)iter->_parent;
-    if(iter->_cur < self->size(self))
+    if(iter->_index < self->size(self))
     {
         return true;
     }
@@ -345,7 +345,7 @@ static const void* queue_iter_next(struct _iterator* iter)
         obj = node->obj;
         iter->_cur_node = node->next;
     }
-    self->_iter._cur += 1;
+    iter->_index += 1;
     return obj;
 }
 
@@ -358,10 +358,10 @@ static const void* queue2_iter_next(struct _iterator* iter)
     void *obj = NULL;
 
     // base on array
-    uint32_t index = self->_iter._cur;
+    uint32_t index = iter->_index;
     obj = self->_front->obj + self->_obj_size * index;
 
-    self->_iter._cur += 1;
+    iter->_index += 1;
     return obj;
 }
 

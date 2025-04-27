@@ -182,8 +182,8 @@ static void list_print(struct _list* self)
 static const void* list_iter_next(struct _iterator* iter)
 {
     list_t self = (list_t)iter->_parent;
-    void *obj = self->obj + self->_iter._cur * self->_obj_size;
-    self->_iter._cur += 1;
+    void *obj = self->obj + iter->_index * self->_obj_size;
+    iter->_index += 1;
     return obj;
 }
 
@@ -191,7 +191,7 @@ static bool list_iter_hasnext(struct _iterator* iter)
 {
     list_t self = (list_t)iter->_parent;
 
-    if(self->_iter._cur < self->size(self))
+    if(iter->_index < self->size(self))
     {
         return true;
     }
@@ -200,9 +200,12 @@ static bool list_iter_hasnext(struct _iterator* iter)
 
 iterator_t list_iter(struct _list* self)
 {
-    self->_iter._parent = self;
-    self->_iter._cur = 0;
-    return &self->_iter;
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_index = 0;
+    return iter;
 }
 
 static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)

@@ -283,11 +283,11 @@ const void* stack_iter_next(struct _iterator* iter)
     else
     {
         // base on array
-        uint32_t index = self->size(self) - 1 - self->_iter._cur;
+        uint32_t index = self->size(self) - 1 - iter->_index;
         obj = self->_head->obj + self->_obj_size * index;
     }
     
-    self->_iter._cur += 1;
+    iter->_index += 1;
     return obj;
 }
 
@@ -297,7 +297,7 @@ bool stack_iter_hasnext(struct _iterator* iter)
     assert(iter->parent != NULL);
 
     stack_t self = (stack_t)iter->_parent;
-    if(self->_iter._cur < self->size(self))
+    if(iter->_index < self->size(self))
     {
         return true;
     }
@@ -307,10 +307,12 @@ bool stack_iter_hasnext(struct _iterator* iter)
 iterator_t stack_iter(struct _stack* self)
 {
     assert(self != NULL);
-    self->_iter._parent = self;
-    self->_iter._cur = 0;
-    self->_iter._cur_node = self->_head->next;
-    return &self->_iter;
+    iterator_t iter = &self->_iter;
+
+    iter->_parent = self;
+    iter->_index = 0;
+    iter->_cur_node = self->_head->next;
+    return iter;
 }
 
 static bool stack_init(struct _stack* self, uint32_t obj_size)

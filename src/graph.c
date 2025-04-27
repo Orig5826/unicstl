@@ -828,7 +828,7 @@ iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void 
     iterator_t iter = &self->_iter;
 
     iter->_parent = self;
-    iter->_cur = 0;
+    iter->_index = 0;
     iter->_cur_node = self->_head->next;
 
     struct _graph_node *start_node = find_node(self, start);
@@ -874,7 +874,7 @@ bool graph_iter_hasnext(struct _iterator *iter)
     assert(iter->parent != NULL);
 
     graph_t self = (graph_t)iter->_parent;
-    if (iter->_cur < self->size(self))
+    if (iter->_index < self->size(self))
     {
         return true;
     }
@@ -885,11 +885,10 @@ const void *graph_iter_next(struct _iterator *iter)
 {
     assert(iter != NULL);
     assert(iter->parent != NULL);
-
     graph_t self = (graph_t)iter->_parent;
     void *obj = NULL;
 
-    iter->_cur += 1;
+    iter->_index += 1;
     switch (self->_search)
     {
     case GRAPH_BFS:
