@@ -257,7 +257,7 @@ iterator_t heap_iter(struct _heap* self)
 
     iter->_parent = self;
     iter->_index = 0;
-    iter->_cur_node = self->obj;
+    iter->_node = self->obj;
     return iter;
 }
 

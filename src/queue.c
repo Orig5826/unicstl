@@ -313,7 +313,7 @@ static iterator_t queue_iter(struct _queue* self)
 
     iter->_parent = self;
     iter->_index = 0;
-    iter->_cur_node = self->_front;
+    iter->_node = self->_front;
     return iter;
 }
 
@@ -339,11 +339,11 @@ static const void* queue_iter_next(struct _iterator* iter)
     void *obj = NULL;
     
     // base on linklist
-    struct _queue_node * node = (struct _queue_node *)iter->_cur_node;
+    struct _queue_node * node = (struct _queue_node *)iter->_node;
     if(node != NULL)
     {
         obj = node->obj;
-        iter->_cur_node = node->next;
+        iter->_node = node->next;
     }
     iter->_index += 1;
     return obj;

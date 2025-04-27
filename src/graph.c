@@ -829,14 +829,14 @@ iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void 
 
     iter->_parent = self;
     iter->_index = 0;
-    iter->_cur_node = self->_head->next;
+    iter->_node = self->_head->next;
 
     struct _graph_node *start_node = find_node(self, start);
     if (start_node == NULL)
     {
         goto done;
     }
-    iter->_cur_node = start_node;
+    iter->_node = start_node;
 
     struct _graph_node *node = self->_head->next;
     while (node != NULL)
@@ -850,7 +850,7 @@ iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void 
     {
     case GRAPH_BFS:
     {
-        self->queue->push(self->queue, &iter->_cur_node);
+        self->queue->push(self->queue, &iter->_node);
     }
     break;
     case GRAPH_DFS:
@@ -893,7 +893,7 @@ const void *graph_iter_next(struct _iterator *iter)
     {
     case GRAPH_BFS:
     {
-        struct _graph_node *cur_node = iter->_cur_node;
+        struct _graph_node *cur_node = iter->_node;
         struct _graph_edge *cur_edge = cur_node->edgehead;
         struct _graph_node *target = NULL;
         struct _graph_node *node = cur_node;
@@ -932,14 +932,13 @@ const void *graph_iter_next(struct _iterator *iter)
             cur_node = node;
         }
 
-        iter->_cur_node = cur_node;
+        iter->_node = cur_node;
         obj = cur_node->obj;
     }
     break;
     case GRAPH_DFS:
     {
-        // self->stack->push(self->stack, iter->_cur_node);
-        struct _graph_node *cur_node = self->_iter._cur_node;
+        struct _graph_node *cur_node = iter->_node;
         struct _graph_node *node = NULL;
 
         stack_t stack = self->stack;
@@ -975,7 +974,7 @@ const void *graph_iter_next(struct _iterator *iter)
                 }
             }
         }
-        iter->_cur_node = cur_node;
+        iter->_node = cur_node;
         obj = node->obj;
     }
     break;

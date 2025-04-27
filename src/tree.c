@@ -1158,7 +1158,7 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
 
     iter->_parent = self;
     iter->_index = 0;
-    iter->_cur_node = self->_root;
+    iter->_node = self->_root;
 
     iter->_order = order;
     self->stack->clear(self->stack);
@@ -1256,7 +1256,7 @@ static const void* tree_iter_next(struct _iterator* iter)
     tree_t self = (tree_t)iter->_parent;
     void *obj = NULL;
 
-    struct _tree_node* cur_node = self->_iter._cur_node;
+    struct _tree_node* cur_node = iter->_node;
     struct _tree_node* target_node = NULL;
     switch (iter->_order)
     {
@@ -1392,7 +1392,7 @@ static const void* tree_iter_next(struct _iterator* iter)
     }break;
     }
 
-    self->_iter._cur_node = cur_node;
+    iter->_node = cur_node;
     obj = target_node->obj;
     iter->_index += 1;
     return obj;

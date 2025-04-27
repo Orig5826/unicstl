@@ -17,7 +17,7 @@ struct _iterator
 {
     // ---------- private ---------- 
     void* _parent;
-    void* _cur_node;
+    void* _node;
     uint32_t _index;
 
     uint32_t _order;

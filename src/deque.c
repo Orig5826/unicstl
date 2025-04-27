@@ -305,11 +305,11 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
     iter->_order = order;
     if(iter->_order == DEQUE_FORWARD)
     {
-        iter->_cur_node = self->_head;
+        iter->_node = self->_head;
     }
     else
     {
-        iter->_cur_node = self->_tail;
+        iter->_node = self->_tail;
     }
     return iter;
 }
@@ -335,7 +335,7 @@ const void* deque_iter_next(struct _iterator* iter)
     deque_t self = (deque_t)iter->_parent;
     void *obj = NULL;
     
-    struct _deque_node * cur_node = (struct _deque_node *)iter->_cur_node;
+    struct _deque_node * cur_node = (struct _deque_node *)iter->_node;
     if(cur_node == NULL)
     {
         return NULL;
@@ -344,11 +344,11 @@ const void* deque_iter_next(struct _iterator* iter)
     obj = cur_node->obj;
     if(iter->_order == DEQUE_FORWARD)
     {
-        iter->_cur_node = cur_node->next;
+        iter->_node = cur_node->next;
     }
     else
     {
-        iter->_cur_node = cur_node->prev;
+        iter->_node = cur_node->prev;
     }
 
     iter->_index += 1;

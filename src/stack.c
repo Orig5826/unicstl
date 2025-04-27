@@ -273,11 +273,11 @@ const void* stack_iter_next(struct _iterator* iter)
     if(self->_head->obj == NULL)
     {
         // base on linklist
-        struct _stack_node* node = (struct _stack_node *)self->_iter._cur_node;
+        struct _stack_node* node = (struct _stack_node *)iter->_node;
         if(node != NULL)
         {
             obj = node->obj;
-            self->_iter._cur_node = node->next;
+            iter->_node = node->next;
         }
     }
     else
@@ -311,7 +311,7 @@ iterator_t stack_iter(struct _stack* self)
 
     iter->_parent = self;
     iter->_index = 0;
-    iter->_cur_node = self->_head->next;
+    iter->_node = self->_head->next;
     return iter;
 }
 
