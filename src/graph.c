@@ -822,52 +822,6 @@ static struct _graph_node * graph_find_next_unvisited_target(struct _graph *self
     return NULL;
 }
 
-iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void *start)
-{
-    assert(self != NULL);
-    iterator_t iter = &self->_iter;
-
-    iter->_container = self;
-    iter->_index = 0;
-    iter->_node = self->_head->next;
-
-    struct _graph_node *start_node = find_node(self, start);
-    if (start_node == NULL)
-    {
-        goto done;
-    }
-    iter->_node = start_node;
-
-    struct _graph_node *node = self->_head->next;
-    while (node != NULL)
-    {
-        node->visited = false;
-        node = node->next;
-    }
-
-    self->_search = search_type;
-    switch (self->_search)
-    {
-    case GRAPH_BFS:
-    {
-        self->queue->push(self->queue, &iter->_node);
-    }
-    break;
-    case GRAPH_DFS:
-    {
-        // pass
-    }
-    break;
-    default:
-    {
-    }
-    break;
-    }
-
-done:
-    return iter;
-}
-
 bool graph_iter_hasnext(struct _iterator *iter)
 {
     assert(iter != NULL);
@@ -987,6 +941,55 @@ const void *graph_iter_next(struct _iterator *iter)
     return obj;
 }
 
+iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void *start)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    // iter->_node = self->_head->next;
+
+    struct _graph_node *start_node = find_node(self, start);
+    if (start_node == NULL)
+    {
+        goto done;
+    }
+    iter->_node = start_node;
+
+    iter->hasnext = graph_iter_hasnext;
+    iter->next = graph_iter_next;
+
+    struct _graph_node *node = self->_head->next;
+    while (node != NULL)
+    {
+        node->visited = false;
+        node = node->next;
+    }
+
+    self->_search = search_type;
+    switch (self->_search)
+    {
+    case GRAPH_BFS:
+    {
+        self->queue->push(self->queue, &iter->_node);
+    }
+    break;
+    case GRAPH_DFS:
+    {
+        // pass
+    }
+    break;
+    default:
+    {
+    }
+    break;
+    }
+
+done:
+    return iter;
+}
+
 static bool graph_init(struct _graph *self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -1027,9 +1030,6 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
 
     self->_type = GRAPH_UNDIRECTED;
     // self->_type = GRAPH_DIRECTED;
-
-    self->_iter.hasnext = graph_iter_hasnext;
-    self->_iter.next = graph_iter_next;
 
     self->_destory = graph_destory;
 

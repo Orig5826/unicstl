@@ -306,17 +306,6 @@ static void queue2_print(struct _queue* self)
     }
 }
 
-static iterator_t queue_iter(struct _queue* self)
-{
-    assert(self != NULL);
-    iterator_t iter = &self->_iter;
-
-    iter->_container = self;
-    iter->_index = 0;
-    iter->_node = self->_front;
-    return iter;
-}
-
 static bool queue_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
@@ -349,6 +338,20 @@ static const void* queue_iter_next(struct _iterator* iter)
     return obj;
 }
 
+static iterator_t queue_iter(struct _queue* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_node = self->_front;
+
+    iter->hasnext = queue_iter_hasnext;
+    iter->next = queue_iter_next;
+    return iter;
+}
+
 static const void* queue2_iter_next(struct _iterator* iter)
 {
     assert(iter != NULL);
@@ -363,6 +366,20 @@ static const void* queue2_iter_next(struct _iterator* iter)
 
     iter->_index += 1;
     return obj;
+}
+
+static iterator_t queue2_iter(struct _queue* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_node = self->_front;
+
+    iter->hasnext = queue_iter_hasnext;
+    iter->next = queue2_iter_next;
+    return iter;
 }
 
 static bool queue_init(struct _queue * self, uint32_t obj_size)
@@ -386,10 +403,6 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
 
     // base
     self->_destory = queue_destory;
-
-    // iter
-    self->_iter.hasnext = queue_iter_hasnext;
-    self->_iter.next = queue_iter_next;
 
     // -------------------- public -------------------- 
     // kernel
@@ -471,7 +484,7 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
     self->clear = queue2_clear;
 
     // iter
-    self->iter = queue_iter;
+    self->iter = queue2_iter;
 
     // -------------------- debug -------------------- 
     self->print = queue2_print;

@@ -249,18 +249,6 @@ static void heap_print(struct _heap* self)
     }
 }
 
-
-iterator_t heap_iter(struct _heap* self)
-{
-    assert(self != NULL);
-    iterator_t iter = &self->_iter;
-
-    iter->_container = self;
-    iter->_index = 0;
-    iter->_node = self->obj;
-    return iter;
-}
-
 bool heap_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
@@ -289,6 +277,20 @@ const void* heap_iter_next(struct _iterator* iter)
     return obj;
 }
 
+iterator_t heap_iter(struct _heap* self)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_node = self->obj;
+
+    iter->hasnext = heap_iter_hasnext;
+    iter->next = heap_iter_next;
+    return iter;
+}
+
 static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
 {
     assert(self != NULL);
@@ -305,9 +307,6 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
         return false;
     }
 
-    self->_iter.hasnext = heap_iter_hasnext;
-    self->_iter.next = heap_iter_next;
-    
     self->_destory = heap_destory;
 
     // -------------------- public -------------------- 

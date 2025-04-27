@@ -295,25 +295,6 @@ static void deque_print(struct _deque* self)
     }
 }
 
-iterator_t deque_iter(struct _deque* self, enum _deque_order order)
-{
-    assert(self != NULL);
-    iterator_t iter = &self->_iter;
-
-    iter->_container = self;
-    iter->_index = 0;
-    iter->_order = order;
-    if(iter->_order == DEQUE_FORWARD)
-    {
-        iter->_node = self->_head;
-    }
-    else
-    {
-        iter->_node = self->_tail;
-    }
-    return iter;
-}
-
 bool deque_iter_hasnext(struct _iterator* iter)
 {
     assert(iter != NULL);
@@ -355,6 +336,28 @@ const void* deque_iter_next(struct _iterator* iter)
     return obj;
 }
 
+iterator_t deque_iter(struct _deque* self, enum _deque_order order)
+{
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_order = order;
+    if(iter->_order == DEQUE_FORWARD)
+    {
+        iter->_node = self->_head;
+    }
+    else
+    {
+        iter->_node = self->_tail;
+    }
+
+    iter->hasnext = deque_iter_hasnext;
+    iter->next = deque_iter_next;
+    return iter;
+}
+
 static bool deque_init(struct _deque* self, uint32_t obj_size)
 {
     assert(self != NULL);
@@ -370,9 +373,6 @@ static bool deque_init(struct _deque* self, uint32_t obj_size)
 
     self->_head = NULL;
     self->_tail = NULL;
-
-    self->_iter.hasnext = deque_iter_hasnext;
-    self->_iter.next = deque_iter_next;
 
     self->_destory = deque_destory;
 

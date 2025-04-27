@@ -1151,88 +1151,9 @@ static bool tree_rb_delete(struct _tree* self, void* obj)
     return true;
 }
 
-static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
+static uint32_t tree_height(struct _tree* self)
 {
-    assert(self != NULL);
-    iterator_t iter = &self->_iter;
-
-    iter->_container = self;
-    iter->_index = 0;
-    iter->_node = self->_root;
-
-    iter->_order = order;
-    self->stack->clear(self->stack);
-    self->queue->clear(self->queue);
-
-    switch (iter->_order)
-    {
-    case ORDER_PRE:
-    case ORDER_PRE_R:
-    {
-        // pass
-    }break;
-    case ORDER_IN:
-    case ORDER_IN_R:
-    {
-        // pass
-    }break;
-    case ORDER_POST:
-    case ORDER_POST_R:
-    {
-        struct _tree_node* node = self->_root;
-        self->stack->clear(self->stack);
-
-        stack_t stack = stack_new(sizeof(struct _tree_node*));
-        if (iter->_order == ORDER_POST)
-        {
-            while (!stack->empty(stack) || node != NULL)
-            {
-                if (node != NULL)
-                {
-                    self->stack->push(self->stack, &node);
-
-                    stack->push(stack, &node);
-                    node = node->right;
-                }
-                else
-                {
-                    stack->pop(stack, &node);
-                    node = node->left;
-                }
-            }
-        }
-        else
-        {
-            while (!stack->empty(stack) || node != NULL)
-            {
-                if (node != NULL)
-                {
-                    self->stack->push(self->stack, &node);
-
-                    stack->push(stack, &node);
-                    node = node->left;
-                }
-                else
-                {
-                    stack->pop(stack, &node);
-                    node = node->right;
-                }
-            }
-        }
-        stack_free(&stack);
-    }break;
-    case ORDER_BREADTH:
-    case ORDER_BREADTH_R:
-    {
-        // pass
-        self->queue->push(self->queue, &self->_root);
-    }break;
-    default:
-    {
-    }break;
-    }
-
-    return iter;
+    return tree_height_node(self, self->_root);
 }
 
 static bool tree_iter_hasnext(struct _iterator* iter)
@@ -1398,9 +1319,91 @@ static const void* tree_iter_next(struct _iterator* iter)
     return obj;
 }
 
-static uint32_t tree_height(struct _tree* self)
+
+static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
 {
-    return tree_height_node(self, self->_root);
+    assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_node = self->_root;
+    iter->_order = order;
+    iter->hasnext = tree_iter_hasnext;
+    iter->next = tree_iter_next;
+    
+    self->stack->clear(self->stack);
+    self->queue->clear(self->queue);
+
+    switch (iter->_order)
+    {
+    case ORDER_PRE:
+    case ORDER_PRE_R:
+    {
+        // pass
+    }break;
+    case ORDER_IN:
+    case ORDER_IN_R:
+    {
+        // pass
+    }break;
+    case ORDER_POST:
+    case ORDER_POST_R:
+    {
+        struct _tree_node* node = self->_root;
+        self->stack->clear(self->stack);
+
+        stack_t stack = stack_new(sizeof(struct _tree_node*));
+        if (iter->_order == ORDER_POST)
+        {
+            while (!stack->empty(stack) || node != NULL)
+            {
+                if (node != NULL)
+                {
+                    self->stack->push(self->stack, &node);
+
+                    stack->push(stack, &node);
+                    node = node->right;
+                }
+                else
+                {
+                    stack->pop(stack, &node);
+                    node = node->left;
+                }
+            }
+        }
+        else
+        {
+            while (!stack->empty(stack) || node != NULL)
+            {
+                if (node != NULL)
+                {
+                    self->stack->push(self->stack, &node);
+
+                    stack->push(stack, &node);
+                    node = node->left;
+                }
+                else
+                {
+                    stack->pop(stack, &node);
+                    node = node->right;
+                }
+            }
+        }
+        stack_free(&stack);
+    }break;
+    case ORDER_BREADTH:
+    case ORDER_BREADTH_R:
+    {
+        // pass
+        self->queue->push(self->queue, &self->_root);
+    }break;
+    default:
+    {
+    }break;
+    }
+
+    return iter;
 }
 
 static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
@@ -1426,9 +1429,6 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
         stack_free(&self->stack);
         return false;
     }
-
-    self->_iter.hasnext = tree_iter_hasnext;
-    self->_iter.next = tree_iter_next;
 
     self->_rebalance = tree_avl_rebalance;
     self->_destory = tree_destory;
@@ -1477,9 +1477,6 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
         stack_free(&self->stack);
         return false;
     }
-
-    self->_iter.hasnext = tree_iter_hasnext;
-    self->_iter.next = tree_iter_next;
 
     self->_rebalance = tree_rb_rebalance;
     self->_destory = tree_destory;
