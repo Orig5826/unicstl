@@ -448,11 +448,11 @@ static void test_list_slice(void)
     TEST_ASSERT_TRUE(list2->empty(list2));
 
     list2 = list->slice(list, 1, 5, -1); // if start < end && step < 0
-    TEST_ASSERT_NULL(list2);
+    TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
 
     list2 = list->slice(list, 5, 1, 1); // if start > end && step > 0
-    TEST_ASSERT_NULL(list2);
+    TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
 
     // python: list[0:]
@@ -488,7 +488,7 @@ static void test_list_slice(void)
     TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
     list_free(&list2);
 
-    // python: list[-5:8:1]
+    // python: list[-6:8] or list[-6:-2]
     // list2 = list->slice(list, -6, 8, 1);   // It can be executed, but it's not intuitive
     list2 = list->slice(list, -6, -2, 1);
     TEST_ASSERT_NOT_NULL(list2);
@@ -501,19 +501,17 @@ static void test_list_slice(void)
     }
     list_free(&list2);
 
-    // python: list[-6:0:-1] or list[4:0:-1]
-    // list2 = list->slice(list, -6, 0, -1);   // It can be executed, but it's not intuitive
+    // python: list[4::-1]
     list2 = list->slice(list, 4, 0, -1);
     TEST_ASSERT_NOT_NULL(list2);
     list2->print(list2); printf("\n");
-    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
         TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
-        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - 1 - i], temp);
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - i], temp);
     }
     list_free(&list2);
-
 
     list_free(&list);
 }

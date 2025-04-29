@@ -216,18 +216,12 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     {
         start += self->size(self);
     }
-
     if(end < 0)
     {
         end += self->size(self);
     }
-
-    if(start > self->size(self) || end > self->size(self))
-    {
-        return NULL;
-    }
-
-    list_t list = list_new2(self->_obj_size, end - start);
+    uint32_t capicity = (end - start == 0) ? 1 : end - start;
+    list_t list = list_new2(self->_obj_size, capicity);
     if(list == NULL)
     {
         return NULL;
@@ -235,47 +229,42 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
+    if(capicity == 0)
+    {
+        goto done;
+    }
+
+    if(start > self->size(self) || end > self->size(self))
+    {
+        return list;
+    }
+
     if(step > 0)
     {
         if(start >= end)
         {
-            return NULL;
+            goto done;
         }
 
         for(int i = start; i < end; i += step)
         {
-            if(i >= self->size(self))
-            {
-                break;
-            }
             list->append(list, (char*)self->obj + i * self->_obj_size);
         }
     }
     else
     {
-        uint32_t temp = 0;
         if(start <= end)
         {
-            return NULL;
+            goto done;
         }
-        // start ^= end;
-        // end ^= start;
-        // start ^= end;
-        temp = start;
-        start = end;
-        end = temp;
-        step = -step;
 
-        for(int i = start; i < end; i += step)
+        for(int i = start; i > end; i += step)
         {
-            if(i >= self->size(self))
-            {
-                break;
-            }
-            list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
+            list->append(list, (char*)self->obj + i * self->_obj_size);
         }
     }
 
+done:
     return list;
 }
 
