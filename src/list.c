@@ -76,60 +76,16 @@ static bool list_delete(struct _list* self, int index, void* obj)
 
 static bool list_append(struct _list* self, void* obj)
 {
-#if 0
-    assert(self != NULL);
-    assert(self->obj != NULL);
-    assert(obj != NULL);
-
-    if (self->size(self) == self->_capacity)
-    {
-        int capacity = self->_capacity * self->_ratio;
-        void * obj_new = (void *)realloc(self->obj, capacity * self->_obj_size);
-        if (obj_new == NULL)
-        {
-            return false;
-        }
-        self->obj = obj_new;
-        self->_capacity = capacity;
-    }
-    uint32_t index = self->size(self);
-    uint32_t offset = index * self->_obj_size;
-    memmove((char*)self->obj + offset, obj, self->_obj_size);
-
-    self->_size += 1;
-    return true;
-#else
     return self->insert(self, (int)self->size(self), obj);
-#endif
 }
 
 static bool list_pop(struct _list* self, void* obj)
 {
-#if 0
-    assert(self != NULL);
-
-    if (self->empty(self))
-    {
-        return false;
-    }
-
-    uint32_t index = self->size(self) - 1;
-    uint32_t offset = index * self->_obj_size;
-    uint32_t offset1 = (index + 1) * self->_obj_size;
-    if (obj != NULL)
-    {
-        memmove(obj, (char*)self->obj + offset, self->_obj_size);
-    }
-    memmove((char*)self->obj + offset, (char*)self->obj + offset1, self->_obj_size);
-    self->_size -= 1;
-    return true;
-#else
     if (self->empty(self))
     {
         return false;
     }
     return self->delete(self, (int)self->size(self) - 1, obj);
-#endif
 }
 
 static int list_index(struct _list* self, void* obj)
