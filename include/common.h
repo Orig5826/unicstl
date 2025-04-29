@@ -39,4 +39,9 @@
  */
 typedef int (*compare_fun_t)(void* obj, void* obj2);
 
+
+// default function
+int default_compare(void* obj1, void* obj2);
+void default_print_obj(void* obj);
+
 #endif // _COMMON_H_

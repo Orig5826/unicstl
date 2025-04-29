@@ -56,13 +56,13 @@ struct _list
     // iter
     iterator_t (*iter)(struct _list *self);
 
-    // config
-    compare_fun_t compare;      // !!! you have to implement this function
-
-    // copy
+    // others
     struct _list* (*slice)(struct _list *self, int start, int end, int step);
     // struct _list* (*copy)(struct _list *self);
     
+    // config
+    compare_fun_t compare;      // !!! you have to implement this function
+
     // -------------------- debug --------------------
     void (*print)(struct _list *self);
     void (*print_obj)(void *obj);

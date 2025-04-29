@@ -207,17 +207,33 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
         end += self->size(self);
     }
 
+    if(start > self->size(self) || end > self->size(self))
+    {
+        return NULL;
+    }
+
     list_t list = list_new2(self->_obj_size, end - start);
     if(list == NULL)
     {
         return NULL;
     }
+    list->compare = self->compare;
+    list->print_obj = self->print_obj;
 
     if(step > 0)
     {
         if(start >= end)
         {
             return NULL;
+        }
+
+        for(int i = start; i < end; i += step)
+        {
+            if(i >= self->size(self))
+            {
+                break;
+            }
+            list->append(list, (char*)self->obj + i * self->_obj_size);
         }
     }
     else
@@ -234,18 +250,18 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
         start = end;
         end = temp;
         step = -step;
-    }
 
-    for(int i = start; i < end; i += step)
-    {
-        if(i >= self->size(self))
+        for(int i = start; i < end; i += step)
         {
-            break;
+            if(i >= self->size(self))
+            {
+                break;
+            }
+            list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
         }
-        list->append(list, (char*)self->obj + i * self->_obj_size);
     }
-
-    return NULL;
+    
+    return list;
 }
 
 static bool list_iter_hasnext(struct _iterator* iter)
@@ -329,7 +345,13 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     // iter
     list->iter = list_iter;
 
-    // -------------------- debug -------------------- 
+    // others
+    list->slice = list_slice;
+
+    // config
+    list->compare = default_compare;
+    // -------------------- debug --------------------
+    list->print_obj = default_print_obj;
     list->print = list_print;
     
     return true;
