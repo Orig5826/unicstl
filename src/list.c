@@ -191,6 +191,12 @@ static void list_print(struct _list* self)
 
 struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
+    assert(self != NULL);
+    if(step == 0)
+    {
+        return NULL;
+    }
+
     if(start < 0)
     {
         start += self->size(self);
@@ -199,6 +205,44 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     if(end < 0)
     {
         end += self->size(self);
+    }
+
+    list_t list = list_new2(self->_obj_size, end - start);
+    if(list == NULL)
+    {
+        return NULL;
+    }
+
+    if(step > 0)
+    {
+        if(start >= end)
+        {
+            return NULL;
+        }
+    }
+    else
+    {
+        uint32_t temp = 0;
+        if(start <= end)
+        {
+            return NULL;
+        }
+        // start ^= end;
+        // end ^= start;
+        // start ^= end;
+        temp = start;
+        start = end;
+        end = temp;
+        step = -step;
+    }
+
+    for(int i = start; i < end; i += step)
+    {
+        if(i >= self->size(self))
+        {
+            break;
+        }
+        list->append(list, (char*)self->obj + i * self->_obj_size);
     }
 
     return NULL;
