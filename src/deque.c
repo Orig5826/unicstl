@@ -198,64 +198,12 @@ static bool deque_front(struct _deque* self, void* obj)
     return true;
 }
 
-static bool deque_insert(struct _deque* self, int index, void* obj)
-{
-    return true;
-}
-
-static bool deque_erase(struct _deque* self, int index, void* obj)
-{
-    return true;
-}
-
-static int deque_index(struct _deque* self, void* obj)
-{
-    return -1;
-}
-
-static bool deque_remove(struct _deque* self, void* obj)
-{
-    return true;
-}
-
 static bool deque_clear(struct _deque* self)
 {
     while (!self->empty(self))
     {
         deque_pop_back(self, NULL);
     }
-    return true;
-}
-
-static bool deque_get(struct _deque* self, int index, void* obj)
-{
-    assert(self != NULL);
-    assert(obj != NULL);
-    assert(index >= 0 && index < self->size(self));
-
-    struct _deque_node* node = self->_head;   // front
-
-    for (int i = 0; i < index; i++)
-    {
-        node = node->next;
-    }
-    memmove(obj, node->obj, self->_obj_size);
-    return true;
-}
-
-static bool deque_set(struct _deque* self, int index, void* obj)
-{
-    assert(self != NULL);
-    assert(obj != NULL);
-    assert(index >= 0 && index < self->size(self));
-
-    struct _deque_node* node = self->_head;   // front
-
-    for (int i = 0; i < index; i++)
-    {
-        node = node->next;
-    }
-    memmove(node->obj, obj, self->_obj_size);
     return true;
 }
 
@@ -384,24 +332,14 @@ static bool deque_init(struct _deque* self, uint32_t obj_size)
     self->pop_front = deque_pop_front;
     self->back = deque_back;
     self->front = deque_front;
-    self->empty = deque_empty;
-
+    
     // base
     self->clear = deque_clear;
     self->size = deque_size;
+    self->empty = deque_empty;
 
     // iter
     self->iter = deque_iter;
-
-    // others
-    self->insert = deque_insert;
-    self->erase = deque_erase;
-    
-    self->index = deque_index;
-    self->remove = deque_remove;
-
-    self->set = deque_set;
-    self->get = deque_get;
 
     // -------------------- debug -------------------- 
     self->print = deque_print;

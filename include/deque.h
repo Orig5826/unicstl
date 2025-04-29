@@ -49,28 +49,14 @@ struct _deque
     bool (*pop_front)(struct _deque* self, void* obj);
     bool (*back)(struct _deque* self, void* obj);
     bool (*front)(struct _deque* self, void* obj);
-    bool (*empty)(struct _deque* self);
-
+    
     // base
     uint32_t(*size)(struct _deque* self);
     bool (*clear)(struct _deque* self);
+    bool (*empty)(struct _deque* self);
 
     // iter
     iterator_t (*iter)(struct _deque* self, enum _deque_order order);
-
-    // ohters
-    bool (*insert)(struct _deque* self, int index, void* obj);
-    bool (*erase)(struct _deque* self, int index, void* obj);
-
-    int (*index)(struct _deque* self, void* obj);
-    bool (*remove)(struct _deque* self, void* obj);
-
-    bool (*get)(struct _deque* self, int index, void* obj);
-    bool (*set)(struct _deque* self, int index, void* obj);
-
-    // compare
-    // int (*compare)(void* obj, void* obj2);
-    // bool (*sort)(struct _deque* self, uint8_t reserve);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _deque* self);
