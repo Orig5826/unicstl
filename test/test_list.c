@@ -419,7 +419,7 @@ static void test_list_index(void)
     list_free(&list);
 }
 
-static void test_list_slice(void)
+static void test_list_slice_empty(void)
 {
     int temp = 0;
     int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -439,34 +439,66 @@ static void test_list_slice(void)
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
     }
 
+    // -------------------- NULL --------------------
     // python: list[0:] -> []
     list2 = list->slice(list, 1, 5, 0); // if step == 0
     TEST_ASSERT_NULL(list2);
+    // list_free(&list2);
 
+    // -------------------- empty --------------------
     list2 = list->slice(list, 0, 0, 1); // if start == end
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
 
     list2 = list->slice(list, 1, 5, -1); // if start < end && step < 0
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
 
     list2 = list->slice(list, 5, 1, 1); // if start > end && step > 0
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
 
     list2 = list->slice(list, -1, -5, 1); // if start < end && step < 0
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
 
     list2 = list->slice(list, -5, -1, -1); // if start > end && step > 0
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
 
+    list_free(&list);
+}
+
+static void test_list_slice_positive(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+    list_t list2 = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    list->compare = compare_num;
+    list->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
+    }
+
+    // -------------------- elements --------------------
     // python: list[0:]
     list2 = list->slice(list, 0, len, 1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -475,32 +507,10 @@ static void test_list_slice(void)
     }
     list_free(&list2);
 
-    // python: list[:-1]
-    list2 = list->slice(list, 0, -1, 1);
+    // python: list[-6:8] or list[-6:-2] or list[4:8]
+    list2 = list->slice(list, 4, 8, 1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
-    TEST_ASSERT_EQUAL_INT(len - 1, list2->size(list2));
-    for(i = 0; i < list2->size(list2); i++)
-    {
-        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
-        TEST_ASSERT_EQUAL_INT(data[i], temp);
-    }
-    list_free(&list2);
-
-    // python: list[:-1]
-    list2 = list->slice(list, -1, len, 1);
-    TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
-    TEST_ASSERT_EQUAL_INT(1, list2->size(list2));
-    TEST_ASSERT_TRUE(list2->get(list2, 0, &temp));
-    TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
-    list_free(&list2);
-
-    // python: list[-6:8] or list[-6:-2]
-    // list2 = list->slice(list, -6, 8, 1);   // It can be executed, but it's not intuitive
-    list2 = list->slice(list, -6, -2, 1);
-    TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -512,7 +522,7 @@ static void test_list_slice(void)
     // python: list[4:0:-1]
     list2 = list->slice(list, 4, 0, -1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -521,11 +531,93 @@ static void test_list_slice(void)
     }
     list_free(&list2);
 
+    list_free(&list);
+}
+
+static void test_list_slice_negative(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+    list_t list2 = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    list->compare = compare_num;
+    list->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
+    }
+
+    // -------------------- elements --------------------
+    // python: list[:-1]
+    list2 = list->slice(list, 0, -1, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len - 1, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    list_free(&list2);
+
+    // python: list[:-1]
+    list2 = list->slice(list, -1, len, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(1, list2->size(list2));
+    TEST_ASSERT_TRUE(list2->get(list2, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+    list_free(&list2);
+
+    // python: list[-6:8] or list[-6:-2]
+    // list2 = list->slice(list, -6, 8, 1);   // It can be executed, but it's not intuitive
+    list2 = list->slice(list, -6, -2, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 6 + i], temp);
+    }
+    list_free(&list2);
+
+    list_free(&list);
+}
+
+
+static void test_list_slice_unlimited(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+    list_t list2 = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    list->compare = compare_num;
+    list->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
+    }
+
     // -------------------- umlimited --------------------
     // python: list[0:]
     list2 = list->slice(list, 0, LIST_UNLIMITED, 1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -537,7 +629,7 @@ static void test_list_slice(void)
     // python: list[4::-1]
     list2 = list->slice(list, 4, LIST_UNLIMITED, -1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -548,7 +640,7 @@ static void test_list_slice(void)
 
     list2 = list->slice(list, LIST_UNLIMITED, LIST_UNLIMITED, 1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -559,7 +651,7 @@ static void test_list_slice(void)
 
     list2 = list->slice(list, LIST_UNLIMITED, LIST_UNLIMITED, -1);
     TEST_ASSERT_NOT_NULL(list2);
-    list2->print(list2); printf("\n");
+    //list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -590,5 +682,9 @@ void test_list(void)
     RUN_TEST(test_list_iter);
 
     RUN_TEST(test_list_index);
-    RUN_TEST(test_list_slice);
+
+    RUN_TEST(test_list_slice_empty);
+    RUN_TEST(test_list_slice_positive);
+    RUN_TEST(test_list_slice_negative);
+    RUN_TEST(test_list_slice_unlimited);
 }

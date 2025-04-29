@@ -294,9 +294,6 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
             goto done;
         }
 
-        printf("start = %d\n", start);
-        printf("end = %d\n", end);
-
         if(unlimited != true)
         {
             for(i = start; i > end; i += step)
