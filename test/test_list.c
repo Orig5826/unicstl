@@ -501,15 +501,62 @@ static void test_list_slice(void)
     }
     list_free(&list2);
 
-    // python: list[4::-1]
+    // python: list[4:0:-1]
     list2 = list->slice(list, 4, 0, -1);
+    TEST_ASSERT_NOT_NULL(list2);
+    list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - i], temp);
+    }
+    list_free(&list2);
+
+    // -------------------- umlimited --------------------
+    // python: list[0:]
+    list2 = list->slice(list, 0, LIST_UNLIMITED, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    list_free(&list2);
+    
+    // python: list[4::-1]
+    list2 = list->slice(list, 4, LIST_UNLIMITED, -1);
     TEST_ASSERT_NOT_NULL(list2);
     list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
         TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
-        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - i], temp);
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - 1 - i], temp);
+    }
+    list_free(&list2);
+
+    list2 = list->slice(list, LIST_UNLIMITED, LIST_UNLIMITED, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    list_free(&list2);
+
+    list2 = list->slice(list, LIST_UNLIMITED, LIST_UNLIMITED, -1);
+    TEST_ASSERT_NOT_NULL(list2);
+    list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - 1 - i], temp);
     }
     list_free(&list2);
 

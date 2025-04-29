@@ -27,6 +27,8 @@
         "unicstl_config.h": "c",
         "iter.h": "c",
         "iterator.h": "c",
-        "assert.h": "c"
+        "assert.h": "c",
+        "limits.h": "c",
+        "cstdint": "c"
     }
 }

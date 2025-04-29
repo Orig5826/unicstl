@@ -18,6 +18,8 @@
 #include "common.h"
 #include "iterator.h"
 
+#define LIST_UNLIMITED  INT32_MAX
+
 struct _list
 {
     // -------------------- private --------------------

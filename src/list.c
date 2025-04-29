@@ -207,9 +207,20 @@ static void list_print(struct _list* self)
 struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
     assert(self != NULL);
+    int i = 0;
     if(step == 0)
     {
         return NULL;
+    }
+
+    if(start == LIST_UNLIMITED)
+    {
+        start = 0;
+    }
+
+    if(end == LIST_UNLIMITED)
+    {
+        end = self->size(self);
     }
 
     if(start < 0)
@@ -234,7 +245,7 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
         goto done;
     }
 
-    if(start > self->size(self) || end > self->size(self))
+    if(start >= self->size(self) || end > self->size(self))
     {
         return list;
     }
@@ -246,19 +257,31 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
             goto done;
         }
 
-        for(int i = start; i < end; i += step)
+        for(i = start; i < end; i += step)
+        {
+            list->append(list, (char*)self->obj + i * self->_obj_size);
+        }
+        
+        if(end == LIST_UNLIMITED)
         {
             list->append(list, (char*)self->obj + i * self->_obj_size);
         }
     }
     else
     {
-        if(start <= end)
+        if(end < self->size(self))
         {
-            goto done;
+            if(start <= end)
+            {
+                goto done;
+            }
+        }
+        else
+        {
+            end = -1;
         }
 
-        for(int i = start; i > end; i += step)
+        for(i = start; i > end; i += step)
         {
             list->append(list, (char*)self->obj + i * self->_obj_size);
         }
