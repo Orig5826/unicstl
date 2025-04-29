@@ -33,8 +33,12 @@ static bool list_insert(struct _list* self, int index, void* obj)
     }
     uint32_t offset = index * self->_obj_size;
     uint32_t offset1 = (index + 1) * self->_obj_size;
+    uint32_t count = self->size(self) - index;
 
-    memmove((char*)self->obj + offset, (char*)self->obj + offset, self->size(self) * self->_obj_size);
+    // move data to right
+    memmove((char*)self->obj + offset1, (char*)self->obj + offset, count * self->_obj_size);
+    // copy new data
+    memmove((char*)self->obj + offset, obj, self->_obj_size);
     self->_size += 1;
     return true;
 }
@@ -58,9 +62,9 @@ static bool list_delete(struct _list* self, int index, void* obj)
         index += self->size(self);
     }
 
-    uint32_t count = self->size(self) - 1 - index;
     uint32_t offset = index * self->_obj_size;
     uint32_t offset1 = (index + 1) * self->_obj_size;
+    uint32_t count = self->size(self) - 1 - index;
     if (obj != NULL)
     {
         memmove(obj, (char*)self->obj + offset, self->_obj_size);
@@ -72,7 +76,7 @@ static bool list_delete(struct _list* self, int index, void* obj)
 
 static bool list_append(struct _list* self, void* obj)
 {
-#if 1
+#if 0
     assert(self != NULL);
     assert(self->obj != NULL);
     assert(obj != NULL);
@@ -94,13 +98,14 @@ static bool list_append(struct _list* self, void* obj)
 
     self->_size += 1;
     return true;
+#else
+    return self->insert(self, (int)self->size(self), obj);
 #endif
-    return self->insert(self, self->size(self), obj);
 }
 
 static bool list_pop(struct _list* self, void* obj)
 {
-#if 1
+#if 0
     assert(self != NULL);
 
     if (self->empty(self))
@@ -119,7 +124,11 @@ static bool list_pop(struct _list* self, void* obj)
     self->_size -= 1;
     return true;
 #else
-    return self->delete(self, self->size(self) - 1, obj);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    return self->delete(self, (int)self->size(self) - 1, obj);
 #endif
 }
 
@@ -183,6 +192,12 @@ static uint32_t list_size(struct _list* self)
 {
     assert(self != NULL);
     return self->_size;
+}
+
+static uint32_t list_capacity(struct _list* self)
+{
+    assert(self != NULL);
+    return self->_capacity;
 }
 
 static bool list_empty(struct _list* self)
@@ -294,6 +309,7 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     list->clear = list_clear;
     list->size = list_size;
     list->empty = list_empty;
+    list->capacity = list_capacity;
 
     // iter
     list->iter = list_iter;
