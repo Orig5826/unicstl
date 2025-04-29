@@ -189,6 +189,21 @@ static void list_print(struct _list* self)
     }
 }
 
+/**
+ * @brief list slice
+ *  if index < 0, from the end of list. for example:
+ *  list[-1] is the last element in list.
+ * 
+ * @param self 
+ * @param start start index
+ * @param end end index 
+ * @param step step, if step < 0, return a reverse list.
+ * @return struct _list* 
+ *  a copy of the list, from start to end, step by step.
+ *      if step < 0, return a reverse list.
+ *      if step > 0, return a forward list.
+ *      if step == 0, return NULL.
+ */
 struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
     assert(self != NULL);
@@ -260,7 +275,7 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
             list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
         }
     }
-    
+
     return list;
 }
 
