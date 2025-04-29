@@ -208,30 +208,50 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
     assert(self != NULL);
     int i = 0;
+    bool unlimited = false;
     if(step == 0)
     {
         return NULL;
     }
 
-    if(start == LIST_UNLIMITED)
+    if(step > 0)
     {
-        start = 0;
+        if(start == LIST_UNLIMITED)
+        {
+            start = 0;
+        }
+    
+        if(end == LIST_UNLIMITED)
+        {
+            end = self->size(self);
+        }
     }
-
-    if(end == LIST_UNLIMITED)
+    else
     {
-        end = self->size(self);
+        if(start == LIST_UNLIMITED)
+        {
+            start = self->size(self) - 1;
+            unlimited = true;
+        }
+    
+        if(end == LIST_UNLIMITED)
+        {
+            end = 0;
+            unlimited = true;
+        }
     }
 
     if(start < 0)
     {
         start += self->size(self);
     }
+
     if(end < 0)
     {
         end += self->size(self);
     }
-    uint32_t capicity = (end - start == 0) ? 1 : end - start;
+
+    uint32_t capicity = (end - start == 0) ? 1 : abs(end - start);
     list_t list = list_new2(self->_obj_size, capicity);
     if(list == NULL)
     {
@@ -240,50 +260,56 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
-    if(capicity == 0)
+    if(capicity == 0 || start > self->size(self) || end > self->size(self))
     {
         goto done;
     }
 
-    if(start >= self->size(self) || end > self->size(self))
-    {
-        return list;
-    }
-
     if(step > 0)
     {
-        if(start >= end)
+        if(start > end)
         {
             goto done;
-        }
+        }    
 
-        for(i = start; i < end; i += step)
+        if(unlimited != true)
         {
-            list->append(list, (char*)self->obj + i * self->_obj_size);
-        }
-        
-        if(end == LIST_UNLIMITED)
-        {
-            list->append(list, (char*)self->obj + i * self->_obj_size);
-        }
-    }
-    else
-    {
-        if(end < self->size(self))
-        {
-            if(start <= end)
+            for(i = start; i < end; i += step)
             {
-                goto done;
+                list->append(list, (char*)self->obj + i * self->_obj_size);
             }
         }
         else
         {
-            end = -1;
+            for(i = start; i <= end; i += step)
+            {
+                list->append(list, (char*)self->obj + i * self->_obj_size);
+            }
+        }
+    }
+    else /*if(step < 0)*/
+    {
+        if(start < end)
+        {
+            goto done;
         }
 
-        for(i = start; i > end; i += step)
+        printf("start = %d\n", start);
+        printf("end = %d\n", end);
+
+        if(unlimited != true)
         {
-            list->append(list, (char*)self->obj + i * self->_obj_size);
+            for(i = start; i > end; i += step)
+            {
+                list->append(list, (char*)self->obj + i * self->_obj_size);
+            }
+        }
+        else
+        {
+            for(i = start; i >= end; i += step)
+            {
+                list->append(list, (char*)self->obj + i * self->_obj_size);
+            }
         }
     }
 

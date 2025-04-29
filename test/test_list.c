@@ -455,6 +455,14 @@ static void test_list_slice(void)
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
 
+    list2 = list->slice(list, -1, -5, 1); // if start < end && step < 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+
+    list2 = list->slice(list, -5, -1, -1); // if start > end && step > 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+
     // python: list[0:]
     list2 = list->slice(list, 0, len, 1);
     TEST_ASSERT_NOT_NULL(list2);
