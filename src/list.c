@@ -243,13 +243,24 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
 
     if(start < 0)
     {
+        if(start < -self->size(self))
+        {
+            start = -self->size(self);
+        }
         start += self->size(self);
     }
 
     if(end < 0)
     {
+        if(end < -self->size(self))
+        {
+            end = -self->size(self);
+        }
         end += self->size(self);
     }
+
+    // printf("start = %d\n", start);
+    // printf("end = %d\n", end);
 
     uint32_t capicity = (end - start == 0) ? 1 : abs(end - start);
     list_t list = list_new2(self->_obj_size, capicity);
