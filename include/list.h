@@ -2,6 +2,10 @@
  * @file list.h
  * @author wenjf (Orig5826@163.com)
  * @brief
+ * 
+ * @details dynamic array list.
+ *      similar to python list/ java ArrayList / C++ std::vector
+ * 
  * @version 0.1
  * @date 2024-06-23
  *
