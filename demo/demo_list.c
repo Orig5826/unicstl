@@ -32,15 +32,15 @@ static void demo_list_num(void)
     printf("\n");
 
     printf("----- pop -----\n");
-    list->pop(list, 9, NULL);
+    list->delete(list, 9, NULL);
     list->print(list);
     printf("\n");
 
-    list->pop(list, 0, NULL);
+    list->delete(list, 0, NULL);
     list->print(list);
     printf("\n");
 
-    list->pop(list, 4, NULL);
+    list->delete(list, 4, NULL);
     list->print(list);
     printf("\n");
 
@@ -129,7 +129,7 @@ static void demo_list_num(void)
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        list->pop(list, 0, &temp);
+        list->pop(list, &temp);
 
         if (list->empty(list))
         {
@@ -167,15 +167,15 @@ static void demo_list_struct(void)
     printf("\n");
 
     printf("----- pop -----\n");
-    list->pop(list, 9, NULL);
+    list->delete(list, 9, NULL);
     list->print(list);
     printf("\n");
 
-    list->pop(list, 0, NULL);
+    list->delete(list, 0, NULL);
     list->print(list);
     printf("\n");
 
-    list->pop(list, 4, NULL);
+    list->delete(list, 4, NULL);
     list->print(list);
     printf("\n");
 
@@ -286,7 +286,7 @@ static void demo_list_struct(void)
     printf("----- pop -----\n");
     for (i = 0; i < len + 1; i++)
     {
-        list->pop(list, 0, &temp);
+        list->pop(list, &temp);
 
         if (list->empty(list))
         {

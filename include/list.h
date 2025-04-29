@@ -35,15 +35,17 @@ struct _list
 
     // -------------------- public --------------------
     // kernel
-    bool (*append)(struct _list *self, void *obj);            // Append object to the end of the list.
-    bool (*insert)(struct _list *self, int index, void *obj); // Insert object before index.
-    bool (*pop)(struct _list *self, int index, void *obj);    // Remove and return item at index.
-
-    int (*index)(struct _list *self, void *obj);    // Return first index of obj. Return -1 if the obj is not present.
-    bool (*remove)(struct _list *self, void *obj);  // Remove first occurrence of obj.
+    bool (*append)(struct _list *self, void *obj);
+    bool (*pop)(struct _list *self, void *obj);
+    
+    bool (*insert)(struct _list *self, int index, void *obj);
+    bool (*delete)(struct _list *self, int index, void *obj);
 
     bool (*get)(struct _list *self, int index, void *obj);
     bool (*set)(struct _list *self, int index, void *obj);
+
+    int (*index)(struct _list *self, void *obj);
+    // bool (*contains)(struct _list *self, void *obj);
 
     // base
     uint32_t (*size)(struct _list *self);
@@ -54,16 +56,9 @@ struct _list
     // iter
     iterator_t (*iter)(struct _list *self);
 
-    // sort
-    // bool (*reverse)(struct _list* self);        // Reverse *IN PLACE*.
-    /**
-        Sort the list in ascending order and return false.
-        The sort is in-place (i.e. the list itself is modified) and stable (i.e. the
-        order of two equal elements is maintained).
-        The reverse flag can be set to sort in descending order.
-    */
-    // bool (*sort)(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2));
-
+    // config
+    compare_fun_t compare;      // !!! you have to implement this function
+    
     // -------------------- debug --------------------
     void (*print)(struct _list *self);
     void (*print_obj)(void *obj);

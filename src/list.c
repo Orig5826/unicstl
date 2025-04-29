@@ -35,6 +35,27 @@ static bool list_append(struct _list* self, void* obj)
     return true;
 }
 
+static bool list_pop(struct _list* self, void* obj)
+{
+    assert(self != NULL);
+
+    if (self->empty(self))
+    {
+        return false;
+    }
+
+    uint32_t index = self->size(self) - 1;
+    uint32_t offset = index * self->_obj_size;
+    uint32_t offset_next = (index + 1) * self->_obj_size;
+    if (obj != NULL)
+    {
+        memmove(obj, (char*)self->obj + offset, self->_obj_size);
+    }
+    memmove((char*)self->obj + offset, (char*)self->obj + offset_next, self->_obj_size);
+    self->_size -= 1;
+    return true;
+}
+
 static bool list_insert(struct _list* self, int index, void* obj)
 {
     assert(index >= 0 && index < (int)self->size(self));
@@ -58,7 +79,7 @@ static bool list_insert(struct _list* self, int index, void* obj)
     return true;
 }
 
-static bool list_pop(struct _list* self, int index, void* obj)
+static bool list_delete(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
     assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
@@ -88,12 +109,6 @@ static bool list_pop(struct _list* self, int index, void* obj)
 static int list_index(struct _list* self, void* obj)
 {
     return 0;
-}
-
-static bool list_remove(struct _list* self, void* obj)
-{
-    assert(self != NULL);
-    return true;
 }
 
 static bool list_clear(struct _list* self)
@@ -140,16 +155,6 @@ static bool list_empty(struct _list* self)
 {
     assert(self != NULL);
     return !self->size(self);
-}
-
-static bool list_reverse(struct _list* self)
-{
-    return true;
-}
-
-static bool list_sort(struct _list* self, uint8_t reserve, int (*compare)(void* obj, void* obj2))
-{
-    return true;
 }
 
 // free
@@ -240,26 +245,24 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     // -------------------- public -------------------- 
     // kernel
     list->append = list_append;
-    list->insert = list_insert;
     list->pop = list_pop;
 
-    list->empty = list_empty;
+    list->insert = list_insert;
+    list->delete = list_delete;
+
+    list->get = list_get;
+    list->set = list_set;
+
+    list->index = list_index;
+    // list->contains = list_contains;
 
     // base
     list->clear = list_clear;
     list->size = list_size;
+    list->empty = list_empty;
 
     // iter
     list->iter = list_iter;
-
-    // others
-    list->index = list_index;
-    list->remove = list_remove;
-    list->get = list_get;
-    list->set = list_set;
-
-    // list->reverse = list_reverse;
-    // list->sort = list_sort;
 
     // -------------------- debug -------------------- 
     list->print = list_print;

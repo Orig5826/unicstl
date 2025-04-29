@@ -80,10 +80,10 @@ static void test_list_pop(void)
     }
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(list->pop(list, 0, &temp));
+        TEST_ASSERT_TRUE(list->pop(list, &temp));
     }
     TEST_ASSERT_TRUE(list->empty(list));
-    // TEST_ASSERT_FALSE(list->pop(list, 1, &temp));
+    TEST_ASSERT_FALSE(list->pop(list, &temp));
     list_free(&list);
 }
 
@@ -129,9 +129,9 @@ static void test_list_num(void)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
     }
-    TEST_ASSERT_TRUE(list->pop(list, 9, NULL));
-    TEST_ASSERT_TRUE(list->pop(list, 0, NULL));
-    TEST_ASSERT_TRUE(list->pop(list, 4, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 9, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 0, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 4, NULL));
     TEST_ASSERT_TRUE(list->clear(list));
 
     for (i = 0; i < len; i++)
@@ -182,7 +182,7 @@ static void test_list_num(void)
 
     for (i = 0; i < len + 1; i++)
     {
-        TEST_ASSERT_TRUE(list->pop(list, 0, &temp));
+        TEST_ASSERT_TRUE(list->pop(list, &temp));
 
         if (list->empty(list))
         {
@@ -213,9 +213,9 @@ static void test_list_struct(void)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
     }
-    TEST_ASSERT_TRUE(list->pop(list, 9, NULL));
-    TEST_ASSERT_TRUE(list->pop(list, 0, NULL));
-    TEST_ASSERT_TRUE(list->pop(list, 4, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 9, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 0, NULL));
+    TEST_ASSERT_TRUE(list->delete(list, 4, NULL));
 
     TEST_ASSERT_TRUE(list->clear(list));
     for (i = 0; i < len; i++)
@@ -272,7 +272,7 @@ static void test_list_struct(void)
 
     for (i = 0; i < len + 1; i++)
     {
-        TEST_ASSERT_TRUE(list->pop(list, 0, &temp));
+        TEST_ASSERT_TRUE(list->pop(list, &temp));
 
         if (list->empty(list))
         {

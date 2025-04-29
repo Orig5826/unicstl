@@ -85,19 +85,18 @@ void* iter_next();                  // 迭代器下一个元素
 // -------------------- 扩展功能 --------------------
 // 元素相关操作
 bool append(const void* obj);        // 追加元素 <push_back> 一般用于list 
-bool delete(const void* obj);       // 删除元素
-// bool remove(const void *obj);     // 删除元素 <同delete>
+// bool remove(const void *obj);        // 删除元素 <暂不使用该命名>
 bool find(const void* obj);          // 查找元素 <返回值，bool/uint32_t/void*待定？>
 bool contains(const void* obj);      // 判断元素是否存在 <返回bool>
-uint32_t count(const void* obj);     // 统计元素个数
+uint32_t count(const void* obj);     // 统计元素obj的个数
 
 // 索引相关操作
 uint32_t index(void *obj);                      // 获取元素索引
 bool insert(uint32_t index, const void* obj);   // 插入元素 <非树>
-bool erase(uint32_t index);                     // 删除元素
+bool delete(uint32_t index, void* obj);         // 删除元素
+// bool erase(uint32_t index);                     // 删除元素<暂时不用该命名>
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
-
 ```
 
 ## 特点

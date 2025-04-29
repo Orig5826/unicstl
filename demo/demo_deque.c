@@ -140,6 +140,7 @@ static void demo_deque_num(void)
         }
     }
 
+#if 0
     printf("----- push_front -----\n");
     for (i = 0; i < len; i++)
     {
@@ -173,6 +174,7 @@ static void demo_deque_num(void)
             printf("\n");
         }
     }
+#endif
 
     deque_free(&deque);
 }
@@ -334,7 +336,6 @@ static void demo_deque_struct(void)
     printf("----- print -----\n");
     deque->print(deque);
     printf("\n");
-#endif
 
     printf("----- get -----\n");
     for (i = 0; i < len; i++)
@@ -346,6 +347,7 @@ static void demo_deque_struct(void)
             printf("\n");
         }
     }
+#endif
 
     deque_free(&deque);
 }
