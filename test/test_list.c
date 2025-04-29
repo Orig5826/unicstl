@@ -1,12 +1,12 @@
 /**
  * @file test_list->c
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-08-30
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include "test.h"
 
@@ -15,7 +15,7 @@ static void test_list_new(void)
     list_t list = NULL;
     list = list_new2(sizeof(int), 1);
     TEST_ASSERT_NOT_NULL(list);
-    list_free(&list);   
+    list_free(&list);
     TEST_ASSERT_NULL(list);
 
     list_free(&list); // list_free(NULL);
@@ -39,7 +39,7 @@ static void test_list_append(void)
     // ------------------------------
     list = list_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(list->empty(list));
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
@@ -54,7 +54,7 @@ static void test_list_append(void)
     // ------------------------------
     // if capacity is less than data len
     list = list_new2(sizeof(int), len - 2);
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
@@ -74,7 +74,7 @@ static void test_list_pop(void)
 
     // ------------------------------
     list = list_new2(sizeof(int), len);
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         list->append(list, &data[i]);
     }
@@ -100,7 +100,7 @@ static void test_list_clear(void)
     // ------------------------------
     list = list_new2(sizeof(int), len);
     TEST_ASSERT_TRUE(list->clear(list));
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         list->append(list, &data[i]);
     }
@@ -199,10 +199,10 @@ static void test_list_struct(void)
     int i = 0;
     struct _student data[] = {
         "zhao", 1001, "qian", 1002, "sun",   1003, "li",   1004,
-        "zhou", 1005, "wu",   1006, "zheng", 1007, "wang", 1008, 
-        "feng", 1009, "cheng",1010, 
+        "zhou", 1005, "wu",   1006, "zheng", 1007, "wang", 1008,
+        "feng", 1009, "cheng",1010,
     };
-    struct _student  temp = {0};
+    struct _student  temp = { 0 };
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
@@ -267,7 +267,7 @@ static void test_list_struct(void)
     TEST_ASSERT_TRUE(list->set(list, index, &temp));
 
     index = -10;
-    temp = (struct _student){"robot", 97};
+    temp = (struct _student){ "robot", 97 };
     TEST_ASSERT_TRUE(list->set(list, index, &temp));
 
     for (i = 0; i < len + 1; i++)
@@ -284,51 +284,6 @@ static void test_list_struct(void)
     TEST_ASSERT_NULL(list);
 }
 
-#if 0
-static void test_list_iter(void)
-{
-    int temp = 0;
-    int data[32] = { 1,2,3,4,5,6,7,8,9,10 };
-    // uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t len = 10;
-    uint32_t i = 0;
-    int buff[32];
-    int count = 0;
-
-    list_t list = NULL;
-
-    // ------------------------------
-    list = list_new2(sizeof(int), len);
-    TEST_ASSERT_TRUE(list->clear(list));
-    for(i = 0; i < len; i++)
-    {
-        list->append(list, &data[i]);
-    }
-
-    int * iter = NULL;
-    
-    iter = list->begin(list);
-    for(count = 0, i = 0; i < len + 12; i++)
-    {
-        if(i < len)
-        {
-            TEST_ASSERT_EQUAL_INT(data[i % len], *iter);
-        }
-        iter = list->next(list);
-    }
-    for(count=0, iter = list->begin(list); iter != list->end(list); iter = list->next(list))
-    {
-        buff[count++] = *iter;
-    }
-    TEST_ASSERT_EQUAL_INT_ARRAY(data, buff, count);
-
-    TEST_ASSERT_FALSE(list->empty(list));
-    TEST_ASSERT_TRUE(list->clear(list));
-    TEST_ASSERT_TRUE(list->empty(list));
-    TEST_ASSERT_TRUE(list->clear(list));
-    list_free(&list);
-}
-#else
 void test_list_iter(void)
 {
     int temp = 0;
@@ -343,7 +298,7 @@ void test_list_iter(void)
     TEST_ASSERT_TRUE(list->empty(list));
     list->print_obj = print_num;
 
-    for(i = 0; i < len; i++)
+    for (i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(list->append(list, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
@@ -357,7 +312,7 @@ void test_list_iter(void)
     iterator_t iter = list->iter(list);
     int iter_data = 0;
     int idx = 0;
-    while(iter->hasnext(iter))
+    while (iter->hasnext(iter))
     {
         iter_data = *(int*)iter->next(iter);
         // printf("%d ", iter_data);
@@ -366,7 +321,34 @@ void test_list_iter(void)
     }
     list_free(&list);
 }
-#endif
+
+
+static void test_list_index(void)
+{
+    int temp = 0;
+    int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    list->compare = compare_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->append(list, &data[i]));
+    }
+
+    TEST_ASSERT_EQUAL_INT(0, list->index(list, &data[0]));
+    TEST_ASSERT_EQUAL_INT(5, list->index(list, &data[5]));
+    TEST_ASSERT_EQUAL_INT(9, list->index(list, &data[9]));
+    temp = 11;
+    TEST_ASSERT_EQUAL_INT(-1, list->index(list, &temp));
+
+    list_free(&list);
+}
 
 void test_list(void)
 {
@@ -381,4 +363,6 @@ void test_list(void)
     RUN_TEST(test_list_struct);
 
     RUN_TEST(test_list_iter);
+
+    RUN_TEST(test_list_index);
 }

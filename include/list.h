@@ -44,7 +44,7 @@ struct _list
     bool (*get)(struct _list *self, int index, void *obj);
     bool (*set)(struct _list *self, int index, void *obj);
 
-    int (*index)(struct _list *self, void *obj);
+    int (*index)(struct _list *self, void *obj);        // retval -1 if not found
     // bool (*contains)(struct _list *self, void *obj);
 
     // base
@@ -58,6 +58,10 @@ struct _list
 
     // config
     compare_fun_t compare;      // !!! you have to implement this function
+
+    // copy
+    struct _list* (*slice)(struct _list *self, int start, int end, int step);
+    // struct _list* (*copy)(struct _list *self);
     
     // -------------------- debug --------------------
     void (*print)(struct _list *self);
