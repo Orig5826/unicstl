@@ -189,6 +189,21 @@ static void list_print(struct _list* self)
     }
 }
 
+struct _list* list_slice(struct _list *self, int start, int end, int step)
+{
+    if(start < 0)
+    {
+        start += self->size(self);
+    }
+
+    if(end < 0)
+    {
+        end += self->size(self);
+    }
+
+    return NULL;
+}
+
 static bool list_iter_hasnext(struct _iterator* iter)
 {
     list_t self = (list_t)iter->_container;

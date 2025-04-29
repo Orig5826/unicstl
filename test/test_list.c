@@ -26,7 +26,6 @@ static void test_list_new(void)
     TEST_ASSERT_NULL(list_new2(sizeof(int), 0));
 }
 
-
 static void test_list_append(void)
 {
     int temp = 0;
@@ -62,7 +61,6 @@ static void test_list_append(void)
     list_free(&list);
 }
 
-
 static void test_list_pop(void)
 {
     int temp = 0;
@@ -87,6 +85,78 @@ static void test_list_pop(void)
     list_free(&list);
 }
 
+static void test_list_insert(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    list->print_obj = print_num;
+
+    TEST_ASSERT_TRUE(list->empty(list));
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->insert(list, i, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
+
+        TEST_ASSERT_TRUE(list->get(list, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        // list->print(list);
+        // printf("\n");
+    }
+    list->clear(list);
+    TEST_ASSERT_TRUE(list->empty(list));
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(list->insert(list, 0, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, list->size(list));
+
+        TEST_ASSERT_TRUE(list->get(list, 0, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        // list->print(list);
+        // printf("\n");
+    }
+
+    TEST_ASSERT_FALSE(list->empty(list));
+    list_free(&list);
+}
+
+static void test_list_delete(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint32_t len = sizeof(data) / sizeof(data[0]);
+    uint32_t i = 0;
+
+    list_t list = NULL;
+
+    // ------------------------------
+    list = list_new2(sizeof(int), len);
+    for (i = 0; i < len; i++)
+    {
+        list->append(list, &data[i]);
+    }
+
+    TEST_ASSERT_TRUE(list->delete(list, len - 1, &temp));
+    TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+
+    for (i = 0; i < len - 1; i++)
+    {
+        TEST_ASSERT_TRUE(list->delete(list, 0, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    TEST_ASSERT_TRUE(list->empty(list));
+    TEST_ASSERT_FALSE(list->pop(list, &temp));
+    list_free(&list);
+}
 
 static void test_list_clear(void)
 {
@@ -355,8 +425,12 @@ void test_list(void)
     UnitySetTestFile(__FILE__);
 
     RUN_TEST(test_list_new);
+
     RUN_TEST(test_list_append);
     RUN_TEST(test_list_pop);
+    RUN_TEST(test_list_insert);
+    RUN_TEST(test_list_delete);
+
     RUN_TEST(test_list_clear);
 
     RUN_TEST(test_list_num);
