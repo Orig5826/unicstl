@@ -189,6 +189,30 @@ static void list_print(struct _list* self)
     }
 }
 
+static int list_index_exchange(struct _list* self, int index)
+{
+    assert(self != NULL);
+    int size = (int)self->size(self);
+
+    if (index < 0)
+    {
+        index += size;
+        if (index < 0)
+        {
+            index = 0;
+        }
+    }
+    else
+    {
+        if (index > size)
+        {
+            index = size;
+        }
+    }
+    return index;
+}
+
+
 /**
  * @brief list slice
  *  if index < 0, from the end of list. for example:
@@ -210,6 +234,9 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     int i = 0;
     bool contains_last_obj = false;
     int size = (int)self->size(self);
+    int capicity = 1;
+    list_t list = NULL;
+
     if (step == 0)
     {
         return NULL;
@@ -241,43 +268,14 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
         }
     }
 
-    if (start < 0)
-    {
-        if (start < -size)
-        {
-            start = -size;
-        }
-        start += size;
-    }
-    else
-    {
-        if (start > size)
-        {
-            start = size;
-        }
-    }
+    start = list_index_exchange(self, start);
+    end = list_index_exchange(self, end);
 
-    if (end < 0)
+    if(abs(end - start) != 0)
     {
-        if (end < -size)
-        {
-            end = -size;
-        }
-        end += size;
+        capicity = abs(end - start);
     }
-    else
-    {
-        if (end > size)
-        {
-            end = size;
-        }
-    }
-
-    // printf("start = %d\n", start);
-    // printf("end = %d\n", end);
-
-    uint32_t capicity = (end - start == 0) ? 1 : abs(end - start);
-    list_t list = list_new2(self->_obj_size, capicity);
+    list = list_new2(self->_obj_size, capicity);
     if (list == NULL)
     {
         return NULL;
@@ -285,7 +283,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
-    if (capicity == 0 || start > size || end > size)
+    if (start > size || end > size)
     {
         goto done;
     }
