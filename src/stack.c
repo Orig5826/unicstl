@@ -124,7 +124,6 @@ static uint32_t stack_capacity(struct _stack* self)
 static bool stack_clear(struct _stack* self)
 {
     assert(self != NULL);
-    assert(self->_head != NULL);
     if (self->empty(self))
     {
         return true;

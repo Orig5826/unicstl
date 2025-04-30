@@ -200,7 +200,6 @@ static void demo_stack_struct(void)
         }
     }
 
-    stack->_destory(stack);
     stack_free(&stack);
 }
 
