@@ -345,67 +345,98 @@ done:
     uint32_t capacity = 1;
     int i = 0;
     bool contain_last_obj = false;
+    int temp = 0;
+    bool negative = false;
     if (step == 0)
     {
         return NULL;
     }
 
-    if (step > 0)
+    if(step < 0)
     {
-        // special case 
-        if (start == LIST_UNLIMITED)
+        negative = true;
+        step = -step;
+        
+        temp = start;
+        if(start >= 0)
+        {
+            start = end + 1;
+        }
+        else
+        {
+            start = end;
+        }
+
+        if(end >= 0)
+        {
+            end = temp + 1;
+        }
+        else
+        {
+            end = temp;
+        }
+    }
+
+    if(start < 0)
+    {
+        start += (int)self->size(self);
+        if(start < 0)
         {
             start = 0;
         }
-        if (end == LIST_UNLIMITED)
+    }
+    else
+    {
+        if(start == LIST_UNLIMITED)
         {
-            end = self->size(self);
+            start = 0;
             contain_last_obj = true;
         }
 
-        // [start_max, end_min] start < end and limit start_max and end_min
-        if (start >= end || start >= self->size(self) || end < -self->size(self))
+        if(start >= (int)self->size(self))
         {
             empty = true;
         }
+    }
 
-        if (empty != true)
+    if(end < 0)
+    {
+        end += (int)self->size(self);
+        if(end < 0)
         {
-            if (start < 0)
-            {
-                if (start < -self->size(self))
-                {
-                    start = -self->size(self);
-                }
-                start += self->size(self);
-            }
+            empty = true;
+        }
+    }
+    else
+    {
+        if (end == LIST_UNLIMITED || end >= (int)self->size(self))
+        {
+            end = (int)self->size(self) - 1;
+            contain_last_obj = true;
+        }
+    }
 
-            if (end < 0)
-            {
-                end += self->size(self);
-            }
-            else
-            {
-                if (end > self->size(self))
-                {
-                    end = self->size(self);
-                    contain_last_obj = true;
-                }
-            }
+    if(start >= end)
+    {
+        empty = true;
+    }
 
-            if (empty != true)
-            {
-                // calc capacity
-                capacity = end - start;
-            }
-            list = list_new2(self->_obj_size, capacity);
-            if (list == NULL)
-            {
-                return NULL;
-            }
-            list->compare = self->compare;
-            list->print_obj = self->print_obj;
+    if (empty != true)
+    {
+        capacity = end - start;
+    }
+    list = list_new2(self->_obj_size, capacity);
+    if (list == NULL)
+    {
+        return NULL;
+    }
+    list->compare = self->compare;
+    list->print_obj = self->print_obj;
 
+    if(empty != true)
+    {
+        if(negative != true)
+        {
             if (contain_last_obj != true)
             {
                 for (i = start; i < end; i += step)
@@ -423,98 +454,24 @@ done:
         }
         else
         {
-            list = list_new2(self->_obj_size, capacity);
-            if (list == NULL)
-            {
-                return NULL;
-            }
-            list->compare = self->compare;
-            list->print_obj = self->print_obj;
-        }
-    }
-    else
-    {
-        // special case 
-        if (start == LIST_UNLIMITED)
-        {
-            start = self->size(self) - 1;
-        }
-        if (end == LIST_UNLIMITED)
-        {
-            end = 0;
-            contain_last_obj = true;
-        }
-
-        // [start_min, end_max] start > end and limit start_min and end_max
-        if (start <= end || end >= self->size(self) || start < -self->size(self))
-        {
-            empty = true;
-        }
-
-        if (empty != true)
-        {
-            if (start < 0)
-            {
-                if (start < -self->size(self))
-                {
-                    start = -self->size(self);
-                }
-                start += self->size(self);
-            }
-            else
-            {
-                if (start > self->size(self))
-                {
-                    start = self->size(self) - 1;
-                    contain_last_obj = true;
-                }
-            }
-
-            if (end < 0)
-            {
-                end += self->size(self);
-            }
-
-            if (empty != true)
-            {
-                // calc capacity
-                capacity = end - start;
-            }
-            list = list_new2(self->_obj_size, capacity);
-            if (list == NULL)
-            {
-                return NULL;
-            }
-            list->compare = self->compare;
-            list->print_obj = self->print_obj;
-
             if (contain_last_obj != true)
             {
-                for (i = start; i > end; i += step)
+                for (i = start; i < end; i += step)
                 {
-                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                    list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
                 }
             }
             else
             {
-                for (i = start; i >= end; i += step)
+                for (i = start; i <= end; i += step)
                 {
-                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                    list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
                 }
             }
         }
-        else
-        {
-            list = list_new2(self->_obj_size, capacity);
-            if (list == NULL)
-            {
-                return NULL;
-            }
-            list->compare = self->compare;
-            list->print_obj = self->print_obj;
-        }
     }
 
+done:
     return list;
 #endif
 }

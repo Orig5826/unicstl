@@ -472,12 +472,12 @@ static void test_list_slice_empty(void)
     list_free(&list2);
 
     // -------------------- empty --------------------
-    list2 = list->slice(list, len, len + 10, 1); // if start > start_max
+    list2 = list->slice(list, len, len + 1, 1); // if start > start_max
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
     list_free(&list2);
 
-    list2 = list->slice(list, -len - 10, -len, 1); // if end < end_min
+    list2 = list->slice(list, -len - 1, -len, 1); // if end < end_min
     TEST_ASSERT_NOT_NULL(list2);
     TEST_ASSERT_TRUE(list2->empty(list2));
     list_free(&list2);
@@ -545,7 +545,7 @@ static void test_list_slice_positive(void)
     // python: list[4:0:-1]
     list2 = list->slice(list, 4, 0, -1);
     TEST_ASSERT_NOT_NULL(list2);
-    //list2->print(list2); printf("\n");
+    // list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
