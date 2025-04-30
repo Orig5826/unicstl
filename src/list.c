@@ -209,6 +209,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     assert(self != NULL);
     int i = 0;
     bool contains_last_obj = false;
+    int size = (int)self->size(self);
     if (step == 0)
     {
         return NULL;
@@ -223,15 +224,14 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
 
         if (end == LIST_UNLIMITED)
         {
-            end = (int)self->size(self);
+            end = size;
         }
     }
     else
     {
         if (start == LIST_UNLIMITED)
         {
-            start = (int)self->size(self) - 1;
-            contains_last_obj = true;
+            start = size - 1;
         }
 
         if (end == LIST_UNLIMITED)
@@ -243,33 +243,33 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
 
     if (start < 0)
     {
-        if (start < -(int)self->size(self))
+        if (start < -size)
         {
-            start = -(int)self->size(self);
+            start = -size;
         }
-        start += (int)self->size(self);
+        start += size;
     }
     else
     {
-        if (start > (int)self->size(self))
+        if (start > size)
         {
-            start = (int)self->size(self);
+            start = size;
         }
     }
 
     if (end < 0)
     {
-        if (end < -(int)self->size(self))
+        if (end < -size)
         {
-            end = -(int)self->size(self);
+            end = -size;
         }
-        end += (int)self->size(self);
+        end += size;
     }
     else
     {
-        if (end > (int)self->size(self))
+        if (end > size)
         {
-            end = (int)self->size(self);
+            end = size;
         }
     }
 
@@ -285,7 +285,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
-    if (capicity == 0 || start > self->size(self) || end > self->size(self))
+    if (capicity == 0 || start > size || end > size)
     {
         goto done;
     }
