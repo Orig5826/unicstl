@@ -206,6 +206,7 @@ static void list_print(struct _list* self)
  */
 struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
+#if 1
     assert(self != NULL);
     int i = 0;
     bool unlimited = false;
@@ -323,6 +324,72 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
 
 done:
     return list;
+#else
+    assert(self != NULL);
+    list_t list = NULL;
+    bool empty = false;
+    uint32_t capacity = 1;
+    int i = 0;
+    if(step == 0)
+    {
+        return NULL;
+    }
+    
+    if(step > 0)
+    {
+        // special case 
+        if(start == LIST_UNLIMITED)
+        {
+            start = 0;
+        }
+        if(end == LIST_UNLIMITED)
+        {
+            end = self->size(self);
+        }
+
+        // [start_max, end_min] start < end and limit start_max and end_min
+        if(start >= end || start >= self->size(self) || end < -self->size(self))
+        {
+            empty = true;
+        }
+
+        if(start < 0)
+        {
+            if(start < -self->size(self))
+            {
+                start = -self->size(self);
+            }
+            start += self->size(self);
+        }
+
+        if(end < 0)
+        {
+            end += self->size(self);
+        }
+    }
+    else
+    {
+
+    }
+
+    
+    if(empty != true)
+    {
+        // calc capacity
+
+    }
+    list_t list = list_new2(self->_obj_size, capacity);
+    if(list == NULL)
+    {
+        return NULL;
+    }
+    list->compare = self->compare;
+    list->print_obj = self->print_obj;
+
+
+done:
+    return list;
+#endif
 }
 
 static bool list_iter_hasnext(struct _iterator* iter)

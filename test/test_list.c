@@ -471,6 +471,17 @@ static void test_list_slice_empty(void)
     TEST_ASSERT_TRUE(list2->empty(list2));
     list_free(&list2);
 
+    // -------------------- empty --------------------
+    list2 = list->slice(list, len, len + 10, 1); // if start > start_max
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
+
+    list2 = list->slice(list, -len - 10, -len, 1); // if end < end_min
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    list_free(&list2);
+
     list_free(&list);
 }
 
@@ -499,6 +510,18 @@ static void test_list_slice_positive(void)
     list2 = list->slice(list, 0, len, 1);
     TEST_ASSERT_NOT_NULL(list2);
     //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    list_free(&list2);
+
+    // python: list[0:11] if len(list) == 10
+    list2 = list->slice(list, 0, len + 1, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
     for(i = 0; i < list2->size(list2); i++)
     {
@@ -614,9 +637,9 @@ static void test_list_slice_negative(void)
     }
     list_free(&list2);
 
-    // -------------------- step == 2 --------------------
-    // list[-30:-1]
-    list2 = list->slice(list, -30, -1, 1);
+    // -------------------- start_limit --------------------
+    // list[-len-1:-1]
+    list2 = list->slice(list, -len-1, -1, 1);
     TEST_ASSERT_NOT_NULL(list2);
     // list2->print(list2); printf("\n");
     TEST_ASSERT_EQUAL_INT(len - 1, list2->size(list2));
@@ -625,12 +648,6 @@ static void test_list_slice_negative(void)
         TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
         TEST_ASSERT_EQUAL_INT(data[i], temp);
     }
-    list_free(&list2);
-
-    // list[-30:-10]
-    list2 = list->slice(list, -30, -10, 1);
-    TEST_ASSERT_NOT_NULL(list2);
-    TEST_ASSERT_TRUE(list2->empty(list2));
     list_free(&list2);
 
     list_free(&list);
