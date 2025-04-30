@@ -206,7 +206,7 @@ static void list_print(struct _list* self)
  */
 struct _list* list_slice(struct _list *self, int start, int end, int step)
 {
-#if 1
+#if 0
     assert(self != NULL);
     int i = 0;
     bool unlimited = false;
@@ -344,6 +344,7 @@ done:
     bool empty = false;
     uint32_t capacity = 1;
     int i = 0;
+    bool contain_last_obj = false;
     if(step == 0)
     {
         return NULL;
@@ -359,6 +360,7 @@ done:
         if(end == LIST_UNLIMITED)
         {
             end = self->size(self);
+            contain_last_obj = true;
         }
 
         // [start_max, end_min] start < end and limit start_max and end_min
@@ -366,7 +368,6 @@ done:
         {
             empty = true;
         }
-
         if(start < 0)
         {
             if(start < -self->size(self))
@@ -380,28 +381,48 @@ done:
         {
             end += self->size(self);
         }
+        else
+        {
+            if(end > self->size(self))
+            {
+                end = self->size(self);
+                contain_last_obj = true;
+            }
+        }
+
+        if(empty != true)
+        {
+            // calc capacity
+            capacity = end - start;
+        }
+        list = list_new2(self->_obj_size, capacity);
+        if(list == NULL)
+        {
+            return NULL;
+        }
+        list->compare = self->compare;
+        list->print_obj = self->print_obj;
+
+        if(contain_last_obj != true)
+        {
+            for(i = start; i < end; i += step)
+            {
+                list->append(list, (char*)self->obj + i * self->_obj_size);
+            }
+        }
+        else
+        {
+            for(i = start; i <= end; i += step)
+            {
+                list->append(list, (char*)self->obj + i * self->_obj_size);
+            }
+        }
     }
     else
     {
 
     }
 
-    
-    if(empty != true)
-    {
-        // calc capacity
-
-    }
-    list_t list = list_new2(self->_obj_size, capacity);
-    if(list == NULL)
-    {
-        return NULL;
-    }
-    list->compare = self->compare;
-    list->print_obj = self->print_obj;
-
-
-done:
     return list;
 #endif
 }
