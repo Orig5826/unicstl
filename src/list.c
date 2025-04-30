@@ -250,6 +250,13 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
         }
         start += self->size(self);
     }
+    else
+    {
+        if(start > self->size(self))
+        {
+            start = self->size(self);
+        }
+    }
 
     if(end < 0)
     {
@@ -258,6 +265,13 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
             end = -self->size(self);
         }
         end += self->size(self);
+    }
+    else
+    {
+        if(end > self->size(self))
+        {
+            end = self->size(self);
+        }
     }
 
     // printf("start = %d\n", start);
