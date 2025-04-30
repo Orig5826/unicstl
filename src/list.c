@@ -1,12 +1,12 @@
 /**
  * @file list.c
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-06-23
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include "list.h"
 
@@ -15,7 +15,7 @@ static bool list_insert(struct _list* self, int index, void* obj)
 {
     // assert(index >= 0 && index < (int)self->size(self));
     // assert(index >= 0 && index <= (int)self->size(self));
-    if(index < 0 || index > (int)self->size(self))
+    if (index < 0 || index >(int)self->size(self))
     {
         return false;
     }
@@ -23,7 +23,7 @@ static bool list_insert(struct _list* self, int index, void* obj)
     if (self->size(self) == self->_capacity)
     {
         int capacity = self->_capacity * self->_ratio;
-        void* obj_new = (void *)realloc(self->obj, capacity * self->_obj_size);
+        void* obj_new = (void*)realloc(self->obj, capacity * self->_obj_size);
         if (obj_new == NULL)
         {
             return false;
@@ -47,7 +47,7 @@ static bool list_delete(struct _list* self, int index, void* obj)
 {
     assert(self != NULL);
     // assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
-    if(index < (int)(0 - self->size(self)) || index >= (int)self->size(self))
+    if (index < (int)(0 - self->size(self)) || index >= (int)self->size(self))
     {
         return false;
     }
@@ -92,14 +92,14 @@ static int list_index(struct _list* self, void* obj)
 {
     assert(self != NULL);
     int index = 0;
-    if(obj == NULL)
+    if (obj == NULL)
     {
         return -1;
     }
 
-    while(index < (int)self->size(self))
+    while (index < (int)self->size(self))
     {
-        if(self->compare(self->obj + index * self->_obj_size, obj) == 0)
+        if (self->compare(self->obj + index * self->_obj_size, obj) == 0)
         {
             return index;
         }
@@ -193,58 +193,58 @@ static void list_print(struct _list* self)
  * @brief list slice
  *  if index < 0, from the end of list. for example:
  *  list[-1] is the last element in list.
- * 
- * @param self 
+ *
+ * @param self
  * @param start start index
- * @param end end index 
+ * @param end end index
  * @param step step, if step < 0, return a reverse list.
- * @return struct _list* 
+ * @return struct _list*
  *  a copy of the list, from start to end, step by step.
  *      if step < 0, return a reverse list.
  *      if step > 0, return a forward list.
  *      if step == 0, return NULL.
  */
-struct _list* list_slice(struct _list *self, int start, int end, int step)
+struct _list* list_slice(struct _list* self, int start, int end, int step)
 {
 #if 0
     assert(self != NULL);
     int i = 0;
     bool unlimited = false;
-    if(step == 0)
+    if (step == 0)
     {
         return NULL;
     }
 
-    if(step > 0)
+    if (step > 0)
     {
-        if(start == LIST_UNLIMITED)
+        if (start == LIST_UNLIMITED)
         {
             start = 0;
         }
-    
-        if(end == LIST_UNLIMITED)
+
+        if (end == LIST_UNLIMITED)
         {
             end = self->size(self);
         }
     }
     else
     {
-        if(start == LIST_UNLIMITED)
+        if (start == LIST_UNLIMITED)
         {
             start = self->size(self) - 1;
             unlimited = true;
         }
-    
-        if(end == LIST_UNLIMITED)
+
+        if (end == LIST_UNLIMITED)
         {
             end = 0;
             unlimited = true;
         }
     }
 
-    if(start < 0)
+    if (start < 0)
     {
-        if(start < -self->size(self))
+        if (start < -self->size(self))
         {
             start = -self->size(self);
         }
@@ -252,15 +252,15 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     }
     else
     {
-        if(start > self->size(self))
+        if (start > self->size(self))
         {
             start = self->size(self);
         }
     }
 
-    if(end < 0)
+    if (end < 0)
     {
-        if(end < -self->size(self))
+        if (end < -self->size(self))
         {
             end = -self->size(self);
         }
@@ -268,7 +268,7 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     }
     else
     {
-        if(end > self->size(self))
+        if (end > self->size(self))
         {
             end = self->size(self);
         }
@@ -279,35 +279,35 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
 
     uint32_t capicity = (end - start == 0) ? 1 : abs(end - start);
     list_t list = list_new2(self->_obj_size, capicity);
-    if(list == NULL)
+    if (list == NULL)
     {
         return NULL;
     }
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
-    if(capicity == 0 || start > self->size(self) || end > self->size(self))
+    if (capicity == 0 || start > self->size(self) || end > self->size(self))
     {
         goto done;
     }
 
-    if(step > 0)
+    if (step > 0)
     {
-        if(start > end)
+        if (start > end)
         {
             goto done;
-        }    
+        }
 
-        if(unlimited != true)
+        if (unlimited != true)
         {
-            for(i = start; i < end; i += step)
+            for (i = start; i < end; i += step)
             {
                 list->append(list, (char*)self->obj + i * self->_obj_size);
             }
         }
         else
         {
-            for(i = start; i <= end; i += step)
+            for (i = start; i <= end; i += step)
             {
                 list->append(list, (char*)self->obj + i * self->_obj_size);
             }
@@ -315,21 +315,21 @@ struct _list* list_slice(struct _list *self, int start, int end, int step)
     }
     else /*if(step < 0)*/
     {
-        if(start < end)
+        if (start < end)
         {
             goto done;
         }
 
-        if(unlimited != true)
+        if (unlimited != true)
         {
-            for(i = start; i > end; i += step)
+            for (i = start; i > end; i += step)
             {
                 list->append(list, (char*)self->obj + i * self->_obj_size);
             }
         }
         else
         {
-            for(i = start; i >= end; i += step)
+            for (i = start; i >= end; i += step)
             {
                 list->append(list, (char*)self->obj + i * self->_obj_size);
             }
@@ -345,82 +345,174 @@ done:
     uint32_t capacity = 1;
     int i = 0;
     bool contain_last_obj = false;
-    if(step == 0)
+    if (step == 0)
     {
         return NULL;
     }
-    
-    if(step > 0)
+
+    if (step > 0)
     {
         // special case 
-        if(start == LIST_UNLIMITED)
+        if (start == LIST_UNLIMITED)
         {
             start = 0;
         }
-        if(end == LIST_UNLIMITED)
+        if (end == LIST_UNLIMITED)
         {
             end = self->size(self);
             contain_last_obj = true;
         }
 
         // [start_max, end_min] start < end and limit start_max and end_min
-        if(start >= end || start >= self->size(self) || end < -self->size(self))
+        if (start >= end || start >= self->size(self) || end < -self->size(self))
         {
             empty = true;
         }
-        if(start < 0)
-        {
-            if(start < -self->size(self))
-            {
-                start = -self->size(self);
-            }
-            start += self->size(self);
-        }
 
-        if(end < 0)
+        if (empty != true)
         {
-            end += self->size(self);
+            if (start < 0)
+            {
+                if (start < -self->size(self))
+                {
+                    start = -self->size(self);
+                }
+                start += self->size(self);
+            }
+
+            if (end < 0)
+            {
+                end += self->size(self);
+            }
+            else
+            {
+                if (end > self->size(self))
+                {
+                    end = self->size(self);
+                    contain_last_obj = true;
+                }
+            }
+
+            if (empty != true)
+            {
+                // calc capacity
+                capacity = end - start;
+            }
+            list = list_new2(self->_obj_size, capacity);
+            if (list == NULL)
+            {
+                return NULL;
+            }
+            list->compare = self->compare;
+            list->print_obj = self->print_obj;
+
+            if (contain_last_obj != true)
+            {
+                for (i = start; i < end; i += step)
+                {
+                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                }
+            }
+            else
+            {
+                for (i = start; i <= end; i += step)
+                {
+                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                }
+            }
         }
         else
         {
-            if(end > self->size(self))
+            list = list_new2(self->_obj_size, capacity);
+            if (list == NULL)
             {
-                end = self->size(self);
-                contain_last_obj = true;
+                return NULL;
             }
-        }
-
-        if(empty != true)
-        {
-            // calc capacity
-            capacity = end - start;
-        }
-        list = list_new2(self->_obj_size, capacity);
-        if(list == NULL)
-        {
-            return NULL;
-        }
-        list->compare = self->compare;
-        list->print_obj = self->print_obj;
-
-        if(contain_last_obj != true)
-        {
-            for(i = start; i < end; i += step)
-            {
-                list->append(list, (char*)self->obj + i * self->_obj_size);
-            }
-        }
-        else
-        {
-            for(i = start; i <= end; i += step)
-            {
-                list->append(list, (char*)self->obj + i * self->_obj_size);
-            }
+            list->compare = self->compare;
+            list->print_obj = self->print_obj;
         }
     }
     else
     {
+        // special case 
+        if (start == LIST_UNLIMITED)
+        {
+            start = self->size(self) - 1;
+        }
+        if (end == LIST_UNLIMITED)
+        {
+            end = 0;
+            contain_last_obj = true;
+        }
 
+        // [start_min, end_max] start > end and limit start_min and end_max
+        if (start <= end || end >= self->size(self) || start < -self->size(self))
+        {
+            empty = true;
+        }
+
+        if (empty != true)
+        {
+            if (start < 0)
+            {
+                if (start < -self->size(self))
+                {
+                    start = -self->size(self);
+                }
+                start += self->size(self);
+            }
+            else
+            {
+                if (start > self->size(self))
+                {
+                    start = self->size(self) - 1;
+                    contain_last_obj = true;
+                }
+            }
+
+            if (end < 0)
+            {
+                end += self->size(self);
+            }
+
+            if (empty != true)
+            {
+                // calc capacity
+                capacity = end - start;
+            }
+            list = list_new2(self->_obj_size, capacity);
+            if (list == NULL)
+            {
+                return NULL;
+            }
+            list->compare = self->compare;
+            list->print_obj = self->print_obj;
+
+            if (contain_last_obj != true)
+            {
+                for (i = start; i > end; i += step)
+                {
+                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                }
+            }
+            else
+            {
+                for (i = start; i >= end; i += step)
+                {
+                    list->append(list, (char*)self->obj + i * self->_obj_size);
+                }
+            }
+        }
+        else
+        {
+            list = list_new2(self->_obj_size, capacity);
+            if (list == NULL)
+            {
+                return NULL;
+            }
+            list->compare = self->compare;
+            list->print_obj = self->print_obj;
+        }
     }
 
     return list;
@@ -431,7 +523,7 @@ static bool list_iter_hasnext(struct _iterator* iter)
 {
     list_t self = (list_t)iter->_container;
 
-    if(iter->_index < self->size(self))
+    if (iter->_index < self->size(self))
     {
         return true;
     }
@@ -441,7 +533,7 @@ static bool list_iter_hasnext(struct _iterator* iter)
 static const void* list_iter_next(struct _iterator* iter)
 {
     list_t self = (list_t)iter->_container;
-    void *obj = self->obj + iter->_index * self->_obj_size;
+    void* obj = self->obj + iter->_index * self->_obj_size;
     iter->_index += 1;
     return obj;
 }
@@ -462,7 +554,7 @@ iterator_t list_iter(struct _list* self)
 static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
 {
     assert(list != NULL);
-    if(list == NULL || obj_size == 0 || capacity == 0)
+    if (list == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
     }
@@ -516,7 +608,7 @@ static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
     // -------------------- debug --------------------
     list->print_obj = default_print_obj;
     list->print = list_print;
-    
+
     return true;
 }
 
@@ -524,12 +616,12 @@ list_t list_new2(uint32_t obj_size, uint32_t capacity)
 {
     struct _list* list = NULL;
     list = (struct _list*)calloc(1, sizeof(struct _list));
-    if(list == NULL)
+    if (list == NULL)
     {
         return NULL;
     }
-    
-    if(list_init2(list, obj_size, capacity) != true)
+
+    if (list_init2(list, obj_size, capacity) != true)
     {
         free(list);
         return NULL;
@@ -540,9 +632,9 @@ list_t list_new2(uint32_t obj_size, uint32_t capacity)
 void list_free(list_t* list)
 {
     assert(list != NULL);
-    if(list != NULL && *list != NULL)
+    if (list != NULL && *list != NULL)
     {
-        if((*list)->_destory != NULL)
+        if ((*list)->_destory != NULL)
         {
             (*list)->_destory(*list);
         }
