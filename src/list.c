@@ -206,10 +206,9 @@ static void list_print(struct _list* self)
  */
 struct _list* list_slice(struct _list* self, int start, int end, int step)
 {
-#if 0
     assert(self != NULL);
     int i = 0;
-    bool unlimited = false;
+    bool contains_last_obj = false;
     if (step == 0)
     {
         return NULL;
@@ -224,53 +223,53 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
 
         if (end == LIST_UNLIMITED)
         {
-            end = self->size(self);
+            end = (int)self->size(self);
         }
     }
     else
     {
         if (start == LIST_UNLIMITED)
         {
-            start = self->size(self) - 1;
-            unlimited = true;
+            start = (int)self->size(self) - 1;
+            contains_last_obj = true;
         }
 
         if (end == LIST_UNLIMITED)
         {
             end = 0;
-            unlimited = true;
+            contains_last_obj = true;
         }
     }
 
     if (start < 0)
     {
-        if (start < -self->size(self))
+        if (start < -(int)self->size(self))
         {
-            start = -self->size(self);
+            start = -(int)self->size(self);
         }
-        start += self->size(self);
+        start += (int)self->size(self);
     }
     else
     {
-        if (start > self->size(self))
+        if (start > (int)self->size(self))
         {
-            start = self->size(self);
+            start = (int)self->size(self);
         }
     }
 
     if (end < 0)
     {
-        if (end < -self->size(self))
+        if (end < -(int)self->size(self))
         {
-            end = -self->size(self);
+            end = -(int)self->size(self);
         }
-        end += self->size(self);
+        end += (int)self->size(self);
     }
     else
     {
-        if (end > self->size(self))
+        if (end > (int)self->size(self))
         {
-            end = self->size(self);
+            end = (int)self->size(self);
         }
     }
 
@@ -298,7 +297,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
             goto done;
         }
 
-        if (unlimited != true)
+        if (contains_last_obj != true)
         {
             for (i = start; i < end; i += step)
             {
@@ -320,7 +319,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
             goto done;
         }
 
-        if (unlimited != true)
+        if (contains_last_obj != true)
         {
             for (i = start; i > end; i += step)
             {
@@ -338,154 +337,6 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
 
 done:
     return list;
-#else
-    assert(self != NULL);
-    list_t list = NULL;
-    bool empty = false;
-    uint32_t capacity = 1;
-    int i = 0;
-    bool contain_last_obj = false;
-    int temp = 0;
-    bool negative = false;
-
-    int start0 = start;
-    int end0 = end;
-    if (step == 0)
-    {
-        return NULL;
-    }
-
-    if(start0 == LIST_UNLIMITED)
-    {
-        start = 0 - (int)LIST_UNLIMITED;
-    }
-
-    if(end0 == LIST_UNLIMITED)
-    {
-        end = (int)LIST_UNLIMITED;
-    }
-
-    if(start < 0)
-    {
-        start += (int)self->size(self);
-        if(start < 0)
-        {
-            start = 0;
-        }
-    }
-    else
-    {
-        if(start >= (int)self->size(self))
-        {
-            empty = true;
-        }
-    }
-
-    if(end < 0)
-    {
-        end += (int)self->size(self);
-        if(end < 0)
-        {
-            empty = true;
-        }
-    }
-    else
-    {
-        if (end >= (int)self->size(self))
-        {
-            end = (int)self->size(self);
-        }
-
-        if(step < 0)
-        {
-            contain_last_obj = true;
-        }
-    }
-
-    if(step < 0)
-    {
-        negative = true;
-        step = -step;
-        
-        temp = start;
-        if(start >= 0)
-        {
-            start = end + 1;
-        }
-        else
-        {
-            start = end;
-        }
-
-        if(end >= 0)
-        {
-            end = temp + 1;
-        }
-        else
-        {
-            end = temp;
-        }
-        end = temp;
-    }
-
-    if(start >= end)
-    {
-        empty = true;
-    }
-
-    if (empty != true)
-    {
-        capacity = end - start;
-    }
-    list = list_new2(self->_obj_size, capacity);
-    if (list == NULL)
-    {
-        return NULL;
-    }
-    list->compare = self->compare;
-    list->print_obj = self->print_obj;
-
-    if(empty != true)
-    {
-        if(negative != true)
-        {
-            if (contain_last_obj != true)
-            {
-                for (i = start; i < end; i += step)
-                {
-                    list->append(list, (char*)self->obj + i * self->_obj_size);
-                }
-            }
-            else
-            {
-                for (i = start; i <= end; i += step)
-                {
-                    list->append(list, (char*)self->obj + i * self->_obj_size);
-                }
-            }
-        }
-        else
-        {
-            if (contain_last_obj != true)
-            {
-                for (i = start; i < end; i += step)
-                {
-                    list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
-                }
-            }
-            else
-            {
-                for (i = start; i <= end; i += step)
-                {
-                    list->insert(list, 0, (char*)self->obj + i * self->_obj_size);
-                }
-            }
-        }
-    }
-
-done:
-    return list;
-#endif
 }
 
 static bool list_iter_hasnext(struct _iterator* iter)
