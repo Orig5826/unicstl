@@ -347,9 +347,59 @@ done:
     bool contain_last_obj = false;
     int temp = 0;
     bool negative = false;
+
+    int start0 = start;
+    int end0 = end;
     if (step == 0)
     {
         return NULL;
+    }
+
+    if(start0 == LIST_UNLIMITED)
+    {
+        start = 0 - (int)LIST_UNLIMITED;
+    }
+
+    if(end0 == LIST_UNLIMITED)
+    {
+        end = (int)LIST_UNLIMITED;
+    }
+
+    if(start < 0)
+    {
+        start += (int)self->size(self);
+        if(start < 0)
+        {
+            start = 0;
+        }
+    }
+    else
+    {
+        if(start >= (int)self->size(self))
+        {
+            empty = true;
+        }
+    }
+
+    if(end < 0)
+    {
+        end += (int)self->size(self);
+        if(end < 0)
+        {
+            empty = true;
+        }
+    }
+    else
+    {
+        if (end >= (int)self->size(self))
+        {
+            end = (int)self->size(self);
+        }
+
+        if(step < 0)
+        {
+            contain_last_obj = true;
+        }
     }
 
     if(step < 0)
@@ -375,45 +425,7 @@ done:
         {
             end = temp;
         }
-    }
-
-    if(start < 0)
-    {
-        start += (int)self->size(self);
-        if(start < 0)
-        {
-            start = 0;
-        }
-    }
-    else
-    {
-        if(start == LIST_UNLIMITED)
-        {
-            start = 0;
-            contain_last_obj = true;
-        }
-
-        if(start >= (int)self->size(self))
-        {
-            empty = true;
-        }
-    }
-
-    if(end < 0)
-    {
-        end += (int)self->size(self);
-        if(end < 0)
-        {
-            empty = true;
-        }
-    }
-    else
-    {
-        if (end == LIST_UNLIMITED || end >= (int)self->size(self))
-        {
-            end = (int)self->size(self) - 1;
-            contain_last_obj = true;
-        }
+        end = temp;
     }
 
     if(start >= end)
