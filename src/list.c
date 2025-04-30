@@ -283,14 +283,9 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     list->compare = self->compare;
     list->print_obj = self->print_obj;
 
-    if (start > size || end > size)
-    {
-        goto done;
-    }
-
     if (step > 0)
     {
-        if (start > end)
+        if (start >= end)
         {
             goto done;
         }
@@ -312,7 +307,7 @@ struct _list* list_slice(struct _list* self, int start, int end, int step)
     }
     else /*if(step < 0)*/
     {
-        if (start < end)
+        if (start <= end)
         {
             goto done;
         }
