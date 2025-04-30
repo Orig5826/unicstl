@@ -11,7 +11,7 @@
 #ifndef _ITER_H_
 #define _ITER_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 struct _iterator
 {

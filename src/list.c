@@ -364,63 +364,64 @@ iterator_t list_iter(struct _list* self)
     return iter;
 }
 
-static bool list_init2(struct _list* list, uint32_t obj_size, uint32_t capacity)
+static bool list_init2(struct _list* self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(list != NULL);
-    if (list == NULL || obj_size == 0 || capacity == 0)
+    assert(self != NULL);
+    if (self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
     }
 
     // -------------------- private -------------------- 
-    list->_obj_size = obj_size;
-    list->_size = 0;
-    list->_capacity = capacity;
-    list->_ratio = 2;
-    list->_cur = 0;
+    self->_obj_size = obj_size;
+    self->_size = 0;
+    self->_capacity = capacity;
+    self->_ratio = 2;
+    self->_cur = 0;
 
-    list->obj = (void*)malloc(list->_capacity * list->_obj_size);
-    if (list->obj == NULL)
+    self->obj = (void*)malloc(self->_capacity * self->_obj_size);
+    if (self->obj == NULL)
     {
         return false;
     }
 
-    list->_iter.next = list_iter_next;
-    list->_iter.hasnext = list_iter_hasnext;
+    self->_iter.next = list_iter_next;
+    self->_iter.hasnext = list_iter_hasnext;
 
-    list->_destory = list_destory;
+    self->_destory = list_destory;
 
     // -------------------- public -------------------- 
     // kernel
-    list->append = list_append;
-    list->pop = list_pop;
+    self->append = list_append;
+    self->pop = list_pop;
 
-    list->insert = list_insert;
-    list->delete = list_delete;
+    self->insert = list_insert;
+    self->delete = list_delete;
 
-    list->get = list_get;
-    list->set = list_set;
+    self->get = list_get;
+    self->set = list_set;
 
-    list->index = list_index;
-    // list->contains = list_contains;
+    self->index = list_index;
+    // self->contains = list_contains;
 
     // base
-    list->clear = list_clear;
-    list->size = list_size;
-    list->empty = list_empty;
-    list->capacity = list_capacity;
+    self->clear = list_clear;
+    self->size = list_size;
+    self->empty = list_empty;
+    self->capacity = list_capacity;
 
     // iter
-    list->iter = list_iter;
+    self->iter = list_iter;
 
     // others
-    list->slice = list_slice;
+    self->slice = list_slice;
 
-    // config
-    list->compare = default_compare;
+    // -------------------- default --------------------
+    self->compare = default_compare;
+    self->print_obj = default_print_obj;
+
     // -------------------- debug --------------------
-    list->print_obj = default_print_obj;
-    list->print = list_print;
+    self->print = list_print;
 
     return true;
 }

@@ -11,7 +11,7 @@
 #ifndef _DEQUE_H_
 #define _DEQUE_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 enum _deque_order
 {

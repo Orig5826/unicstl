@@ -11,7 +11,7 @@
 #ifndef _STACK_H_
 #define _STACK_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 struct _stack_node
 {

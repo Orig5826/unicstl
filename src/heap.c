@@ -326,6 +326,10 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     // config
     self->compare = NULL;
     
+    // -------------------- default --------------------
+    self->compare = default_compare;
+    self->print_obj = default_print_obj;
+
     // -------------------- debug -------------------- 
     self->print = heap_print;
     return true;

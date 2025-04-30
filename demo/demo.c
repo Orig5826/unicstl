@@ -64,6 +64,7 @@ int main()
         demo_deque();
         demo_tree();
         demo_heap();
+        demo_graph();
     }
 
     printf("----- unicstl ok -----\n");

@@ -11,7 +11,7 @@
 #ifndef _TREE_H_
 #define _TREE_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 #include "stack.h"
 #include "queue.h"

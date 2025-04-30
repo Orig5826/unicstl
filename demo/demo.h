@@ -45,6 +45,7 @@ void demo_deque(void);
 void demo_queue(void);
 void demo_tree(void);
 void demo_heap(void);
+void demo_graph(void);
 
 #endif // _DEMO_H_
 

@@ -341,6 +341,9 @@ static bool deque_init(struct _deque* self, uint32_t obj_size)
     // iter
     self->iter = deque_iter;
 
+    // -------------------- default --------------------
+    self->print_obj = default_print_obj;
+
     // -------------------- debug -------------------- 
     self->print = deque_print;
     

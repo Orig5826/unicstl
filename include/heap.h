@@ -11,7 +11,7 @@
 #ifndef _HEAP_H_
 #define _HEAP_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 typedef enum
 {

@@ -15,7 +15,7 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 #include "iterator.h"
 
 #define LIST_UNLIMITED  INT32_MAX

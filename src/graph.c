@@ -1056,10 +1056,11 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
     // others
     self->from_matrix = NULL;
 
+    // -------------------- default --------------------
+    self->compare = default_compare;
+    self->print_obj = default_print_obj;
 
-    self->compare = NULL;
     // -------------------- debug --------------------
-    self->print_obj = NULL;
     self->print = graph_print;
 
     return true;

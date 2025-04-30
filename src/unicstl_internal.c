@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2025
  * 
  */
-#include "common.h"
+#include "unicstl_internal.h"
 
 int default_compare(void* obj1, void* obj2)
 {

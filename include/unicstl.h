@@ -16,7 +16,7 @@
 #define UNICSTL_VERSION_MICRO    2
 #define UNICSTL_VERSION          ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 #include "list.h"
 #include "stack.h"

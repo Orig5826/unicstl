@@ -29,6 +29,7 @@
         "iterator.h": "c",
         "assert.h": "c",
         "limits.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "unicstl_internal.h": "c"
     }
 }

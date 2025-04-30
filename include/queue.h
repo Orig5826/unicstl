@@ -11,7 +11,7 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
-#include "common.h"
+#include "unicstl_internal.h"
 
 struct _queue_node
 {

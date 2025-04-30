@@ -1420,6 +1420,10 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     // others
     self->max = tree_max;
     self->min = tree_min;
+    
+    // -------------------- default --------------------
+    self->compare = default_compare;
+    self->print_obj = default_print_obj;
 
     return true;
 }
@@ -1468,6 +1472,10 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     // others
     self->max = tree_max;
     self->min = tree_min;
+
+    // -------------------- default --------------------
+    self->compare = default_compare;
+    self->print_obj = default_print_obj;
 
     return true;
 }

@@ -420,6 +420,9 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
     // iter
     self->iter = queue_iter;
 
+    // -------------------- default --------------------
+    self->print_obj = default_print_obj;
+
     // -------------------- debug -------------------- 
     self->print = queue_print;
     
@@ -483,6 +486,9 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
     // iter
     self->iter = queue2_iter;
 
+    // -------------------- default --------------------
+    self->print_obj = default_print_obj;
+    
     // -------------------- debug -------------------- 
     self->print = queue2_print;
 

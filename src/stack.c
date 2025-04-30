@@ -323,7 +323,7 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
         return false;
     }
 
-    // ---------- private ----------
+    // -------------------- private --------------------
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = UINT32_MAX;
@@ -339,7 +339,7 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
 
     self->_destory = stack_destory;
 
-    // ---------- public ----------
+    // -------------------- public --------------------
     // kernel
     self->push = stack_push;
     self->pop = stack_pop;
@@ -354,8 +354,12 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
     // iter
     self->iter = stack_iter;
     
-    // ---------- debug ----------
+    // -------------------- default --------------------
+    self->print_obj = default_print_obj;
+    
+    // -------------------- debug --------------------
     self->print = stack_print;
+
     return true;
 }
 
@@ -367,7 +371,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
         return false;
     }
 
-    // ---------- private ----------
+    // -------------------- private --------------------
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = capacity;
@@ -393,7 +397,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
 
     self->_destory = stack2_destory;
 
-    // ---------- public ----------
+    // -------------------- public --------------------
     // kernel
     self->push = stack2_push;
     self->pop = stack2_pop;
@@ -408,8 +412,12 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
     // iter
     self->iter = stack_iter;
 
-    // ---------- debug ----------
+    // -------------------- default --------------------
+    self->print_obj = default_print_obj;
+
+    // -------------------- debug --------------------
     self->print = stack2_print;
+
     return true;
 }
 
