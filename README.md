@@ -165,12 +165,15 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 
 ## 修改日志
 
-### Unicstl 0.0.02 (2025-04-24)
+### Unicstl 0.0.02 (2025-05-06)
 - new features
     - graph add function: add/del/find vertex/edge
     - graph add function: bfs/dfs
-    - tree remove old iterator and add new iterator
-    - deque add order select
+    - tree add new iterator and optimize code
+    - deque add order select and delete some functions
+    - iter change the name of container/index...
+    - list optimize code and add slice function
+    - unicstl add default function
 - bugfixed: 
     - none
 - others:
