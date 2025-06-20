@@ -18,17 +18,16 @@ struct _map_node
 {
     char* key;
     void* value;
+    size_t key_sz;
+    size_t value_sz;
 };
+typedef struct _map_node * map_node_t;
 
 struct _map
 {
     // -------------------- private -------------------- 
     tree_t _tree;
-
-    // uint32_t _size;
     uint32_t _obj_size;
-    // uint32_t _capacity;
-    // uint32_t _ratio;
 
     // -------------------- public -------------------- 
     // kernel
@@ -45,9 +44,6 @@ struct _map
 
     // iter
     iterator_t(*iter)(struct _map* self, enum _tree_order);
-
-    // config 
-    compare_fun_t compare;  // !!! you have to implement this function
 
     // -------------------- debug -------------------- 
     void (*print_obj)(void* obj);
