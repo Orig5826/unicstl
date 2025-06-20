@@ -16,23 +16,22 @@
 #include "stack.h"
 #include "queue.h"
 
-
-typedef enum {
+typedef enum _rbt_color{
     RBT_RED,
     RBT_BLACK,
 }rbt_color;
 
 // dfs and bfs traversal order
 enum _tree_order{
-    ORDER_PRE,      // pre-order
-    ORDER_IN,       // in-order
-    ORDER_POST,     // post-order
-    ORDER_BREADTH,  // breadth-first search [BFS]
+    TREE_DFS_PRE,       // pre-order
+    TREE_DFS_IN,        // in-order
+    TREE_DFS_POST,      // post-order
+    TREE_BFS,           // breadth-first search [BFS]
 
-    ORDER_PRE_R,    // right-first pre-order
-    ORDER_IN_R,     // right-first in-order
-    ORDER_POST_R,   // right-first post-order
-    ORDER_BREADTH_R,// right-first breadth-first search [BFS]
+    TREE_DFS_PRE_R,     // right-first pre-order
+    TREE_DFS_IN_R,      // right-first in-order
+    TREE_DFS_POST_R,    // right-first post-order
+    TREE_BFS_R,         // right-first breadth-first search [BFS]
 };
 
 struct _tree_node
@@ -45,7 +44,7 @@ struct _tree_node
     union 
     {
         int32_t balance;
-        uint32_t color;
+        rbt_color color;
     };
 };
 

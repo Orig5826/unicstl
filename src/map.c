@@ -58,7 +58,7 @@ static void map_node_free(struct _map_node** node)
 bool map_clear(struct _map* self)
 {
     struct _map_node* node = NULL;
-    iterator_t iter = self->_tree->iter(self->_tree, ORDER_IN);
+    iterator_t iter = self->_tree->iter(self->_tree, TREE_DFS_IN);
     while(iter->hasnext(&iter))
     {
         // tree & map malloc memory independently, so free them one by one.

@@ -68,8 +68,8 @@ static const int expected_int_array_orderpre_delete[15][15] = {
 };
 
 static const enum _tree_order order[8] = { 
-    ORDER_PRE, ORDER_IN, ORDER_POST, ORDER_BREADTH,
-    ORDER_PRE_R, ORDER_IN_R, ORDER_POST_R, ORDER_BREADTH_R
+    TREE_DFS_PRE, TREE_DFS_IN, TREE_DFS_POST, TREE_BFS,
+    TREE_DFS_PRE_R, TREE_DFS_IN_R, TREE_DFS_POST_R, TREE_BFS_R
 };
 
 static uint32_t iter2array_num(iterator_t iter, int *data)
@@ -104,7 +104,7 @@ static void test_avltree_iter(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
 
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
     }
@@ -145,7 +145,7 @@ static void test_avltree_insert(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
 
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_insert[i], buff, count);
     }
@@ -185,7 +185,7 @@ static void test_avltree_delete(void)
 
     for (i = 0; i < len; i++)
     {
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(expected_int_array_orderpre_delete[i], buff, count);
 
@@ -270,7 +270,7 @@ static void test_rbtree_iter(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
         
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_insert[i], buff, count);
     }
@@ -310,7 +310,7 @@ static void test_rbtree_insert(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
 
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_insert[i], buff, count);
     }
@@ -349,7 +349,7 @@ static void test_rbtree_delete(void)
 
     for (i = 0; i < len; i++)
     {
-        iter = tree->iter(tree, ORDER_PRE);
+        iter = tree->iter(tree, TREE_DFS_PRE);
         count = iter2array_num(iter, buff);
         TEST_ASSERT_EQUAL_INT_ARRAY(rbt_expected_int_array_orderpre_delete[i], buff, count);
 

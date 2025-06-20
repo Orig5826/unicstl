@@ -12,8 +12,7 @@
 #include "queue.h"
 #include "stack.h"
 
-// #define TREE_RECURSIVE_ENABLED 
-
+// #define TREE_RECURSIVE_ENABLED
 static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
     assert(self != NULL);
@@ -1151,11 +1150,11 @@ static const void* tree_iter_next(struct _iterator* iter)
     struct _tree_node* target_node = NULL;
     switch (iter->_order)
     {
-    case ORDER_PRE:
-    case ORDER_PRE_R:
+    case TREE_DFS_PRE:
+    case TREE_DFS_PRE_R:
     {
         struct _tree_node* node = NULL;
-        if (iter->_order == ORDER_PRE)
+        if (iter->_order == TREE_DFS_PRE)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1194,10 +1193,10 @@ static const void* tree_iter_next(struct _iterator* iter)
             }
         }
     }break;
-    case ORDER_IN:
-    case ORDER_IN_R:
+    case TREE_DFS_IN:
+    case TREE_DFS_IN_R:
     {
-        if (iter->_order == ORDER_IN)
+        if (iter->_order == TREE_DFS_IN)
         {
             while (!self->stack->empty(self->stack) || cur_node != NULL)
             {
@@ -1236,8 +1235,8 @@ static const void* tree_iter_next(struct _iterator* iter)
             }
         }
     }break;
-    case ORDER_POST:
-    case ORDER_POST_R:
+    case TREE_DFS_POST:
+    case TREE_DFS_POST_R:
     {
         if (!self->stack->empty(self->stack))
         {
@@ -1245,8 +1244,8 @@ static const void* tree_iter_next(struct _iterator* iter)
             target_node = cur_node;
         }
     }break;
-    case ORDER_BREADTH:
-    case ORDER_BREADTH_R:
+    case TREE_BFS:
+    case TREE_BFS_R:
     {
         queue_t queue = self->queue;
         if (!queue->empty(queue) && cur_node != NULL)
@@ -1254,7 +1253,7 @@ static const void* tree_iter_next(struct _iterator* iter)
             queue->pop(queue, &cur_node);
             target_node = cur_node;
 
-            if (iter->_order == ORDER_BREADTH)
+            if (iter->_order == TREE_BFS)
             {
                 if (cur_node->left != NULL)
                 {
@@ -1307,24 +1306,24 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
 
     switch (iter->_order)
     {
-    case ORDER_PRE:
-    case ORDER_PRE_R:
+    case TREE_DFS_PRE:
+    case TREE_DFS_PRE_R:
     {
         // pass
     }break;
-    case ORDER_IN:
-    case ORDER_IN_R:
+    case TREE_DFS_IN:
+    case TREE_DFS_IN_R:
     {
         // pass
     }break;
-    case ORDER_POST:
-    case ORDER_POST_R:
+    case TREE_DFS_POST:
+    case TREE_DFS_POST_R:
     {
         struct _tree_node* node = self->_root;
         self->stack->clear(self->stack);
 
         stack_t stack = stack_new(sizeof(struct _tree_node*));
-        if (iter->_order == ORDER_POST)
+        if (iter->_order == TREE_DFS_POST)
         {
             while (!stack->empty(stack) || node != NULL)
             {
@@ -1362,8 +1361,8 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
         }
         stack_free(&stack);
     }break;
-    case ORDER_BREADTH:
-    case ORDER_BREADTH_R:
+    case TREE_BFS:
+    case TREE_BFS_R:
     {
         // pass
         self->queue->push(self->queue, &self->_root);
