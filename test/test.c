@@ -79,6 +79,7 @@ int main(int argc, char const *argv[])
     UNITY_BEGIN();
 
     TEST_ADD(test_darray);
+    TEST_ADD(test_linklist);
 
     TEST_ADD(test_queue);
     TEST_ADD(test_stack);

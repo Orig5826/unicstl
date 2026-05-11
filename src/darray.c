@@ -97,7 +97,7 @@ static bool darray_resize(struct _darray *self, uint32_t capacity)
     return true;
 }
 
-static bool darray_insert(struct _darray *self, int index, void *obj)
+static bool darray_insert(struct _darray *self, int index, const void *obj)
 {
     assert(self != NULL);
     if (index < 0 || index > (int)self->size(self))
@@ -155,7 +155,7 @@ static bool darray_remove(struct _darray *self, int index, void *obj)
     return true;
 }
 
-static bool darray_append(struct _darray *self, void *obj)
+static bool darray_append(struct _darray *self, const void *obj)
 {
     return darray_insert(self, self->size(self), obj);
 }
@@ -163,6 +163,22 @@ static bool darray_append(struct _darray *self, void *obj)
 static bool darray_pop(struct _darray *self, void *obj)
 {
     return darray_remove(self, self->size(self) - 1, obj);
+}
+
+static bool darray_set(struct _darray *self, int index, const void *obj)
+{
+    assert(self != NULL);
+    if(obj == NULL)
+    {
+        return false;
+    }
+    if (index < 0 || index >= self->size(self))
+    {
+        return false;
+    }
+    uint32_t offset = index * self->_obj_size;
+    memmove((char*)self->obj + offset, obj, self->_obj_size);
+    return true;
 }
 
 static bool darray_get(struct _darray *self, int index, void *obj)
@@ -181,23 +197,8 @@ static bool darray_get(struct _darray *self, int index, void *obj)
     return true;
 }
 
-static bool darray_set(struct _darray *self, int index, void *obj)
-{
-    assert(self != NULL);
-    if(obj == NULL)
-    {
-        return false;
-    }
-    if (index < 0 || index >= self->size(self))
-    {
-        return false;
-    }
-    uint32_t offset = index * self->_obj_size;
-    memmove((char*)self->obj + offset, obj, self->_obj_size);
-    return true;
-}
 
-static int darray_index(struct _darray *self, void *obj)
+static int darray_index(struct _darray *self, const void *obj)
 {
     assert(self != NULL);
     if (obj == NULL)
@@ -207,7 +208,7 @@ static int darray_index(struct _darray *self, void *obj)
 
     for (int i = 0; i < self->size(self); ++i)
     {
-        if (self->compare((char*)self->obj + i * self->_obj_size, obj) == 0)
+        if (self->compare((char*)self->obj + i * self->_obj_size, (char*)obj) == 0)
         {
             return i;
         }
@@ -215,7 +216,7 @@ static int darray_index(struct _darray *self, void *obj)
     return -1;
 }
 
-static bool darray_contains(struct _darray *self, void *obj)
+static bool darray_contains(struct _darray *self, const void *obj)
 {
     return darray_index(self, obj) != -1;
 }
@@ -246,8 +247,8 @@ static bool darray_init(struct _darray *self, uint32_t obj_size, uint32_t capaci
     self->append = darray_append;
     self->pop = darray_pop;
 
-    self->get = darray_get;
     self->set = darray_set;
+    self->get = darray_get;
     self->index = darray_index;
     self->contains = darray_contains;
 

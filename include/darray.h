@@ -33,17 +33,17 @@ struct _darray
     // kernel
     bool (*resize)(struct _darray *self, uint32_t capacity);
 
-    bool (*append)(struct _darray *self, void *obj);
+    bool (*append)(struct _darray *self, const void *obj);
     bool (*pop)(struct _darray *self, void *obj);
     
-    bool (*insert)(struct _darray *self, int index, void *obj);
+    bool (*insert)(struct _darray *self, int index, const void *obj);
     bool (*remove)(struct _darray *self, int index, void *obj);
 
+    bool (*set)(struct _darray *self, int index, const void *obj);
     bool (*get)(struct _darray *self, int index, void *obj);
-    bool (*set)(struct _darray *self, int index, void *obj);
 
-    int (*index)(struct _darray *self, void *obj);        // retval -1 if not found
-    bool (*contains)(struct _darray *self, void *obj);
+    int (*index)(struct _darray *self, const void *obj);        // retval -1 if not found
+    bool (*contains)(struct _darray *self, const void *obj);
 
     // base
     uint32_t (*size)(struct _darray *self);

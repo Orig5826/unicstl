@@ -43,11 +43,13 @@ void print_str(void* obj);
  * 
  */
 void test_darray(void);
+void test_linklist(void);
+
+void test_deque(void);
 
 void test_queue(void);
 void test_stack(void);
 void test_list(void);
-void test_deque(void);
 void test_tree(void);
 void test_heap(void);
 void test_graph(void);
