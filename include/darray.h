@@ -33,17 +33,17 @@ struct _darray
     // kernel
     bool (*resize)(struct _darray *self, uint32_t capacity);
 
-    bool (*append)(struct _darray *self, const void *obj);
-    bool (*pop)(struct _darray *self, void *obj);
+    bool (*append)(struct _darray *self, const void *obj);              // O(1)
+    bool (*pop)(struct _darray *self, void *obj);                       // O(1)
     
-    bool (*insert)(struct _darray *self, int index, const void *obj);
-    bool (*remove)(struct _darray *self, int index, void *obj);
+    bool (*insert)(struct _darray *self, int index, const void *obj);   // O(n)
+    bool (*remove)(struct _darray *self, int index, void *obj);         // O(n)
 
-    bool (*set)(struct _darray *self, int index, const void *obj);
-    bool (*get)(struct _darray *self, int index, void *obj);
+    bool (*set)(struct _darray *self, int index, const void *obj);      // O(1)
+    bool (*get)(struct _darray *self, int index, void *obj);            // O(1)
 
-    int (*index)(struct _darray *self, const void *obj);        // retval -1 if not found
-    bool (*contains)(struct _darray *self, const void *obj);
+    int (*index)(struct _darray *self, const void *obj);        // O(n) retval -1 if not found
+    bool (*contains)(struct _darray *self, const void *obj);    // O(n)
 
     // base
     uint32_t (*size)(struct _darray *self);
@@ -63,7 +63,7 @@ struct _darray
 
     // -------------------- debug --------------------
     void (*print)(struct _darray *self);
-    void (*print_obj)(void *obj);
+    void (*print_obj)(const void *obj);
 };
 typedef struct _darray *darray_t;
 

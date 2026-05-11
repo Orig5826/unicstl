@@ -56,7 +56,7 @@ struct _queue
     
     // -------------------- debug -------------------- 
     void (*print)(struct _queue* self);
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _queue* queue_t;
 

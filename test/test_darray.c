@@ -184,14 +184,16 @@ static void test_darray_resize(void)
     uint32_t len = sizeof(data) / sizeof(data[0]);
     uint32_t i = 0;
 
-    darray_t darray = darray_new(sizeof(int), 8);
+    darray_t darray = darray_new(sizeof(int), 1);
     darray->compare = compare_num;
     
-    TEST_ASSERT_EQUAL_INT(8, darray->capacity(darray));
+    // TEST_ASSERT_EQUAL_INT(8, darray->capacity(darray));
     for(i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(darray->append(darray, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, darray->size(darray));
+
+        // printf("capacity: %d\n", darray->capacity(darray));
     }
     TEST_ASSERT_EQUAL_INT(16, darray->capacity(darray));
     darray_free(&darray);

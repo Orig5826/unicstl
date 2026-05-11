@@ -60,7 +60,7 @@ struct _deque
 
     // -------------------- debug -------------------- 
     void (*print)(struct _deque* self);
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _deque* deque_t;
 

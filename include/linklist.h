@@ -26,9 +26,6 @@ struct _linklist
     struct _linklist_node *_front;
     struct _linklist_node *_back;
 
-    uint32_t _index_front;
-    uint32_t _index_back;
-
     uint32_t _obj_size;
     uint32_t _size;
     uint32_t _capacity;
@@ -40,24 +37,33 @@ struct _linklist
 
     // -------------------- public --------------------
     // kernel
-    bool (*push)(struct _linklist *self, void *obj);
-    bool (*pop)(struct _linklist *self, void *obj);
-    bool (*back)(struct _linklist *self, void *obj);
-    bool (*front)(struct _linklist *self, void *obj);
-    bool (*empty)(struct _linklist *self);
-    bool (*full)(struct _linklist *self);
+    bool (*push_front)(struct _linklist *self, void *obj);      // O(1)
+    bool (*pop_front)(struct _linklist *self, void *obj);       // O(1)
+    bool (*push_back)(struct _linklist *self, void *obj);       // O(1)
+    bool (*pop_back)(struct _linklist *self, void *obj);        // O(n)
+    bool (*front)(struct _linklist* self, void* obj);           // O(1)
+    bool (*back)(struct _linklist* self, void* obj);            // O(1)
+
+    bool (*insert)(struct _linklist *self, const void *obj);    // O(n) = O(n) search + O(1) insert
+    bool (*remove)(struct _linklist *self, void *obj);          // O(n) = O(n) search + O(1) remove
+
+    bool (*contains)(struct _linklist *self, const void *obj);  // O(n)
 
     // base
     uint32_t (*size)(struct _linklist *self);
     uint32_t (*capacity)(struct _linklist *self);
+    bool (*empty)(struct _linklist *self);
     bool (*clear)(struct _linklist *self);
 
     // iter
     iterator_t (*iter)(struct _linklist *self);
 
+    // config
+    compare_fun_t compare;      // !!! you have to implement this function
+
     // -------------------- debug --------------------
     void (*print)(struct _linklist *self);
-    void (*print_obj)(void *obj);
+    void (*print_obj)(const void *obj);
 };
 typedef struct _linklist *linklist_t;
 

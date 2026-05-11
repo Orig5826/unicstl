@@ -55,7 +55,7 @@ struct _stack
 
     // -------------------- debug -------------------- 
     void (*print)(struct _stack* self);
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _stack* stack_t;
 

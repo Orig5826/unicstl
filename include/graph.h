@@ -96,7 +96,7 @@ struct _graph
 
     // -------------------- debug -------------------- 
     void (*print)(struct _graph* self);
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _graph* graph_t;
 

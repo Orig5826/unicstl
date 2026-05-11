@@ -50,19 +50,26 @@ static void linklist_node_free(struct _linklist_node** node)
 
 static uint32_t linklist_size(struct _linklist* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static uint32_t linklist_capacity(struct _linklist* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_capacity;
+}
+
+static bool linklist_empty(struct _linklist* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->size != NULL);
+    return self->size(self) == 0;
 }
 
 static bool linklist_clear(struct _linklist* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self->empty(self))
     {
         return true;
@@ -84,14 +91,59 @@ static bool linklist_clear(struct _linklist* self)
 
 static void linklist_destory(struct _linklist* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
 }
 
-static bool linklist_push(struct _linklist* self, void* obj)
+static bool linklist_push_front(struct _linklist* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
+
+    struct _linklist_node* new_node = linklist_new_node(obj, self->_obj_size);
+    if(new_node == NULL)
+    {
+        return false;
+    }
+
+    if(self->empty(self))
+    {
+        self->_front = new_node;
+        self->_back = new_node;
+    }
+    else
+    {
+        new_node->next = self->_front;
+        self->_front = new_node;
+    }
+    self->_size++;
+
+    return true;
+}
+
+static bool linklist_pop_front(struct _linklist* self, void* obj)
+{
+    unicstl_assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    struct _linklist_node* node = self->_front;
+    if(obj != NULL)
+    {
+        memmove(obj, node->obj, self->_obj_size);
+    }
+    self->_front = node->next;
+    self->_size--;
+
+    linklist_node_free(&node);
+    return true;
+}
+
+static bool linklist_push_back(struct _linklist* self, void* obj)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
 
     struct _linklist_node* new_node = linklist_new_node(obj, self->_obj_size);
     if(new_node == NULL)
@@ -114,19 +166,26 @@ static bool linklist_push(struct _linklist* self, void* obj)
     return true;
 }
 
-static bool linklist_pop(struct _linklist* self, void* obj)
+static bool linklist_pop_back(struct _linklist* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
     }
     struct _linklist_node* node = self->_front;
+    struct _linklist_node* back_prev = NULL;
+    while(node->next != NULL)
+    {
+        back_prev = node;
+        node = node->next;
+    }
+
     if(obj != NULL)
     {
         memmove(obj, node->obj, self->_obj_size);
     }
-    self->_front = node->next;
+    self->_back = back_prev;
     self->_size--;
 
     linklist_node_free(&node);
@@ -135,7 +194,7 @@ static bool linklist_pop(struct _linklist* self, void* obj)
 
 static bool linklist_back(struct _linklist* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -146,7 +205,7 @@ static bool linklist_back(struct _linklist* self, void* obj)
 
 static bool linklist_front(struct _linklist* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -155,24 +214,57 @@ static bool linklist_front(struct _linklist* self, void* obj)
     return true;
 }
 
-static bool linklist_empty(struct _linklist* self)
+bool linklist_insert(struct _linklist *self, const void *obj)
 {
-    assert(self != NULL);
-    assert(self->size != NULL);
-    return self->size(self) == 0;
+    unicstl_assert(self != NULL);
+    // ...
+    return true;
 }
 
-static bool linklist_full(struct _linklist* self)
+bool linklist_remove(struct _linklist *self, void *obj)
 {
-    assert(self != NULL);
-    assert(self->size != NULL);
-    assert(self->capacity != NULL);
-    return self->size(self) == self->capacity(self);
+    unicstl_assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    struct _linklist_node* node = self->_front;
+    struct _linklist_node* node_prev = NULL;
+    while(node != NULL)
+    {
+        node_prev = node;
+        if(self->compare(node->obj, obj) == 0)
+        {
+            break;
+        }
+        node = node->next;
+    }
+    //...
+    return true;
+}
+
+bool linklist_contains(struct _linklist *self, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    if (self->empty(self))
+    {
+        return false;
+    }
+    struct _linklist_node* node = self->_front;
+    while(node != NULL)
+    {
+        if(self->compare(node->obj, obj) == 0)
+        {
+            return true;
+        }
+        node = node->next;
+    }
+    return false;
 }
 
 static void linklist_print(struct _linklist* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
 
     struct _linklist_node * node = self->_front;
     while (node)
@@ -185,7 +277,7 @@ static void linklist_print(struct _linklist* self)
 
 static bool linklist_init(struct _linklist * self, uint32_t obj_size)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0)
     {
         return false;
@@ -206,16 +298,21 @@ static bool linklist_init(struct _linklist * self, uint32_t obj_size)
 
     // -------------------- public -------------------- 
     // kernel
-    self->push = linklist_push;
-    self->pop = linklist_pop;
+    self->push_front = linklist_push_front;
+    self->pop_front = linklist_pop_front;
+    self->push_back = linklist_push_back;
+    self->pop_back = linklist_pop_back;
     self->back = linklist_back;
     self->front = linklist_front;
-    self->empty = linklist_empty;
-    self->full = linklist_full;
+    
+    self->insert = linklist_insert;
+    self->remove = linklist_remove;
+    self->contains = linklist_contains;
 
     // base
     self->size = linklist_size;
     self->capacity = linklist_capacity;
+    self->empty = linklist_empty;
     self->clear = linklist_clear;
 
     // iter
@@ -249,7 +346,7 @@ linklist_t linklist_new(uint32_t obj_size)
 
 void linklist_free(linklist_t* linklist)
 {
-    assert(linklist != NULL);
+    unicstl_assert(linklist != NULL);
     if(linklist != NULL && *linklist != NULL)
     {
         if((*linklist)->_destory != NULL)

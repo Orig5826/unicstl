@@ -13,8 +13,8 @@
 
 static bool list_insert(struct _list* self, int index, void* obj)
 {
-    // assert(index >= 0 && index < (int)self->size(self));
-    // assert(index >= 0 && index <= (int)self->size(self));
+    // unicstl_assert(index >= 0 && index < (int)self->size(self));
+    // unicstl_assert(index >= 0 && index <= (int)self->size(self));
     if (index < 0 || index >(int)self->size(self))
     {
         return false;
@@ -45,8 +45,8 @@ static bool list_insert(struct _list* self, int index, void* obj)
 
 static bool list_delete(struct _list* self, int index, void* obj)
 {
-    assert(self != NULL);
-    // assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
+    unicstl_assert(self != NULL);
+    // unicstl_assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
     if (index < (int)(0 - self->size(self)) || index >= (int)self->size(self))
     {
         return false;
@@ -90,7 +90,7 @@ static bool list_pop(struct _list* self, void* obj)
 
 static int list_index(struct _list* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     int index = 0;
     if (obj == NULL)
     {
@@ -111,16 +111,16 @@ static int list_index(struct _list* self, void* obj)
 
 static bool list_clear(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->_size = 0;
     return true;
 }
 
 static bool list_get(struct _list* self, int index, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
-    assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
+    unicstl_assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
 
     if (index < 0)
     {
@@ -133,8 +133,8 @@ static bool list_get(struct _list* self, int index, void* obj)
 
 static bool list_set(struct _list* self, int index, void* obj)
 {
-    assert(self != NULL);
-    assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
+    unicstl_assert(self != NULL);
+    unicstl_assert(index >= (int)(0 - self->size(self)) && index < (int)self->size(self));
     if (index < 0)
     {
         index += self->size(self);
@@ -146,26 +146,26 @@ static bool list_set(struct _list* self, int index, void* obj)
 
 static uint32_t list_size(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static uint32_t list_capacity(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_capacity;
 }
 
 static bool list_empty(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return !self->size(self);
 }
 
 // free
 static void list_destory(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->obj != NULL)
     {
         free(self->obj);
@@ -175,7 +175,7 @@ static void list_destory(struct _list* self)
 // print
 static void list_print(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
 
     if (!self->empty(self))
     {
@@ -191,7 +191,7 @@ static void list_print(struct _list* self)
 
 static int list_index_exchange(struct _list* self, int index)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     int size = (int)self->size(self);
 
     if (index < 0)
@@ -230,7 +230,7 @@ static int list_index_exchange(struct _list* self, int index)
  */
 struct _list* list_slice(struct _list* self, int start, int end, int step)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     int i = 0;
     bool contains_last_obj = false;
     int size = (int)self->size(self);
@@ -353,7 +353,7 @@ static const void* list_iter_next(struct _iterator* iter)
 
 iterator_t list_iter(struct _list* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -366,7 +366,7 @@ iterator_t list_iter(struct _list* self)
 
 static bool list_init2(struct _list* self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
@@ -445,7 +445,7 @@ list_t list_new2(uint32_t obj_size, uint32_t capacity)
 
 void list_free(list_t* list)
 {
-    assert(list != NULL);
+    unicstl_assert(list != NULL);
     if (list != NULL && *list != NULL)
     {
         if ((*list)->_destory != NULL)

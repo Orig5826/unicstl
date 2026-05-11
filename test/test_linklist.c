@@ -39,7 +39,7 @@ static void test_linklist_push(void)
     TEST_ASSERT_TRUE(linklist->empty(linklist));
     for(i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(linklist->push(linklist, &data[i]));
+        TEST_ASSERT_TRUE(linklist->push_back(linklist, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, linklist->size(linklist));
 
         TEST_ASSERT_TRUE(linklist->front(linklist, &temp));
@@ -67,7 +67,7 @@ static void test_linklist_pop(void)
 
     for(i = 0; i < len; i++)
     {
-        linklist->push(linklist, &data[i]);
+        linklist->push_back(linklist, &data[i]);
     }
     for (i = 0; i < len; i++)
     {
@@ -77,7 +77,7 @@ static void test_linklist_pop(void)
         TEST_ASSERT_TRUE(linklist->back(linklist, &temp));
         TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
 
-        TEST_ASSERT_TRUE(linklist->pop(linklist, &temp));
+        TEST_ASSERT_TRUE(linklist->pop_front(linklist, &temp));
 
         if (!linklist->empty(linklist))
         {
@@ -92,11 +92,9 @@ static void test_linklist_pop(void)
             TEST_ASSERT_FALSE(linklist->front(linklist, &temp));
             TEST_ASSERT_FALSE(linklist->back(linklist, &temp));
         }
-
-        TEST_ASSERT_FALSE(linklist->full(linklist));
     }
     TEST_ASSERT_TRUE(linklist->empty(linklist));
-    TEST_ASSERT_FALSE(linklist->pop(linklist, &temp));
+    TEST_ASSERT_FALSE(linklist->pop_front(linklist, &temp));
     linklist_free(&linklist);
 }
 
@@ -114,12 +112,12 @@ static void test_linklist_clear(void)
 
     for(i = 0; i < len; i++)
     {
-        linklist->push(linklist, &data[i]);
+        linklist->push_back(linklist, &data[i]);
     }
     TEST_ASSERT_TRUE(linklist->clear(linklist));
     for(i = 0; i < len; i++)
     {
-        linklist->push(linklist, &data[i]);
+        linklist->push_back(linklist, &data[i]);
     }
     TEST_ASSERT_FALSE(linklist->empty(linklist));
     TEST_ASSERT_TRUE(linklist->clear(linklist));
@@ -149,7 +147,7 @@ static void test_linklist_num(void)
 
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(linklist->push(linklist, &data[i]));
+        TEST_ASSERT_TRUE(linklist->push_back(linklist, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, linklist->size(linklist));
 
         TEST_ASSERT_TRUE(linklist->front(linklist, &temp));
@@ -164,7 +162,7 @@ static void test_linklist_num(void)
     TEST_ASSERT_TRUE(linklist->empty(linklist));
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(linklist->push(linklist, &data[i]));
+        TEST_ASSERT_TRUE(linklist->push_back(linklist, &data[i]));
     }
 
     for (i = 0; i < len; i++)
@@ -175,7 +173,7 @@ static void test_linklist_num(void)
         TEST_ASSERT_TRUE(linklist->back(linklist, &temp));
         TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
 
-        TEST_ASSERT_TRUE(linklist->pop(linklist, &temp));
+        TEST_ASSERT_TRUE(linklist->pop_front(linklist, &temp));
 
         if (!linklist->empty(linklist))
         {
@@ -187,7 +185,7 @@ static void test_linklist_num(void)
         }
     }
     TEST_ASSERT_TRUE(linklist->empty(linklist));
-    TEST_ASSERT_FALSE(linklist->pop(linklist, &temp));
+    TEST_ASSERT_FALSE(linklist->pop_front(linklist, &temp));
 
     linklist_free(&linklist);
     TEST_ASSERT_NULL(linklist);
@@ -215,7 +213,7 @@ static void test_linklist_struct(void)
 
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(linklist->push(linklist, &data[i]));
+        TEST_ASSERT_TRUE(linklist->push_back(linklist, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, linklist->size(linklist));
 
         TEST_ASSERT_TRUE(linklist->front(linklist, &temp));
@@ -232,7 +230,7 @@ static void test_linklist_struct(void)
     TEST_ASSERT_TRUE(linklist->empty(linklist));
     for (i = 0; i < len; i++)
     {
-        TEST_ASSERT_TRUE(linklist->push(linklist, &data[i]));
+        TEST_ASSERT_TRUE(linklist->push_back(linklist, &data[i]));
     }
 
     // while (!linklist->empty(linklist))
@@ -246,7 +244,7 @@ static void test_linklist_struct(void)
         TEST_ASSERT_EQUAL_INT(data[len - 1].id, temp.id);
         TEST_ASSERT_EQUAL_STRING(data[len - 1].name, temp.name);
 
-        TEST_ASSERT_TRUE(linklist->pop(linklist, &temp));
+        TEST_ASSERT_TRUE(linklist->pop_front(linklist, &temp));
 
         if (!linklist->empty(linklist))
         {
@@ -260,7 +258,7 @@ static void test_linklist_struct(void)
         }
     }
     TEST_ASSERT_TRUE(linklist->empty(linklist));
-    TEST_ASSERT_FALSE(linklist->pop(linklist, &temp));
+    TEST_ASSERT_FALSE(linklist->pop_front(linklist, &temp));
     linklist_free(&linklist);
     TEST_ASSERT_NULL(linklist);
 }

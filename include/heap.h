@@ -53,7 +53,7 @@ struct _heap
     
     // -------------------- debug -------------------- 
     void (*print)(struct _heap* self);
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _heap* heap_t;
 

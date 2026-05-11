@@ -67,7 +67,7 @@ struct _list
 
     // -------------------- debug --------------------
     void (*print)(struct _list *self);
-    void (*print_obj)(void *obj);
+    void (*print_obj)(const void *obj);
 };
 typedef struct _list *list_t;
 

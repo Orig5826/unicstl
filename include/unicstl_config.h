@@ -41,9 +41,10 @@
 #endif
 
 /**
- * @brief use malloc
+ * @brief unicstl use which function
  * 
  */
 #define UNICSTL_MALLOC
+#define UNICSTL_ASSERT
 
 #endif

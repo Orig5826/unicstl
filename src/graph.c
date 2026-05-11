@@ -191,7 +191,7 @@ static bool graph_dfs(struct _graph* self, uint32_t idx)
 
 static bool graph_init2(struct _graph* self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self == NULL)
     {
         return false;
@@ -493,7 +493,7 @@ static void graph_print(struct _graph *self)
 
 static bool graph_add_vertex(struct _graph *self, void *obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->_head->next == NULL)
     {
         // no vertex
@@ -539,7 +539,7 @@ static bool graph_add_vertex(struct _graph *self, void *obj)
 
 static bool graph_del_vertex(struct _graph *self, void *obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (obj == NULL)
     {
         return false;
@@ -573,7 +573,7 @@ static bool graph_del_vertex(struct _graph *self, void *obj)
 
 static bool graph_find_vertex(struct _graph *self, void *obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (obj == NULL)
     {
         return false;
@@ -613,7 +613,7 @@ static struct _graph_node *find_node(struct _graph *self, void *obj)
 
 static bool graph_add_edge(struct _graph *self, void *from, void *to, uint32_t weight)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -675,7 +675,7 @@ static bool graph_add_edge(struct _graph *self, void *from, void *to, uint32_t w
 
 static bool graph_del_edge(struct _graph *self, void *from, void *to)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -738,7 +738,7 @@ static bool graph_del_edge(struct _graph *self, void *from, void *to)
 
 static bool graph_find_edge(struct _graph *self, void *from, void *to)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -776,7 +776,7 @@ static bool graph_find_edge(struct _graph *self, void *from, void *to)
 
 static struct _graph_node * graph_find_unvisited_vertex(struct _graph *self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -796,7 +796,7 @@ static struct _graph_node * graph_find_unvisited_vertex(struct _graph *self)
 
 static struct _graph_node * graph_find_next_unvisited_target(struct _graph *self, struct _graph_node *node)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return NULL;
@@ -824,8 +824,8 @@ static struct _graph_node * graph_find_next_unvisited_target(struct _graph *self
 
 bool graph_iter_hasnext(struct _iterator *iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     graph_t self = (graph_t)iter->_container;
     if (iter->_index < self->size(self))
@@ -837,8 +837,8 @@ bool graph_iter_hasnext(struct _iterator *iter)
 
 const void *graph_iter_next(struct _iterator *iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
     graph_t self = (graph_t)iter->_container;
     void *obj = NULL;
 
@@ -943,7 +943,7 @@ const void *graph_iter_next(struct _iterator *iter)
 
 iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void *start)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -992,7 +992,7 @@ done:
 
 static bool graph_init(struct _graph *self, uint32_t obj_size)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self == NULL)
     {
         return false;

@@ -49,9 +49,9 @@ static void stack_node_free(struct _stack_node** node)
 
 static bool stack_push(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
+    unicstl_assert(obj != NULL);
 
     struct _stack_node* new_node = stack_node_new(obj, self->_obj_size);
     if (new_node == NULL)
@@ -67,8 +67,8 @@ static bool stack_push(struct _stack* self, void* obj)
 
 static bool stack_pop(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
     if (self->empty(self))
     {
         return false;
@@ -88,9 +88,9 @@ static bool stack_pop(struct _stack* self, void* obj)
 
 static bool stack_peek(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
+    unicstl_assert(obj != NULL);
 
     if (self->empty(self))
     {
@@ -104,26 +104,26 @@ static bool stack_peek(struct _stack* self, void* obj)
 
 static uint32_t stack_size(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static bool stack_empty(struct _stack* self)
 {
-    assert(self != NULL);
-    assert(self->size != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->size != NULL);
     return self->size(self) == 0;
 }
 
 static uint32_t stack_capacity(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_capacity;
 }
 
 static bool stack_clear(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return true;
@@ -142,7 +142,7 @@ static bool stack_clear(struct _stack* self)
 
 static void stack_destory(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
     if(self->_head != NULL)
     {
@@ -164,9 +164,9 @@ static void stack_print(struct _stack* self)
 
 static bool stack2_push(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
+    unicstl_assert(obj != NULL);
 
     if (self->size(self) == self->capacity(self))
     {
@@ -188,8 +188,8 @@ static bool stack2_push(struct _stack* self, void* obj)
 
 static bool stack2_pop(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
     if (self->empty(self))
     {
         return false;
@@ -207,9 +207,9 @@ static bool stack2_pop(struct _stack* self, void* obj)
 
 static bool stack2_peek(struct _stack* self, void* obj)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
+    unicstl_assert(obj != NULL);
     if (self->empty(self))
     {
         return false;
@@ -223,7 +223,7 @@ static bool stack2_peek(struct _stack* self, void* obj)
 
 static void stack2_destory(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
     if(self->_head != NULL)
     {
@@ -239,8 +239,8 @@ static void stack2_destory(struct _stack* self)
 
 static void stack2_print(struct _stack* self)
 {
-    assert(self != NULL);
-    assert(self->_head != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_head != NULL);
 
     void* obj = NULL;
     uint32_t offset = 0;
@@ -255,8 +255,8 @@ static void stack2_print(struct _stack* self)
 
 bool stack_iter_hasnext(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     stack_t self = (stack_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -272,8 +272,8 @@ bool stack_iter_hasnext(struct _iterator* iter)
  */
 const void* stack_iter_next(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     stack_t self = (stack_t)iter->_container;
     void *obj = NULL;
@@ -301,7 +301,7 @@ const void* stack_iter_next(struct _iterator* iter)
 
 iterator_t stack_iter(struct _stack* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -315,8 +315,8 @@ iterator_t stack_iter(struct _stack* self)
 
 static bool stack_init(struct _stack* self, uint32_t obj_size)
 {
-    // assert(self != NULL);
-    // assert(obj_size != 0);
+    // unicstl_assert(self != NULL);
+    // unicstl_assert(obj_size != 0);
     if(self == NULL || obj_size == 0)
     {
         return false;
@@ -364,7 +364,7 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
 
 static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
 {
-    // assert(self != NULL);
+    // unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
@@ -456,7 +456,7 @@ stack_t stack_new2(uint32_t obj_size, uint32_t capacity)
 
 void stack_free(stack_t *stack)
 {
-    assert(stack != NULL);
+    unicstl_assert(stack != NULL);
     if(stack != NULL && *stack != NULL)
     {
         if((*stack)->_destory != NULL)

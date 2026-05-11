@@ -29,19 +29,21 @@ struct _student
     int id;
 };
 
-void print_num(void* obj);
-int compare_num(void *obj, void *obj2);
+void print_num(const void* obj);
+int compare_num(const void *obj, const void *obj2);
 
-void print_struct(void* obj);
-int compare_struct(void *obj, void *obj2);
+void print_struct(const void* obj);
+int compare_struct(const void *obj, const void *obj2);
 
-void print_char(void* obj);
-void print_str(void* obj);
+void print_char(const void* obj);
+void print_str(const void* obj);
 
 /**
  * @brief test function
  * 
  */
+void test_unicstl(void);
+
 void test_darray(void);
 void test_linklist(void);
 

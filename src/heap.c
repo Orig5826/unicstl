@@ -29,8 +29,8 @@ static int parent(int i)
 
 static bool heap_peek(struct _heap* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
     if(obj == NULL)
     {
         return false;
@@ -45,8 +45,8 @@ static bool heap_peek(struct _heap* self, void* obj)
 
 static void heap_swap(struct _heap* self, int i, int j)
 {
-    assert(self != NULL);
-    assert(self->_obj_size != 0);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_obj_size != 0);
 // #define C99_VLA
 #ifdef C99_VLA
     char tmp[self->_obj_size];
@@ -69,8 +69,8 @@ static void heap_swap(struct _heap* self, int i, int j)
 
 static void heap_fixed_up(struct _heap* self, int i)
 {
-    assert(self != NULL);
-    assert(self->compare != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->compare != NULL);
     int p = 0;
 
     if(self->compare == NULL)
@@ -110,7 +110,7 @@ static void heap_fixed_up(struct _heap* self, int i)
 
 static bool heap_push(struct _heap* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self->size(self) > self->_capacity)
     {
         return false;
@@ -125,7 +125,7 @@ static bool heap_push(struct _heap* self, void* obj)
 
 static void heap_fixed_down(struct _heap* self, int i)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     int l = 0,r = 0;
     int max = 0, min = 0;
 
@@ -188,7 +188,7 @@ static void heap_fixed_down(struct _heap* self, int i)
 
 static bool heap_pop(struct _heap* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self->empty(self))
     {
         return false;
@@ -206,26 +206,26 @@ static bool heap_pop(struct _heap* self, void* obj)
 
 static uint32_t heap_size(struct _heap* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static bool heap_empty(struct _heap* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->size(self) == 0;
 }
 
 static bool heap_clear(struct _heap* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->_size = 0;
     return true;
 }
 
 static void heap_destory(struct _heap* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
     if(self->obj)
     {
@@ -235,8 +235,8 @@ static void heap_destory(struct _heap* self)
 
 static void heap_print(struct _heap* self)
 {
-    assert(self != NULL);
-    assert(self->obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->obj != NULL);
 
     void* obj = NULL;
     uint32_t offset = 0;
@@ -251,8 +251,8 @@ static void heap_print(struct _heap* self)
 
 bool heap_iter_hasnext(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     heap_t self = (heap_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -264,8 +264,8 @@ bool heap_iter_hasnext(struct _iterator* iter)
 
 const void* heap_iter_next(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     heap_t self = (heap_t)iter->_container;
     void *obj = NULL;
@@ -279,7 +279,7 @@ const void* heap_iter_next(struct _iterator* iter)
 
 iterator_t heap_iter(struct _heap* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -293,7 +293,7 @@ iterator_t heap_iter(struct _heap* self)
 
 static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
 
     // -------------------- private -------------------- 
     self->_obj_size = obj_size;

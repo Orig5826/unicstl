@@ -224,7 +224,7 @@ static bool tree_rb_check_color(struct _tree *self, struct _tree_node* root, int
 
 static bool tree_rb_check(struct _tree* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self->_root == NULL)
     {
         return true;

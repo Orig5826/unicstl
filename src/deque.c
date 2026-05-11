@@ -12,7 +12,7 @@
 
 static bool deque_push_back(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     struct _deque_node* front = NULL;
     struct _deque_node* back = NULL;
 
@@ -56,7 +56,7 @@ static bool deque_push_back(struct _deque* self, void* obj)
 
 static bool deque_push_front(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     struct _deque_node* front = NULL;
     struct _deque_node* back = NULL;
 
@@ -100,7 +100,7 @@ static bool deque_push_front(struct _deque* self, void* obj)
 
 static bool deque_pop_back(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     struct _deque_node* node = NULL;
     struct _deque_node* front = NULL;
 
@@ -137,7 +137,7 @@ static bool deque_pop_back(struct _deque* self, void* obj)
 
 static bool deque_pop_front(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     struct _deque_node* node = NULL;
     struct _deque_node* back = NULL;
     
@@ -174,8 +174,8 @@ static bool deque_pop_front(struct _deque* self, void* obj)
 
 static bool deque_back(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
 
     if (self->empty(self))
     {
@@ -187,8 +187,8 @@ static bool deque_back(struct _deque* self, void* obj)
 
 static bool deque_front(struct _deque* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
 
     if (self->empty(self))
     {
@@ -209,19 +209,19 @@ static bool deque_clear(struct _deque* self)
 
 static uint32_t deque_size(struct _deque* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static bool deque_empty(struct _deque* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return !self->size(self);
 }
 
 static void deque_destory(struct _deque* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
     if (self->_head != NULL)
     {
@@ -232,7 +232,7 @@ static void deque_destory(struct _deque* self)
 
 static void deque_print(struct _deque* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
 
     uint32_t i = 0;
     struct _deque_node * node = self->_head;
@@ -245,8 +245,8 @@ static void deque_print(struct _deque* self)
 
 bool deque_iter_hasnext(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -258,8 +258,8 @@ bool deque_iter_hasnext(struct _iterator* iter)
 
 const void* deque_iter_next(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
     void *obj = NULL;
@@ -286,7 +286,7 @@ const void* deque_iter_next(struct _iterator* iter)
 
 iterator_t deque_iter(struct _deque* self, enum _deque_order order)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -308,7 +308,7 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
 
 static bool deque_init(struct _deque* self, uint32_t obj_size)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(obj_size == 0)
     {
         return false;

@@ -89,7 +89,7 @@ struct _tree
     compare_fun_t compare;  // !!! you have to implement this function
 
     // -------------------- debug -------------------- 
-    void (*print_obj)(void* obj);
+    void (*print_obj)(const void* obj);
 };
 typedef struct _tree* tree_t;
 

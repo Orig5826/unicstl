@@ -49,8 +49,8 @@ static void queue_node_free(struct _queue_node** node)
 
 static bool queue_push(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
 
     struct _queue_node* node_new = queue_node_new(obj, self->_obj_size);
     if(node_new == NULL)
@@ -75,7 +75,7 @@ static bool queue_push(struct _queue* self, void* obj)
 
 static bool queue_pop(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -94,7 +94,7 @@ static bool queue_pop(struct _queue* self, void* obj)
 
 static bool queue_back(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -105,7 +105,7 @@ static bool queue_back(struct _queue* self, void* obj)
 
 static bool queue_front(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -116,7 +116,7 @@ static bool queue_front(struct _queue* self, void* obj)
 
 static bool queue_clear(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self->empty(self))
     {
         return true;
@@ -138,40 +138,40 @@ static bool queue_clear(struct _queue* self)
 
 static bool queue_empty(struct _queue* self)
 {
-    assert(self != NULL);
-    assert(self->size != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->size != NULL);
     return self->size(self) == 0;
 }
 
 static bool queue_full(struct _queue* self)
 {
-    assert(self != NULL);
-    assert(self->size != NULL);
-    assert(self->capacity != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->size != NULL);
+    unicstl_assert(self->capacity != NULL);
     return self->size(self) == self->capacity(self);
 }
 
 static uint32_t queue_size(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_size;
 }
 
 static uint32_t queue_capacity(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     return self->_capacity;
 }
 
 static void queue_destory(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
 }
 
 static void queue_print(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
 
     struct _queue_node * node = self->_front;
     while (node)
@@ -183,8 +183,8 @@ static void queue_print(struct _queue* self)
 
 static bool queue2_push(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
-    assert(obj != NULL);
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj != NULL);
 
     if(self->full(self))
     {
@@ -209,7 +209,7 @@ static bool queue2_push(struct _queue* self, void* obj)
 
 static bool queue2_pop(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -235,7 +235,7 @@ static bool queue2_pop(struct _queue* self, void* obj)
 
 static bool queue2_back(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -256,7 +256,7 @@ static bool queue2_back(struct _queue* self, void* obj)
 
 static bool queue2_front(struct _queue* self, void* obj)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if (self->empty(self))
     {
         return false;
@@ -269,7 +269,7 @@ static bool queue2_front(struct _queue* self, void* obj)
 
 static bool queue2_clear(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->_index_front = 0;
     self->_index_back = 0;
     self->_size = 0;
@@ -278,7 +278,7 @@ static bool queue2_clear(struct _queue* self)
 
 static void queue2_destory(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     self->clear(self);
     if(self->_front != NULL)
     {
@@ -290,7 +290,7 @@ static void queue2_destory(struct _queue* self)
 
 static void queue2_print(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     uint32_t index = 0;
     void * obj_array = self->_front->obj;
 
@@ -308,8 +308,8 @@ static void queue2_print(struct _queue* self)
 
 static bool queue_iter_hasnext(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     if(iter->_index < self->size(self))
@@ -321,8 +321,8 @@ static bool queue_iter_hasnext(struct _iterator* iter)
 
 static const void* queue_iter_next(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
@@ -340,7 +340,7 @@ static const void* queue_iter_next(struct _iterator* iter)
 
 static iterator_t queue_iter(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -354,8 +354,8 @@ static iterator_t queue_iter(struct _queue* self)
 
 static const void* queue2_iter_next(struct _iterator* iter)
 {
-    assert(iter != NULL);
-    assert(iter->_container != NULL);
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
 
     queue_t self = (queue_t)iter->_container;
     void *obj = NULL;
@@ -370,7 +370,7 @@ static const void* queue2_iter_next(struct _iterator* iter)
 
 static iterator_t queue2_iter(struct _queue* self)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
 
     iter->_container = self;
@@ -384,7 +384,7 @@ static iterator_t queue2_iter(struct _queue* self)
 
 static bool queue_init(struct _queue * self, uint32_t obj_size)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0)
     {
         return false;
@@ -431,7 +431,7 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
 
 static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
 {
-    assert(self != NULL);
+    unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0 || capacity == 0)
     {
         return false;
@@ -554,7 +554,7 @@ queue_t queue_new2(uint32_t obj_size, uint32_t capacity)
  */
 void queue_free(queue_t* queue)
 {
-    assert(queue != NULL);
+    unicstl_assert(queue != NULL);
     if(queue != NULL && *queue != NULL)
     {
         if((*queue)->_destory != NULL)
