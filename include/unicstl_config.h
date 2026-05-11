@@ -40,4 +40,10 @@
     #define UNICSTL_DEBUG_GRAPH
 #endif
 
+/**
+ * @brief use malloc
+ * 
+ */
+#define UNICSTL_MALLOC
+
 #endif

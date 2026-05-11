@@ -78,6 +78,8 @@ int main(int argc, char const *argv[])
     printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
 
+    TEST_ADD(test_darray);
+
     TEST_ADD(test_queue);
     TEST_ADD(test_stack);
     TEST_ADD(test_list);

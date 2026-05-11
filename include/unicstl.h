@@ -18,6 +18,9 @@
 
 #include "unicstl_internal.h"
 
+#include "darray.h"
+#include "linklist.h"
+
 #include "list.h"
 #include "stack.h"
 #include "queue.h"

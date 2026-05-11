@@ -29,6 +29,36 @@
 #include "iterator.h"
 #endif
 
+
+/**
+ * @brief default capacity and ratio
+ * 
+ */
+#define DEFAULT_CAPACITY        16
+#define DEFAULT_RATIO           2
+
+
+/**
+ * @brief malloc and free function
+ * 
+ */
+#ifdef UNICSTL_MALLOC
+static inline void * unicstl_malloc(size_t size) {
+    return malloc(size);
+}
+
+static inline void * unicstl_realloc(void * ptr, size_t size) {
+    return realloc(ptr, size);
+}
+
+static inline void unicstl_free(void * ptr) {
+    free(ptr);
+}
+#else
+#error "UNICSTL_MALLOC not defined"
+#endif
+
+
 /**
  * @brief obj compare with obj2
  *
@@ -43,5 +73,6 @@ typedef int (*compare_fun_t)(void* obj, void* obj2);
 // default function
 int default_compare(void* obj1, void* obj2);
 void default_print_obj(void* obj);
+
 
 #endif // _COMMON_H_

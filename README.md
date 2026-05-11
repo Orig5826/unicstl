@@ -85,7 +85,6 @@ void* iter_next();                  // 迭代器下一个元素
 // -------------------- 扩展功能 --------------------
 // 元素相关操作
 bool append(const void* obj);        // 追加元素 <push_back> 一般用于list 
-// bool remove(const void *obj);        // 删除元素 <暂不使用该命名>
 bool find(const void* obj);          // 查找元素 <返回值，bool/uint32_t/void*待定？>
 bool contains(const void* obj);      // 判断元素是否存在 <返回bool>
 uint32_t count(const void* obj);     // 统计元素obj的个数
@@ -93,7 +92,8 @@ uint32_t count(const void* obj);     // 统计元素obj的个数
 // 索引相关操作
 uint32_t index(void *obj);                      // 获取元素索引
 bool insert(uint32_t index, const void* obj);   // 插入元素 <非树>
-bool delete(uint32_t index, void* obj);         // 删除元素
+// bool delete(uint32_t index, void* obj);         // 删除元素 <!!!废弃：防止项目用于C++，关键字冲突>
+bool remove(const void *obj);        // 删除元素 <推荐>
 // bool erase(uint32_t index);                     // 删除元素<暂时不用该命名>
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
@@ -147,6 +147,7 @@ bool get(uint32_t index, void* obj);            // 获取元素
 ```
 
 ### 工程命名
+
 `工程名(_功能)_v版本号_日期(_时间)(-其他信息)`
 > 括号内表示可选项
 
@@ -163,7 +164,22 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 # 带a或者b后缀，表示当前版本发布前的测试版。如果发布后，则直接更新版本号了
 ```
 
+### 分支命名
+|命名   |说明 | 示例
+|:----: |:----: | ----
+| master | 主分支 | master
+| dev | 开发分支 | dev-stack
+| test | 测试分支| test-tree
+| release | 发布分支 | release-v1.2.5或v1.2.5
+| feature | 新功能分支 | feature-tree
+| bugfix | bug修复分支 | bugfix-map
+| refactor | 重构分支| refactor-darray
+
 ## 修改日志
+
+### Unicstl 0.0.10 (2025-12-31)
+- refactor: 
+    - darray & list, old list(list python list) -> arraylist
 
 ### Unicstl 0.0.02 (2025-05-06)
 - new features
@@ -178,7 +194,6 @@ unicstl_stack_v1.2.5_20240717-a0.zip
     - none
 - others:
     - none
-
 
 ### Unicstl 0.0.01 (2025-04-24)
 - new features

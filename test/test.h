@@ -42,6 +42,8 @@ void print_str(void* obj);
  * @brief test function
  * 
  */
+void test_darray(void);
+
 void test_queue(void);
 void test_stack(void);
 void test_list(void);
