@@ -20,6 +20,9 @@
 
 #include "darray.h"
 #include "linklist.h"
+#include "dlinklist.h"
+
+#include "ringbuffer.h"
 
 #include "list.h"
 #include "stack.h"

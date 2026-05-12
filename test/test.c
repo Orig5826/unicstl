@@ -82,11 +82,15 @@ int main(int argc, char const *argv[])
 
     TEST_ADD(test_darray);
     TEST_ADD(test_linklist);
+    TEST_ADD(test_dlinklist);
+    
+    TEST_ADD(test_ringbuffer);
+    
+    TEST_ADD(test_deque);
 
     TEST_ADD(test_queue);
     TEST_ADD(test_stack);
     TEST_ADD(test_list);
-    TEST_ADD(test_deque);
     TEST_ADD(test_heap);
     TEST_ADD(test_tree);
     TEST_ADD(test_graph);

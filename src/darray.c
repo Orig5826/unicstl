@@ -53,6 +53,7 @@ static void darray_destory(struct _darray *self)
 static void darray_print(struct _darray *self)
 {
     unicstl_assert(self != NULL);
+    unicstl_assert(self->print_obj != NULL);
     if (self->obj == NULL)
     {
         return;
@@ -60,8 +61,9 @@ static void darray_print(struct _darray *self)
 
     void *obj = NULL;
     size_t offset = 0;
-
-    for (int i = self->size(self) - 1; i >= 0; i--)
+    
+    // for(int i = self->size(self) - 1; i >= 0; --i)
+    for(size_t i = 0; i < self->size(self); i++)
     {
         offset = self->_obj_size * i;
         obj = (char *)self->obj + offset;
@@ -203,6 +205,16 @@ static bool darray_get(struct _darray *self, int index, void *obj)
     return true;
 }
 
+const void* darray_at(struct _darray *self, int index)
+{
+    unicstl_assert(self != NULL);
+    if (index < 0 || index >= self->size(self))
+    {
+        return false;
+    }
+    size_t offset = index * self->_obj_size;
+    return (const char*)self->obj + offset;
+}
 
 static int darray_index(struct _darray *self, const void *obj)
 {
@@ -256,6 +268,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
 
     self->set = darray_set;
     self->get = darray_get;
+    self->at = darray_at;
     self->index = darray_index;
     self->contains = darray_contains;
 

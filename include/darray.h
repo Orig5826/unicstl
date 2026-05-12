@@ -42,6 +42,8 @@ struct _darray
     bool (*set)(struct _darray *self, int index, const void *obj);      // O(1)
     bool (*get)(struct _darray *self, int index, void *obj);            // O(1)
 
+    const void* (*at)(struct _darray *self, int index);                // O(1)
+
     int (*index)(struct _darray *self, const void *obj);        // O(n) retval -1 if not found
     bool (*contains)(struct _darray *self, const void *obj);    // O(n)
 

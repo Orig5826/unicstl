@@ -33,7 +33,7 @@ static void test_darray_insert(void)
     size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
-    darray->compare = compare_num;
+    darray->print_obj = print_num;
 
     TEST_ASSERT_TRUE(darray->empty(darray));
     TEST_ASSERT_FALSE(darray->full(darray));
@@ -48,6 +48,8 @@ static void test_darray_insert(void)
         TEST_ASSERT_FALSE(darray->empty(darray));
     }
     TEST_ASSERT_TRUE(darray->full(darray));
+
+    // darray->print(darray);
     darray_free(&darray);
 }
 

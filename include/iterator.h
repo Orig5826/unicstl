@@ -11,7 +11,8 @@
 #ifndef _ITER_H_
 #define _ITER_H_
 
-#include "unicstl_internal.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 struct _iterator
 {
@@ -19,7 +20,7 @@ struct _iterator
     void* _container;   // pointer to stack/queue/tree ...
 
     void* _node;        // current node 
-    size_t _index;    // current index
+    size_t _index;      // current index
     size_t _order;
 
     // ---------- public ---------- 

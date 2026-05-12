@@ -25,17 +25,16 @@
 #include <limits.h>
 #include <assert.h>
 
-#ifdef UNICSTL_ITERATOR
 #include "iterator.h"
-#endif
-
+#include "logger.h"
 
 /**
  * @brief default capacity and ratio
  * 
  */
+#ifndef DEFAULT_CAPACITY
 #define DEFAULT_CAPACITY        8
-
+#endif
 
 /**
  * @brief malloc and free function

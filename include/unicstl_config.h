@@ -24,27 +24,43 @@
 #define UNICSTL_ITERATOR
 
 /**
- * @brief debug 
- * 
- */
-// #define NDEBUG       // assert disable
-
-#define UNICSTL_DEBUG
-
-#ifdef UNICSTL_DEBUG
-    #define UNICSTL_DEBUG_STACK
-    #define UNICSTL_DEBUG_QUEUE
-    #define UNICSTL_DEBUG_DEQUE
-    #define UNICSTL_DEBUG_TREE
-    #define UNICSTL_DEBUG_HEAP
-    #define UNICSTL_DEBUG_GRAPH
-#endif
-
-/**
  * @brief unicstl use which function
  * 
  */
 #define UNICSTL_MALLOC
 #define UNICSTL_ASSERT
+
+/**
+ * @brief 
+ * 
+ */
+#define UNICSTL_DEBUG
+
+
+
+#ifdef UNICSTL_DEBUG
+#define UNICSTL_DEBUG_STACK
+#define UNICSTL_DEBUG_QUEUE
+#define UNICSTL_DEBUG_DEQUE
+#define UNICSTL_DEBUG_TREE
+#define UNICSTL_DEBUG_HEAP
+#define UNICSTL_DEBUG_GRAPH
+
+/**
+ * @brief debug level
+ *      0. DEBUG  
+ *      1. INFO  
+ *      2. WARN  
+ *      3. ERROR  
+ *      9.None
+ */
+#define LOG_LEVEL                    9
+/**
+ * @brief 
+ *      0. simple
+ *      1. detail
+ */
+#define LOG_DEBUG_DETAIL             1
+#endif  // UNICSTL_DEBUG
 
 #endif
