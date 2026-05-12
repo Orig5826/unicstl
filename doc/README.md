@@ -8,10 +8,10 @@ flowchart TB
         darray
         linklist
         dlinklist
+        ringbuffer[ringbuffer<br>小数据或尽量不扩容]
     end
 
     subgraph hal
-        ringbuffer[ringbuffer<br>小数据或尽量不扩容] --> darray
         segarray[segarray<br>大数据扩容优先] --> darray
     end
 

@@ -10,6 +10,23 @@
  */
 #include "test.h"
 
+
+static void test_deque_new(void)
+{
+    // ------------------------------
+    deque_t deque = deque_new(sizeof(int), 10);
+    TEST_ASSERT_NOT_NULL(deque);
+    deque_free(&deque);
+    
+    TEST_ASSERT_NULL(deque_new(0, 0));
+    TEST_ASSERT_NULL(deque_new(0, 1));
+    TEST_ASSERT_NULL(deque_new(sizeof(int), 0));
+
+    // ------------------------------
+    TEST_ASSERT_NULL(deque);
+    deque_free(&deque);
+}
+
 static void test_deque_num(void)
 {
     size_t i = 0;
@@ -17,7 +34,7 @@ static void test_deque_num(void)
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new(sizeof(int));
+    deque_t deque = deque_new(sizeof(int), len);
     TEST_ASSERT_NOT_NULL(deque);
     deque->print_obj = print_num;
 
@@ -148,7 +165,7 @@ static void test_deque_struct(void)
     struct _student temp = {0};
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new(sizeof(struct _student));
+    deque_t deque = deque_new(sizeof(struct _student), len);
     TEST_ASSERT_NOT_NULL(deque);
     deque->print_obj = print_struct;
 
@@ -275,7 +292,7 @@ static void test_deque_iter(void)
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new(sizeof(int));
+    deque_t deque = deque_new(sizeof(int), len);
     TEST_ASSERT_NOT_NULL(deque);
     deque->print_obj = print_num;
 
@@ -326,6 +343,8 @@ static void test_deque_iter(void)
 void test_deque(void)
 {
     UnitySetTestFile(__FILE__);
+
+    RUN_TEST(test_deque_new);
 
     RUN_TEST(test_deque_num);
     RUN_TEST(test_deque_struct);

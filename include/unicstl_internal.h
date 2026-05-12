@@ -28,6 +28,7 @@
 #include "iterator.h"
 #include "logger.h"
 
+
 /**
  * @brief default capacity and ratio
  * 
@@ -35,6 +36,24 @@
 #ifndef DEFAULT_CAPACITY
 #define DEFAULT_CAPACITY        8
 #endif
+
+
+/**
+ * @brief assert function
+ * 
+ */
+#ifdef UNICSTL_ASSERT
+#define unicstl_assert(expr) (void) ((!!(expr)) || (_unicstl_assert(#expr,__FILE__,__LINE__),0))
+
+static inline void _unicstl_assert(const char *expr, const char *file, int line)
+{
+    printf("Assertion failed: %s, file:%s line:%d\n", expr, file, line);
+    exit(1);
+}
+#else
+#define unicstl_assert   assert
+#endif
+
 
 /**
  * @brief malloc and free function
@@ -56,12 +75,53 @@ static inline void unicstl_free(void * ptr) {
 #error "UNICSTL_MALLOC not defined"
 #endif
 
-#ifdef UNICSTL_ASSERT
-#define unicstl_assert(expr) (void) ((!!(expr)) || (_unicstl_assert(#expr,__FILE__,__LINE__),0))
-void _unicstl_assert(const char *expr, const char *file, int line);
-#else
-#define unicstl_assert   assert
+
+
+static inline const void *obj_at(const void *objs, size_t index, size_t obj_size)
+{
+#ifdef UNICSTL_DEBUG
+    unicstl_assert(objs != NULL);
 #endif
+    return (const char *)objs + obj_size * index;
+}
+
+static inline void obj_set(void *objs, size_t index, const void *obj, size_t obj_size)
+{
+#ifdef UNICSTL_DEBUG
+    unicstl_assert(objs != NULL);
+    unicstl_assert(obj != NULL);
+#endif
+    memmove((char *)objs + obj_size * index, obj, obj_size);
+}
+
+static inline void obj_get(const void *objs, size_t index, void *obj, size_t obj_size)
+{
+#ifdef UNICSTL_DEBUG
+    unicstl_assert(objs != NULL);
+    unicstl_assert(obj != NULL);
+#endif
+    memmove(obj, (const char *)objs + obj_size * index, obj_size);
+}
+
+static inline void obj_copy(void *dst, const void *src, size_t count, size_t obj_size)
+{
+#ifdef UNICSTL_DEBUG
+    unicstl_assert(dst != NULL);
+    unicstl_assert(src != NULL);
+#endif
+    memmove(dst, src, obj_size * count);
+}
+
+static inline size_t index_next(size_t index, size_t capacity)
+{
+    return (index + 1) % capacity;
+}
+
+static inline size_t index_prev(size_t index, size_t capacity)
+{
+    return index == 0 ? (capacity - 1) : index - 1;
+}
+
 
 /**
  * @brief obj compare with obj2

@@ -12,6 +12,7 @@
 #define _DEQUE_H_
 
 #include "unicstl_internal.h"
+#include "ringbuffer.h"
 
 enum _deque_order
 {
@@ -19,26 +20,16 @@ enum _deque_order
     DEQUE_REVERSE,
 };
 
-struct _deque_node
-{
-    void* obj;
-    struct _deque_node* prev;
-    struct _deque_node* next;
-};
-
 struct _deque
 {
     // -------------------- private -------------------- 
-    struct _deque_node* _head;
-    struct _deque_node* _tail;
-
-    size_t _obj_size;
-    size_t _size;
-    // size_t _capacity;
-    // size_t _ratio;
-
+    union 
+    {
+        ringbuffer_t ringbuf;
+    };
+    iterator_t _iter_ringbuf;
+    
     struct _iterator _iter;
-
     void (*_destory)(struct _deque* self);
 
     // -------------------- public -------------------- 
@@ -64,9 +55,7 @@ struct _deque
 };
 typedef struct _deque* deque_t;
 
-// create and free deque
-deque_t deque_new(size_t obj_size);
-
+deque_t deque_new(size_t obj_size, size_t capacity);
 void deque_free(deque_t* deque);
 
 #endif

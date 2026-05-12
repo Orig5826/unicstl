@@ -10,12 +10,6 @@
  */
 #include "unicstl_internal.h"
 
-void _unicstl_assert(const char *expr, const char *file, int line)
-{
-    printf("Assertion failed: %s, file:%s line:%d\n", expr, file, line);
-    exit(1);
-}
-
 int default_compare(const void* obj1, const void* obj2)
 {
     printf("compare is not implemented!\n");

@@ -10,6 +10,47 @@
  */
 #include "test.h"
 
+static void test_ringbuffer_new(void)
+{
+    darray_t ringbuffer = darray_new(sizeof(int), 10);
+    TEST_ASSERT_NOT_NULL(ringbuffer);
+    darray_free(&ringbuffer);
+
+    TEST_ASSERT_NULL(darray_new(0, 0));
+    TEST_ASSERT_NULL(darray_new(0, 1));
+    TEST_ASSERT_NULL(darray_new(sizeof(int), 0));
+
+    // ------------------------------
+    TEST_ASSERT_NULL(ringbuffer);
+    darray_free(&ringbuffer);
+}
+
+static void test_ringbuffer_push(void)
+{
+    size_t i = 0;
+    int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int temp = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+
+    ringbuffer_t ringbuffer = ringbuffer_new(sizeof(int), len);
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(ringbuffer->push_back(ringbuffer, &data[i]));
+    }
+    TEST_ASSERT_FALSE(ringbuffer->push_back(ringbuffer, &data[0]));
+
+    TEST_ASSERT_TRUE(ringbuffer->clear(ringbuffer));
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(ringbuffer->push_front(ringbuffer, &data[i]));
+    }
+    TEST_ASSERT_FALSE(ringbuffer->push_front(ringbuffer, &data[0]));
+
+    ringbuffer_free(&ringbuffer);
+}
+
 static void test_ringbuffer_num(void)
 {
     size_t i = 0;
@@ -18,7 +59,6 @@ static void test_ringbuffer_num(void)
     size_t len = sizeof(data) / sizeof(data[0]);
 
     ringbuffer_t ringbuffer = ringbuffer_new(sizeof(int), len);
-    TEST_ASSERT_NOT_NULL(ringbuffer);
     ringbuffer->print_obj = print_num;
 
     TEST_ASSERT_TRUE(ringbuffer->empty(ringbuffer));
@@ -44,6 +84,7 @@ static void test_ringbuffer_num(void)
     {
         TEST_ASSERT_TRUE(ringbuffer->push_back(ringbuffer, &data[i]));
     }
+    // ringbuffer->print(ringbuffer);
 
     for (i = 0; i < len + 1; i++)
     {
@@ -285,7 +326,7 @@ static void test_ringbuffer_iter(void)
     {
         ringbuffer->push_back(ringbuffer, &data[i]);
     }
-    
+
     iterator_t iter = ringbuffer->iter(ringbuffer, RINGBUF_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
@@ -310,6 +351,9 @@ static void test_ringbuffer_iter(void)
 void test_ringbuffer(void)
 {
     UnitySetTestFile(__FILE__);
+
+    RUN_TEST(test_ringbuffer_new);
+    RUN_TEST(test_ringbuffer_push);
 
     RUN_TEST(test_ringbuffer_num);
     RUN_TEST(test_ringbuffer_struct);

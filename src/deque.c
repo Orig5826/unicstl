@@ -13,234 +13,80 @@
 static bool deque_push_back(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    struct _deque_node* front = NULL;
-    struct _deque_node* back = NULL;
-
-    // create a new object
-    void* new_obj = (void*)malloc(self->_obj_size);
-    if (new_obj == NULL)
-    {
-        return false;
-    }
-    memmove(new_obj, obj, self->_obj_size);
-
-    // create a new node
-    struct _deque_node* new_node = (struct _deque_node*)malloc(sizeof(struct _deque_node));
-    if (new_node == NULL)
-    {
-        return false;
-    }
-    new_node->obj = new_obj;
-
-    // link node
-    if(self->empty(self))
-    {
-        // if this is first node
-        self->_tail = new_node;
-        self->_head = new_node;
-    }
-    new_node->prev = self->_tail;       // step 1
-    new_node->next = self->_head;       // step 2
-
-    back = self->_tail;
-    back->next = new_node;              // step 3
-
-    front = self->_head;
-    front->prev = new_node;             // step 4
-
-    self->_tail = new_node;             // step 5
-
-    self->_size += 1;
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->push_back(self->ringbuf, obj);
 }
 
 static bool deque_push_front(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    struct _deque_node* front = NULL;
-    struct _deque_node* back = NULL;
-
-    // create a new object
-    void* new_obj = (void*)malloc(self->_obj_size);
-    if (new_obj == NULL)
-    {
-        return false;
-    }
-    memmove(new_obj, obj, self->_obj_size);
-
-    // create a new node
-    struct _deque_node* new_node = (struct _deque_node*)malloc(sizeof(struct _deque_node));
-    if (new_node == NULL)
-    {
-        return false;
-    }
-    new_node->obj = new_obj;
-
-    // link node
-    if (self->empty(self))
-    {
-        // if this is first node
-        self->_tail = new_node;
-        self->_head = new_node;
-    }
-    new_node->prev = self->_tail;       // step 1
-    new_node->next = self->_head;       // step 2
-
-    back = self->_tail;
-    back->next = new_node;              // step 3
-
-    front = self->_head;
-    front->prev = new_node;             // step 4
-
-    self->_head = new_node;             // step 5
-
-    self->_size += 1;
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->push_front(self->ringbuf, obj);
 }
 
 static bool deque_pop_back(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    struct _deque_node* node = NULL;
-    struct _deque_node* front = NULL;
-
-    if (self->empty(self))
-    {
-        return false;
-    }
-
-    node = self->_tail;
-    if (obj != NULL)
-    {
-        memmove(obj, node->obj, self->_obj_size);
-    }
-
-    if (self->size(self) == 1)
-    {
-        self->_tail = NULL;
-        self->_head = NULL;
-    }
-    else
-    {
-        self->_tail = node->prev;       // step 1
-
-        front = self->_head;
-        front->prev = node->prev;       // step 2
-    }
-
-    free(node->obj);
-    free(node);
-
-    self->_size -= 1;
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->pop_back(self->ringbuf, obj);
 }
 
 static bool deque_pop_front(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    struct _deque_node* node = NULL;
-    struct _deque_node* back = NULL;
-    
-    if (self->empty(self))
-    {
-        return false;
-    }
-
-    node = self->_head;
-    if (obj != NULL)
-    {
-        memmove(obj, node->obj, self->_obj_size);
-    }
-
-    if (self->size(self) == 1)
-    {
-        self->_tail = NULL;
-        self->_head = NULL;
-    }
-    else
-    {
-        self->_head = node->next;       // step 1
-
-        back = self->_tail;
-        back->next = node->next;        // step 2
-    }
-
-    free(node->obj);
-    free(node);
-
-    self->_size -= 1;
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->pop_front(self->ringbuf, obj);
 }
 
 static bool deque_back(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(obj != NULL);
-
-    if (self->empty(self))
-    {
-        return false;
-    }
-    memmove(obj, self->_tail->obj, self->_obj_size);
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->back(self->ringbuf, obj);
 }
 
 static bool deque_front(struct _deque* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(obj != NULL);
-
-    if (self->empty(self))
-    {
-        return false;
-    }
-    memmove(obj, self->_head->obj, self->_obj_size);
-    return true;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->front(self->ringbuf, obj);
 }
 
 static bool deque_clear(struct _deque* self)
 {
-    while (!self->empty(self))
-    {
-        deque_pop_back(self, NULL);
-    }
-    return true;
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->clear(self->ringbuf);
 }
 
 static size_t deque_size(struct _deque* self)
 {
     unicstl_assert(self != NULL);
-    return self->_size;
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->size(self->ringbuf);
 }
 
 static bool deque_empty(struct _deque* self)
 {
     unicstl_assert(self != NULL);
-    return !self->size(self);
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->empty(self->ringbuf);
 }
 
 static void deque_destory(struct _deque* self)
 {
     unicstl_assert(self != NULL);
     self->clear(self);
-    if (self->_head != NULL)
-    {
-        free(self->_head);
-        self->_head = NULL;
-    }
+    ringbuffer_free(&self->ringbuf);
 }
 
 static void deque_print(struct _deque* self)
 {
     unicstl_assert(self != NULL);
+    unicstl_assert(self->ringbuf != NULL);
 
-    size_t i = 0;
-    struct _deque_node * node = self->_head;
-    for (size_t i = 0; i < self->size(self); i++)
-    {
-        self->print_obj(node->obj);
-        node = node->next;
-    }
+    self->ringbuf->print_obj = self->print_obj;
+    self->ringbuf->print(self->ringbuf);
 }
 
 bool deque_iter_hasnext(struct _iterator* iter)
@@ -249,11 +95,7 @@ bool deque_iter_hasnext(struct _iterator* iter)
     unicstl_assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
-    if(iter->_index < self->size(self))
-    {
-        return true;
-    }
-    return false;
+    return self->_iter_ringbuf->hasnext(self->_iter_ringbuf);
 }
 
 const void* deque_iter_next(struct _iterator* iter)
@@ -262,26 +104,7 @@ const void* deque_iter_next(struct _iterator* iter)
     unicstl_assert(iter->_container != NULL);
 
     deque_t self = (deque_t)iter->_container;
-    void *obj = NULL;
-    
-    struct _deque_node * cur_node = (struct _deque_node *)iter->_node;
-    if(cur_node == NULL)
-    {
-        return NULL;
-    }
-
-    obj = cur_node->obj;
-    if(iter->_order == DEQUE_FORWARD)
-    {
-        iter->_node = cur_node->next;
-    }
-    else
-    {
-        iter->_node = cur_node->prev;
-    }
-
-    iter->_index += 1;
-    return obj;
+    return self->_iter_ringbuf->next(self->_iter_ringbuf);
 }
 
 iterator_t deque_iter(struct _deque* self, enum _deque_order order)
@@ -292,36 +115,26 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
     iter->_container = self;
     iter->_index = 0;
     iter->_order = order;
-    if(iter->_order == DEQUE_FORWARD)
-    {
-        iter->_node = self->_head;
-    }
-    else
-    {
-        iter->_node = self->_tail;
-    }
+    self->_iter_ringbuf = self->ringbuf->iter(self->ringbuf, order);
 
     iter->hasnext = deque_iter_hasnext;
     iter->next = deque_iter_next;
     return iter;
 }
 
-static bool deque_init(struct _deque* self, size_t obj_size)
+static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    if(obj_size == 0)
+    if(obj_size == 0 || capacity == 0)
     {
         return false;
     }
     // -------------------- private -------------------- 
-    self->_obj_size = obj_size;
-    self->_size = 0;
-    // self->_capacity = 64;
-    // self->_ratio = 2;
-
-    self->_head = NULL;
-    self->_tail = NULL;
-
+    self->ringbuf = ringbuffer_new(obj_size, capacity);
+    if(self->ringbuf == NULL)
+    {
+        return false;
+    }
     self->_destory = deque_destory;
 
     // -------------------- public -------------------- 
@@ -350,7 +163,7 @@ static bool deque_init(struct _deque* self, size_t obj_size)
     return true;
 }
 
-deque_t deque_new(size_t obj_size)
+deque_t deque_new(size_t obj_size, size_t capacity)
 {
     struct _deque* deque = NULL;
     deque = (struct _deque*)malloc(sizeof(struct _deque));
@@ -359,7 +172,7 @@ deque_t deque_new(size_t obj_size)
         return NULL;
     }
 
-    if(deque_init(deque, obj_size) != true)
+    if(deque_init(deque, obj_size, capacity) != true)
     {
         free(deque);
         return NULL;

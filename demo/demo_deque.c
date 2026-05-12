@@ -17,7 +17,7 @@ static void demo_deque_num(void)
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new(sizeof(int));
+    deque_t deque = deque_new(sizeof(int), len);
     deque->print_obj = print_num;
 
     printf("\n\n----- demo_deque_num -----\n");
@@ -190,7 +190,7 @@ static void demo_deque_struct(void)
     struct _student temp = {0};
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    deque_t deque = deque_new(sizeof(struct _student));
+    deque_t deque = deque_new(sizeof(struct _student), len);
     deque->print_obj = print_struct;
 
     printf("\n\n----- demo_deque_struct -----\n");

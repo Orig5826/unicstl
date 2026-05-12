@@ -23,11 +23,12 @@ enum _ringbuffer_order
 struct _ringbuffer
 {
     // -------------------- private -------------------- 
-    // size_t _obj_size;
+    void *obj;
+
+    size_t _obj_size;
     size_t _size;
     size_t _capacity;
     
-    darray_t darray;
     size_t _head;
     size_t _tail;
     
@@ -36,8 +37,8 @@ struct _ringbuffer
 
     // -------------------- public -------------------- 
     // kernel
-    bool (*push_back)(struct _ringbuffer* self, void* obj);
-    bool (*push_front)(struct _ringbuffer* self, void* obj);
+    bool (*push_back)(struct _ringbuffer* self, const void* obj);
+    bool (*push_front)(struct _ringbuffer* self, const void* obj);
     bool (*pop_back)(struct _ringbuffer* self, void* obj);
     bool (*pop_front)(struct _ringbuffer* self, void* obj);
     bool (*back)(struct _ringbuffer* self, void* obj);

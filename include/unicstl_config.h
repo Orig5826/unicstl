@@ -54,7 +54,7 @@
  *      3. ERROR  
  *      9.None
  */
-#define LOG_LEVEL                    9
+#define LOG_LEVEL                    0
 /**
  * @brief 
  *      0. simple
