@@ -24,10 +24,10 @@ struct _heap
     // -------------------- private -------------------- 
     void* obj;
 
-    uint32_t _size;
-    uint32_t _obj_size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _size;
+    size_t _obj_size;
+    size_t _capacity;
+    size_t _ratio;
 
     heap_type _type;
     struct _iterator _iter;
@@ -42,7 +42,7 @@ struct _heap
 
     // base
     bool (*empty)(struct _heap* self);
-    uint32_t(*size)(struct _heap* self);
+    size_t(*size)(struct _heap* self);
     bool (*clear)(struct _heap* self);
 
     // iter
@@ -58,8 +58,8 @@ struct _heap
 typedef struct _heap* heap_t;
 
 // create and free heap
-heap_t heap_max_new2(uint32_t obj_size, uint32_t capacity);
-heap_t heap_min_new2(uint32_t obj_size, uint32_t capacity);
+heap_t heap_max_new2(size_t obj_size, size_t capacity);
+heap_t heap_min_new2(size_t obj_size, size_t capacity);
 
 void heap_free(heap_t* heap);
 

@@ -12,10 +12,10 @@
 
 static void test_deque_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     deque_t deque = deque_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(deque);
@@ -139,14 +139,14 @@ static void test_deque_num(void)
 
 static void test_deque_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         "zhao", 1001, "qian", 1002, "sun",   1003, "li",   1004,
         "zhou", 1005, "wu",   1006, "zheng", 1007, "wang", 1008,
         "feng", 1009, "cheng",1010,
     };
     struct _student temp = {0};
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     deque_t deque = deque_new(sizeof(struct _student));
     TEST_ASSERT_NOT_NULL(deque);
@@ -270,10 +270,10 @@ static void test_deque_struct(void)
 
 static void test_deque_iter(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     deque_t deque = deque_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(deque);

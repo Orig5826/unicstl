@@ -30,8 +30,8 @@ static void test_list_append(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -65,8 +65,8 @@ static void test_list_pop(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -89,8 +89,8 @@ static void test_list_insert(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -133,8 +133,8 @@ static void test_list_delete(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -162,8 +162,8 @@ static void test_list_clear(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -358,8 +358,8 @@ void test_list_iter(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -396,8 +396,8 @@ static void test_list_index(void)
 {
     int temp = 0;
     int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
 
@@ -423,8 +423,8 @@ static void test_list_slice_empty(void)
 {
     int temp = 0;
     int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
     list_t list2 = NULL;
@@ -494,8 +494,8 @@ static void test_list_slice_positive(void)
 {
     int temp = 0;
     int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
     list_t list2 = NULL;
@@ -578,8 +578,8 @@ static void test_list_slice_negative(void)
 {
     int temp = 0;
     int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
     list_t list2 = NULL;
@@ -663,8 +663,8 @@ static void test_list_slice_unlimited(void)
 {
     int temp = 0;
     int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     list_t list = NULL;
     list_t list2 = NULL;

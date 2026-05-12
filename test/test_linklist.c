@@ -28,8 +28,8 @@ static void test_linklist_push(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     linklist_t linklist = NULL;
 
@@ -57,8 +57,8 @@ static void test_linklist_pop(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     linklist_t linklist = NULL;
 
@@ -102,8 +102,8 @@ static void test_linklist_clear(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     linklist_t linklist = NULL;
 
@@ -129,10 +129,10 @@ static void test_linklist_clear(void)
 
 static void test_linklist_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     linklist_t linklist = NULL;
     linklist = linklist_new(sizeof(int));
@@ -193,13 +193,13 @@ static void test_linklist_num(void)
 
 static void test_linklist_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"zhao", 1001}, {"qian", 1002}, {"sun", 1003}, {"li", 1004},
         "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
     };
     struct _student temp;
-    uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+    size_t len = sizeof(data) / sizeof(data[0]) - 1;
 
     linklist_t linklist = linklist_new(sizeof(struct _student));
     TEST_ASSERT_NOT_NULL(linklist);
@@ -266,10 +266,10 @@ static void test_linklist_struct(void)
 #if 0
 static void test_linklist_iter(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     linklist_t linklist = NULL;
     linklist = linklist_new(sizeof(int));

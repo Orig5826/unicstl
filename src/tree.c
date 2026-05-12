@@ -53,7 +53,7 @@ static void tree_node_free(struct _tree_node** node)
     }
 }
 
-static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
+static size_t tree_height_node(struct _tree* self, struct _tree_node* root)
 {
 #ifdef TREE_RECURSIVE_ENABLED
     unicstl_assert(self != NULL);
@@ -61,8 +61,8 @@ static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
     {
         return 0;
     }
-    uint32_t left_height = tree_height_node(self, root->left);
-    uint32_t right_height = tree_height_node(self, root->right);
+    size_t left_height = tree_height_node(self, root->left);
+    size_t right_height = tree_height_node(self, root->right);
     return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
 #else
     unicstl_assert(self != NULL);
@@ -70,9 +70,9 @@ static uint32_t tree_height_node(struct _tree* self, struct _tree_node* root)
     {
         return 0;
     }
-    uint32_t height = 0;
-    uint32_t count_cur_level = 0;
-    uint32_t count_next_level = 0;
+    size_t height = 0;
+    size_t count_cur_level = 0;
+    size_t count_next_level = 0;
 
     struct _tree_node* node = root;
     queue_t queue = queue_new(sizeof(struct _tree_node*));
@@ -113,7 +113,7 @@ static void tree_set_balance(struct _tree* self, struct _tree_node* node)
     {
         return;
     }
-    node->balance = (int32_t)(tree_height_node(self, node->right) - tree_height_node(self, node->left));
+    node->balance = (int)(tree_height_node(self, node->right) - tree_height_node(self, node->left));
 }
 
 static struct _tree_node* tree_turn_left(struct _tree* self, struct _tree_node* root)
@@ -1042,7 +1042,7 @@ static bool tree_empty(struct _tree* self)
     return !self->size(self);
 }
 
-static uint32_t tree_size(struct _tree* self)
+static size_t tree_size(struct _tree* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
@@ -1096,7 +1096,7 @@ static void tree_destory(struct _tree* self)
     }
 }
 
-static uint32_t tree_height(struct _tree* self)
+static size_t tree_height(struct _tree* self)
 {
     return tree_height_node(self, self->_root);
 }
@@ -1376,7 +1376,7 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
     return iter;
 }
 
-static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
+static bool tree_avl_init(struct _tree* self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
 
@@ -1428,7 +1428,7 @@ static bool tree_avl_init(struct _tree* self, uint32_t obj_size)
     return true;
 }
 
-static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
+static bool tree_rb_init(struct _tree* self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
 
@@ -1480,7 +1480,7 @@ static bool tree_rb_init(struct _tree* self, uint32_t obj_size)
     return true;
 }
 
-tree_t tree_avl_new(uint32_t obj_size)
+tree_t tree_avl_new(size_t obj_size)
 {
     tree_t tree = NULL;
     tree = (struct _tree*)malloc(sizeof(struct _tree));
@@ -1497,7 +1497,7 @@ tree_t tree_avl_new(uint32_t obj_size)
     return tree;
 }
 
-tree_t tree_rb_new(uint32_t obj_size)
+tree_t tree_rb_new(size_t obj_size)
 {
     tree_t tree = NULL;
     tree = (struct _tree*)malloc(sizeof(struct _tree));

@@ -11,7 +11,7 @@
 #include "linklist.h"
 
 
-static struct _linklist_node * linklist_new_node(void* obj, uint32_t obj_size)
+static struct _linklist_node * linklist_new_node(void* obj, size_t obj_size)
 {
     void * new_obj = malloc(obj_size);
     if (new_obj == NULL)
@@ -48,13 +48,13 @@ static void linklist_node_free(struct _linklist_node** node)
     }
 }
 
-static uint32_t linklist_size(struct _linklist* self)
+static size_t linklist_size(struct _linklist* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
 }
 
-static uint32_t linklist_capacity(struct _linklist* self)
+static size_t linklist_capacity(struct _linklist* self)
 {
     unicstl_assert(self != NULL);
     return self->_capacity;
@@ -275,7 +275,7 @@ static void linklist_print(struct _linklist* self)
 }
 
 
-static bool linklist_init(struct _linklist * self, uint32_t obj_size)
+static bool linklist_init(struct _linklist * self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0)
@@ -327,7 +327,7 @@ static bool linklist_init(struct _linklist * self, uint32_t obj_size)
     return true;
 }
 
-linklist_t linklist_new(uint32_t obj_size)
+linklist_t linklist_new(size_t obj_size)
 {
     struct _linklist * linklist = NULL;
     linklist = (struct _linklist *)calloc(1, sizeof(struct _linklist));

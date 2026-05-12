@@ -10,7 +10,7 @@
  */
 #include "stack.h"
 
-static struct _stack_node* stack_node_new(void *obj, uint32_t obj_size)
+static struct _stack_node* stack_node_new(void *obj, size_t obj_size)
 {
     void* new_obj = (void*)calloc(1, obj_size);
     if (new_obj == NULL)
@@ -102,7 +102,7 @@ static bool stack_peek(struct _stack* self, void* obj)
     return true;
 }
 
-static uint32_t stack_size(struct _stack* self)
+static size_t stack_size(struct _stack* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
@@ -115,7 +115,7 @@ static bool stack_empty(struct _stack* self)
     return self->size(self) == 0;
 }
 
-static uint32_t stack_capacity(struct _stack* self)
+static size_t stack_capacity(struct _stack* self)
 {
     unicstl_assert(self != NULL);
     return self->_capacity;
@@ -153,7 +153,7 @@ static void stack_destory(struct _stack* self)
 
 static void stack_print(struct _stack* self)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _stack_node* node = self->_head->next;
     while (node != NULL)
     {
@@ -178,8 +178,8 @@ static bool stack2_push(struct _stack* self, void* obj)
         self->_head->obj = obj_new;
     }
 
-    uint32_t top = self->size(self);
-    uint32_t offset = top * self->_obj_size;
+    size_t top = self->size(self);
+    size_t offset = top * self->_obj_size;
     memmove((char*)self->_head->obj + offset, obj, self->_obj_size);
 
     self->_size += 1;
@@ -197,8 +197,8 @@ static bool stack2_pop(struct _stack* self, void* obj)
 
     if (obj != NULL)
     {
-        uint32_t top = self->size(self) - 1;
-        uint32_t offset = top * self->_obj_size;
+        size_t top = self->size(self) - 1;
+        size_t offset = top * self->_obj_size;
         memmove(obj, (char*)self->_head->obj + offset, self->_obj_size);
     }
     self->_size -= 1;
@@ -215,8 +215,8 @@ static bool stack2_peek(struct _stack* self, void* obj)
         return false;
     }
 
-    uint32_t top = self->size(self) - 1;
-    uint32_t offset = top * self->_obj_size;
+    size_t top = self->size(self) - 1;
+    size_t offset = top * self->_obj_size;
     memmove(obj, (char *)self->_head->obj + offset, self->_obj_size);
     return true;
 }
@@ -243,7 +243,7 @@ static void stack2_print(struct _stack* self)
     unicstl_assert(self->_head != NULL);
 
     void* obj = NULL;
-    uint32_t offset = 0;
+    size_t offset = 0;
 
     for (int i = self->size(self) - 1; i >= 0; i--)
     {
@@ -291,7 +291,7 @@ const void* stack_iter_next(struct _iterator* iter)
     else
     {
         // base on array
-        uint32_t index = self->size(self) - 1 - iter->_index;
+        size_t index = self->size(self) - 1 - iter->_index;
         obj = self->_head->obj + self->_obj_size * index;
     }
     
@@ -313,7 +313,7 @@ iterator_t stack_iter(struct _stack* self)
     return iter;
 }
 
-static bool stack_init(struct _stack* self, uint32_t obj_size)
+static bool stack_init(struct _stack* self, size_t obj_size)
 {
     // unicstl_assert(self != NULL);
     // unicstl_assert(obj_size != 0);
@@ -362,7 +362,7 @@ static bool stack_init(struct _stack* self, uint32_t obj_size)
     return true;
 }
 
-static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacity)
+static bool stack_init2(struct _stack* self, size_t obj_size, size_t capacity)
 {
     // unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0 || capacity == 0)
@@ -420,7 +420,7 @@ static bool stack_init2(struct _stack* self, uint32_t obj_size, uint32_t capacit
     return true;
 }
 
-stack_t stack_new(uint32_t obj_size)
+stack_t stack_new(size_t obj_size)
 {
     stack_t stack = NULL;
     stack = (struct _stack*)calloc(1, sizeof(struct _stack));
@@ -437,7 +437,7 @@ stack_t stack_new(uint32_t obj_size)
     return stack;
 }
 
-stack_t stack_new2(uint32_t obj_size, uint32_t capacity)
+stack_t stack_new2(size_t obj_size, size_t capacity)
 {
     stack_t stack = NULL;
     stack = (struct _stack*)calloc(1, sizeof(struct _stack));

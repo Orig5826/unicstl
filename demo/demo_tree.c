@@ -30,12 +30,12 @@
  */
 void demo_avltree_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     // int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
     int temp = 0;
     iterator_t iter = NULL;
 
@@ -254,12 +254,12 @@ static bool tree_rb_check(struct _tree* self)
  */
 void demo_rbtree_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     // int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
     int temp = 0;
     iterator_t iter = NULL;
 
@@ -436,13 +436,13 @@ void demo_rbtree_num(void)
  */
 void demo_rbtree_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
         "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
     };
     struct _student temp = {0};
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
     iterator_t iter = NULL;
 
     tree_t tree = tree_rb_new(sizeof(struct _student));

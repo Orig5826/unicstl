@@ -207,7 +207,7 @@ static bool deque_clear(struct _deque* self)
     return true;
 }
 
-static uint32_t deque_size(struct _deque* self)
+static size_t deque_size(struct _deque* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
@@ -234,9 +234,9 @@ static void deque_print(struct _deque* self)
 {
     unicstl_assert(self != NULL);
 
-    uint32_t i = 0;
+    size_t i = 0;
     struct _deque_node * node = self->_head;
-    for (uint32_t i = 0; i < self->size(self); i++)
+    for (size_t i = 0; i < self->size(self); i++)
     {
         self->print_obj(node->obj);
         node = node->next;
@@ -306,7 +306,7 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
     return iter;
 }
 
-static bool deque_init(struct _deque* self, uint32_t obj_size)
+static bool deque_init(struct _deque* self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
     if(obj_size == 0)
@@ -350,7 +350,7 @@ static bool deque_init(struct _deque* self, uint32_t obj_size)
     return true;
 }
 
-deque_t deque_new(uint32_t obj_size)
+deque_t deque_new(size_t obj_size)
 {
     struct _deque* deque = NULL;
     deque = (struct _deque*)malloc(sizeof(struct _deque));

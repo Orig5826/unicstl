@@ -47,7 +47,10 @@ static void heap_swap(struct _heap* self, int i, int j)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_obj_size != 0);
-// #define C99_VLA
+#if __STDC_VERSION__ >= 199901L
+// #define C99_VLA  // VLA should be avoided for portability reasons and due to the risk of stack overflow.
+#endif
+
 #ifdef C99_VLA
     char tmp[self->_obj_size];
 #else
@@ -115,7 +118,7 @@ static bool heap_push(struct _heap* self, void* obj)
     {
         return false;
     }
-    uint32_t index = self->size(self);
+    size_t index = self->size(self);
     memmove((char *)self->obj + index * self->_obj_size, obj, self->_obj_size);
     self->_size++;
 
@@ -204,7 +207,7 @@ static bool heap_pop(struct _heap* self, void* obj)
     return true;
 }
 
-static uint32_t heap_size(struct _heap* self)
+static size_t heap_size(struct _heap* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
@@ -239,7 +242,7 @@ static void heap_print(struct _heap* self)
     unicstl_assert(self->obj != NULL);
 
     void* obj = NULL;
-    uint32_t offset = 0;
+    size_t offset = 0;
 
     for (int i = 0; i < self->size(self); i++)
     {
@@ -270,7 +273,7 @@ const void* heap_iter_next(struct _iterator* iter)
     heap_t self = (heap_t)iter->_container;
     void *obj = NULL;
 
-    uint32_t index = iter->_index;
+    size_t index = iter->_index;
     obj = self->obj + self->_obj_size * index;
 
     iter->_index += 1;
@@ -291,7 +294,7 @@ iterator_t heap_iter(struct _heap* self)
     return iter;
 }
 
-static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
+static bool heap_init2(struct _heap* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
 
@@ -335,7 +338,7 @@ static bool heap_init2(struct _heap* self, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-heap_t heap_max_new2(uint32_t obj_size, uint32_t capacity)
+heap_t heap_max_new2(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
     heap = (struct _heap*)malloc(sizeof(struct _heap));
@@ -354,7 +357,7 @@ heap_t heap_max_new2(uint32_t obj_size, uint32_t capacity)
     return heap;
 }
 
-heap_t heap_min_new2(uint32_t obj_size, uint32_t capacity)
+heap_t heap_min_new2(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
     heap = (struct _heap*)malloc(sizeof(struct _heap));

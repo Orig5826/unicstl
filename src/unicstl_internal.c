@@ -28,9 +28,9 @@ void default_print_obj(const void* obj)
     unicstl_assert(0);
 }
 
-uint32_t unicstl_new_capacity(uint32_t capacity)
+size_t unicstl_new_capacity(size_t capacity)
 {
-    uint32_t new_capacity = 0;
+    size_t new_capacity = 0;
     if(capacity < 4)
     {
         new_capacity = 8;

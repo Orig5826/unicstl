@@ -29,10 +29,10 @@ struct _stack
      */
     struct _stack_node * _head;
     
-    uint32_t _size;
-    uint32_t _obj_size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _size;
+    size_t _obj_size;
+    size_t _capacity;
+    size_t _ratio;
 
     struct _iterator _iter;
 
@@ -45,8 +45,8 @@ struct _stack
     bool (*peek)(struct _stack* self, void* obj);
     
     // base
-    uint32_t (*size)(struct _stack* self);
-    uint32_t (*capacity)(struct _stack* self);
+    size_t (*size)(struct _stack* self);
+    size_t (*capacity)(struct _stack* self);
     bool (*empty)(struct _stack* self);
     bool (*clear)(struct _stack* self);
     
@@ -60,8 +60,8 @@ struct _stack
 typedef struct _stack* stack_t;
 
 // create and free stack
-stack_t stack_new(uint32_t obj_size);
-stack_t stack_new2(uint32_t obj_size, uint32_t capacity);
+stack_t stack_new(size_t obj_size);
+stack_t stack_new2(size_t obj_size, size_t capacity);
 
 void stack_free(stack_t* stack);
 

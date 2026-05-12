@@ -32,10 +32,10 @@ struct _deque
     struct _deque_node* _head;
     struct _deque_node* _tail;
 
-    uint32_t _obj_size;
-    uint32_t _size;
-    // uint32_t _capacity;
-    // uint32_t _ratio;
+    size_t _obj_size;
+    size_t _size;
+    // size_t _capacity;
+    // size_t _ratio;
 
     struct _iterator _iter;
 
@@ -51,7 +51,7 @@ struct _deque
     bool (*front)(struct _deque* self, void* obj);
     
     // base
-    uint32_t(*size)(struct _deque* self);
+    size_t(*size)(struct _deque* self);
     bool (*clear)(struct _deque* self);
     bool (*empty)(struct _deque* self);
 
@@ -65,7 +65,7 @@ struct _deque
 typedef struct _deque* deque_t;
 
 // create and free deque
-deque_t deque_new(uint32_t obj_size);
+deque_t deque_new(size_t obj_size);
 
 void deque_free(deque_t* deque);
 

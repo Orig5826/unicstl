@@ -25,11 +25,11 @@ struct _list
     // -------------------- private --------------------
     void *obj;
 
-    uint32_t _obj_size;
-    uint32_t _size;
-    uint32_t _capacity;
-    uint32_t _ratio;
-    uint32_t _cur;
+    size_t _obj_size;
+    size_t _size;
+    size_t _capacity;
+    size_t _ratio;
+    size_t _cur;
 
     struct _iterator _iter;
 
@@ -50,8 +50,8 @@ struct _list
     // bool (*contains)(struct _list *self, void *obj);
 
     // base
-    uint32_t (*size)(struct _list *self);
-    uint32_t (*capacity)(struct _list *self);
+    size_t (*size)(struct _list *self);
+    size_t (*capacity)(struct _list *self);
     bool (*empty)(struct _list *self);
     bool (*clear)(struct _list *self);
 
@@ -72,7 +72,7 @@ struct _list
 typedef struct _list *list_t;
 
 // create and free list
-list_t list_new2(uint32_t obj_size, uint32_t capacity);
+list_t list_new2(size_t obj_size, size_t capacity);
 
 void list_free(list_t *list);
 

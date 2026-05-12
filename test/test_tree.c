@@ -72,9 +72,9 @@ static const enum _tree_order order[8] = {
     ORDER_PRE_R, ORDER_IN_R, ORDER_POST_R, ORDER_BREADTH_R
 };
 
-static uint32_t iter2array_num(iterator_t iter, int *data)
+static size_t iter2array_num(iterator_t iter, int *data)
 {
-    uint32_t count = 0;
+    size_t count = 0;
     while(iter->hasnext(iter))
     {
         data[count] = *(int *)iter->next(iter);
@@ -85,10 +85,10 @@ static uint32_t iter2array_num(iterator_t iter, int *data)
 
 static void test_avltree_iter(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(int);
+    size_t len = sizeof(data) / sizeof(int);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
@@ -126,10 +126,10 @@ static void test_avltree_iter(void)
 
 static void test_avltree_insert(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(int);
+    size_t len = sizeof(data) / sizeof(int);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
@@ -163,10 +163,10 @@ static void test_avltree_insert(void)
 
 static void test_avltree_delete(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(int);
+    size_t len = sizeof(data) / sizeof(int);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
@@ -252,10 +252,10 @@ static const int rbt_expected_int_array_orderpre_delete[15][15] = {
 
 static void test_rbtree_iter(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6, 4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(int);
+    size_t len = sizeof(data) / sizeof(int);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
@@ -292,10 +292,10 @@ static void test_rbtree_iter(void)
 
 static void test_rbtree_insert(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(int);
+    size_t len = sizeof(data) / sizeof(int);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;
@@ -328,10 +328,10 @@ static void test_rbtree_insert(void)
 
 static void test_rbtree_delete(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5, 2, 3, 1, 7, 8, 6,  4, 9, 10, 12, 11, 15, 14, 13, };
     int buff[15];
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
     int temp = 0;
     int count = 0;
     iterator_t iter = NULL;

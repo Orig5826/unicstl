@@ -31,9 +31,9 @@ static bool list_insert(struct _list* self, int index, void* obj)
         self->obj = obj_new;
         self->_capacity = capacity;
     }
-    uint32_t offset = index * self->_obj_size;
-    uint32_t offset1 = (index + 1) * self->_obj_size;
-    uint32_t count = self->size(self) - index;
+    size_t offset = index * self->_obj_size;
+    size_t offset1 = (index + 1) * self->_obj_size;
+    size_t count = self->size(self) - index;
 
     // move data to right
     memmove((char*)self->obj + offset1, (char*)self->obj + offset, count * self->_obj_size);
@@ -62,9 +62,9 @@ static bool list_delete(struct _list* self, int index, void* obj)
         index += self->size(self);
     }
 
-    uint32_t offset = index * self->_obj_size;
-    uint32_t offset1 = (index + 1) * self->_obj_size;
-    uint32_t count = self->size(self) - 1 - index;
+    size_t offset = index * self->_obj_size;
+    size_t offset1 = (index + 1) * self->_obj_size;
+    size_t count = self->size(self) - 1 - index;
     if (obj != NULL)
     {
         memmove(obj, (char*)self->obj + offset, self->_obj_size);
@@ -126,7 +126,7 @@ static bool list_get(struct _list* self, int index, void* obj)
     {
         index += self->size(self);
     }
-    uint32_t offset = index * self->_obj_size;
+    size_t offset = index * self->_obj_size;
     memmove(obj, (char*)self->obj + offset, self->_obj_size);
     return true;
 }
@@ -139,18 +139,18 @@ static bool list_set(struct _list* self, int index, void* obj)
     {
         index += self->size(self);
     }
-    uint32_t offset = index * self->_obj_size;
+    size_t offset = index * self->_obj_size;
     memmove((char*)self->obj + offset, obj, self->_obj_size);
     return true;
 }
 
-static uint32_t list_size(struct _list* self)
+static size_t list_size(struct _list* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
 }
 
-static uint32_t list_capacity(struct _list* self)
+static size_t list_capacity(struct _list* self)
 {
     unicstl_assert(self != NULL);
     return self->_capacity;
@@ -181,7 +181,7 @@ static void list_print(struct _list* self)
     {
         void* obj = NULL;
 
-        for (uint32_t i = 0; i < self->size(self); i++)
+        for (size_t i = 0; i < self->size(self); i++)
         {
             obj = (char*)self->obj + i * self->_obj_size;
             self->print_obj(obj);
@@ -364,7 +364,7 @@ iterator_t list_iter(struct _list* self)
     return iter;
 }
 
-static bool list_init2(struct _list* self, uint32_t obj_size, uint32_t capacity)
+static bool list_init2(struct _list* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if (self == NULL || obj_size == 0 || capacity == 0)
@@ -426,7 +426,7 @@ static bool list_init2(struct _list* self, uint32_t obj_size, uint32_t capacity)
     return true;
 }
 
-list_t list_new2(uint32_t obj_size, uint32_t capacity)
+list_t list_new2(size_t obj_size, size_t capacity)
 {
     struct _list* list = NULL;
     list = (struct _list*)calloc(1, sizeof(struct _list));

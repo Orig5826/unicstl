@@ -25,7 +25,7 @@ void test_graph_add_vertex(void)
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
     int temp = 11;
-    uint32_t i = 0;
+    size_t i = 0;
 
     graph_t graph = graph_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(graph);
@@ -78,7 +78,7 @@ void test_graph_add_edge(void)
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
     int temp = 11;
-    uint32_t i = 0;
+    size_t i = 0;
 
     graph_t graph = graph_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(graph);
@@ -126,7 +126,7 @@ void test_graph_iter(void)
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
     int temp = 11;
-    uint32_t i = 0;
+    size_t i = 0;
 
     graph_t graph = graph_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(graph);
@@ -191,7 +191,7 @@ void test_graph_print(void)
 
 void test_graph_from_matrix(void)
 {
-    // const uint32_t size = 10;
+    // const size_t size = 10;
 #define size 5
     int vertexs[size] = {0, 1, 2, 3, 4};
     int matrix[size * size] = {

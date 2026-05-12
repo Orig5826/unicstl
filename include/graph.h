@@ -33,7 +33,7 @@ enum _graph_search
 
 struct _graph_edge
 {
-    uint32_t weight;
+    size_t weight;
     struct _graph_edge* next;
     void *target;
 };
@@ -52,10 +52,10 @@ struct _graph
     // -------------------- private -------------------- 
     struct _graph_node* _head;
 
-    uint32_t _size;
-    uint32_t _obj_size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _size;
+    size_t _obj_size;
+    size_t _capacity;
+    size_t _ratio;
 
     enum _graph_type _type;
     enum _graph_search _search;
@@ -74,13 +74,13 @@ struct _graph
     bool (*del_vertex)(struct _graph* self, void* obj);
     bool (*find_vertex)(struct _graph* self, void* obj);
     // -> edge
-    bool (*add_edge)(struct _graph* self, void* from, void* to, uint32_t weight);
+    bool (*add_edge)(struct _graph* self, void* from, void* to, size_t weight);
     bool (*del_edge)(struct _graph* self, void* from, void* to);
     bool (*find_edge)(struct _graph* self, void* from, void* to);
 
     // base
-    uint32_t(*size)(struct _graph* self);
-    uint32_t(*capacity)(struct _graph* self);
+    size_t(*size)(struct _graph* self);
+    size_t(*capacity)(struct _graph* self);
     bool (*empty)(struct _graph* self);
     bool (*full)(struct _graph* self);
     bool (*clear)(struct _graph* self);
@@ -92,7 +92,7 @@ struct _graph
     compare_fun_t compare;  // !!! you have to implement this function
 
     // others
-    bool (*from_matrix)(struct _graph* self, void* obj, uint32_t* edges, uint32_t size);
+    bool (*from_matrix)(struct _graph* self, void* obj, size_t* edges, size_t size);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _graph* self);
@@ -100,8 +100,8 @@ struct _graph
 };
 typedef struct _graph* graph_t;
 
-graph_t graph_new(uint32_t obj_size);
-// graph_t graph_new2(uint32_t obj_size, uint32_t capacity);
+graph_t graph_new(size_t obj_size);
+// graph_t graph_new2(size_t obj_size, size_t capacity);
 
 void graph_free(graph_t* graph);
 

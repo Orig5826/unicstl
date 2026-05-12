@@ -10,7 +10,7 @@
  */
 #include "queue.h"
 
-static struct _queue_node * queue_node_new(void* obj, uint32_t obj_size)
+static struct _queue_node * queue_node_new(void* obj, size_t obj_size)
 {
     void * obj_new = malloc(obj_size);
     if (obj_new == NULL)
@@ -151,13 +151,13 @@ static bool queue_full(struct _queue* self)
     return self->size(self) == self->capacity(self);
 }
 
-static uint32_t queue_size(struct _queue* self)
+static size_t queue_size(struct _queue* self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
 }
 
-static uint32_t queue_capacity(struct _queue* self)
+static size_t queue_capacity(struct _queue* self)
 {
     unicstl_assert(self != NULL);
     return self->_capacity;
@@ -192,7 +192,7 @@ static bool queue2_push(struct _queue* self, void* obj)
     }
 
     void * obj_array = self->_front->obj;
-    uint32_t index = self->_index_back;
+    size_t index = self->_index_back;
     memmove((char*)obj_array + index * self->_obj_size, obj, self->_obj_size);
     if(index >= self->capacity(self))
     {
@@ -215,7 +215,7 @@ static bool queue2_pop(struct _queue* self, void* obj)
         return false;
     }
     void * obj_array = self->_front->obj;
-    uint32_t index = self->_index_front;
+    size_t index = self->_index_front;
     if(obj != NULL)
     {
         memmove(obj, (char*)obj_array + index * self->_obj_size,self->_obj_size);
@@ -241,7 +241,7 @@ static bool queue2_back(struct _queue* self, void* obj)
         return false;
     }
     void * obj_array = self->_front->obj;
-    uint32_t index = self->_index_back;
+    size_t index = self->_index_back;
     if(index == 0)
     {
         index = self->capacity(self) - 1;
@@ -262,7 +262,7 @@ static bool queue2_front(struct _queue* self, void* obj)
         return false;
     }
     void * obj_array = self->_front->obj;
-    uint32_t index = self->_index_front;
+    size_t index = self->_index_front;
     memmove(obj, (char *)obj_array + index * self->_obj_size, self->_obj_size);
     return true;
 }
@@ -291,10 +291,10 @@ static void queue2_destory(struct _queue* self)
 static void queue2_print(struct _queue* self)
 {
     unicstl_assert(self != NULL);
-    uint32_t index = 0;
+    size_t index = 0;
     void * obj_array = self->_front->obj;
 
-    for(uint32_t i = 0; i < self->size(self); i++)
+    for(size_t i = 0; i < self->size(self); i++)
     {
         index = self->_index_front + i;
         if(index >= self->capacity(self))
@@ -361,7 +361,7 @@ static const void* queue2_iter_next(struct _iterator* iter)
     void *obj = NULL;
 
     // base on array
-    uint32_t index = iter->_index;
+    size_t index = iter->_index;
     obj = self->_front->obj + self->_obj_size * index;
 
     iter->_index += 1;
@@ -382,7 +382,7 @@ static iterator_t queue2_iter(struct _queue* self)
     return iter;
 }
 
-static bool queue_init(struct _queue * self, uint32_t obj_size)
+static bool queue_init(struct _queue * self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0)
@@ -429,7 +429,7 @@ static bool queue_init(struct _queue * self, uint32_t obj_size)
     return true;
 }
 
-static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capacity)
+static bool queue_init2(struct _queue * self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if(self == NULL || obj_size == 0 || capacity == 0)
@@ -503,7 +503,7 @@ static bool queue_init2(struct _queue * self, uint32_t obj_size, uint32_t capaci
  * 
  * @return queue_t 队列指针
  */
-queue_t queue_new(uint32_t obj_size)
+queue_t queue_new(size_t obj_size)
 {
     struct _queue * queue = NULL;
     queue = (struct _queue *)calloc(1, sizeof(struct _queue));
@@ -529,7 +529,7 @@ queue_t queue_new(uint32_t obj_size)
  * 
  * @return queue_t 队列指针
  */
-queue_t queue_new2(uint32_t obj_size, uint32_t capacity)
+queue_t queue_new2(size_t obj_size, size_t capacity)
 {
     struct _queue * queue = NULL;
     queue = (struct _queue *)calloc(1, sizeof(struct _queue));

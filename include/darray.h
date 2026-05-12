@@ -19,11 +19,11 @@ struct _darray
     // -------------------- private --------------------
     void *obj;
 
-    uint32_t _obj_size;
-    uint32_t _size;
-    uint32_t _capacity;
-    uint32_t _ratio;
-    uint32_t _cur;
+    size_t _obj_size;
+    size_t _size;
+    size_t _capacity;
+    size_t _ratio;
+    size_t _cur;
 
     struct _iterator _iter;
 
@@ -31,7 +31,7 @@ struct _darray
 
     // -------------------- public --------------------
     // kernel
-    bool (*resize)(struct _darray *self, uint32_t capacity);
+    bool (*resize)(struct _darray *self, size_t capacity);
 
     bool (*append)(struct _darray *self, const void *obj);              // O(1)
     bool (*pop)(struct _darray *self, void *obj);                       // O(1)
@@ -46,13 +46,13 @@ struct _darray
     bool (*contains)(struct _darray *self, const void *obj);    // O(n)
 
     // base
-    uint32_t (*size)(struct _darray *self);
-    uint32_t (*capacity)(struct _darray *self);
+    size_t (*size)(struct _darray *self);
+    size_t (*capacity)(struct _darray *self);
     bool (*empty)(struct _darray *self);
     bool (*full)(struct _darray *self);
     bool (*clear)(struct _darray *self);
 
-    void (*dynamic_enable)(struct _darray *self, bool enable);
+    void (*set_dynamic)(struct _darray *self, bool enable);
     bool (*dynamic)(struct _darray *self);
 
     // iter
@@ -67,7 +67,7 @@ struct _darray
 };
 typedef struct _darray *darray_t;
 
-darray_t darray_new(uint32_t obj_size, uint32_t capacity);
+darray_t darray_new(size_t obj_size, size_t capacity);
 void darray_free(darray_t *darray);
 
 #endif

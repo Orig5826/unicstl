@@ -17,7 +17,7 @@ void demo_graph_add_vertex(void)
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
     int temp = 11;
-    uint32_t i = 0;
+    size_t i = 0;
 
     graph_t graph = graph_new(sizeof(int));
     graph->compare = compare_num;

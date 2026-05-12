@@ -26,10 +26,10 @@ struct _linklist
     struct _linklist_node *_front;
     struct _linklist_node *_back;
 
-    uint32_t _obj_size;
-    uint32_t _size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _obj_size;
+    size_t _size;
+    size_t _capacity;
+    size_t _ratio;
 
     struct _iterator _iter;
 
@@ -50,8 +50,8 @@ struct _linklist
     bool (*contains)(struct _linklist *self, const void *obj);  // O(n)
 
     // base
-    uint32_t (*size)(struct _linklist *self);
-    uint32_t (*capacity)(struct _linklist *self);
+    size_t (*size)(struct _linklist *self);
+    size_t (*capacity)(struct _linklist *self);
     bool (*empty)(struct _linklist *self);
     bool (*clear)(struct _linklist *self);
 
@@ -67,7 +67,7 @@ struct _linklist
 };
 typedef struct _linklist *linklist_t;
 
-linklist_t linklist_new(uint32_t obj_size);
+linklist_t linklist_new(size_t obj_size);
 void linklist_free(linklist_t *linklist);
 
 #endif

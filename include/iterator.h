@@ -19,8 +19,8 @@ struct _iterator
     void* _container;   // pointer to stack/queue/tree ...
 
     void* _node;        // current node 
-    uint32_t _index;    // current index
-    uint32_t _order;
+    size_t _index;    // current index
+    size_t _order;
 
     // ---------- public ---------- 
     bool (*hasnext)(struct _iterator* self);

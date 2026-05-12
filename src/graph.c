@@ -13,7 +13,7 @@
 #include "stack.h"
 
 #if 0
-static uint32_t graph_size(struct _graph* self)
+static size_t graph_size(struct _graph* self)
 {
     if (self == NULL)
     {
@@ -22,7 +22,7 @@ static uint32_t graph_size(struct _graph* self)
     return self->_size;
 }
 
-static uint32_t graph_capacity(struct _graph* self)
+static size_t graph_capacity(struct _graph* self)
 {
     if (self == NULL)
     {
@@ -37,9 +37,9 @@ static bool graph_clear(struct _graph* self)
     {
         return 0;
     }
-    for (uint32_t i = 0; i < self->_capacity; i++)
+    for (size_t i = 0; i < self->_capacity; i++)
     {
-        for (uint32_t j = 0; j < self->_capacity; j++)
+        for (size_t j = 0; j < self->_capacity; j++)
         {
             self->_head->edge[i][j] = 0;
         }
@@ -69,7 +69,7 @@ static void graph_destory(struct _graph* self)
 
         if (self->_head->edge != NULL)
         {
-            for (uint32_t i = 0; i < self->_capacity; i++)
+            for (size_t i = 0; i < self->_capacity; i++)
             {
                 if (self->_head->edge[i] != NULL)
                 {
@@ -91,15 +91,15 @@ static void graph_print(struct _graph* self)
     }
 
     printf("\n     ");
-    for (uint32_t i = 0; i < self->_capacity; i++)
+    for (size_t i = 0; i < self->_capacity; i++)
     {
         self->print_obj((char*)self->_head->obj + i * self->_obj_size);
     }
     printf("\n");
-    for (uint32_t i = 0; i < self->_capacity; i++)
+    for (size_t i = 0; i < self->_capacity; i++)
     {
         self->print_obj((char*)self->_head->obj + i * self->_obj_size);
-        for (uint32_t j = 0; j < self->_capacity; j++)
+        for (size_t j = 0; j < self->_capacity; j++)
         {
             printf(" %2d   ", self->_head->edge[i][j]);
         }
@@ -109,7 +109,7 @@ static void graph_print(struct _graph* self)
     printf("print done.\n");
 }
 
-static bool graph_from_matrix(struct _graph* self, void* obj, uint32_t* edges, uint32_t size)
+static bool graph_from_matrix(struct _graph* self, void* obj, size_t* edges, size_t size)
 {
     if (self == NULL || self->_head == NULL)
     {
@@ -121,13 +121,13 @@ static bool graph_from_matrix(struct _graph* self, void* obj, uint32_t* edges, u
         return false;
     }
 
-    for (uint32_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
         memmove((char*)self->_head->obj + i * self->_obj_size, (char*)obj + i * self->_obj_size, self->_obj_size);
     }
-    for (uint32_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        for (uint32_t j = 0; j < size; j++)
+        for (size_t j = 0; j < size; j++)
         {
             self->_head->edge[i][j] = edges[i * size + j];
         }
@@ -137,7 +137,7 @@ static bool graph_from_matrix(struct _graph* self, void* obj, uint32_t* edges, u
     return true;
 }
 
-static bool graph_bfs(struct _graph* self, uint32_t idx)
+static bool graph_bfs(struct _graph* self, size_t idx)
 {
     if (self == NULL || self->_head == NULL)
     {
@@ -149,20 +149,20 @@ static bool graph_bfs(struct _graph* self, uint32_t idx)
         return false;
     }
 
-    for (uint32_t i = 0; i < self->_size; i++)
+    for (size_t i = 0; i < self->_size; i++)
     {
         self->_head->visited[i] = 0;
     }
     // printf("bfs start.\n");
 
-    queue_t queue = queue_new(sizeof(uint32_t));
+    queue_t queue = queue_new(sizeof(size_t));
 
     queue->push(queue, &idx);
     while (!queue->empty(queue))
     {
         queue->pop(queue, &idx);
         self->_head->visited[idx] = 1;
-        for (uint32_t i = 0; i < self->_size; i++)
+        for (size_t i = 0; i < self->_size; i++)
         {
             if (self->_head->edge[idx][i] == 1)
             {
@@ -184,19 +184,19 @@ static bool graph_bfs(struct _graph* self, uint32_t idx)
     return true;
 }
 
-static bool graph_dfs(struct _graph* self, uint32_t idx)
+static bool graph_dfs(struct _graph* self, size_t idx)
 {
 
 }
 
-static bool graph_init2(struct _graph* self, uint32_t obj_size, uint32_t capacity)
+static bool graph_init2(struct _graph* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if (self == NULL)
     {
         return false;
     }
-    uint32_t edges = 0;
+    size_t edges = 0;
 
     // -------------------- private -------------------- 
     self->_size = 0;
@@ -216,16 +216,16 @@ static bool graph_init2(struct _graph* self, uint32_t obj_size, uint32_t capacit
         goto done1;
     }
 
-    self->_head->edge = (uint32_t**)malloc(self->_capacity * sizeof(uint32_t*));
+    self->_head->edge = (size_t**)malloc(self->_capacity * sizeof(size_t*));
     if (self->_head->edge == NULL)
     {
         goto done2;
     }
 
-    uint32_t i = 0;
+    size_t i = 0;
     for (i = 0; i < self->_capacity; i++)
     {
-        self->_head->edge[i] = (uint32_t*)malloc(self->_capacity * sizeof(uint32_t));
+        self->_head->edge[i] = (size_t*)malloc(self->_capacity * sizeof(size_t));
         if (self->_head->edge[i] == NULL)
         {
             edges += 1;
@@ -254,10 +254,10 @@ static bool graph_init2(struct _graph* self, uint32_t obj_size, uint32_t capacit
     self->print_obj = NULL;
     self->print = graph_print;
 
-    for (uint32_t i = 0; i < self->_capacity; i++)
+    for (size_t i = 0; i < self->_capacity; i++)
     {
         *((int*)self->_head->obj + i) = i;
-        for (uint32_t j = 0; j < self->_capacity; j++)
+        for (size_t j = 0; j < self->_capacity; j++)
         {
             self->_head->edge[i][j] = 0;
         }
@@ -266,7 +266,7 @@ static bool graph_init2(struct _graph* self, uint32_t obj_size, uint32_t capacit
     return true;
 done4:
 done3:
-    for (uint32_t j = 0; j < edges; j++)
+    for (size_t j = 0; j < edges; j++)
     {
         free(self->_head->edge[j]);
     }
@@ -279,7 +279,7 @@ done:
     return false;
 }
 
-graph_t graph_new2(uint32_t obj_size, uint32_t capacity)
+graph_t graph_new2(size_t obj_size, size_t capacity)
 {
     graph_t graph = NULL;
     graph = malloc(sizeof(struct _graph));
@@ -310,7 +310,7 @@ void graph_free(graph_t* graph)
 
 #endif
 
-static struct _graph_node *graph_node_new(void *obj, uint32_t obj_size)
+static struct _graph_node *graph_node_new(void *obj, size_t obj_size)
 {
     void *new_obj = (void *)calloc(1, obj_size);
     if (new_obj == NULL)
@@ -355,7 +355,7 @@ static void greph_node_free(struct _graph_node **node)
     }
 }
 
-static struct _graph_edge *graph_edge_new(void *target, uint32_t weight)
+static struct _graph_edge *graph_edge_new(void *target, size_t weight)
 {
     struct _graph_edge *new_edge = (struct _graph_edge *)malloc(sizeof(struct _graph_edge));
     if (new_edge == NULL)
@@ -377,7 +377,7 @@ static void graph_edge_free(struct _graph_edge **edge)
     }
 }
 
-static uint32_t graph_size(struct _graph *self)
+static size_t graph_size(struct _graph *self)
 {
     if (self == NULL)
     {
@@ -395,7 +395,7 @@ static bool graph_empty(struct _graph *self)
     return self->size(self) == 0;
 }
 
-static uint32_t graph_capacity(struct _graph *self)
+static size_t graph_capacity(struct _graph *self)
 {
     if (self == NULL)
     {
@@ -611,7 +611,7 @@ static struct _graph_node *find_node(struct _graph *self, void *obj)
     return cur;
 }
 
-static bool graph_add_edge(struct _graph *self, void *from, void *to, uint32_t weight)
+static bool graph_add_edge(struct _graph *self, void *from, void *to, size_t weight)
 {
     unicstl_assert(self != NULL);
     if (self->empty(self))
@@ -990,7 +990,7 @@ done:
     return iter;
 }
 
-static bool graph_init(struct _graph *self, uint32_t obj_size)
+static bool graph_init(struct _graph *self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
     if (self == NULL)
@@ -1066,7 +1066,7 @@ static bool graph_init(struct _graph *self, uint32_t obj_size)
     return true;
 }
 
-graph_t graph_new(uint32_t obj_size)
+graph_t graph_new(size_t obj_size)
 {
     graph_t graph = NULL;
     graph = malloc(sizeof(struct _graph));

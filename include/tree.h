@@ -44,8 +44,8 @@ struct _tree_node
 
     union 
     {
-        int32_t balance;
-        uint32_t color;
+        int balance;
+        rbt_color color;
     };
 };
 
@@ -54,10 +54,10 @@ struct _tree
     // -------------------- private -------------------- 
     struct _tree_node * _root;
 
-    uint32_t _size;
-    uint32_t _obj_size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _size;
+    size_t _obj_size;
+    size_t _capacity;
+    size_t _ratio;
 
     stack_t stack;
     queue_t queue;
@@ -71,12 +71,12 @@ struct _tree
     // kernel
     bool (*insert)(struct _tree* self, void* obj);
     bool (*delete)(struct _tree* self, void* obj);
-    uint32_t (*height)(struct _tree* self);
+    size_t (*height)(struct _tree* self);
 
     // base
     bool (*clear)(struct _tree* self);
     bool (*empty)(struct _tree* self);
-    uint32_t (*size)(struct _tree* self);
+    size_t (*size)(struct _tree* self);
 
     // iter
     iterator_t (*iter)(struct _tree* self, enum _tree_order);
@@ -94,8 +94,8 @@ struct _tree
 typedef struct _tree* tree_t;
 
 // create and free tree
-tree_t tree_avl_new(uint32_t obj_size);
-tree_t tree_rb_new(uint32_t obj_size);
+tree_t tree_avl_new(size_t obj_size);
+tree_t tree_rb_new(size_t obj_size);
 
 void tree_free(tree_t* tree);
 

@@ -12,13 +12,13 @@
 
 void demo_heap_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     // int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_min_new2(sizeof(int), 64);
     heap->print_obj = print_num;
@@ -78,13 +78,13 @@ void demo_heap_num(void)
 
 static void demo_heap_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
         "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
     };
     struct _student temp = {0};
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_min_new2(sizeof(struct _student), 64);
     heap->print_obj = print_struct;

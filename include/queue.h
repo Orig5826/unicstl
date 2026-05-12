@@ -25,13 +25,13 @@ struct _queue
     struct _queue_node * _front;
     struct _queue_node * _back;
 
-    uint32_t _index_front;
-    uint32_t _index_back;
+    size_t _index_front;
+    size_t _index_back;
 
-    uint32_t _obj_size;
-    uint32_t _size;
-    uint32_t _capacity;
-    uint32_t _ratio;
+    size_t _obj_size;
+    size_t _size;
+    size_t _capacity;
+    size_t _ratio;
 
     struct _iterator _iter;
 
@@ -47,8 +47,8 @@ struct _queue
     bool (*full)(struct _queue* self);
 
     // base
-    uint32_t (*size)(struct _queue* self);
-    uint32_t (*capacity)(struct _queue* self);
+    size_t (*size)(struct _queue* self);
+    size_t (*capacity)(struct _queue* self);
     bool (*clear)(struct _queue* self);
 
     // iter
@@ -61,8 +61,8 @@ struct _queue
 typedef struct _queue* queue_t;
 
 // create and free queue
-queue_t queue_new(uint32_t obj_size);
-queue_t queue_new2( uint32_t obj_size, uint32_t capacity);
+queue_t queue_new(size_t obj_size);
+queue_t queue_new2( size_t obj_size, size_t capacity);
 
 void queue_free(queue_t* queue);
 

@@ -38,13 +38,13 @@ static void* get_min(struct _heap* heap, void *array, int start, int end)
 
 static void test_heap_min_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     // int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_min_new2(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
@@ -82,7 +82,7 @@ static void test_heap_min_num(void)
 
 static void test_heap_min_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"sun", 1003}, 
         {"zhou", 1005}, 
@@ -94,7 +94,7 @@ static void test_heap_min_struct(void)
         {"wang", 1008},
     };
     struct _student temp = {0};
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_min_new2(sizeof(struct _student), 64);
     TEST_ASSERT_NOT_NULL(heap);
@@ -135,13 +135,13 @@ static void test_heap_min_struct(void)
 
 static void test_heap_max_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     // int data[] = { 2,1,3,4};
     // int data[] = { 1,2,3,4,5,6};
     // int data[] = { 5,2,3,1,7,8,6 };
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_max_new2(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
@@ -179,7 +179,7 @@ static void test_heap_max_num(void)
 
 static void test_heap_max_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"sun", 1003}, 
         {"zhou", 1005}, 
@@ -191,7 +191,7 @@ static void test_heap_max_struct(void)
         {"wang", 1008},
     };
     struct _student temp = {0};
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     heap_t heap = heap_max_new2(sizeof(struct _student), 64);
     TEST_ASSERT_NOT_NULL(heap);
@@ -253,10 +253,10 @@ const int heap_max_iter_expect[15][15] = {
 
 static void test_heap_max_iter(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[15] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
     int out[15] = { 0 };
     int outlen = 0;
 

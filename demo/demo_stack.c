@@ -12,10 +12,10 @@
 
 static void demo_stack_num(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
     int temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     stack_t stack = stack_new(sizeof(int));
     stack->print_obj = print_num;
@@ -72,10 +72,10 @@ static void demo_stack_num(void)
 
 static void demo_stack_char(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     char data[] = "abcdefghijk";
     char temp = 0;
-    uint32_t len = sizeof(data) / sizeof(data[0]) - 1;
+    size_t len = sizeof(data) / sizeof(data[0]) - 1;
 
     stack_t stack = stack_new2(sizeof(char), 64);
     stack->print_obj = print_char;
@@ -131,13 +131,13 @@ static void demo_stack_char(void)
 
 static void demo_stack_struct(void)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     struct _student data[] = {
         {"zhao", 1001},{"qian", 1002}, {"sun", 1003}, {"li", 1004},
         "zhou", 1005, "wu", 1006, "zheng", 1007, "wang", 1008,
     };
     struct _student temp = { 0 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
+    size_t len = sizeof(data) / sizeof(data[0]);
 
     stack_t stack = stack_new(sizeof(struct _student));
     stack->print_obj = print_struct;

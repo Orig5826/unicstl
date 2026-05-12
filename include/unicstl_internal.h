@@ -84,8 +84,8 @@ void default_print_obj(const void* obj);
  * @brief new capacity
  * 
  * @param capacity 
- * @return uint32_t 
+ * @return size_t 
  */
-uint32_t unicstl_new_capacity(uint32_t capacity);
+size_t unicstl_new_capacity(size_t capacity);
 
 #endif // _COMMON_H_

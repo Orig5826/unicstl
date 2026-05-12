@@ -29,8 +29,8 @@ static void test_darray_insert(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -55,8 +55,8 @@ static void test_darray_append(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -68,7 +68,7 @@ static void test_darray_append(void)
         TEST_ASSERT_TRUE(darray->append(darray, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, darray->size(darray));
         
-        uint32_t index = darray->size(darray) - 1;
+        size_t index = darray->size(darray) - 1;
         TEST_ASSERT_TRUE(darray->get(darray, index, &temp));
         TEST_ASSERT_EQUAL_INT(data[i], temp);
 
@@ -82,8 +82,8 @@ static void test_darray_remove(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -116,8 +116,8 @@ static void test_darray_pop(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -144,8 +144,8 @@ static void test_darray_set(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -155,7 +155,7 @@ static void test_darray_set(void)
         TEST_ASSERT_TRUE(darray->append(darray, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, darray->size(darray));
 
-        uint32_t index = darray->size(darray) - 1;
+        size_t index = darray->size(darray) - 1;
         TEST_ASSERT_TRUE(darray->get(darray, index, &temp));
         TEST_ASSERT_EQUAL_INT(data[i], temp);
     }
@@ -181,8 +181,8 @@ static void test_darray_resize(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), 1);
     darray->compare = compare_num;
@@ -203,8 +203,8 @@ static void test_darray_clear(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;
@@ -225,14 +225,14 @@ static void test_darray_dynamic(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), 8);
     darray->compare = compare_num;
     
     TEST_ASSERT_TRUE(darray->dynamic(darray));
-    darray->dynamic_enable(darray, false);
+    darray->set_dynamic(darray, false);
     TEST_ASSERT_FALSE(darray->dynamic(darray));
 
     TEST_ASSERT_EQUAL_INT(8, darray->capacity(darray));
@@ -249,8 +249,8 @@ static void test_darray_index(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    uint32_t len = sizeof(data) / sizeof(data[0]);
-    uint32_t i = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
 
     darray_t darray = darray_new(sizeof(int), len);
     darray->compare = compare_num;

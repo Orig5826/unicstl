@@ -61,7 +61,7 @@ void print_str(const void* obj)
 void setUp(void)
 {
     // before each test
-    static uint32_t item_cnt = 1;
+    static size_t item_cnt = 1;
     printf("# %d. ", item_cnt);
     item_cnt+=1;
 }
