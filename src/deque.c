@@ -80,6 +80,13 @@ static bool deque_empty(struct _deque* self)
     return self->ringbuf->empty(self->ringbuf);
 }
 
+static bool deque_full(struct _deque* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->full(self->ringbuf);
+}
+
 static void deque_destory(struct _deque* self)
 {
     unicstl_assert(self != NULL);
@@ -156,7 +163,9 @@ static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
     // base
     self->clear = deque_clear;
     self->size = deque_size;
+    self->capacity = deque_capacity;
     self->empty = deque_empty;
+    self->full = deque_full;
 
     // iter
     self->iter = deque_iter;

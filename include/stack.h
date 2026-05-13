@@ -47,6 +47,6 @@ typedef struct _stack* stack_t;
 stack_t stack_new2(size_t obj_size, size_t capacity);
 void stack_free(stack_t* stack);
 
-#define stack_new(obj_type) stack_new2(sizeof(obj_type), 16)
+#define stack_new(obj_size) stack_new2(obj_size, 16)
 
 #endif // _STACK_H_

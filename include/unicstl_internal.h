@@ -33,8 +33,16 @@
  * @brief default capacity and ratio
  * 
  */
-#ifndef DEFAULT_CAPACITY
-#define DEFAULT_CAPACITY        8
+#ifndef UNICSTL_CAPACITY_INIT
+#define UNICSTL_CAPACITY_INIT   8           // 最大容量
+#endif
+
+#ifndef UNICSTL_CAPACITY_MAX
+#define UNICSTL_CAPACITY_MAX    8192        // 最大容量
+#endif
+
+#ifndef UNICSTL_OBJSIZE_MAX
+#define UNICSTL_OBJSIZE_MAX     8192        // 最大对象大小
 #endif
 
 
