@@ -34,7 +34,7 @@
  * 
  */
 #ifndef UNICSTL_CAPACITY_INIT
-#define UNICSTL_CAPACITY_INIT   8           // 最大容量
+#define UNICSTL_CAPACITY_INIT   8           // 若capacity参数为0时，自动分配默认初始容量
 #endif
 
 #ifndef UNICSTL_CAPACITY_MAX

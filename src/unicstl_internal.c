@@ -25,9 +25,9 @@ void default_print_obj(const void* obj)
 size_t unicstl_new_capacity(size_t capacity)
 {
     size_t new_capacity = 0;
-    if(capacity <= 8)
+    if(capacity == 0)
     {
-        new_capacity = 16;
+        new_capacity = UNICSTL_CAPACITY_INIT;
     }
     else if (capacity < 1024)
     {

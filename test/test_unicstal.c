@@ -12,11 +12,11 @@
 
 void test_unicstl_capacity(void)
 {
-    TEST_ASSERT_EQUAL_UINT32(16, unicstl_new_capacity(0));
-    TEST_ASSERT_EQUAL_UINT32(16, unicstl_new_capacity(1));
-    TEST_ASSERT_EQUAL_UINT32(16, unicstl_new_capacity(3));
+    TEST_ASSERT_EQUAL_UINT32(UNICSTL_CAPACITY_INIT, unicstl_new_capacity(0));
 
-    TEST_ASSERT_EQUAL_UINT32(16, unicstl_new_capacity(4));
+    TEST_ASSERT_EQUAL_UINT32(2, unicstl_new_capacity(1));
+    TEST_ASSERT_EQUAL_UINT32(6, unicstl_new_capacity(3));
+    TEST_ASSERT_EQUAL_UINT32(8, unicstl_new_capacity(4));
     TEST_ASSERT_EQUAL_UINT32(16, unicstl_new_capacity(8));
     TEST_ASSERT_EQUAL_UINT32(1024, unicstl_new_capacity(512));
 

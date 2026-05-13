@@ -22,17 +22,12 @@ struct _darray
     size_t _obj_size;
     size_t _size;
     size_t _capacity;
-    size_t _ratio;
-    size_t _cur;
 
     struct _iterator _iter;
-
     void (*_destory)(struct _darray *self);
 
     // -------------------- public --------------------
     // kernel
-    bool (*resize)(struct _darray *self, size_t capacity);
-
     bool (*append)(struct _darray *self, const void *obj);              // O(1)
     bool (*pop)(struct _darray *self, void *obj);                       // O(1)
     
@@ -48,14 +43,12 @@ struct _darray
     bool (*contains)(struct _darray *self, const void *obj);    // O(n)
 
     // base
+    bool (*resize)(struct _darray *self, size_t capacity);
     size_t (*size)(struct _darray *self);
     size_t (*capacity)(struct _darray *self);
     bool (*empty)(struct _darray *self);
     bool (*full)(struct _darray *self);
     bool (*clear)(struct _darray *self);
-
-    void (*set_dynamic)(struct _darray *self, bool enable);
-    bool (*dynamic)(struct _darray *self);
 
     // iter
     iterator_t (*iter)(struct _darray *self);
