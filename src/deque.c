@@ -66,6 +66,13 @@ static size_t deque_size(struct _deque* self)
     return self->ringbuf->size(self->ringbuf);
 }
 
+static size_t deque_capacity(struct _deque* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->capacity(self->ringbuf);
+}
+
 static bool deque_empty(struct _deque* self)
 {
     unicstl_assert(self != NULL);

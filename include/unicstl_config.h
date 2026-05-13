@@ -10,6 +10,8 @@
  */
 #ifndef _UNICSTL_CONFIG_H_
 
+// #define NDEBUG      // release
+
 /**
  * @brief unicstl contains which module
  * 
@@ -28,17 +30,17 @@
  * 
  */
 #define UNICSTL_MALLOC
-#define UNICSTL_ASSERT
 
 /**
  * @brief 
  * 
  */
+#ifndef NDEBUG
 #define UNICSTL_DEBUG
-
-
+#endif
 
 #ifdef UNICSTL_DEBUG
+
 #define UNICSTL_DEBUG_STACK
 #define UNICSTL_DEBUG_QUEUE
 #define UNICSTL_DEBUG_DEQUE
@@ -47,10 +49,8 @@
 #define UNICSTL_DEBUG_GRAPH
 
 
-/**
- * @brief log enable
- */
-// #define LOGGER_ON
+#define UNICSTL_ASSERT      // assert
+#define LOGGER_ON           // logger on
 
 /**
  * @brief debug level
@@ -59,7 +59,8 @@
  *      2. WARN  
  *      3. ERROR  
  */
-#define LOG_LEVEL                    4
+#define LOG_LEVEL                    0
+
 /**
  * @brief 
  *      0. simple

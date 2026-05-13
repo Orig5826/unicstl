@@ -18,7 +18,7 @@
 #include "unicstl_config.h"
 
 // -------------------- DEBUG CONFIG --------------------
-#ifndef LOGGER_ON
+#ifdef LOGGER_ON
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL               LOG_NONE

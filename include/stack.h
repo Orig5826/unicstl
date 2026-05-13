@@ -12,30 +12,14 @@
 #define _STACK_H_
 
 #include "unicstl_internal.h"
-
-struct _stack_node
-{
-    void * obj;
-    struct _stack_node * next;
-};
+#include "deque.h"
 
 struct _stack
 {
-    // -------------------- private -------------------- 
-    /**
-     * @brief head pointer of stack
-     * 1. linklist: head->next is valid, head->obj is NULL
-     * 2. array: head->obj is valid, head->next is NULL, 
-     */
-    struct _stack_node * _head;
-    
-    size_t _size;
-    size_t _obj_size;
-    size_t _capacity;
-    size_t _ratio;
+    deque_t _deque;
+    iterator_t _iter_deque;
 
     struct _iterator _iter;
-
     void (*_destory)(struct _stack* self);
 
     // -------------------- public -------------------- 
@@ -60,9 +44,9 @@ struct _stack
 typedef struct _stack* stack_t;
 
 // create and free stack
-stack_t stack_new(size_t obj_size);
 stack_t stack_new2(size_t obj_size, size_t capacity);
-
 void stack_free(stack_t* stack);
+
+#define stack_new(obj_type) stack_new2(sizeof(obj_type), 16)
 
 #endif // _STACK_H_

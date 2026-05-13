@@ -51,7 +51,7 @@ static inline void _unicstl_assert(const char *expr, const char *file, int line)
     exit(1);
 }
 #else
-#define unicstl_assert   assert
+#define unicstl_assert(expr)   // assert(expr)
 #endif
 
 

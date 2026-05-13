@@ -13,6 +13,8 @@ flowchart TB
 
     subgraph hal
         segarray[segarray<br>大数据扩容优先] --> darray
+        string --> darray
+        hashtable --> darray
     end
 
     subgraph adapter
@@ -27,7 +29,10 @@ flowchart TB
     end
 
     subgraph top
-        tree -.-> stack
-        tree -.-> queue
+        rbtree -.-> stack
+        rbtree -.-> queue
+
+        map -.-> rbtree
+        unordered_map -.-> hashtable
     end
 ```

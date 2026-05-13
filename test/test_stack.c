@@ -221,7 +221,7 @@ static void test_stack_clear(void)
 static void test_stack_num(void)
 {
     size_t i = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int data[10] = { 1,2,3,4,5,6,7,8,9,10 };
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
@@ -237,7 +237,15 @@ static void test_stack_num(void)
         TEST_ASSERT_TRUE(stack->push(stack, &data[i]));
         TEST_ASSERT_EQUAL_INT(i + 1, stack->size(stack));
 
+        LOG_DEBUG("[%d] stack size: %d", i, stack->size(stack));
+        stack->print(stack);
         TEST_ASSERT_TRUE(stack->peek(stack, &temp));
+        for(int j = 0; j < 10; j++)
+        {
+            printf("%d ", data[j]);
+        }
+
+        LOG_DEBUG("data[%d]=%d, temp=%d\n", i, data[i], temp);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
     }
 

@@ -42,9 +42,11 @@ struct _deque
     bool (*front)(struct _deque* self, void* obj);
     
     // base
-    size_t(*size)(struct _deque* self);
+    size_t (*size)(struct _deque* self);
+    size_t (*capacity)(struct _deque* self);
     bool (*clear)(struct _deque* self);
     bool (*empty)(struct _deque* self);
+    bool (*full)(struct _deque* self);
 
     // iter
     iterator_t (*iter)(struct _deque* self, enum _deque_order order);
