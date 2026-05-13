@@ -27,12 +27,6 @@ struct _perf_args
 };
 
 /**
- * @brief initialize the performance test
- *
- */
-#define PERF_INIT() perf_init()
-
-/**
  * @brief run the performance test function
  *
  */
@@ -49,22 +43,45 @@ struct _perf_args
     perf_end(&args); \
 }while(0)
 
-#define RUN_PERF_T1(func) RUN_PERF(1, func)
-#define RUN_PERF_T2(func) RUN_PERF(2, func)
-#define RUN_PERF_T3(func) RUN_PERF(3, func)
+#define PERF_ADD(ID, func) do{\
+    perf_run_start(ID); \
+    func(ID); \
+    perf_run_end(ID); \
+}while(0)
+
+
+typedef struct _test_obj
+{
+    void *obj;
+    size_t obj_size;
+    size_t capacity;
+}test_obj_t;
+
+
+#define PERF_TEST_TIEMS            6
+extern test_obj_t g_test_obj;
 
 /**
  * @brief print the performance test result
  *
  */
 void perf_init(void);
+void perf_deinit(void);
+
 void perf_begin(struct _perf_args* args);
 void perf_end(struct _perf_args* args);
+
+void perf_run_start(size_t id);
+void perf_run_end(size_t id);
+
+void perf_print(void);
 
 /**
  * @brief perf test items
  *
  */
-void perf_deque(void);
+void perf_test_deque(void);
+void perf_test_stack(void);
+void perf_test_queue(void);
 
 #endif // !_PERF_H_

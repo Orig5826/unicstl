@@ -280,6 +280,48 @@ static void test_darray_index(void)
     darray_free(&darray);
 }
 
+static void test_darray_struct(void)
+{
+    size_t i = 0;
+    struct _student data[] = {
+        "zhao", 1001, "qian", 1002, "sun",   1003, "li",   1004,
+        "zhou", 1005, "wu",   1006, "zheng", 1007, "wang", 1008,
+        "feng", 1009, "cheng",1010,
+    };
+    struct _student temp = {0};
+    size_t len = sizeof(data) / sizeof(data[0]);
+
+    darray_t darray = darray_new(sizeof(struct _student), len);
+    TEST_ASSERT_NOT_NULL(darray);
+    darray->print_obj = print_struct;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(darray->append(darray, &data[i]));
+
+        TEST_ASSERT_TRUE(darray->get(darray, 0, &temp));
+        TEST_ASSERT_EQUAL_INT(data[0].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[0].name, temp.name);
+
+        TEST_ASSERT_TRUE(darray->get(darray, darray->size(darray) - 1, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i].id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(data[i].name, temp.name);
+
+        TEST_ASSERT_EQUAL_INT(i + 1, darray->size(darray));
+    }
+    TEST_ASSERT_FALSE(darray->empty(darray));
+    TEST_ASSERT_TRUE(darray->clear(darray));
+    TEST_ASSERT_TRUE(darray->empty(darray));
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(darray->append(darray, &data[i]));
+    }
+
+    darray_free(&darray);
+    TEST_ASSERT_NULL(darray);
+}
+
+
 void test_darray(void)
 {
     UnitySetTestFile(__FILE__);
@@ -295,4 +337,6 @@ void test_darray(void)
     RUN_TEST(test_darray_clear);
     RUN_TEST(test_darray_dynamic);
     RUN_TEST(test_darray_index);
+
+    RUN_TEST(test_darray_struct);
 }

@@ -46,15 +46,20 @@
 #define UNICSTL_DEBUG_HEAP
 #define UNICSTL_DEBUG_GRAPH
 
+
+/**
+ * @brief log enable
+ */
+// #define LOGGER_ON
+
 /**
  * @brief debug level
  *      0. DEBUG  
  *      1. INFO  
  *      2. WARN  
  *      3. ERROR  
- *      9.None
  */
-#define LOG_LEVEL                    0
+#define LOG_LEVEL                    4
 /**
  * @brief 
  *      0. simple

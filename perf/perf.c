@@ -9,14 +9,32 @@
  * 
  */
 #include "perf.h"
+#include "perf_log.h"
 
-#define PERF_FORMAT_HEAD        "%-24s %-4s %-6s %-12s\n"
-#define PERF_FORMAT_DATA        "%-24s T%-3d %-6d %8.3f ms\n"
+test_obj_t test_plans[PERF_TEST_TIEMS] = {
+    {.capacity = 1024, .obj_size = 256},  // 1. 小对象 + 少量数据
+    {.capacity = 4096, .obj_size = 256},  // 2. 小对象 + 中等数据
+    {.capacity = 8192, .obj_size = 256},  // 3. 小对象 + 大量数据
+    {.capacity = 1024, .obj_size = 4096}, // 4. 大对象 + 少量数据
+    {.capacity = 4096, .obj_size = 4096}, // 5. 大对象 + 中等数据
+    {.capacity = 8192, .obj_size = 4096}  // 6. 大对象 + 大量数据
+};
+
+test_obj_t g_test_obj;
+
+static double calc_elapsed(struct timespec start, struct timespec end)
+{
+    return (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+}
 
 void perf_init(void)
 {
-    printf(PERF_FORMAT_HEAD, "function", " id ",  " loop", "  time(ms)");
-    printf(PERF_FORMAT_HEAD, "--------", "----", "------", "------------");
+    perf_log_new();
+}
+
+void perf_deinit(void)
+{
+    perf_log_free();
 }
 
 void perf_begin(struct _perf_args* args)
@@ -24,56 +42,54 @@ void perf_begin(struct _perf_args* args)
     timespec_get(&args->start, TIME_UTC);
 }
 
-double calc_elapsed(struct timespec start, struct timespec end)
-{
-    return (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-}
-
 void perf_end(struct _perf_args* args)
 {
     timespec_get(&args->end, TIME_UTC);
-
     args->elapsed = calc_elapsed(args->start, args->end);
-    printf(PERF_FORMAT_DATA, args->name, args->id, 1,  1000 * args->elapsed);
+
+    perf_log_append(args->name, args->id, args->elapsed * 1000);
 }
 
-void perf_print(struct _perf_args* args)
+void perf_run_start(size_t id)
 {
+    unicstl_assert(id < PERF_TEST_TIEMS);
 
-}
+    g_test_obj.capacity = test_plans[id].capacity;
+    g_test_obj.obj_size = test_plans[id].obj_size;
 
-
-
-#if 0
-void perf_run_avg(perf_func_t perf_func, const char *func_name, size_t count)
-{
-    double time_used = 0;
-    double time_total = 0;
-
-    for(size_t i = 0; i < count; i++)
+    g_test_obj.obj = malloc(g_test_obj.capacity);
+    if(g_test_obj.obj == NULL)
     {
-        perf_start();
-        perf_func();
-        perf_end();
-
-        time_used = (time_end.tv_sec - time_start.tv_sec) + (time_end.tv_nsec - time_start.tv_nsec) / 1e9;
-        time_total += time_used;
+        LOG_DEBUG("malloc failed");
+        return;
     }
-    printf(PERF_FORMAT_DATA, func_name, "AVG", 1, 1000 * time_total/count);
 }
 
-void perf_run_loop(perf_func_t perf_func, const char *func_name, size_t loop)
+void perf_run_end(size_t id)
 {
-    double time_used = 0;
-
-    perf_start();
-    for(size_t i = 0; i < loop; i++)
-    {
-        perf_func();
-    }
-    perf_end();
-
-    time_used = (time_end.tv_sec - time_start.tv_sec) + (time_end.tv_nsec - time_start.tv_nsec) / 1e9;
-    printf(PERF_FORMAT_DATA, func_name, "LOOP", loop, 1000 * time_used);
+    free(g_test_obj.obj);
 }
-#endif
+
+void perf_print(void)
+{
+    for(size_t i = 0; i < PERF_TEST_TIEMS; i++)
+    {
+        printf("T%d: capacity = %zu, obj_size = %zu\n", i, test_plans[i].capacity, test_plans[i].obj_size);
+    }
+    printf("\n");
+    perf_log_print();
+    perf_log_clear();
+}
+
+int main(int argc, char *argv[])
+{
+    perf_init();
+
+    perf_test_deque();
+    perf_test_stack();
+    perf_test_queue();
+
+    perf_print();
+    perf_deinit();
+    return 0;
+}

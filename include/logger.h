@@ -18,6 +18,8 @@
 #include "unicstl_config.h"
 
 // -------------------- DEBUG CONFIG --------------------
+#ifndef LOGGER_ON
+
 #ifndef LOG_LEVEL
 #define LOG_LEVEL               LOG_NONE
 #endif
@@ -32,20 +34,18 @@ typedef enum {
     LOG_INFO  = 1,
     LOG_WARN  = 2,
     LOG_ERROR = 3,
-    LOG_NONE = 9,
 }loglevel_t;
 
 #if LOG_DEBUG_DETAIL == 1
 #define LOG_PRINT(level, fmt, ...) do {\
-    if (level >= LOG_LEVEL) {\
-        /* printf("[%s] %s:%d %s() - ", #level, __FILE__, __LINE__, __func__); */\
-        printf("[%s] %s:%d: ", #level, __FILE__, __LINE__);\
-        printf(fmt "\n", ##__VA_ARGS__);\
+    if ((int)level >= (int)LOG_LEVEL) {\
+        printf("[%s] %s:%d %s()", #level, __FILE__, __LINE__, __func__); \
+        printf("\n" fmt "\n", ##__VA_ARGS__);\
     }\
 } while (0)
 #else
 #define LOG_PRINT(level, fmt, ...) do {\
-    if (level >= LOG_LEVEL) {\
+    if (level >= (int)LOG_LEVEL) {\
         printf(fmt "\n", ##__VA_ARGS__);\
     }\
 } while (0)
@@ -73,5 +73,20 @@ typedef enum {
 #define LOG_HEX_INFO(data, len)  LOG_HEX(LOG_INFO, data, len)
 #define LOG_HEX_WARN(data, len)  LOG_HEX(LOG_WARN, data, len)
 #define LOG_HEX_ERROR(data, len) LOG_HEX(LOG_ERROR, data, len)
+
+
+#else
+
+#define LOG_DEBUG(fmt, ...) do {} while (0)
+#define LOG_INFO(fmt, ...)  do {} while (0)
+#define LOG_WARN(fmt, ...)  do {} while (0)
+#define LOG_ERROR(fmt, ...) do {} while (0)
+
+#define LOG_HEX_DEBUG(data, len) do {} while (0)
+#define LOG_HEX_INFO(data, len)  do {} while (0)
+#define LOG_HEX_WARN(data, len)  do {} while (0)
+#define LOG_HEX_ERROR(data, len) do {} while (0)
+
+#endif  // LOGGER_ON
 
 #endif /* _LOGGER_H_ */

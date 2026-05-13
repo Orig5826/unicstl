@@ -130,26 +130,6 @@ static void test_deque_num(void)
         }
     }
 
-#if 0
-    for (i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
-    }
-    temp = 11;
-    deque->set(deque, 0, &temp);
-
-    temp = 22;
-    deque->set(deque, len / 2, &temp);
-
-    temp = 33;
-    deque->set(deque, len - 1, &temp);
-
-    for (i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(deque->get(deque, i, &temp));
-    }
-#endif
-
     deque_free(&deque);
     TEST_ASSERT_NULL(deque);
 }
@@ -273,13 +253,6 @@ static void test_deque_struct(void)
         TEST_ASSERT_TRUE(deque->push_front(deque, &data[i]));
     }
 
-#if 0
-    for (i = 0; i < len; i++)
-    {
-        TEST_ASSERT_TRUE(deque->get(deque, i, &temp));
-    }
-#endif
-
     deque_free(&deque);
     TEST_ASSERT_NULL(deque);
 }
@@ -310,31 +283,31 @@ static void test_deque_iter(void)
     }
 
     iterator_t iter = deque->iter(deque, DEQUE_FORWARD);
+    TEST_ASSERT_NOT_NULL(iter);
     i = 0;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i++;
     }
-
-    iter = deque->iter(deque, DEQUE_FORWARD);
-    i = 0;
-    while(iter->hasnext(iter))
-    {
-        temp = *(int *)iter->next(iter);
-        TEST_ASSERT_EQUAL_INT(data[i], temp);
-        i++;
-    }
+    TEST_ASSERT_EQUAL_INT(len, i);
 
     iter = deque->iter(deque, DEQUE_REVERSE);
     i = len - 1;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;
     }
+    TEST_ASSERT_EQUAL_INT(0, i);
+
+    deque->clear(deque);
+    iter = deque->iter(deque, DEQUE_FORWARD);
+    TEST_ASSERT_FALSE(iter->hasnext(iter));
 
     deque_free(&deque);
     TEST_ASSERT_NULL(deque);
