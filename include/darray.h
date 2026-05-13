@@ -31,15 +31,15 @@ struct _darray
     bool (*append)(struct _darray *self, const void *obj);              // O(1)
     bool (*pop)(struct _darray *self, void *obj);                       // O(1)
     
-    bool (*insert)(struct _darray *self, int index, const void *obj);   // O(n)
-    bool (*remove)(struct _darray *self, int index, void *obj);         // O(n)
+    bool (*insert)(struct _darray *self, size_t index, const void *obj);   // O(n)
+    bool (*remove)(struct _darray *self, size_t index, void *obj);         // O(n)
 
-    bool (*set)(struct _darray *self, int index, const void *obj);      // O(1)
-    bool (*get)(struct _darray *self, int index, void *obj);            // O(1)
+    bool (*set)(struct _darray *self, size_t index, const void *obj);      // O(1)
+    bool (*get)(struct _darray *self, size_t index, void *obj);            // O(1)
 
-    const void* (*at)(struct _darray *self, int index);                // O(1)
+    const void* (*at)(struct _darray *self, size_t index);                // O(1)
 
-    int (*index)(struct _darray *self, const void *obj);        // O(n) retval -1 if not found
+    size_t (*index)(struct _darray *self, const void *obj);        // O(n) retval -1 if not found
     bool (*contains)(struct _darray *self, const void *obj);    // O(n)
 
     // base

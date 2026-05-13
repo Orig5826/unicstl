@@ -43,12 +43,12 @@ struct _queue
     bool (*pop)(struct _queue* self, void* obj);
     bool (*back)(struct _queue* self, void* obj);
     bool (*front)(struct _queue* self, void* obj);
-    bool (*empty)(struct _queue* self);
-    bool (*full)(struct _queue* self);
 
     // base
     size_t (*size)(struct _queue* self);
     size_t (*capacity)(struct _queue* self);
+    bool (*empty)(struct _queue* self);
+    bool (*full)(struct _queue* self);
     bool (*clear)(struct _queue* self);
 
     // iter

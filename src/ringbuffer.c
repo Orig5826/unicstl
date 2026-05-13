@@ -237,7 +237,7 @@ iterator_t ringbuffer_iter(struct _ringbuffer *self, enum _ringbuffer_order orde
     return iter;
 }
 
-static bool ringbuffer_init(struct _ringbuffer *self, size_t obj_size, size_t capacity)
+bool ringbuffer_init(struct _ringbuffer *self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if (obj_size == 0 || capacity == 0)
