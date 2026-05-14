@@ -328,6 +328,7 @@ iterator_t ringbuf_iter(struct _ringbuf *self, enum _ringbuf_order order)
 bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void *mem_pool)
 {
     unicstl_assert(self != NULL);
+    unicstl_assert(obj_size > 0);
 
     // -------------------- private --------------------
     self->_obj_size = obj_size;

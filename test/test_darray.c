@@ -510,6 +510,46 @@ static void test_darray_dynamic(void)
     darray_free(&darray);
 }
 
+static void test_darray_iter(void)
+{
+    size_t i = 0;
+    int data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int temp = 0;
+    size_t len = sizeof(data) / sizeof(data[0]);
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+
+    iterator_t iter = darray->iter(darray, DARRAY_FORWARD);
+    i = 0;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+    TEST_ASSERT_EQUAL_INT(len, i);
+
+    iter = darray->iter(darray, DARRAY_REVERSE);
+    i = len - 1;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i--;
+    }
+    TEST_ASSERT_EQUAL_INT(0, i);
+
+    darray_free(&darray);
+}
+
 static void test_darray_clear(void)
 {
     int temp = 0;
@@ -604,6 +644,8 @@ void test_darray(void)
     RUN_TEST(test_darray_at);
 
     RUN_TEST(test_darray_dynamic);
+
+    RUN_TEST(test_darray_iter);
 
     // ---------- base ----------
     RUN_TEST(test_darray_clear);

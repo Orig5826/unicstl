@@ -52,11 +52,11 @@ static bool deque_front(struct _deque* self, void* obj)
     return self->ringbuf->front(self->ringbuf, obj);
 }
 
-static bool deque_clear(struct _deque* self)
+static bool deque_resize(struct _deque *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->ringbuf != NULL);
-    return self->ringbuf->clear(self->ringbuf);
+    return self->ringbuf->resize(self->ringbuf, capacity);
 }
 
 static size_t deque_size(struct _deque* self)
@@ -85,6 +85,13 @@ static bool deque_full(struct _deque* self)
     unicstl_assert(self != NULL);
     unicstl_assert(self->ringbuf != NULL);
     return self->ringbuf->full(self->ringbuf);
+}
+
+static bool deque_clear(struct _deque* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->ringbuf != NULL);
+    return self->ringbuf->clear(self->ringbuf);
 }
 
 static void deque_destory(struct _deque* self)
@@ -139,10 +146,8 @@ iterator_t deque_iter(struct _deque* self, enum _deque_order order)
 static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    if(obj_size == 0 || capacity == 0)
-    {
-        return false;
-    }
+    unicstl_assert(obj_size > 0);
+    
     // -------------------- private -------------------- 
     self->ringbuf = ringbuf_new(obj_size, capacity);
     if(self->ringbuf == NULL)
@@ -161,11 +166,12 @@ static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
     self->front = deque_front;
     
     // base
-    self->clear = deque_clear;
+    self->resize = deque_resize;
     self->size = deque_size;
     self->capacity = deque_capacity;
     self->empty = deque_empty;
     self->full = deque_full;
+    self->clear = deque_clear;
 
     // iter
     self->iter = deque_iter;

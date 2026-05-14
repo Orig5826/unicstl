@@ -212,10 +212,75 @@ static bool darray_contains(struct _darray *self, const void *obj)
     return darray_index(self, obj) != -1;
 }
 
+bool darray_iter_hasnext(struct _iterator *iter)
+{
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
+
+    darray_t self = (darray_t)iter->_container;
+
+    if (iter->_order == DARRAY_FORWARD)
+    {
+        if (iter->_index >= self->size(self))
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if (iter->_index == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+const void *darray_iter_next(struct _iterator *iter)
+{
+    unicstl_assert(iter != NULL);
+    unicstl_assert(iter->_container != NULL);
+
+    darray_t self = (darray_t)iter->_container;
+
+    size_t index = iter->_index;
+    if (iter->_order == DARRAY_FORWARD)
+    {
+        iter->_index++;
+    }
+    else
+    {
+        iter->_index = iter->_index - 1;
+    }
+    return obj_at(self->obj, index, self->_obj_size);
+}
+
+iterator_t darray_iter(struct _darray *self, enum _darray_order order)
+{
+    unicstl_assert(self != NULL);
+    iterator_t iter = &self->_iter;
+
+    iter->_container = self;
+    iter->_index = 0;
+    iter->_order = order;
+    if (iter->_order == DARRAY_FORWARD)
+    {
+        iter->_index = 0;
+    }
+    else
+    {
+        iter->_index = self->size(self) - 1;
+    }
+
+    iter->hasnext = darray_iter_hasnext;
+    iter->next = darray_iter_next;
+    return iter;
+}
+
 static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(obj_size != 0);
+    unicstl_assert(obj_size > 0);
 
     // -------------------- private --------------------
     self->_obj_size = obj_size;
@@ -224,6 +289,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
 
     self->obj = NULL;
     self->_destory = darray_destory;
+
 
     // -------------------- public --------------------
     // kernel
@@ -244,6 +310,9 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->empty = darray_empty;
     self->full = darray_full;
     self->clear = darray_clear;
+
+    // iter
+    self->iter = darray_iter;
 
     // -------------------- default --------------------
     self->print_obj = default_print_obj;

@@ -42,6 +42,7 @@ struct _deque
     bool (*front)(struct _deque* self, void* obj);
     
     // base
+    bool (*resize)(struct _deque* self, size_t capacity);
     size_t (*size)(struct _deque* self);
     size_t (*capacity)(struct _deque* self);
     bool (*clear)(struct _deque* self);

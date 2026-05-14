@@ -151,12 +151,12 @@ static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
     self->pop = queue_pop;
     self->back = queue_back;
     self->front = queue_front;
-    self->empty = queue_empty;
-    self->full = queue_full;
 
     // base
     self->size = queue_size;
     self->capacity = queue_capacity;
+    self->empty = queue_empty;
+    self->full = queue_full;
     self->clear = queue_clear;
 
     // iter
