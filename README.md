@@ -11,157 +11,132 @@
 
 **邮箱：**[orig5826@163.com](mailto:orig5826@163.com)
 
-## 编译环境
-- 编译器：gcc 13.2.0 
-- 标准：--std=c99
+**gitee：**[源码](https://gitee.com/apaki/unicstl)
+
+**github：**[镜像](https://github.com/Orig5826/unicstl)
+
+
+## 设计架构
+
+```mermaid
+flowchart TB
+    subgraph low
+        darray
+        linklist
+        dlinklist
+        ringbuffer[ringbuffer<br>小数据或尽量不扩容]
+    end
+
+    subgraph hal
+        segarray[segarray<br>大数据扩容优先] --> darray
+        string --> darray
+        hashtable --> darray
+    end
+
+    subgraph adapter
+        deque -->|仅学习| dlinklist
+        deque ==> segarray
+        deque --> ringbuffer
+    end
+
+    subgraph top
+        stack --> deque
+        queue --> deque
+
+        rbtree -.-> stack
+        rbtree -.-> queue
+
+        map -.-> rbtree
+        unordered_map -.-> hashtable
+    end
+
+    subgraph embed
+        estack --> ringbuffer
+        equeue --> ringbuffer
+    end
+```
 
 ## 数据结构
-|数据结构 | 原理 |说明 |
+
+### 基础结构
+|数据结构 |名称 |说明 |
 |---|---|---|
-| **stack**   | | **栈** |
-| stack_new  | 链表 | |
-| stack_new2 | 动态数组 | |
-| **list**   | | **列表**
-| list_new2  | 动态数组 | |
-| **queue**   | | **队列**
-| queue_new  | 单向链表 | |
-| queue_new2 | 数组 | FIFO/空/满 |
-| **deque**   | |**双端队列** |
-| deque_new  | 双向循环链表 | |
-| **tree**    | |**树** |
-| tree_avl_new | 二叉搜索树 | AVL树 |
-| tree_rb_new  | 二叉搜索树 | 红黑树 |
-| **heap**    | |**堆** |
-| heap_new2   | 数组 | 最大堆/最小堆 |
-| **graph**    | |**图** |
-| graph_new   | 链表 |  |
+| darray  | 动态数组 | 扩容
+| ringbuf   | 环形缓存区 | 扩容/固定容量
+| linlist   | 单链表 | 
+| dlinlist   | 双向链表 |
+
+### 容器结构
+|数据结构 |名称 |说明 |
+|---|---|---|
+| deque  | 双端队列 | 扩容
+| stack  | 栈 | 
+| queue  | 队列 | 
+
+### 嵌入式结构
+|数据结构 |名称 |说明 |
+|---|---|---|
+| estack | 栈 | 
+| equeue  | 队列 | 
+
 
 ## 接口函数原型
 ```c
 // -------------------- 初始化 --------------------
-struct* new(...);                   // 创建
-void free(struct**);                // 释放
+struct* new(size_t obj_size, size_t capacity);  // 创建
+void free(struct**);                            // 释放
 
-// 内部接口
-// init 初始化  <构造函数>
-// destory 销毁 <析构函数>
+bool init(size_t obj_size, size_t capacity, void *mem_pool);    // 静态初始化，支持传入内存池，不扩容
 
 // 外部实现
-int compare(void* obj1, void* obj2);// 比较函数，new后立刻配置（树、图必须）
+int compare(void* obj1, void* obj2);    // 比较函数，若调用了和比较有关的接口，需要在初始化后配置（树、图必须）
 
 // -------------------- 核心功能 --------------------
 // 核心操作
-bool push(const void* obj);         // [栈、队列] 入栈/入队
-bool push_front(const void* obj);   // [双端队列] 头部入队
-bool push_back(const void* obj);    // [双端队列] 尾部入队
+bool push(const void* obj);             // [栈、队列] 入栈/入队
+bool push_front(const void* obj);       // [双端队列] 头部入队
+bool push_back(const void* obj);        // [双端队列] 尾部入队
+bool append(const void* obj);           // [动态数组] 追加元素 <push_back>
 
-bool pop(void* obj);                // [栈、队列] 出栈/出队
-bool pop_front(void* obj);          // [双端队列] 头部出队
-bool pop_back(void* obj);           // [双端队列] 尾部出队
+bool pop(void* obj);                    // [栈、队列，动态数组] 出栈/出队/移除元素
+bool pop_front(void* obj);              // [双端队列] 头部出队
+bool pop_back(void* obj);               // [双端队列] 尾部出队
 
-bool peek(void* obj);               // [栈]            查看栈顶元素
-bool front(void* obj);              // [队列、双端队列] 查看头部元素
-bool back(void* obj);               // [队列、双端队列] 查看尾部元素
-
-// bool insert(const void* obj);       // [树] 插入元素 <insert用于和位置相关操作>
-// bool delete(const void* obj);       // [树] 删除元素
-
-// bool add_(const void* obj);         // [图：顶点、边] 添加元素 <add不考虑位置关系>
-// bool del_(const void* obj);         // [图：顶点、边] 删除元素 
-// bool find_(const void* obj);        // [图：顶点、边] 查找元素
+bool peek(void* obj);                   // [栈]            查看栈顶元素
+bool front(void* obj);                  // [队列、双端队列] 查看头部元素
+bool back(void* obj);                   // [队列、双端队列] 查看尾部元素
 
 // 基础操作
-uint32_t size();                    // 获取大小
-bool empty();                       // 判断是否为空
-bool full();                        // 判断是否为满
-void clear();                       // 清空
-uint32_t capacity();                // [动态数组] 获取容量
+size_t size();                          // 获取大小
+size_t capacity();                      // 获取容量
+bool empty();                           // 判断是否空
+bool full();                            // 判断是否满
+void clear();                           // 清空
 
 // 迭代器操作
-iterator_t iter(...);               // 返回迭代器
-bool iter_hasnext();                // 是否有下一个元素
-void* iter_next();                  // 迭代器下一个元素
+iterator_t iter(...);                   // 返回迭代器
+bool iter_hasnext();                    // 是否有下一个元素
+const void* iter_next();                // 迭代器下一个元素 <只读访问>
 
-// -------------------- 扩展功能 --------------------
-// 元素相关操作
-bool append(const void* obj);        // 追加元素 <push_back> 一般用于list 
-bool find(const void* obj);          // 查找元素 <返回值，bool/uint32_t/void*待定？>
-bool contains(const void* obj);      // 判断元素是否存在 <返回bool>
-uint32_t count(const void* obj);     // 统计元素obj的个数
+// 索引操作
+size_t index(void *obj);                // 获取元素索引, -1为不存在
+bool contains(const void* obj);         // 判断元素是否存在 <返回bool>
 
-// 索引相关操作
-uint32_t index(void *obj);                      // 获取元素索引
-bool insert(uint32_t index, const void* obj);   // 插入元素 <非树>
-// bool delete(uint32_t index, void* obj);         // 删除元素 <!!!废弃：防止项目用于C++，关键字冲突>
-bool remove(const void *obj);        // 删除元素 <推荐>
-// bool erase(uint32_t index);                     // 删除元素<暂时不用该命名>
+bool insert(size_t index, const void* obj);     // 插入元素
+bool remove(size_t index, const void *obj);     // 删除元素 < delete !!!废弃：防止项目用于C++，关键字冲突>
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
-```
+const void* at(size_t index);                   // 获取元素指针
 
-## 特点
-| 原理 | 优势 | 弊端 |
-| --- | --- |--- |
-| 链表 | 插入删除效率高 | 有额外指针开销 |
-| 动态数组 | 随机访问效率高 | 扩容时数据搬移代价较大 |
-| --- | --- | --- |
-| 单链表 | 适用内存受限场景 | 逆向不便 |
-| 双向链表 | 频繁双向遍历的场景（如光标移动） | 空间开销大 |
+// 统计
+uint32_t count(const void* obj);    // 统计元素的个数
 
-
-## 性能比较
-| 数据结构 | < | 时 |间 | | 复 | 杂 |度 | > | <空间复杂度> |
-|---|---|---|---|---|---|---|---|---|---|
-|---|(|**平**|**均**|)  | (|**最**|**坏**| ) |**最坏**|
-|---|访问|搜索|插入|删除|访问|搜索|插入|删除|---|
-| 数组 | $O(1)$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(1)$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n)$ |
-| 栈 | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ |
-| 队列 | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ |
-| 单向链表 | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ |
-| 双向链表 | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ | $O(n)$ | $O(1)$ | $O(1)$ | $O(n)$ |
-| 跳表 | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n*log(n))$ |
-| 哈希表 | $N/A$ | $O(1)$ | $O(1)$ | $O(1)$ | $N/A$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n)$
-| 二叉搜索树 | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n)$ | $O(n)$ |
-| AVL树  | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(n)$ |
-| 红黑树 | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(n)$ |
-| B树    | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(log(n))$ | $O(n)$ |
-
-**【答疑】** 若链表的操作流程为，先查找元素再删除元素。那么时间复杂度确实是$O(n)$。但是链表的增删优势，在其他应用有体现。比如双向队列，插入和删除效率都为$O(1)$。
-
-## 规范
-### 版本说明
-
-| 命名 |版本说明 | 范围 | 更新说明 |
-|:----: |:----:|:----:|:----:|
-| `VERSION_MAJOR` | 主版本号 | 0 ~ 99 | 代码框架大改，完全不兼容旧版 |
-| `VERSION_MINOR` | 次版本号 | 0 ~ 99 | 代码框架尽量兼容旧版，增信大功能、修复重大bug等 |
-| `VERSION_MICRO` | 小版本号 | 0 ~ 99 | 代码框架兼容旧版，新增小功能、修复bug等 |
-
-举例说明：
-```c
-// 若 major > 0 ，则代表正式发布版本
-#define UNICSTL_VERSION_MAJOR    1
-#define UNICSTL_VERSION_MINOR    2
-#define UNICSTL_VERSION_MICRO    5
-#define UNICSTL_VERSION          ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
-```
-
-### 工程命名
-
-`工程名(_功能)_v版本号_日期(_时间)(-其他信息)`
-> 括号内表示可选项
-
-| 其他信息后缀 | 说明 | 详细 
-|:----:|:----:|----
-| aX | alpha内测版 | 可能仅测试了新增功能，但没有测试新增功能对其他模块的影响
-| bX | beta公测版 | 不仅测试了新增功能，也测试了其他模块，尽量保证新增的功能不影响原来的旧功能。
-| ... |  | 或者添加其他有有效信息
-
-举例说明：
-```shell
-unicstl_stack_v1.2.5_20240717-a0.zip
-
-# 带a或者b后缀，表示当前版本发布前的测试版。如果发布后，则直接更新版本号了
+// 树
+bool insert(const void* obj);       // [树] 插入元素
+bool delete(const void* obj);       // [树] 删除元素
+bool add_(const void* obj);         // [图：顶点、边] 添加元素 <add不考虑位置关系>
+bool del_(const void* obj);         // [图：顶点、边] 删除元素 
+bool find_(const void* obj);        // [图：顶点、边] 查找元素
 ```
 
 ### 分支命名
@@ -170,16 +145,20 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 | master | 主分支 | master
 | dev | 开发分支 | dev-stack
 | test | 测试分支| test-tree
-| release | 发布分支 | release-v1.2.5或v1.2.5
+| release | 发布分支 | v1.2.5
 | feature | 新功能分支 | feature-tree
 | bugfix | bug修复分支 | bugfix-map
 | refactor | 重构分支| refactor-darray
 
 ## 修改日志
 
-### Unicstl 0.0.10 (2025-12-31)
+### Unicstl 0.0.10 (2026-5-11)
+- new features
+    - add darray/ringbuf/linlist/dlinklist
+    - add estack/equeue for embedded
 - refactor: 
-    - darray & list, old list(list python list) -> arraylist
+    - deque base on ringbuf
+    - stack base on deque
 
 ### Unicstl 0.0.02 (2025-05-06)
 - new features
@@ -190,10 +169,6 @@ unicstl_stack_v1.2.5_20240717-a0.zip
     - iter change the name of container/index...
     - list optimize code and add slice function
     - unicstl add default function
-- bugfixed: 
-    - none
-- others:
-    - none
 
 ### Unicstl 0.0.01 (2025-04-24)
 - new features
@@ -205,7 +180,3 @@ unicstl_stack_v1.2.5_20240717-a0.zip
     - add tree
     - add graph
     - add iterator
-- bugfixed: 
-    - none
-- others:
-    - none
