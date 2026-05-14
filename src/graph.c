@@ -1009,7 +1009,7 @@ static bool graph_init(struct _graph *self, size_t obj_size)
     {
         return false;
     }
-    self->queue = queue_new(sizeof(struct _graph_node *));
+    self->queue = queue_new(sizeof(struct _graph_node *), 16);
     if (self->queue == NULL)
     {
         stack_free(&self->stack);

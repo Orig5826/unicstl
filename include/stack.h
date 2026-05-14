@@ -29,7 +29,7 @@ struct _stack
     bool (*peek)(struct _stack* self, void* obj);
     
     // base
-    size_t (*resize)(struct _stack* self, size_t new_size);
+    size_t (*resize)(struct _stack* self, size_t capacity);
     size_t (*size)(struct _stack* self);
     size_t (*capacity)(struct _stack* self);
     bool (*empty)(struct _stack* self);

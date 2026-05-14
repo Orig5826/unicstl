@@ -39,25 +39,11 @@ static bool queue_front(struct _queue* self, void* obj)
     return self->_deque->front(self->_deque, obj);
 }
 
-static bool queue_clear(struct _queue* self)
+static size_t queue_resize(struct _queue* self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_deque != NULL);
-    return self->_deque->clear(self->_deque);
-}
-
-static bool queue_empty(struct _queue* self)
-{
-    unicstl_assert(self != NULL);
-    unicstl_assert(self->_deque != NULL);
-    return self->_deque->empty(self->_deque);
-}
-
-static bool queue_full(struct _queue* self)
-{
-    unicstl_assert(self != NULL);
-    unicstl_assert(self->_deque != NULL);
-    return self->_deque->full(self->_deque);
+    return self->_deque->resize(self->_deque, capacity);
 }
 
 static size_t queue_size(struct _queue* self)
@@ -74,6 +60,28 @@ static size_t queue_capacity(struct _queue* self)
 
     return self->_deque->capacity(self->_deque);
 }
+
+static bool queue_empty(struct _queue* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_deque != NULL);
+    return self->_deque->empty(self->_deque);
+}
+
+static bool queue_full(struct _queue* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_deque != NULL);
+    return self->_deque->full(self->_deque);
+}
+
+static bool queue_clear(struct _queue* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_deque != NULL);
+    return self->_deque->clear(self->_deque);
+}
+
 
 static void queue_destory(struct _queue* self)
 {
@@ -127,10 +135,6 @@ static iterator_t queue_iter(struct _queue* self)
 static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    if(self == NULL || obj_size == 0 || capacity == 0)
-    {
-        return false;
-    }
 
     // -------------------- private --------------------
     self->_deque = deque_new(obj_size, capacity);
@@ -138,12 +142,9 @@ static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
     {
         return false;
     }
+
     // 
     self->_destory = queue_destory;
-
-    // iter
-    self->_iter.hasnext = queue_iter_hasnext;
-    self->_iter.next = queue_iter_next;
 
     // -------------------- public -------------------- 
     // kernel
@@ -153,6 +154,7 @@ static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
     self->front = queue_front;
 
     // base
+    self->resize = queue_resize;
     self->size = queue_size;
     self->capacity = queue_capacity;
     self->empty = queue_empty;
@@ -180,7 +182,7 @@ static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
  * 
  * @return queue_t 队列指针
  */
-queue_t queue_new2(size_t obj_size, size_t capacity)
+queue_t queue_new(size_t obj_size, size_t capacity)
 {
     struct _queue * queue = NULL;
     queue = (struct _queue *)unicstl_malloc(sizeof(struct _queue));

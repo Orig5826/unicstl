@@ -31,6 +31,7 @@ struct _queue
     bool (*front)(struct _queue* self, void* obj);
 
     // base
+    size_t (*resize)(struct _queue* self, size_t capacity);
     size_t (*size)(struct _queue* self);
     size_t (*capacity)(struct _queue* self);
     bool (*empty)(struct _queue* self);
@@ -47,9 +48,7 @@ struct _queue
 typedef struct _queue* queue_t;
 
 // create and free queue
-queue_t queue_new2( size_t obj_size, size_t capacity);
+queue_t queue_new(size_t obj_size, size_t capacity);
 void queue_free(queue_t* queue);
-
-#define queue_new(obj_size) queue_new2(obj_size, 16)
 
 #endif // _QUEUE_H_

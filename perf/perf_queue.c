@@ -14,8 +14,7 @@ static queue_t queue = NULL;
 
 void perf_queue_new(void)
 {
-    // queue = queue_new2(g_test_obj.obj_size, g_test_obj.capacity);
-    queue = queue_new(g_test_obj.obj_size);
+    queue = queue_new(g_test_obj.obj_size, g_test_obj.capacity);
 }
 
 void perf_queue_push(void)
