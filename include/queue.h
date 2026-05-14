@@ -12,29 +12,15 @@
 #define _QUEUE_H_
 
 #include "unicstl_internal.h"
-
-struct _queue_node
-{
-    void  *obj;
-    struct _queue_node * next;
-};
+#include "deque.h"
 
 struct _queue
 {
     // -------------------- private -------------------- 
-    struct _queue_node * _front;
-    struct _queue_node * _back;
-
-    size_t _index_front;
-    size_t _index_back;
-
-    size_t _obj_size;
-    size_t _size;
-    size_t _capacity;
-    size_t _ratio;
+    deque_t _deque;
+    iterator_t _iter_deque;
 
     struct _iterator _iter;
-
     void (*_destory)(struct _queue* self);
 
     // -------------------- public -------------------- 
@@ -61,9 +47,9 @@ struct _queue
 typedef struct _queue* queue_t;
 
 // create and free queue
-queue_t queue_new(size_t obj_size);
 queue_t queue_new2( size_t obj_size, size_t capacity);
-
 void queue_free(queue_t* queue);
+
+#define queue_new(obj_size) queue_new2(obj_size, 16)
 
 #endif // _QUEUE_H_

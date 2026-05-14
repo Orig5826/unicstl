@@ -118,11 +118,10 @@ iterator_t stack_iter(struct _stack* self)
     unicstl_assert(self->_deque != NULL);
     deque_t deque = self->_deque;
 
+    self->_iter_deque = deque->iter(deque, DEQUE_FORWARD);
+    
     iterator_t iter = &self->_iter;
     iter->_container = self;
-    
-    self->_iter_deque = deque->iter(deque, DEQUE_FORWARD);
-
     iter->hasnext = stack_iter_hasnext;
     iter->next = stack_iter_next;
     return iter;

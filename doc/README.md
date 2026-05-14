@@ -69,3 +69,32 @@ unicstl_stack_v1.2.5_20240717-a0.zip
 # 带a或者b后缀，表示当前版本发布前的测试版。如果发布后，则直接更新版本号了
 ```
 
+
+## deque实现对比
+> segarray类比c++的deque，ringbuf类比rust的VecDeque
+
+### 若capacity足够，不需要扩容
+
+|场景 | ringbuf | segarray| 说明
+|---- | --- | --- | ----
+| size < capacity/2 | 无扩容 | 无扩容 | 性能一样
+| size > capacity/2 | 无扩容 | 内部预留耗尽，触发段/map分配 | ringBuf连续内存缓存更优，segarray因中段起始预留，不库容容量折半
+
+### 若capacity不够，需要扩容
+
+1. capacity 合理的情况下（初值预估可能大小）
+
+|场景 | ringbuf | segarray| 说明
+|---- | --- | --- | ----
+| objsize 很大 | 按倍数扩整体连续大内存 + 全量数据搬移 | 新分配小段、无旧数据拷贝，顶多map指针数组扩容 | segarray 碾压，规避巨型对象整体拷贝开销
+| objsize 很小 | 倍数扩容开销极低，连续内存缓存友好 | 逐段分配、map偶尔扩容，间接寻址拖累缓存 | ringBuf占优；小对象拷贝成本可忽略，连续内存优势拉满
+
+备注：C++标准库 deque 靠固定 512 字节自适应每段元素数。也即可以让segarray 借助 objsize 和 512 对比，来实现方案优化
+
+2. capacity 非常小情况
+
+|场景 | ringbuf | segarray| 说明
+|---- | --- | --- | ----
+| objsize 很大 | 每次翻倍扩连续巨块内存 + 大批量搬移大对象 | 每次只按需分配单个，少量段，永远不拷贝旧数据 | segarray 依然优势明显
+| objsize 很小 | 指数倍数扩容，扩容次数少、成本低 | 退化成「类链表模式」：每插易新建段 + 频繁小分配，虽支持随机访问，但内存碎片化、分配次数暴增 | ringBuf 完胜，翻倍扩容策略吊打退化的 SegArray
+
