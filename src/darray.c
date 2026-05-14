@@ -103,7 +103,7 @@ static bool darray_insert(struct _darray *self, size_t index, const void *obj)
     if (self->full(self))
     {
         size_t new_capacity = unicstl_new_capacity(self->capacity(self));
-        if (darray_resize(self, new_capacity) == false)
+        if (self->resize(self, new_capacity) == false)
         {
             return false;
         }

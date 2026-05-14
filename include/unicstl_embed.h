@@ -13,15 +13,18 @@
 
 #include "unicstl.h"
 
-typedef struct _ringbuffer estack_t;
-typedef struct _ringbuffer equeue_t;
-
+typedef struct _ringbuf estack_t;
+typedef struct _ringbuf equeue_t;
 
 
 // ------------------------------ embedded stack ------------------------------
-static inline bool estack_init(estack_t *self, size_t size, size_t capacity, void *mem)
+static inline bool estack_init(estack_t *self, size_t obj_size, size_t capacity, void *mem_pool)
 {
-    // return ringbuffer_init(self, size, capacity, mem);
+    if(mem_pool == NULL)
+    {
+        return false;
+    }
+    return ringbuf_init(self, obj_size, capacity, mem_pool);
 }
 
 static inline bool estack_push(estack_t *self, const void *obj)
@@ -71,17 +74,17 @@ static inline bool estack_clear(estack_t *self)
 
 
 // ------------------------------ embedded queue ------------------------------
-static inline bool equeue_init(equeue_t *self, size_t size, size_t capacity, void *mem)
+static inline bool equeue_init(equeue_t *self, size_t obj_size, size_t capacity, void *mem_pool)
 {
-    // return ringbuffer_init(self, size, capacity, mem);
+    if(mem_pool == NULL)
+    {
+        return false;
+    }
+    return ringbuf_init(self, obj_size, capacity, mem_pool);
 }
 
 static inline bool equeue_push(equeue_t *self, const void *obj)
 {
-    if(self->full(self))
-    {
-        return false;
-    }
     return self->push_back(self, obj);
 }
 

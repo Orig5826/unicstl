@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_linklist);
     TEST_ADD(test_dlinklist);
     
-    TEST_ADD(test_ringbuffer);
+    TEST_ADD(test_ringbuf);
     
     TEST_ADD(test_deque);
 

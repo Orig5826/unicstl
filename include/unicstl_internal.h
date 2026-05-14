@@ -45,6 +45,9 @@
 #define UNICSTL_OBJSIZE_MAX     8192        // 最大对象大小
 #endif
 
+#ifndef UNICSTL_STATIC_MEMORY
+#define UNICSTL_STATIC_MEMORY
+#endif
 
 /**
  * @brief assert function
@@ -80,7 +83,17 @@ static inline void unicstl_free(void * ptr) {
     free(ptr);
 }
 #else
-#error "UNICSTL_MALLOC not defined"
+static inline void * unicstl_malloc(size_t size) {
+    return NULL;
+}
+
+static inline void * unicstl_realloc(void * ptr, size_t size) {
+    return NULL;
+}
+
+static inline void unicstl_free(void * ptr) {
+    //...
+}
 #endif
 
 

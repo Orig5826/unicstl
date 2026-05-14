@@ -48,7 +48,7 @@ void test_darray(void);
 void test_linklist(void);
 void test_dlinklist(void);
 
-void test_ringbuffer(void);
+void test_ringbuf(void);
 
 void test_deque(void);
 

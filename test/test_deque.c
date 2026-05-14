@@ -48,7 +48,7 @@ static void test_deque_status(void)
     }
     TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
     TEST_ASSERT_TRUE(deque->full(deque));
-    TEST_ASSERT_FALSE(deque->push_back(deque, &data[i]));
+    TEST_ASSERT_TRUE(deque->push_back(deque, &data[i]));
 
     TEST_ASSERT_TRUE(deque->clear(deque));
     TEST_ASSERT_TRUE(deque->empty(deque));
@@ -79,8 +79,8 @@ static void test_deque_push_back(void)
 
         TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
-    TEST_ASSERT_FALSE(deque->push_back(deque, &data[0]));
-    TEST_ASSERT_FALSE(deque->push_front(deque, &data[0]));
+    TEST_ASSERT_TRUE(deque->push_back(deque, &data[0]));
+    TEST_ASSERT_TRUE(deque->push_front(deque, &data[0]));
 
     deque_free(&deque);
 }
@@ -107,8 +107,8 @@ static void test_deque_push_front(void)
 
         TEST_ASSERT_EQUAL_INT(i + 1, deque->size(deque));
     }
-    TEST_ASSERT_FALSE(deque->push_front(deque, &data[0]));
-    TEST_ASSERT_FALSE(deque->push_back(deque, &data[0]));
+    TEST_ASSERT_TRUE(deque->push_front(deque, &data[0]));
+    TEST_ASSERT_TRUE(deque->push_back(deque, &data[0]));
 
     deque_free(&deque);
 }

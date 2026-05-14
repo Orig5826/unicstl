@@ -12,7 +12,7 @@
 #define _DEQUE_H_
 
 #include "unicstl_internal.h"
-#include "ringbuffer.h"
+#include "ringbuf.h"
 
 enum _deque_order
 {
@@ -25,7 +25,7 @@ struct _deque
     // -------------------- private -------------------- 
     union 
     {
-        ringbuffer_t ringbuf;
+        ringbuf_t ringbuf;
     };
     iterator_t _iter_ringbuf;
     

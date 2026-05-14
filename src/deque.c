@@ -91,7 +91,7 @@ static void deque_destory(struct _deque* self)
 {
     unicstl_assert(self != NULL);
     self->clear(self);
-    ringbuffer_free(&self->ringbuf);
+    ringbuf_free(&self->ringbuf);
 }
 
 static void deque_print(struct _deque* self)
@@ -144,7 +144,7 @@ static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
         return false;
     }
     // -------------------- private -------------------- 
-    self->ringbuf = ringbuffer_new(obj_size, capacity);
+    self->ringbuf = ringbuf_new(obj_size, capacity);
     if(self->ringbuf == NULL)
     {
         return false;

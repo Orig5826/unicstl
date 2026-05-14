@@ -22,7 +22,7 @@
 #include "linklist.h"
 #include "dlinklist.h"
 
-#include "ringbuffer.h"
+#include "ringbuf.h"
 
 #include "list.h"
 #include "stack.h"
