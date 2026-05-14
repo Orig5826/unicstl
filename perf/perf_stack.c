@@ -14,8 +14,7 @@ static stack_t stack = NULL;
 
 void perf_stack_new(void)
 {
-    // stack = stack_new2(g_test_obj.obj_size, g_test_obj.capacity);
-    stack = stack_new(g_test_obj.obj_size);
+    stack = stack_new(g_test_obj.obj_size, g_test_obj.capacity);
 }
 
 void perf_stack_push(void)

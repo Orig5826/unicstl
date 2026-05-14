@@ -1004,7 +1004,7 @@ static bool graph_init(struct _graph *self, size_t obj_size)
     self->_capacity = UINT32_MAX;
     self->_ratio = 1;
 
-    self->stack = stack_new(sizeof(struct _graph_node *));
+    self->stack = stack_new(sizeof(struct _graph_node *), 16);
     if (self->stack == NULL)
     {
         return false;

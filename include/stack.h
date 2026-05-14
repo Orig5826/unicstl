@@ -29,9 +29,11 @@ struct _stack
     bool (*peek)(struct _stack* self, void* obj);
     
     // base
+    size_t (*resize)(struct _stack* self, size_t new_size);
     size_t (*size)(struct _stack* self);
     size_t (*capacity)(struct _stack* self);
     bool (*empty)(struct _stack* self);
+    bool (*full)(struct _stack* self);
     bool (*clear)(struct _stack* self);
     
     // iter
@@ -44,9 +46,7 @@ struct _stack
 typedef struct _stack* stack_t;
 
 // create and free stack
-stack_t stack_new2(size_t obj_size, size_t capacity);
+stack_t stack_new(size_t obj_size, size_t capacity);
 void stack_free(stack_t* stack);
-
-#define stack_new(obj_size) stack_new2(obj_size, 16)
 
 #endif // _STACK_H_

@@ -1323,7 +1323,7 @@ static iterator_t tree_iter(struct _tree* self, enum _tree_order order)
         struct _tree_node* node = self->_root;
         self->stack->clear(self->stack);
 
-        stack_t stack = stack_new(sizeof(struct _tree_node*));
+        stack_t stack = stack_new(sizeof(struct _tree_node*), self->size(self));
         if (iter->_order == ORDER_POST)
         {
             while (!stack->empty(stack) || node != NULL)
@@ -1388,7 +1388,7 @@ static bool tree_avl_init(struct _tree* self, size_t obj_size)
 
     self->_root = NULL;
 
-    self->stack = stack_new(sizeof(struct _tree_node*));
+    self->stack = stack_new(sizeof(struct _tree_node*), self->size(self));
     if (self->stack == NULL)
     {
         return false;
@@ -1440,7 +1440,7 @@ static bool tree_rb_init(struct _tree* self, size_t obj_size)
 
     self->_root = NULL;
 
-    self->stack = stack_new(sizeof(struct _tree_node*));
+    self->stack = stack_new(sizeof(struct _tree_node*), self->size(self));
     if (self->stack == NULL)
     {
         return false;

@@ -17,7 +17,7 @@ static void demo_stack_num(void)
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    stack_t stack = stack_new(sizeof(int));
+    stack_t stack = stack_new(sizeof(int), len);
     stack->print_obj = print_num;
 
     printf("\n\n----- demo_stack_num -----\n");
@@ -77,7 +77,7 @@ static void demo_stack_char(void)
     char temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]) - 1;
 
-    stack_t stack = stack_new2(sizeof(char), 64);
+    stack_t stack = stack_new(sizeof(char), 64);
     stack->print_obj = print_char;
 
     printf("\n\n----- demo_stack_char -----\n");
@@ -139,7 +139,7 @@ static void demo_stack_struct(void)
     struct _student temp = { 0 };
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    stack_t stack = stack_new(sizeof(struct _student));
+    stack_t stack = stack_new(sizeof(struct _student), len);
     stack->print_obj = print_struct;
 
     printf("\n\n----- demo_stack_struct -----\n");

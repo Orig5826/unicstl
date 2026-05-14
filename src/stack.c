@@ -37,6 +37,15 @@ static bool stack_peek(struct _stack* self, void* obj)
     return deque->back(deque, obj);
 }
 
+static size_t stack_resize(struct _stack* self, size_t capaticy)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_deque != NULL);
+    deque_t deque = self->_deque;
+
+    return deque->resize(deque, capaticy);
+}
+
 static size_t stack_size(struct _stack* self)
 {
     unicstl_assert(self != NULL);
@@ -44,6 +53,15 @@ static size_t stack_size(struct _stack* self)
     deque_t deque = self->_deque;
 
     return deque->size(deque);
+}
+
+static size_t stack_capacity(struct _stack* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_deque != NULL);
+    deque_t deque = self->_deque;
+
+    return deque->capacity(deque);
 }
 
 static bool stack_empty(struct _stack* self)
@@ -55,13 +73,13 @@ static bool stack_empty(struct _stack* self)
     return deque->empty(deque);
 }
 
-static size_t stack_capacity(struct _stack* self)
+static bool stack_full(struct _stack* self)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_deque != NULL);
     deque_t deque = self->_deque;
 
-    return deque->capacity(deque);
+    return deque->full(deque);
 }
 
 static bool stack_clear(struct _stack* self)
@@ -129,21 +147,15 @@ iterator_t stack_iter(struct _stack* self)
 
 static bool stack_init(struct _stack* self, size_t obj_size, size_t capacity)
 {
-    // unicstl_assert(self != NULL);
-    if(self == NULL || obj_size == 0 || capacity == 0)
-    {
-        return false;
-    }
-
+    unicstl_assert(self != NULL);
+    unicstl_assert(obj_size != 0);
+    
     // -------------------- private --------------------
     self->_deque = deque_new(obj_size, capacity);
     if(self->_deque == NULL)
     {
         return false;
     }
-
-    self->_iter.next = stack_iter_next;
-    self->_iter.hasnext = stack_iter_hasnext;
 
     self->_destory = stack_destory;
 
@@ -152,11 +164,13 @@ static bool stack_init(struct _stack* self, size_t obj_size, size_t capacity)
     self->push = stack_push;
     self->pop = stack_pop;
     self->peek = stack_peek;
-    self->empty = stack_empty;
 
     // base
+    self->resize = stack_resize;
     self->size = stack_size;
     self->capacity = stack_capacity;
+    self->empty = stack_empty;
+    self->full = stack_full;
     self->clear = stack_clear;
 
     // iter
@@ -171,7 +185,7 @@ static bool stack_init(struct _stack* self, size_t obj_size, size_t capacity)
     return true;
 }
 
-stack_t stack_new2(size_t obj_size, size_t capacity)
+stack_t stack_new(size_t obj_size, size_t capacity)
 {
     stack_t stack = NULL;
     stack = (struct _stack*)calloc(1, sizeof(struct _stack));

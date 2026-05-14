@@ -156,9 +156,12 @@ bool find_(const void* obj);        // [图：顶点、边] 查找元素
 - new features
     - add darray/ringbuf/linlist/dlinklist
     - add estack/equeue for embedded
+    - darray add function: search/sort
+    - add algo: sort and search
 - refactor: 
     - deque base on ringbuf
-    - stack base on deque
+    - stack base on deque 
+    - queue base on deque
 
 ### Unicstl 0.0.02 (2025-05-06)
 - new features
