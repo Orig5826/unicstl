@@ -12,7 +12,6 @@
 #define _RINGBUFFER_H_
 
 #include "unicstl_internal.h"
-#include "darray.h"
 
 enum _ringbuf_order
 {

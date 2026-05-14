@@ -10,6 +10,16 @@
  */
 #include "ringbuf.h"
 
+static inline size_t index_next(size_t index, size_t capacity)
+{
+    return (index + 1) % capacity;
+}
+
+static inline size_t index_prev(size_t index, size_t capacity)
+{
+    return index == 0 ? (capacity - 1) : index - 1;
+}
+
 static bool ringbuf_push_back(struct _ringbuf *self, const void *obj)
 {
     unicstl_assert(self != NULL);
