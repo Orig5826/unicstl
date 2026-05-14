@@ -9,6 +9,7 @@
  *
  */
 #include "darray.h"
+#include "algo.h"
 
 static size_t darray_size(struct _darray *self)
 {
@@ -120,6 +121,8 @@ static bool darray_insert(struct _darray *self, size_t index, const void *obj)
     // copy new data
     memmove((char *)self->obj + offset, obj, self->_obj_size);
     self->_size += 1;
+
+    self->_sorted = false;
     return true;
 }
 
@@ -188,30 +191,6 @@ const void *darray_at(struct _darray *self, size_t index)
     return (const char *)self->obj + offset;
 }
 
-static size_t darray_index(struct _darray *self, const void *obj)
-{
-    unicstl_assert(self != NULL);
-    if (obj == NULL)
-    {
-        return -1;
-    }
-
-    for (size_t i = 0; i < self->size(self); ++i)
-    {
-        if (self->compare((const char *)self->obj + i * self->_obj_size, (const char *)obj) == 0)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-static bool darray_contains(struct _darray *self, const void *obj)
-{
-    unicstl_assert(self != NULL);
-    return darray_index(self, obj) != -1;
-}
-
 bool darray_iter_hasnext(struct _iterator *iter)
 {
     unicstl_assert(iter != NULL);
@@ -277,6 +256,85 @@ iterator_t darray_iter(struct _darray *self, enum _darray_order order)
     return iter;
 }
 
+static size_t darray_index(struct _darray *self, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    return self->search(self, obj);
+}
+
+static bool darray_contains(struct _darray *self, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    return self->search(self, obj) != (size_t)-1;
+}
+
+static bool darry_sort(struct _darray *self)
+{
+    unicstl_assert(self != NULL);
+    if(self->_sorted)
+    {
+        return true;
+    }
+#ifdef UNICSTL_SORT
+    bubble_sort(self->obj, self->size(self), self->_obj_size, self->compare);
+#else
+    qsort(self->obj, self->size(self), self->_obj_size, self->compare);
+#endif
+    self->_sorted = true;
+    return true;
+}
+
+static size_t darry_search(struct _darray *self, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    if(obj == NULL)
+    {
+        return -1;
+    }
+#ifdef UNICSTL_BSEARCH
+    if(self->_sorted)
+    {
+        return unicstl_search(obj, self->obj, self->size(self), self->_obj_size, self->compare);
+    }
+#else
+    if(self->_sorted)
+    {
+        bsearch(obj, self->obj, self->size(self), self->_obj_size, self->compare);
+    }
+#endif
+    return linear_search(obj, self->obj, self->size(self), self->_obj_size, self->compare);
+}
+
+static size_t darry_count(struct _darray *self, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    if(obj == NULL)
+    {
+        return 0;
+    }
+    size_t count = 0;
+    size_t index = 0;
+
+    if(self->_sorted)
+    {
+        size_t index = self->search(self, obj);
+        if(index == (size_t)-1)
+        {
+            return 0;
+        }
+    }
+    for(size_t i = index; i < self->size(self); i++)
+    {
+        if (self->compare((const char *)self->obj + i * self->_obj_size, (const char *)obj) != 0)
+        {
+            break;
+            
+        }
+        count++;
+    }
+    return count;
+}
+
 static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
@@ -286,6 +344,8 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->_obj_size = obj_size;
     self->_size = 0;
     self->_capacity = capacity;
+
+    self->_sorted = false;
 
     self->obj = NULL;
     self->_destory = darray_destory;
@@ -313,6 +373,10 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
 
     // iter
     self->iter = darray_iter;
+
+    // sort and search
+    self->sort = darry_sort;
+    self->search = darry_search;
 
     // -------------------- default --------------------
     self->print_obj = default_print_obj;

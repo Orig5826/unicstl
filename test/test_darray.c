@@ -571,6 +571,59 @@ static void test_darray_clear(void)
     darray_free(&darray);
 }
 
+static void test_darray_sort(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+    int unordered_data[] = { 1, 3, 4, 5, 2, 9, 8, 10, 7, 6};
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+    darray->print_obj = print_num;
+
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &unordered_data[i]);
+    }
+    TEST_ASSERT_TRUE(darray->sort(darray));
+    
+    iterator_t iter = darray->iter(darray, DARRAY_FORWARD);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+    }
+    TEST_ASSERT_EQUAL_INT(len, i);
+
+    temp = -55;
+    TEST_ASSERT_TRUE(darray->append(darray, &temp));
+
+    TEST_ASSERT_TRUE(darray->sort(darray));
+
+    iter = darray->iter(darray, DARRAY_FORWARD);
+    i = 0;
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        if(i == 0)
+        {
+            TEST_ASSERT_EQUAL_INT(-55, temp);
+        }
+        else
+        {
+            TEST_ASSERT_EQUAL_INT(data[i - 1], temp);
+        }
+        i++;
+    }
+    TEST_ASSERT_EQUAL_INT(len + 1, i);
+
+    darray_free(&darray);
+}
+
 static void test_darray_struct(void)
 {
     size_t i = 0;
@@ -638,7 +691,7 @@ void test_darray(void)
     RUN_TEST(test_darray_resize);
     RUN_TEST(test_darray_resize_invalid);
 
-    RUN_TEST(test_darray_index);
+    RUN_TEST(test_darray_index);    // index, search, contains
     RUN_TEST(test_darray_index_invalid);
 
     RUN_TEST(test_darray_at);
@@ -646,6 +699,8 @@ void test_darray(void)
     RUN_TEST(test_darray_dynamic);
 
     RUN_TEST(test_darray_iter);
+
+    RUN_TEST(test_darray_sort);
 
     // ---------- base ----------
     RUN_TEST(test_darray_clear);

@@ -10,7 +10,7 @@
  */
 #ifndef _UNICSTL_CONFIG_H_
 
-// #define NDEBUG      // release
+#define NDEBUG          // release mode if define NDEBUG
 
 /**
  * @brief unicstl contains which module
