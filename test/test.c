@@ -94,6 +94,8 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_heap);
     TEST_ADD(test_tree);
     TEST_ADD(test_graph);
+
+    TEST_ADD(test_segarray);
     
     return UNITY_END();
 }

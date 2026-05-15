@@ -10,21 +10,6 @@
  */
 #include "ringbuf.h"
 
-static inline size_t index_next(size_t index, size_t capacity)
-{
-    return (index + 1) % capacity;
-}
-
-static inline size_t index_prev(size_t index, size_t capacity)
-{
-    return index == 0 ? (capacity - 1) : index - 1;
-}
-
-static inline size_t ring_index(size_t head, size_t index, size_t capacity)
-{
-    return (head + index) % capacity;
-}
-
 static bool ringbuf_push_back(struct _ringbuf *self, const void *obj)
 {
     unicstl_assert(self != NULL);
@@ -48,7 +33,7 @@ static bool ringbuf_push_back(struct _ringbuf *self, const void *obj)
 
     size_t index = self->_tail;
     obj_set(self->obj, index, obj, self->_obj_size);
-    self->_tail = index_next(index, self->_capacity);
+    self->_tail = ring_index_next(index, self->_capacity);
 
     self->_size++;
     return true;
@@ -75,7 +60,7 @@ static bool ringbuf_push_front(struct _ringbuf *self, const void *obj)
         }
     }
 
-    size_t index = index_prev(self->_head, self->_capacity);
+    size_t index = ring_index_prev(self->_head, self->_capacity);
     obj_set(self->obj, index, obj, self->_obj_size);
     self->_head = index;
 
@@ -91,7 +76,7 @@ static bool ringbuf_pop_back(struct _ringbuf *self, void *obj)
         return false;
     }
 
-    size_t index = index_prev(self->_tail, self->_capacity);
+    size_t index = ring_index_prev(self->_tail, self->_capacity);
     if(obj != NULL)
     {
         obj_get(self->obj, index, obj, self->_obj_size);
@@ -119,7 +104,7 @@ static bool ringbuf_pop_front(struct _ringbuf *self, void *obj)
     {
         obj_get(self->obj, self->_head, obj, self->_obj_size);
     }
-    self->_head = index_next(self->_head, self->_capacity);
+    self->_head = ring_index_next(self->_head, self->_capacity);
 
     self->_size--;
     return true;
@@ -132,7 +117,7 @@ static bool ringbuf_back(struct _ringbuf *self, void *obj)
     {
         return false;
     }
-    size_t index = index_prev(self->_tail, self->_capacity);
+    size_t index = ring_index_prev(self->_tail, self->_capacity);
     obj_get(self->obj, index, obj, self->_obj_size);
     return true;
 }
@@ -273,7 +258,7 @@ static bool ringbuf_empty(struct _ringbuf *self)
 static bool ringbuf_full(struct _ringbuf *self)
 {
     unicstl_assert(self != NULL);
-    return self->_head == index_next(self->_tail, self->_capacity);
+    return self->_head == ring_index_next(self->_tail, self->_capacity);
 }
 
 static bool ringbuf_clear(struct _ringbuf *self)
@@ -339,11 +324,11 @@ const void *ringbuf_iter_next(struct _iterator *iter)
     size_t index = iter->_index;
     if (iter->_order == RINGBUF_FORWARD)
     {
-        iter->_index = index_next(index, self->_capacity);
+        iter->_index = ring_index_next(index, self->_capacity);
     }
     else
     {
-        iter->_index = index_prev(index, self->_capacity);
+        iter->_index = ring_index_prev(index, self->_capacity);
     }
 
     return obj_at(self->obj, index, self->_obj_size);
@@ -363,7 +348,7 @@ iterator_t ringbuf_iter(struct _ringbuf *self, enum _ringbuf_order order)
     }
     else
     {
-        iter->_index = index_prev(self->_tail, self->_capacity);
+        iter->_index = ring_index_prev(self->_tail, self->_capacity);
     }
 
     iter->hasnext = ringbuf_iter_hasnext;

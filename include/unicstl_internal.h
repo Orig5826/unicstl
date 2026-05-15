@@ -133,6 +133,23 @@ static inline void obj_copy(void *dst, const void *src, size_t count, size_t obj
     memmove(dst, src, obj_size * count);
 }
 
+static inline size_t ring_index(size_t head, size_t index, size_t capacity)
+{
+    return (head + index) % capacity;
+}
+
+static inline size_t ring_index_next(size_t index, size_t capacity)
+{
+    return (index + 1) % capacity;
+}
+
+static inline size_t ring_index_prev(size_t index, size_t capacity)
+{
+    return index == 0 ? (capacity - 1) : index - 1;
+}
+
+
+
 /**
  * @brief obj compare with obj2
  *

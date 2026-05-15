@@ -15,45 +15,23 @@ static inline size_t clac_start_index(size_t capacity)
     return capacity <= 2 ? 0 : (capacity - 1)/ 2;
 }
 
-static inline struct _obj_pos index_next(struct _segarray *self, const struct _obj_pos* cur_pos)
+static inline const darray_t get_seg(struct _segarray *self, struct _obj_pos pos)
 {
-    struct _obj_pos pos;
-    pos.map = cur_pos->map;
-    pos.seg = cur_pos->seg;
-
-    if(pos.seg + 1 >= self->_capacity)
-    {
-        pos.map++;
-        pos.seg = 0;
-    }
-    else
-    {
-        pos.seg++;
-    }
-    return pos;
+    return (const darray_t)self->_map->at(self->_map, pos.map);
 }
 
-static inline struct _obj_pos index_prev(struct _segarray *self, const struct _obj_pos* cur_pos)
+static inline void * get_obj(struct _segarray *self, struct _obj_pos pos, void *obj)
 {
-    struct _obj_pos pos;
-    pos.map = cur_pos->map;
-    pos.seg = cur_pos->seg;
-
-    if (pos.map == 0 && pos.seg == 0) {
-        return pos;
-    }
-
-    if(pos.seg == 0)
-    {
-        pos.map--;
-        pos.seg = self->_capacity - 1;
-    }
-    else
-    {
-        pos.seg--;
-    }
-    return pos;
+    darray_t darray = get_seg(self, pos);
+    return (void *)darray->at(darray, pos.seg);
 }
+
+static inline void print_pos(struct _segarray *self)
+{
+    printf("head[%d][%d], tail[%d][%d]\n", self->_head.map, self->_head.seg,
+           self->_tail.map, self->_tail.seg);
+}
+
 
 static bool segarray_push_back(struct _segarray *self, const void *obj)
 {
@@ -62,20 +40,47 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
     {
         return false;
     }
+    ringbuf_t map = self->_map;
 
-    if (self->full(self))
+    print_pos(self);
+
+    if (self->_tail.seg == self->_capacity - 1)
     {
-        if(self->_dynamic != true)
+        if(map->full(map))
         {
-            return false;
+            size_t new_capacity = unicstl_new_capacity(self->capacity(self));
+            if (!map->resize(map, new_capacity))
+            {
+                printf("map->resize(map, new_capacity) failed!");
+                return false;
+            }
         }
-        // size_t new_capacity = unicstl_new_capacity(self->capacity(self));
-        // if (self->resize(self, new_capacity) == false)
-        // {
-        //     return false;
-        // }
+        else
+        {
+            darray_t seg = darray_new(self->_obj_size, self->_capacity);
+            if(seg == NULL)
+            {
+                printf("darray_new failed!");
+                return false;
+            }
+            map->push_back(map, &seg);
+        }
     }
 
+    darray_t seg;
+    if(!map->back(map, &seg))
+    {
+        printf("map->back failed!");
+        return false;
+    }
+    size_t index = self->_tail.seg;
+    printf("index = %d\n", index);
+    if(!seg->set(seg, index, obj))
+    {
+        printf("seg->set failed!");
+        return false;
+    }
+    self->_tail.seg = ring_index_next(self->_tail.seg, self->_capacity);
 
     self->_size++;
     return true;
@@ -102,6 +107,21 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
         }
     }
 
+    // const darray_t seg = (const darray_t)self->_map->at(self->_map, self->_head.map);
+    // if(seg == NULL)
+    // {
+    //     return false;
+    // }
+    // self->obj = seg->at(seg, self->_head.seg);
+    // if(self->obj == NULL)
+    // {
+    //     return false;
+    // }
+
+    // size_t index = ring_index_prev(self->_head.seg, self->_capacity);
+    // obj_set(self->obj, index, obj, self->_obj_size);
+    // self->_head.seg = index;
+
     self->_size++;
     return true;
 }
@@ -113,6 +133,13 @@ static bool segarray_pop_back(struct _segarray *self, void *obj)
     {
         return false;
     }
+
+    // size_t index = ring_index_prev(self->_tail.seg, self->_capacity);
+    // if(obj != NULL)
+    // {
+    //     obj_get(self->obj, index, obj, self->_obj_size);
+    // }
+    // self->_tail = index;
 
     self->_size--;
     return true;
@@ -179,19 +206,20 @@ static size_t segarray_size(struct _segarray *self)
 static size_t segarray_capacity(struct _segarray *self)
 {
     unicstl_assert(self != NULL);
-    return self->_capacity;
+    // return self->_capacity;
+    return self->_capacity * self->_map->size(self->_map);
 }
 
 static bool segarray_empty(struct _segarray *self)
 {
     unicstl_assert(self != NULL);
-    return self->_head.map == self->_tail.map && self->_head.seg == self->_tail.seg;
+    return self->size(self) == 0;
 }
 
 static bool segarray_full(struct _segarray *self)
 {
     unicstl_assert(self != NULL);
-    size_t map_cap = self->_map->capacity(self->_map);
+    size_t map_cap = self->_map->size(self->_map);
 
     return (self->_head.map == 0 && self->_head.seg == 0) ||
            ( self->_tail.map == map_cap - 1 && self->_head.seg == self->_capacity - 1);
@@ -313,7 +341,7 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
     {
         self->_dynamic = true;
 
-        self->_map = darray_new(sizeof(darray_t), 8);
+        self->_map = ringbuf_new(sizeof(darray_t), 8);
         if(self->_map == NULL)
         {
             return false;
@@ -322,15 +350,17 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
         darray_t seg = darray_new(obj_size, capacity);
         if(seg == NULL)
         {
-            darray_free(&self->_map);
+            ringbuf_free(&self->_map);
             return false;
         }
-
-        self->_head.map = clac_start_index(self->_map->capacity(self->_map));
-        self->_tail.map = self->_head.map;
-
+        // config first obj index in seg array
         self->_head.seg = clac_start_index(self->_capacity);
         self->_tail.seg = self->_head.seg;
+
+        // add first seg array to map
+        self->_head.map = 0;
+        self->_tail.map = 0;
+        self->_map->push_back(self->_map, &seg);
     }
 
     self->_destory = segarray_destory;

@@ -47,6 +47,7 @@ void test_unicstl(void);
 void test_darray(void);
 void test_linklist(void);
 void test_dlinklist(void);
+void test_segarray(void);
 
 void test_ringbuf(void);
 

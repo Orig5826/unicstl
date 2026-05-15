@@ -21,8 +21,9 @@
 #include "darray.h"
 #include "linklist.h"
 #include "dlinklist.h"
-
 #include "ringbuf.h"
+
+#include "segarray.h"
 
 #include "list.h"
 #include "stack.h"

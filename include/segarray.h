@@ -13,6 +13,7 @@
 
 #include "unicstl_internal.h"
 #include "darray.h"
+#include "ringbuf.h"
 
 enum _segarray_order
 {
@@ -36,7 +37,7 @@ struct _segarray
     size_t _capacity;
     bool _dynamic;
 
-    darray_t _map;
+    ringbuf_t _map;
 
     struct _obj_pos _head;
     struct _obj_pos _tail;
