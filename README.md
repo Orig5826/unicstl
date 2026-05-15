@@ -21,22 +21,27 @@
 ```mermaid
 flowchart TB
     subgraph low
+        ringbuf[ringbuf<br>小数据或尽量不扩容]
+        rawbuf
+        
         darray
         linklist
         dlinklist
-        ringbuffer[ringbuffer<br>小数据或尽量不扩容]
     end
 
     subgraph hal
-        segarray[segarray<br>大数据扩容优先] --> darray
+        segarray[segarray<br>大数据扩容优先]
+
+        segarray -.-> ringbuf
+        segarray -.-> rawbuf
+
         string --> darray
         hashtable --> darray
     end
 
     subgraph adapter
-        deque -->|仅学习| dlinklist
         deque ==> segarray
-        deque --> ringbuffer
+        deque --> ringbuf
     end
 
     subgraph top
@@ -51,8 +56,8 @@ flowchart TB
     end
 
     subgraph embed
-        estack --> ringbuffer
-        equeue --> ringbuffer
+        estack --> ringbuf
+        equeue --> ringbuf
     end
 ```
 
@@ -62,9 +67,11 @@ flowchart TB
 |数据结构 |名称 |说明 |
 |---|---|---|
 | darray  | 动态数组 | 扩容
-| ringbuf   | 环形缓存区 | 扩容/固定容量
+| ringbuf   | 环形缓存区 | 扩容/外部缓存
 | linlist   | 单链表 | 
 | dlinlist   | 双向链表 |
+| rawbuf | 原始缓冲区 | 动态分配固定容量/外部缓存
+| segarray | 分段数组 | 扩容
 
 ### 容器结构
 |数据结构 |名称 |说明 |
@@ -76,8 +83,8 @@ flowchart TB
 ### 嵌入式结构
 |数据结构 |名称 |说明 |
 |---|---|---|
-| estack | 栈 | 固定容量
-| equeue  | 队列 | 固定容量
+| estack | 栈 | 外部缓存
+| equeue  | 队列 | 外部缓存
 
 
 ## 接口函数原型
@@ -86,7 +93,7 @@ flowchart TB
 struct* new(size_t obj_size, size_t capacity);  // 创建
 void free(struct**);                            // 释放
 
-bool init(size_t obj_size, size_t capacity, void *mem_pool);    // 静态初始化，支持传入内存池，不扩容
+bool init(size_t obj_size, size_t capacity, void *mem_base);    // 静态初始化，支持传入外部缓存
 
 // 外部实现
 int compare(void* obj1, void* obj2);    // 比较函数，若调用了和比较有关的接口，需要在初始化后配置（树、图必须）

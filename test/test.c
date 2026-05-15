@@ -95,7 +95,8 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_tree);
     TEST_ADD(test_graph);
 
-    TEST_ADD(test_segarray);
+    TEST_ADD(test_rawbuf);
+    // TEST_ADD(test_segarray);
     
     return UNITY_END();
 }

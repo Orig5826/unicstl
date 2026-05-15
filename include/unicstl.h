@@ -22,6 +22,7 @@
 #include "linklist.h"
 #include "dlinklist.h"
 #include "ringbuf.h"
+#include "rawbuf.h"
 
 #include "segarray.h"
 

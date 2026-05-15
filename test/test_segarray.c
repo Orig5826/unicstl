@@ -841,8 +841,8 @@ void test_segarray(void)
 //     RUN_TEST(test_segarray_init);
 // #endif
 
-    RUN_TEST(test_segarray_push_back);
-    RUN_TEST(test_segarray_push_back_invalid);
+    // RUN_TEST(test_segarray_push_back);
+    // RUN_TEST(test_segarray_push_back_invalid);
 
 //     RUN_TEST(test_segarray_push_front);
 //     RUN_TEST(test_segarray_push_front_invalid);

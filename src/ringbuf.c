@@ -366,7 +366,7 @@ iterator_t ringbuf_iter(struct _ringbuf *self, enum _ringbuf_order order)
  * @return true
  * @return false
  */
-bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void *mem_pool)
+bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void *mem_base)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(obj_size > 0);
@@ -376,20 +376,8 @@ bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void 
     self->_size = 0;
     self->_capacity = capacity + 1;
 
-    if (mem_pool != NULL)
-    {
-        self->obj = (char *)mem_pool;
-        self->_dynamic = false;
-    }
-    else
-    {
-        self->obj = (char *)unicstl_malloc(self->_obj_size * self->_capacity);
-        if (self->obj == NULL)
-        {
-            return false;
-        }
-        self->_dynamic = true;
-    }
+    self->obj = mem_base;
+    self->_dynamic = false;
 
     self->_head = 0;
     self->_tail = 0;
@@ -427,6 +415,16 @@ bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void 
     // -------------------- debug --------------------
     self->print = ringbuf_print;
 
+    // -------------------- malloc --------------------
+    if (mem_base == NULL)
+    {
+        self->obj = (char *)unicstl_malloc(self->_obj_size * self->_capacity);
+        if (self->obj == NULL)
+        {
+            return false;
+        }
+        self->_dynamic = true;
+    }
     return true;
 }
 
