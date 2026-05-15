@@ -373,6 +373,110 @@ static void test_ringbuf_front_invalid(void)
     ringbuf_free(&ringbuf);
 }
 
+
+static void test_ringbuf_set(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    ringbuf_t ringbuf = ringbuf_new(sizeof(int), len);
+    // ringbuf->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(ringbuf->push_back(ringbuf, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, ringbuf->size(ringbuf));
+
+        size_t index = ringbuf->size(ringbuf) - 1;
+        TEST_ASSERT_TRUE(ringbuf->get(ringbuf, index, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+
+    temp = 0x11;
+    TEST_ASSERT_TRUE(ringbuf->set(ringbuf, 0, &temp));
+    temp = 0x22;
+    TEST_ASSERT_TRUE(ringbuf->set(ringbuf, 5, &temp));
+    temp = 0x33;
+    TEST_ASSERT_TRUE(ringbuf->set(ringbuf, 9, &temp));
+
+    TEST_ASSERT_TRUE(ringbuf->get(ringbuf, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(0x11, temp);
+    TEST_ASSERT_TRUE(ringbuf->get(ringbuf, 5, &temp));
+    TEST_ASSERT_EQUAL_INT(0x22, temp);
+    TEST_ASSERT_TRUE(ringbuf->get(ringbuf, 9, &temp));
+    TEST_ASSERT_EQUAL_INT(0x33, temp);
+
+    ringbuf_free(&ringbuf);
+}
+
+static void test_ringbuf_set_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    ringbuf_t ringbuf = ringbuf_new(sizeof(int), len);
+    // ringbuf->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        ringbuf->push_back(ringbuf, &data[i]);
+    }
+
+    // ---------- invalid index ----------
+    temp = 0x11;
+    TEST_ASSERT_FALSE(ringbuf->set(ringbuf, -1, &temp));
+    TEST_ASSERT_FALSE(ringbuf->set(ringbuf, len, &temp));
+    TEST_ASSERT_FALSE(ringbuf->set(ringbuf, 999, &temp));
+
+    TEST_ASSERT_FALSE(ringbuf->set(ringbuf, 0, NULL));
+
+    ringbuf_free(&ringbuf);
+}
+
+static void test_ringbuf_at(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    ringbuf_t ringbuf = ringbuf_new(sizeof(int), len);
+    // ringbuf->compare = compare_num;
+    for(i = 0; i < len; i++)
+    {
+        ringbuf->push_back(ringbuf, &data[i]);
+    }
+
+    const int *p_int = NULL;
+    p_int = ringbuf->at(ringbuf, 0);
+    TEST_ASSERT_EQUAL_INT(1, *p_int);
+
+    p_int = ringbuf->at(ringbuf, 4);
+    TEST_ASSERT_EQUAL_INT(5, *p_int);
+
+    p_int = ringbuf->at(ringbuf, 9);
+    TEST_ASSERT_EQUAL_INT(10, *p_int);
+
+    TEST_ASSERT_NULL(ringbuf->at(ringbuf, 10));
+    TEST_ASSERT_NULL(ringbuf->at(ringbuf, -1));
+
+    //  warning: initialization discards 'const' qualifier from pointer target type
+    // int *p_int_warring = ringbuf->at(ringbuf, 0);
+
+    // !!! you should not do this.
+    int *p_int_warring = (int *)ringbuf->at(ringbuf, 0);
+    *p_int_warring = 100;
+
+    ringbuf->get(ringbuf, 0, &temp);
+    TEST_ASSERT_EQUAL_INT(100, temp);
+
+    ringbuf_free(&ringbuf);
+}
+
 static void test_ringbuf_iter(void)
 {
     size_t i = 0;
@@ -750,6 +854,13 @@ void test_ringbuf(void)
     RUN_TEST(test_ringbuf_front);
     RUN_TEST(test_ringbuf_front_invalid);
 
+    // ---------- random access ----------
+    RUN_TEST(test_ringbuf_set);
+    RUN_TEST(test_ringbuf_set_invalid);
+
+    RUN_TEST(test_ringbuf_at);
+
+    // ---------- base ----------
     RUN_TEST(test_ringbuf_iter);
 
     RUN_TEST(test_ringbuf_resize);
@@ -758,9 +869,8 @@ void test_ringbuf(void)
 
     RUN_TEST(test_ringbuf_dynamic);
 
-    // ---------- base ----------
     RUN_TEST(test_ringbuf_status);
-
+    
     // ---------- ext ----------
     RUN_TEST(test_ringbuf_struct);
 }

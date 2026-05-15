@@ -43,6 +43,11 @@ struct _ringbuf
     bool (*pop_front)(struct _ringbuf* self, void* obj);
     bool (*back)(struct _ringbuf* self, void* obj);
     bool (*front)(struct _ringbuf* self, void* obj);
+
+    // -------------------- random access -------------------- 
+    bool (*set)(struct _ringbuf *self, size_t index, const void *obj);      // O(1)
+    bool (*get)(struct _ringbuf *self, size_t index, void *obj);            // O(1)
+    const void* (*at)(struct _ringbuf *self, size_t index);                 // O(1)
     
     // base
     bool (*resize)(struct _ringbuf *self, size_t capacity);

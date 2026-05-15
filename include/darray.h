@@ -39,13 +39,13 @@ struct _darray
     bool (*append)(struct _darray *self, const void *obj);                  // O(1)
     bool (*pop)(struct _darray *self, void *obj);                           // O(1)
     
-    bool (*insert)(struct _darray *self, size_t index, const void *obj);   // O(n)
-    bool (*remove)(struct _darray *self, size_t index, void *obj);         // O(n)
+    bool (*insert)(struct _darray *self, size_t index, const void *obj);    // O(n)
+    bool (*remove)(struct _darray *self, size_t index, void *obj);          // O(n)
 
-    bool (*set)(struct _darray *self, size_t index, const void *obj);      // O(1)
-    bool (*get)(struct _darray *self, size_t index, void *obj);            // O(1)
-
-    const void* (*at)(struct _darray *self, size_t index);                // O(1)
+    // -------------------- random access -------------------- 
+    bool (*set)(struct _darray *self, size_t index, const void *obj);       // O(1)
+    bool (*get)(struct _darray *self, size_t index, void *obj);             // O(1)
+    const void* (*at)(struct _darray *self, size_t index);                  // O(1)
 
     // base
     bool (*resize)(struct _darray *self, size_t capacity);

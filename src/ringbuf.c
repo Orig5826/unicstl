@@ -20,6 +20,11 @@ static inline size_t index_prev(size_t index, size_t capacity)
     return index == 0 ? (capacity - 1) : index - 1;
 }
 
+static inline size_t ring_index(size_t head, size_t index, size_t capacity)
+{
+    return (head + index) % capacity;
+}
+
 static bool ringbuf_push_back(struct _ringbuf *self, const void *obj)
 {
     unicstl_assert(self != NULL);
@@ -141,6 +146,47 @@ static bool ringbuf_front(struct _ringbuf *self, void *obj)
     }
     obj_get(self->obj, self->_head, obj, self->_obj_size);
     return true;
+}
+
+static bool ringbuf_set(struct _ringbuf *self, size_t index, const void *obj)
+{
+    unicstl_assert(self != NULL);
+    if (index >= self->size(self) || obj == NULL)
+    {
+        return false;
+    }
+    index = ring_index(self->_head, index, self->_capacity);
+
+    size_t offset = index * self->_obj_size;
+    memmove((char *)self->obj + offset, obj, self->_obj_size);
+    return true;
+}
+
+static bool ringbuf_get(struct _ringbuf *self, size_t index, void *obj)
+{
+    unicstl_assert(self != NULL);
+    if (index >= self->size(self) || obj == NULL)
+    {
+        return false;
+    }
+    index = ring_index(self->_head, index, self->_capacity);
+
+    size_t offset = index * self->_obj_size;
+    memmove(obj, (char *)self->obj + offset, self->_obj_size);
+    return true;
+}
+
+static const void* ringbuf_at(struct _ringbuf *self, size_t index)
+{
+    unicstl_assert(self != NULL);
+    if (index >= self->size(self))
+    {
+        return false;
+    }
+    index = ring_index(self->_head, index, self->_capacity);
+    
+    size_t offset = index * self->_obj_size;
+    return (const char *)self->obj + offset;
 }
 
 static bool ringbuf_resize(struct _ringbuf *self, size_t capacity)
@@ -373,6 +419,11 @@ bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void 
     self->pop_front = ringbuf_pop_front;
     self->back = ringbuf_back;
     self->front = ringbuf_front;
+
+    // random access
+    self->get = ringbuf_get;
+    self->set = ringbuf_set;
+    self->at = ringbuf_at;
 
     // base
     self->resize = ringbuf_resize;

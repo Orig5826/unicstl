@@ -280,6 +280,47 @@ static void test_darray_set_invalid(void)
     darray_free(&darray);
 }
 
+static void test_darray_at(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+
+    const int *p_int = NULL;
+    p_int = darray->at(darray, 0);
+    TEST_ASSERT_EQUAL_INT(1, *p_int);
+
+    p_int = darray->at(darray, 4);
+    TEST_ASSERT_EQUAL_INT(5, *p_int);
+
+    p_int = darray->at(darray, 9);
+    TEST_ASSERT_EQUAL_INT(10, *p_int);
+
+    TEST_ASSERT_NULL(darray->at(darray, 10));
+    TEST_ASSERT_NULL(darray->at(darray, -1));
+
+
+    //  warning: initialization discards 'const' qualifier from pointer target type
+    // int *p_int_warring = darray->at(darray, 0);
+
+    // !!! you should not do this.
+    int *p_int_warring = (int *)darray->at(darray, 0);
+    *p_int_warring = 100;
+
+    darray->get(darray, 0, &temp);
+    TEST_ASSERT_EQUAL_INT(100, temp);
+
+    darray_free(&darray);
+}
+
 static void test_darray_resize(void)
 {
     int temp = 0;
@@ -393,48 +434,6 @@ static void test_darray_index_invalid(void)
 
     TEST_ASSERT_EQUAL_INT(-1, darray->index(darray, NULL));
     TEST_ASSERT_FALSE(darray->contains(darray, NULL));
-
-    darray_free(&darray);
-}
-
-
-static void test_darray_at(void)
-{
-    int temp = 0;
-    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
-    size_t len = sizeof(data) / sizeof(data[0]);
-    size_t i = 0;
-
-    darray_t darray = darray_new(sizeof(int), len);
-    darray->compare = compare_num;
-    for(i = 0; i < len; i++)
-    {
-        darray->append(darray, &data[i]);
-    }
-
-    const int *p_int = NULL;
-    p_int = darray->at(darray, 0);
-    TEST_ASSERT_EQUAL_INT(1, *p_int);
-
-    p_int = darray->at(darray, 4);
-    TEST_ASSERT_EQUAL_INT(5, *p_int);
-
-    p_int = darray->at(darray, 9);
-    TEST_ASSERT_EQUAL_INT(10, *p_int);
-
-    TEST_ASSERT_NULL(darray->at(darray, 10));
-    TEST_ASSERT_NULL(darray->at(darray, -1));
-
-
-    //  warning: initialization discards 'const' qualifier from pointer target type
-    // int *p_int_warring = darray->at(darray, 0);
-
-    // !!! you should not do this.
-    int *p_int_warring = (int *)darray->at(darray, 0);
-    *p_int_warring = 100;
-
-    darray->get(darray, 0, &temp);
-    TEST_ASSERT_EQUAL_INT(100, temp);
 
     darray_free(&darray);
 }
@@ -688,13 +687,13 @@ void test_darray(void)
     RUN_TEST(test_darray_set);
     RUN_TEST(test_darray_set_invalid);
 
+    RUN_TEST(test_darray_at);
+
     RUN_TEST(test_darray_resize);
     RUN_TEST(test_darray_resize_invalid);
 
     RUN_TEST(test_darray_index);    // index, search, contains
     RUN_TEST(test_darray_index_invalid);
-
-    RUN_TEST(test_darray_at);
 
     RUN_TEST(test_darray_dynamic);
 
