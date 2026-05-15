@@ -40,4 +40,4 @@ void rawbuf_free(rawbuf_t *rawbuf);
 bool rawbuf_init(struct _rawbuf *self, size_t obj_size, size_t capacity, void *mem_base);
 #endif
 
-#endif
+#endif // _RAWBUF_H_

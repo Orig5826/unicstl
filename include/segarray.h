@@ -12,19 +12,13 @@
 #define _SEGARRAY_H_
 
 #include "unicstl_internal.h"
-#include "darray.h"
 #include "ringbuf.h"
+#include "rawbuf.h"
 
 enum _segarray_order
 {
     SEGARRAY_FORWARD,
     SEGARRAY_REVERSE,
-};
-
-struct _obj_pos
-{
-    size_t map;
-    size_t seg;
 };
 
 struct _segarray
@@ -36,11 +30,13 @@ struct _segarray
     size_t _size;
     size_t _capacity;
     bool _dynamic;
+    size_t _segsize;
 
     ringbuf_t _map;
-
-    struct _obj_pos _head;
-    struct _obj_pos _tail;
+    size_t _maphead;
+    size_t _maptail;
+    size_t _seghead;
+    size_t _segtail;
     
     struct _iterator _iter;
     void (*_destory)(struct _segarray* self);

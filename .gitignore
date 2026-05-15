@@ -1,4 +1,7 @@
 
+# log/txt
+*.log
+
 # cmake
 build/
 release/
