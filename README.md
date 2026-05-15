@@ -19,68 +19,120 @@
 ## 设计架构
 
 ```mermaid
-flowchart TB
-    subgraph low
-        ringbuf[ringbuf<br>小数据或尽量不扩容]
-        rawbuf
-        
-        darray
-        linklist
-        dlinklist
-    end
+classDiagram
+direction TB
 
-    subgraph hal
-        segarray[segarray<br>大数据扩容优先]
+namespace dynamic_array {
+    class ringbuf{
+        小数据
+        少扩容
+    }
+    class rawbuf
+    class darray
+    class linklist{
+        <<单链表>>
+    }
+    class dlinklist{
+        <<双向链表>>
+    }
+}
 
-        segarray -.-> ringbuf
-        segarray -.-> rawbuf
+namespace embed {
+    class estack
+    class equeue
+}
 
-        string --> darray
-        hashtable --> darray
-    end
+namespace iter {
+    class iterator{
+        + hasnext()
+        + next() 
+    }
+}
 
-    subgraph adapter
-        deque ==> segarray
-        deque --> ringbuf
-    end
+namespace hal {
+    class segarray{
+        大数据
+        优先扩容
+    }
+    class string
+    class hashtable
+}
 
-    subgraph top
-        stack --> deque
-        queue --> deque
+namespace adapter {
+    class deque
+}
 
-        rbtree -.-> stack
-        rbtree -.-> queue
+namespace top {
+    class stack
+    class queue
+    class rbtree
+    class map
+    class unordered_map
+}
 
-        map -.-> rbtree
-        unordered_map -.-> hashtable
-    end
 
-    subgraph embed
-        estack --> ringbuf
-        equeue --> ringbuf
-    end
+%% ========== 以下全部按你真实逻辑修正 ==========
+
+%% segarray 包含 ringbuf，同生共死
+segarray *-- ringbuf : 组合
+segarray *-- rawbuf : 组合
+
+%% string / hashtable 底层使用darray
+string *-- darray : 组合
+hashtable *-- darray : 组合
+
+%% deque 当前ringbuf，可换segarray
+deque *-- ringbuf : 组合
+deque *-- segarray : 组合
+
+%% stack/queue 持有deque*，管理生命周期
+stack *-- deque : 组合
+queue *-- deque : 组合
+
+%% 临时使用 → 依赖
+rbtree ..> stack : 依赖
+rbtree ..> queue : 依赖
+
+%% map/unordered_map 底层使用 rbtree/hashtable
+map *-- rbtree : 组合
+unordered_map *-- hashtable : 组合
+
+%% embed 是内联函数，仅调用 → 依赖
+estack ..> ringbuf : 依赖
+equeue ..> ringbuf : 依赖
 ```
 
 ## 数据结构
 
-### 基础结构
+### 底层基础容器
+> 原生裸数据结构
+
 |数据结构 |名称 |说明 |
 |---|---|---|
 | darray  | 动态数组 | 扩容
-| ringbuf   | 环形缓存区 | 扩容/外部缓存
-| linlist   | 单链表 | 
-| dlinlist   | 双向链表 |
+| ringbuf   | 环形缓存区 | 扩容/外部缓存 
+| linklist   | 单链表 | 
+| dlinklist   | 双向链表 |
 | rawbuf | 原始缓冲区 | 动态分配固定容量/外部缓存
 | segarray | 分段数组 | 扩容
 
-### 容器结构
+**使用建议**
+- ringbuf 小数据，少库容
+- segarray 大数据，优先扩容
+
+
+### 通用标准容器
+> 基于底层封装
+
 |数据结构 |名称 |说明 |
 |---|---|---|
 | deque  | 双端队列 | 扩容
 | stack  | 栈 | 扩容
 | queue  | 队列 | 扩容
 
-### 嵌入式结构
+### 嵌入式专用容器
+> 适配嵌入式场景、外置内存、无动态堆分配
+
 |数据结构 |名称 |说明 |
 |---|---|---|
 | estack | 栈 | 外部缓存
@@ -127,16 +179,22 @@ const void* iter_next();                // 迭代器下一个元素 <只读访�
 
 // 索引操作
 size_t index(void *obj);                // 获取元素索引, -1为不存在
-bool contains(const void* obj);         // 判断元素是否存在 <返回bool>
 
 bool insert(size_t index, const void* obj);     // 插入元素
 bool remove(size_t index, const void *obj);     // 删除元素 < delete !!!废弃：防止项目用于C++，关键字冲突>
+
+// 随机访问
 bool set(uint32_t index, const void* obj);      // 设置元素
 bool get(uint32_t index, void* obj);            // 获取元素
 const void* at(size_t index);                   // 获取元素指针
 
+// 排序 & 搜索
+bool sort();                                // 排序
+bool search(const void* obj);               // 搜索元素 <返回索引，-1为不存在>
+
 // 统计
-uint32_t count(const void* obj);    // 统计元素的个数
+uint32_t count(const void* obj);        // 统计元素的个数
+bool contains(const void* obj);         // 判断元素是否存在 <返回bool>
 
 // 树
 bool insert(const void* obj);       // [树] 插入元素
@@ -147,15 +205,22 @@ bool find_(const void* obj);        // [图：顶点、边] 查找元素
 ```
 
 ### 分支命名
-|命名   |说明 | 示例
-|:----: |:----: | ----
-| master | 主分支 | master
-| dev | 开发分支 | dev-stack
-| test | 测试分支| test-tree
-| release | 发布分支 | v1.2.5
-| feature | 新功能分支 | feature-tree
-| bugfix | bug修复分支 | bugfix-map
-| refactor | 重构分支| refactor-darray
+| 分支    | 作用         | 示例
+|-------- |------------ | ----
+| master  | 稳定主分支  | master
+| dev     | 开发主分支  | dev-stack
+| test    | 功能测试    | test-tree
+| release | 版本发布    | v1.2.5
+| ---     | ---         | ---
+| feature | 新增独立功能| feature-tree
+| bugfix  | 问题修复    | bugfix-map
+| refactor| 架构重构    | refactor-darray
+
+**基础命名规则**
+- 简易单层命名：**分支[`-`模块]**
+    - 示例：`dev-stack`、`test-tree`、`refactor`
+- 多层细分命名：**模块`/`分支[`-`功能]**
+    - 示例：`stack/dev-push` `rbtree/test-insert` `v0.0.02/refactor`
 
 ## 修改日志
 
@@ -165,6 +230,8 @@ bool find_(const void* obj);        // [图：顶点、边] 查找元素
     - add estack/equeue for embedded
     - darray add function: search/sort
     - add algo: sort and search
+    - add rawbuf/segarray
+    
 - refactor: 
     - deque base on ringbuf
     - stack base on deque 
