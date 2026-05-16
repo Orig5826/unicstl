@@ -59,12 +59,12 @@ static void graph_destory(struct _graph* self)
     {
         if (self->_head->visited != NULL)
         {
-            free(self->_head->visited);
+            unicstl_free(self->_head->visited);
         }
 
         if (self->_head->obj != NULL)
         {
-            free(self->_head->obj);
+            unicstl_free(self->_head->obj);
         }
 
         if (self->_head->edge != NULL)
@@ -73,12 +73,12 @@ static void graph_destory(struct _graph* self)
             {
                 if (self->_head->edge[i] != NULL)
                 {
-                    free(self->_head->edge[i]);
+                    unicstl_free(self->_head->edge[i]);
                 }
             }
-            free(self->_head->edge);
+            unicstl_free(self->_head->edge);
         }
-        free(self->_head);
+        unicstl_free(self->_head);
         self->_head = NULL;
     }
 }
@@ -204,19 +204,19 @@ static bool graph_init2(struct _graph* self, size_t obj_size, size_t capacity)
     self->_capacity = capacity;
     self->_ratio = 1;
 
-    self->_head = (struct _graph_node*)malloc(sizeof(struct _graph_node));
+    self->_head = (struct _graph_node*)unicstl_malloc(sizeof(struct _graph_node));
     if (self->_head == NULL)
     {
         goto done;
     }
 
-    self->_head->obj = (void*)malloc(self->_obj_size);
+    self->_head->obj = (void*)unicstl_malloc(self->_obj_size);
     if (self->_head->obj == NULL)
     {
         goto done1;
     }
 
-    self->_head->edge = (size_t**)malloc(self->_capacity * sizeof(size_t*));
+    self->_head->edge = (size_t**)unicstl_malloc(self->_capacity * sizeof(size_t*));
     if (self->_head->edge == NULL)
     {
         goto done2;
@@ -225,7 +225,7 @@ static bool graph_init2(struct _graph* self, size_t obj_size, size_t capacity)
     size_t i = 0;
     for (i = 0; i < self->_capacity; i++)
     {
-        self->_head->edge[i] = (size_t*)malloc(self->_capacity * sizeof(size_t));
+        self->_head->edge[i] = (size_t*)unicstl_malloc(self->_capacity * sizeof(size_t));
         if (self->_head->edge[i] == NULL)
         {
             edges += 1;
@@ -233,7 +233,7 @@ static bool graph_init2(struct _graph* self, size_t obj_size, size_t capacity)
         }
     }
 
-    self->_head->visited = (uint8_t*)calloc(1, self->_capacity * sizeof(uint8_t));
+    self->_head->visited = (uint8_t*)unicstl_calloc(1, self->_capacity * sizeof(uint8_t));
     if (self->_head->visited == NULL)
     {
         goto done4;
@@ -268,13 +268,13 @@ done4:
 done3:
     for (size_t j = 0; j < edges; j++)
     {
-        free(self->_head->edge[j]);
+        unicstl_free(self->_head->edge[j]);
     }
-    free(self->_head->edge);
+    unicstl_free(self->_head->edge);
 done2:
-    free(self->_head->obj);
+    unicstl_free(self->_head->obj);
 done1:
-    free(self->_head);
+    unicstl_free(self->_head);
 done:
     return false;
 }
@@ -282,7 +282,7 @@ done:
 graph_t graph_new2(size_t obj_size, size_t capacity)
 {
     graph_t graph = NULL;
-    graph = malloc(sizeof(struct _graph));
+    graph = unicstl_malloc(sizeof(struct _graph));
     if (graph == NULL)
     {
         return NULL;
@@ -290,7 +290,7 @@ graph_t graph_new2(size_t obj_size, size_t capacity)
 
     // if(graph_init2(graph, obj_size, capacity) != true)
     // {
-    //     free(graph);
+    //     unicstl_free(graph);
     //     return NULL;
     // }
     return graph;
@@ -304,7 +304,7 @@ void graph_free(graph_t* graph)
     }
 
     (*graph)->_destory(*graph);
-    free(*graph);
+    unicstl_free(*graph);
     *graph = NULL;
 }
 
@@ -312,17 +312,17 @@ void graph_free(graph_t* graph)
 
 static struct _graph_node *graph_node_new(void *obj, size_t obj_size)
 {
-    void *new_obj = (void *)calloc(1, obj_size);
+    void *new_obj = (void *)unicstl_calloc(1, obj_size);
     if (new_obj == NULL)
     {
         return NULL;
     }
     memmove(new_obj, obj, obj_size);
 
-    struct _graph_node *new_node = (struct _graph_node *)malloc(sizeof(struct _graph_node));
+    struct _graph_node *new_node = (struct _graph_node *)unicstl_malloc(sizeof(struct _graph_node));
     if (new_node == NULL)
     {
-        free(new_obj);
+        unicstl_free(new_obj);
         return NULL;
     }
     new_node->obj = new_obj;
@@ -339,17 +339,17 @@ static void greph_node_free(struct _graph_node **node)
     {
         if ((*node)->obj != NULL)
         {
-            free((*node)->obj);
+            unicstl_free((*node)->obj);
             (*node)->obj = NULL;
         }
 
         if ((*node)->edgehead != NULL)
         {
-            free((*node)->edgehead);
+            unicstl_free((*node)->edgehead);
             (*node)->edgehead = NULL;
         }
 
-        free(*node);
+        unicstl_free(*node);
 
         *node = NULL;
     }
@@ -357,7 +357,7 @@ static void greph_node_free(struct _graph_node **node)
 
 static struct _graph_edge *graph_edge_new(void *target, size_t weight)
 {
-    struct _graph_edge *new_edge = (struct _graph_edge *)malloc(sizeof(struct _graph_edge));
+    struct _graph_edge *new_edge = (struct _graph_edge *)unicstl_malloc(sizeof(struct _graph_edge));
     if (new_edge == NULL)
     {
         return NULL;
@@ -372,7 +372,7 @@ static void graph_edge_free(struct _graph_edge **edge)
 {
     if (edge != NULL && *edge != NULL)
     {
-        free(*edge);
+        unicstl_free(*edge);
         *edge = NULL;
     }
 }
@@ -434,7 +434,7 @@ static void graph_destory(struct _graph *self)
     self->clear(self);
     if (self->_head != NULL)
     {
-        free(self->_head);
+        unicstl_free(self->_head);
         self->_head = NULL;
     }
 
@@ -1016,7 +1016,7 @@ static bool graph_init(struct _graph *self, size_t obj_size)
         return false;
     }
 
-    self->_head = (struct _graph_node *)malloc(sizeof(struct _graph_node));
+    self->_head = (struct _graph_node *)unicstl_malloc(sizeof(struct _graph_node));
     if (self->_head == NULL)
     {
         stack_free(&self->stack);
@@ -1069,15 +1069,17 @@ static bool graph_init(struct _graph *self, size_t obj_size)
 graph_t graph_new(size_t obj_size)
 {
     graph_t graph = NULL;
-    graph = malloc(sizeof(struct _graph));
+    graph = unicstl_malloc(sizeof(struct _graph));
     if (graph == NULL)
     {
+        log_warn("graph malloc failed\n");
         return NULL;
     }
 
     if (graph_init(graph, obj_size) != true)
     {
-        free(graph);
+        log_warn("graph init failed\n");
+        unicstl_free(graph);
         return NULL;
     }
     return graph;
@@ -1091,6 +1093,6 @@ void graph_free(graph_t *graph)
     }
 
     (*graph)->_destory(*graph);
-    free(*graph);
+    unicstl_free(*graph);
     *graph = NULL;
 }

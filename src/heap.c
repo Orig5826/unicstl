@@ -54,7 +54,7 @@ static void heap_swap(struct _heap* self, int i, int j)
 #ifdef C99_VLA
     char tmp[self->_obj_size];
 #else
-    char* tmp = malloc(self->_obj_size);
+    char* tmp = unicstl_malloc(self->_obj_size);
     if (tmp == NULL)
     {
         return;
@@ -66,7 +66,7 @@ static void heap_swap(struct _heap* self, int i, int j)
     memmove((char*)self->obj + j * self->_obj_size, tmp, self->_obj_size);
 
 #ifndef C99_VLA
-    free(tmp);
+    unicstl_free(tmp);
 #endif
 }
 
@@ -232,7 +232,7 @@ static void heap_destory(struct _heap* self)
     self->clear(self);
     if(self->obj)
     {
-        free(self->obj);
+        unicstl_free(self->obj);
     }
 }
 
@@ -304,7 +304,7 @@ static bool heap_init2(struct _heap* self, size_t obj_size, size_t capacity)
     self->_capacity = capacity;
     self->_ratio = 2;
 
-    self->obj = (void*)malloc(self->_capacity * self->_obj_size);
+    self->obj = (void*)unicstl_malloc(self->_capacity * self->_obj_size);
     if(self->obj == NULL)
     {
         return false;
@@ -341,7 +341,7 @@ static bool heap_init2(struct _heap* self, size_t obj_size, size_t capacity)
 heap_t heap_max_new2(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
-    heap = (struct _heap*)malloc(sizeof(struct _heap));
+    heap = (struct _heap*)unicstl_malloc(sizeof(struct _heap));
     if(heap == NULL)
     {
         return NULL;
@@ -349,7 +349,7 @@ heap_t heap_max_new2(size_t obj_size, size_t capacity)
 
     if(heap_init2(heap, obj_size, capacity) != true)
     {
-        free(heap);
+        unicstl_free(heap);
         return NULL;
     }
 
@@ -360,15 +360,17 @@ heap_t heap_max_new2(size_t obj_size, size_t capacity)
 heap_t heap_min_new2(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
-    heap = (struct _heap*)malloc(sizeof(struct _heap));
+    heap = (struct _heap*)unicstl_malloc(sizeof(struct _heap));
     if(heap == NULL)
     {
+        log_warn("heap malloc failed\n");
         return NULL;
     }
 
     if(heap_init2(heap, obj_size, capacity) != true)
     {
-        free(heap);
+        log_warn("heap init failed\n");
+        unicstl_free(heap);
         return NULL;
     }
 
@@ -381,7 +383,7 @@ void heap_free(heap_t* heap)
     if(*heap != NULL)
     {
         (*heap)->_destory(*heap);
-        free(*heap);
+        unicstl_free(*heap);
     }
     *heap = NULL;
 }

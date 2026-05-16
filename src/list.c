@@ -23,7 +23,7 @@ static bool list_insert(struct _list* self, int index, void* obj)
     if (self->size(self) == self->_capacity)
     {
         int capacity = self->_capacity * self->_ratio;
-        void* obj_new = (void*)realloc(self->obj, capacity * self->_obj_size);
+        void* obj_new = (void*)unicstl_realloc(self->obj, capacity * self->_obj_size);
         if (obj_new == NULL)
         {
             return false;
@@ -162,13 +162,13 @@ static bool list_empty(struct _list* self)
     return !self->size(self);
 }
 
-// free
+// unicstl_free
 static void list_destory(struct _list* self)
 {
     unicstl_assert(self != NULL);
     if (self->obj != NULL)
     {
-        free(self->obj);
+        unicstl_free(self->obj);
     }
 }
 
@@ -379,7 +379,7 @@ static bool list_init2(struct _list* self, size_t obj_size, size_t capacity)
     self->_ratio = 2;
     self->_cur = 0;
 
-    self->obj = (void*)malloc(self->_capacity * self->_obj_size);
+    self->obj = (void*)unicstl_malloc(self->_capacity * self->_obj_size);
     if (self->obj == NULL)
     {
         return false;
@@ -429,15 +429,17 @@ static bool list_init2(struct _list* self, size_t obj_size, size_t capacity)
 list_t list_new2(size_t obj_size, size_t capacity)
 {
     struct _list* list = NULL;
-    list = (struct _list*)calloc(1, sizeof(struct _list));
+    list = (struct _list*)unicstl_calloc(1, sizeof(struct _list));
     if (list == NULL)
     {
+        log_warn("list calloc failed\n");
         return NULL;
     }
 
     if (list_init2(list, obj_size, capacity) != true)
     {
-        free(list);
+        log_warn("list init failed\n");
+        unicstl_free(list);
         return NULL;
     }
     return list;
@@ -452,7 +454,7 @@ void list_free(list_t* list)
         {
             (*list)->_destory(*list);
         }
-        free(*list);
+        unicstl_free(*list);
         *list = NULL;
     }
 }

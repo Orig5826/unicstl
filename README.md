@@ -22,7 +22,7 @@
 classDiagram
 direction TB
 
-namespace dynamic_array {
+namespace basic {
     class ringbuf{
         小数据
         少扩容

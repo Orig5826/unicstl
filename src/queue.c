@@ -188,12 +188,14 @@ queue_t queue_new(size_t obj_size, size_t capacity)
     queue = (struct _queue *)unicstl_malloc(sizeof(struct _queue));
     if(queue == NULL)
     {
+        log_warn("queue malloc failed!\n");
         return NULL;
     }
 
     if(queue_init(queue, obj_size, capacity) != true)
     {
-        free(queue);
+        log_warn("queue init failed!\n");
+        unicstl_free(queue);
         return NULL;
     }
     return queue;
@@ -214,7 +216,7 @@ void queue_free(queue_t* queue)
         {
             (*queue)->_destory(*queue);
         }
-        free(*queue);
+        unicstl_free(*queue);
         *queue = NULL;
     }
 }

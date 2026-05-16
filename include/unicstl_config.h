@@ -9,8 +9,12 @@
  * 
  */
 #ifndef _UNICSTL_CONFIG_H_
+#define _UNICSTL_CONFIG_H_
 
-// #define NDEBUG          // release mode if define NDEBUG
+// #define NDEBUG          // release mode if define
+#ifndef NDEBUG
+#define UNICSTL_DEBUG
+#endif
 
 /**
  * @brief unicstl contains which module
@@ -26,47 +30,58 @@
 #define UNICSTL_ITERATOR
 
 /**
- * @brief unicstl use which function
+ * @brief malloc config
  * 
  */
-#define UNICSTL_MALLOC
+#define UNICSTL_MALLOC_ENABLE           // malloc enable
+// #define UNICSTL_MALLOC_CUSTOM        // malloc custom support
+
 
 /**
  * @brief 
  * 
  */
-#ifndef NDEBUG
-#define UNICSTL_DEBUG
-#endif
-
 #ifdef UNICSTL_DEBUG
 
-#define UNICSTL_DEBUG_STACK
-#define UNICSTL_DEBUG_QUEUE
-#define UNICSTL_DEBUG_DEQUE
-#define UNICSTL_DEBUG_TREE
-#define UNICSTL_DEBUG_HEAP
-#define UNICSTL_DEBUG_GRAPH
+/**
+ * @brief assert config
+ * 
+ */
+#define UNICSTL_ASSERT_ENABLE              // assert enable
+// #define ASSERT_CUSTOM                   // assert custom support
 
-
-#define UNICSTL_ASSERT      // assert
-#define LOGGER_ON           // logger on
+/**
+ * @brief logger config
+ * 
+ */
+#define LOGGER_ENABLE                       // logger enable
 
 /**
  * @brief debug level
- *      0. DEBUG  
- *      1. INFO  
- *      2. WARN  
- *      3. ERROR  
+ *   LOG_DEBUG
+ *   LOG_INFO
+ *   LOG_WARN
+ *   LOG_ERROR
+ *   LOG_NONE
  */
-#define LOG_LEVEL                    0
+#define LOG_LEVEL                       LOG_WARN
 
 /**
  * @brief 
- *      0. simple
- *      1. detail
+ *      LOG_DETAIL_DISABLE
+ *      LOG_DETAIL_ENABLE
  */
-#define LOG_DEBUG_DETAIL             0
+#define LOG_DEBUG_DETAIL                LOG_DETAIL_ENABLE
+
+
+
+// #define UNICSTL_DEBUG_STACK
+// #define UNICSTL_DEBUG_QUEUE
+// #define UNICSTL_DEBUG_DEQUE
+// #define UNICSTL_DEBUG_TREE
+// #define UNICSTL_DEBUG_HEAP
+// #define UNICSTL_DEBUG_GRAPH
+
 #endif  // UNICSTL_DEBUG
 
-#endif
+#endif  // _UNICSTL_CONFIG_H_

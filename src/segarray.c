@@ -22,7 +22,7 @@ static inline size_t segarray_map_full(struct _segarray *self, size_t capacity)
 
 static inline void print_pos(struct _segarray *self)
 {
-    LOG_DEBUG("head[%d][%d], tail[%d][%d]\n",
+    log_debug("head[%d][%d], tail[%d][%d]\n",
            self->_maphead,
            self->_seghead,
            self->_maptail - 1,
@@ -42,12 +42,12 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
     {
         if (map->full(map))
         {
-            LOG_WARN("map->full");
+            log_warn("map->full");
             return false;
             // size_t new_capacity = unicstl_new_capacity(self->capacity(self));
             // if (!map->resize(map, new_capacity))
             // {
-            //     LOG_ERROR("map->resize(map, new_capacity) failed!");
+            //     log_error("map->resize(map, new_capacity) failed!");
             //     return false;
             // }
         }
@@ -55,7 +55,7 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
         rawbuf_t seg = rawbuf_new(self->_obj_size, self->_capacity);
         if (seg == NULL)
         {
-            LOG_ERROR("rawbuf_new failed!");
+            log_error("rawbuf_new failed!");
             return false;
         }
         map->push_back(map, &seg);
@@ -69,18 +69,18 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
     rawbuf_t seg;
     if (!map->back(map, &seg))
     {
-        LOG_ERROR("map->back failed!");
+        log_error("map->back failed!");
         return false;
     }
     size_t index = self->_segtail;
     if (!seg->set(seg, index, obj))
     {
-        LOG_ERROR("seg->set failed!");
+        log_error("seg->set failed!");
         return false;
     }
     self->_segtail = index + 1;
     
-    LOG_INFO("push_back success!");
+    log_info("push_back success!");
     self->_size++;
     return true;
 }
@@ -96,15 +96,15 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
     ringbuf_t map = self->_map;
     if (self->_seghead == 0)
     {
-        LOG_DEBUG("map->size = %d\n", map->size(map));
+        log_debug("map->size = %d\n", map->size(map));
         if (map->full(map))
         {
-            LOG_WARN("map->full");
+            log_warn("map->full");
             return false;
             // size_t new_capacity = unicstl_new_capacity(self->capacity(self));
             // if (!map->resize(map, new_capacity))
             // {
-            //     LOG_ERROR("map->resize(map, new_capacity) failed!");
+            //     log_error("map->resize(map, new_capacity) failed!");
             //     return false;
             // }
         }
@@ -112,7 +112,7 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
         rawbuf_t seg = rawbuf_new(self->_obj_size, self->_capacity);
         if (seg == NULL)
         {
-            LOG_ERROR("rawbuf_new failed!");
+            log_error("rawbuf_new failed!");
             return false;
         }
         map->push_front(map, &seg);
@@ -126,18 +126,18 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
     rawbuf_t seg;
     if (!map->front(map, &seg))
     {
-        LOG_ERROR("map->back failed!");
+        log_error("map->back failed!");
         return false;
     }
     size_t index = self->_seghead - 1;
     if (!seg->set(seg, index, obj))
     {
-        LOG_ERROR("seg->set failed!");
+        log_error("seg->set failed!");
         return false;
     }
     self->_seghead = index;
     
-    LOG_INFO("push_front success!");
+    log_info("push_front success!");
     self->_size++;
     return true;
 }
@@ -160,12 +160,12 @@ static bool segarray_pop_back(struct _segarray *self, void *obj)
     {
         if (!map->back(map, &seg))
         {
-            LOG_ERROR("map->back failed!");
+            log_error("map->back failed!");
             return false;
         }
         if (!seg->get(seg, index, obj))
         {
-            LOG_ERROR("seg->set failed!");
+            log_error("seg->set failed!");
             return false;
         }
     }
@@ -179,7 +179,7 @@ static bool segarray_pop_back(struct _segarray *self, void *obj)
         rawbuf_free(&seg);
     }
 
-    LOG_INFO("pop_back success!");
+    log_info("pop_back success!");
     self->_size--;
     return true;
 }
@@ -206,12 +206,12 @@ static bool segarray_pop_front(struct _segarray *self, void *obj)
         rawbuf_t seg;
         if (!map->front(map, &seg))
         {
-            LOG_ERROR("map->back failed!");
+            log_error("map->back failed!");
             return false;
         }
         if (!seg->get(seg, index, obj))
         {
-            LOG_ERROR("seg->set failed!");
+            log_error("seg->set failed!");
             return false;
         }
     }
@@ -226,7 +226,7 @@ static bool segarray_pop_front(struct _segarray *self, void *obj)
         rawbuf_free(&seg);
     }
 
-    LOG_INFO("pop_front success!");
+    log_info("pop_front success!");
     self->_size--;
     return true;
 }
@@ -389,9 +389,9 @@ const void *segarray_iter_next(struct _iterator *iter)
 
     if (iter->_order == SEGARRAY_REVERSE)
     {
-        LOG_DEBUG("index:%ld", index);
+        log_debug("index:%ld", index);
         index = self->size(self) + 1 - index;
-        LOG_DEBUG("reverse-index:%ld", index);
+        log_debug("reverse-index:%ld", index);
     }
 
     size_t seg1_left = self->_segsize - self->_seghead;
@@ -407,8 +407,8 @@ const void *segarray_iter_next(struct _iterator *iter)
         seg_index = index_left % self->_segsize;
     }
     
-    LOG_DEBUG("index:%ld, sethead:%ld", index, seg_index);
-    LOG_DEBUG("map_index:%ld, seg_index:%ld", map_index, seg_index);
+    log_debug("index:%ld, sethead:%ld", index, seg_index);
+    log_debug("map_index:%ld, seg_index:%ld", map_index, seg_index);
 
     if (map->get(map, map_index, &seg))
     {
@@ -547,12 +547,14 @@ segarray_t segarray_new(size_t obj_size, size_t capacity)
     segarray = (struct _segarray *)unicstl_malloc(sizeof(struct _segarray));
     if (segarray == NULL)
     {
+        log_warn("segarray malloc failed");
         return NULL;
     }
 
     if (segarray_init(segarray, obj_size, capacity, NULL) != true)
     {
-        free(segarray);
+        log_warn("segarray init failed");
+        unicstl_free(segarray);
         return NULL;
     }
     return segarray;
@@ -563,7 +565,7 @@ void segarray_free(segarray_t *segarray)
     if (*segarray != NULL)
     {
         (*segarray)->_destory(*segarray);
-        free(*segarray);
+        unicstl_free(*segarray);
     }
     *segarray = NULL;
 }

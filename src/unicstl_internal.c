@@ -10,6 +10,11 @@
  */
 #include "unicstl_internal.h"
 
+const char* unicstl_version(void)
+{
+    return UNICSTL_VERSION_STRING;
+}
+
 int default_compare(const void* obj1, const void* obj2)
 {
     printf("compare is not implemented!\n");

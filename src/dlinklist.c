@@ -17,7 +17,7 @@ static bool dlinklist_push_back(struct _dlinklist* self, void* obj)
     struct _dlinklist_node* back = NULL;
 
     // create a new object
-    void* new_obj = (void*)malloc(self->_obj_size);
+    void* new_obj = (void*)unicstl_malloc(self->_obj_size);
     if (new_obj == NULL)
     {
         return false;
@@ -25,7 +25,7 @@ static bool dlinklist_push_back(struct _dlinklist* self, void* obj)
     memmove(new_obj, obj, self->_obj_size);
 
     // create a new node
-    struct _dlinklist_node* new_node = (struct _dlinklist_node*)malloc(sizeof(struct _dlinklist_node));
+    struct _dlinklist_node* new_node = (struct _dlinklist_node*)unicstl_malloc(sizeof(struct _dlinklist_node));
     if (new_node == NULL)
     {
         return false;
@@ -61,7 +61,7 @@ static bool dlinklist_push_front(struct _dlinklist* self, void* obj)
     struct _dlinklist_node* back = NULL;
 
     // create a new object
-    void* new_obj = (void*)malloc(self->_obj_size);
+    void* new_obj = (void*)unicstl_malloc(self->_obj_size);
     if (new_obj == NULL)
     {
         return false;
@@ -69,7 +69,7 @@ static bool dlinklist_push_front(struct _dlinklist* self, void* obj)
     memmove(new_obj, obj, self->_obj_size);
 
     // create a new node
-    struct _dlinklist_node* new_node = (struct _dlinklist_node*)malloc(sizeof(struct _dlinklist_node));
+    struct _dlinklist_node* new_node = (struct _dlinklist_node*)unicstl_malloc(sizeof(struct _dlinklist_node));
     if (new_node == NULL)
     {
         return false;
@@ -128,8 +128,8 @@ static bool dlinklist_pop_back(struct _dlinklist* self, void* obj)
         front->prev = node->prev;       // step 2
     }
 
-    free(node->obj);
-    free(node);
+    unicstl_free(node->obj);
+    unicstl_free(node);
 
     self->_size -= 1;
     return true;
@@ -165,8 +165,8 @@ static bool dlinklist_pop_front(struct _dlinklist* self, void* obj)
         back->next = node->next;        // step 2
     }
 
-    free(node->obj);
-    free(node);
+    unicstl_free(node->obj);
+    unicstl_free(node);
 
     self->_size -= 1;
     return true;
@@ -225,7 +225,7 @@ static void dlinklist_destory(struct _dlinklist* self)
     self->clear(self);
     if (self->_head != NULL)
     {
-        free(self->_head);
+        unicstl_free(self->_head);
         self->_head = NULL;
     }
 }
@@ -353,15 +353,17 @@ static bool dlinklist_init(struct _dlinklist* self, size_t obj_size)
 dlinklist_t dlinklist_new(size_t obj_size)
 {
     struct _dlinklist* dlinklist = NULL;
-    dlinklist = (struct _dlinklist*)malloc(sizeof(struct _dlinklist));
+    dlinklist = (struct _dlinklist*)unicstl_malloc(sizeof(struct _dlinklist));
     if(dlinklist == NULL)
     {
+        log_warn("dlinklist malloc failed\n");
         return NULL;
     }
 
     if(dlinklist_init(dlinklist, obj_size) != true)
     {
-        free(dlinklist);
+        log_warn("dlinklist init failed\n");
+        unicstl_free(dlinklist);
         return NULL;
     }
     return dlinklist;
@@ -372,7 +374,7 @@ void dlinklist_free(dlinklist_t *dlinklist)
     if(*dlinklist != NULL)
     {
         (*dlinklist)->_destory(*dlinklist);
-        free(*dlinklist);
+        unicstl_free(*dlinklist);
     }
     *dlinklist = NULL;
 }

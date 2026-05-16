@@ -188,15 +188,17 @@ static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
 deque_t deque_new(size_t obj_size, size_t capacity)
 {
     struct _deque* deque = NULL;
-    deque = (struct _deque*)malloc(sizeof(struct _deque));
+    deque = (struct _deque*)unicstl_malloc(sizeof(struct _deque));
     if(deque == NULL)
     {
+        log_warn("deque malloc failed\n");
         return NULL;
     }
 
     if(deque_init(deque, obj_size, capacity) != true)
     {
-        free(deque);
+        log_warn("deque init failed\n");
+        unicstl_free(deque);
         return NULL;
     }
     return deque;
@@ -207,7 +209,7 @@ void deque_free(deque_t *deque)
     if(*deque != NULL)
     {
         (*deque)->_destory(*deque);
-        free(*deque);
+        unicstl_free(*deque);
     }
     *deque = NULL;
 }

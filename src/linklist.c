@@ -13,14 +13,14 @@
 
 static struct _linklist_node * linklist_new_node(void* obj, size_t obj_size)
 {
-    void * new_obj = malloc(obj_size);
+    void * new_obj = unicstl_malloc(obj_size);
     if (new_obj == NULL)
     {
         goto done;
     }
     memmove(new_obj, obj, obj_size);
 
-    struct _linklist_node* new_node = (struct _linklist_node*)malloc(sizeof(struct _linklist_node));
+    struct _linklist_node* new_node = (struct _linklist_node*)unicstl_malloc(sizeof(struct _linklist_node));
     if(new_node == NULL)
     {
         goto done1;
@@ -30,7 +30,7 @@ static struct _linklist_node * linklist_new_node(void* obj, size_t obj_size)
 
     return new_node;
 done1:
-    free(new_obj);
+    unicstl_free(new_obj);
 done:
     return NULL;
 }
@@ -41,9 +41,9 @@ static void linklist_node_free(struct _linklist_node** node)
     {
         if((*node)->obj != NULL)
         {
-            free((*node)->obj);
+            unicstl_free((*node)->obj);
         }
-        free(*node);
+        unicstl_free(*node);
         *node = NULL;
     }
 }
@@ -330,15 +330,17 @@ static bool linklist_init(struct _linklist * self, size_t obj_size)
 linklist_t linklist_new(size_t obj_size)
 {
     struct _linklist * linklist = NULL;
-    linklist = (struct _linklist *)calloc(1, sizeof(struct _linklist));
+    linklist = (struct _linklist *)unicstl_calloc(1, sizeof(struct _linklist));
     if(linklist == NULL)
     {
+        log_warn("linklist calloc failed\n");
         return NULL;
     }
 
     if(linklist_init(linklist, obj_size) != true)
     {
-        free(linklist);
+        log_warn("linklist init failed\n");
+        unicstl_free(linklist);
         return NULL;
     }
     return linklist;
@@ -353,7 +355,7 @@ void linklist_free(linklist_t* linklist)
         {
             (*linklist)->_destory(*linklist);
         }
-        free(*linklist);
+        unicstl_free(*linklist);
         *linklist = NULL;
     }
 }

@@ -56,7 +56,7 @@ static void rawbuf_destory(struct _rawbuf *self)
     unicstl_assert(self != NULL);
     if (self->obj != NULL && self->_dynamic == true)
     {
-        free(self->obj);
+        unicstl_free(self->obj);
     }
 }
 
@@ -104,12 +104,14 @@ rawbuf_t rawbuf_new(size_t obj_size, size_t capacity)
     rawbuf = (struct _rawbuf *)unicstl_malloc(sizeof(struct _rawbuf));
     if (rawbuf == NULL)
     {
+        log_warn("rawbuf malloc failed!");
         return NULL;
     }
 
     if (rawbuf_init(rawbuf, obj_size, capacity, NULL) != true)
     {
-        free(rawbuf);
+        log_warn("rawbuf init failed!");
+        unicstl_free(rawbuf);
         return NULL;
     }
     return rawbuf;
@@ -123,7 +125,7 @@ void rawbuf_free(rawbuf_t *rawbuf)
         {
             (*rawbuf)->_destory((*rawbuf));
         }
-        free(*rawbuf);
+        unicstl_free(*rawbuf);
         *rawbuf = NULL;
     }
 }

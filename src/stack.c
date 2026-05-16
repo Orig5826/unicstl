@@ -188,15 +188,17 @@ static bool stack_init(struct _stack* self, size_t obj_size, size_t capacity)
 stack_t stack_new(size_t obj_size, size_t capacity)
 {
     stack_t stack = NULL;
-    stack = (struct _stack*)calloc(1, sizeof(struct _stack));
+    stack = (struct _stack*)unicstl_calloc(1, sizeof(struct _stack));
     if (stack == NULL)
     {
+        log_warn("stack calloc failed\n");
         return NULL;
     }
 
     if(stack_init(stack, obj_size, capacity) != true)
     {
-        free(stack);
+        log_warn("stack init failed\n");
+        unicstl_free(stack);
         return NULL;
     }
     return stack;
@@ -210,7 +212,7 @@ void stack_free(stack_t *stack)
         {
             (*stack)->_destory(*stack);
         }
-        free(*stack);
+        unicstl_free(*stack);
         *stack = NULL;
     }
 }

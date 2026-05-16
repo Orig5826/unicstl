@@ -227,7 +227,7 @@ static bool ringbuf_resize(struct _ringbuf *self, size_t capacity)
         obj_copy(new_obj + first_size * self->_obj_size, self->obj, second_size, self->_obj_size);
     }
 
-    free(self->obj);
+    unicstl_free(self->obj);
     self->obj = new_obj;
     self->_capacity = real_capacity;
     self->_head = 0;
@@ -275,7 +275,7 @@ static void ringbuf_destory(struct _ringbuf *self)
     unicstl_assert(self != NULL);
     if (self->obj != NULL && self->_dynamic == true)
     {
-        free(self->obj);
+        unicstl_free(self->obj);
         self->obj = NULL;
     }
 }
@@ -434,12 +434,14 @@ ringbuf_t ringbuf_new(size_t obj_size, size_t capacity)
     ringbuf = (struct _ringbuf *)unicstl_malloc(sizeof(struct _ringbuf));
     if (ringbuf == NULL)
     {
+        log_warn("ringbuf malloc failed");
         return NULL;
     }
 
     if (ringbuf_init(ringbuf, obj_size, capacity, NULL) != true)
     {
-        free(ringbuf);
+        log_warn("ringbuf init failed");
+        unicstl_free(ringbuf);
         return NULL;
     }
     return ringbuf;
@@ -450,7 +452,7 @@ void ringbuf_free(ringbuf_t *ringbuf)
     if (*ringbuf != NULL)
     {
         (*ringbuf)->_destory(*ringbuf);
-        free(*ringbuf);
+        unicstl_free(*ringbuf);
     }
     *ringbuf = NULL;
 }

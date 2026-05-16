@@ -57,17 +57,17 @@ void perf_run_start(size_t id)
     g_test_obj.capacity = test_plans[id].capacity;
     g_test_obj.obj_size = test_plans[id].obj_size;
 
-    g_test_obj.obj = malloc(g_test_obj.capacity);
+    g_test_obj.obj = unicstl_malloc(g_test_obj.capacity);
     if(g_test_obj.obj == NULL)
     {
-        LOG_DEBUG("malloc failed");
+        log_debug("unicstl_malloc failed");
         return;
     }
 }
 
 void perf_run_end(size_t id)
 {
-    free(g_test_obj.obj);
+    unicstl_free(g_test_obj.obj);
 }
 
 void perf_print(void)

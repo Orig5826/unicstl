@@ -10,6 +10,13 @@
  */
 #include "test.h"
 
+void test_unicstl_version(void)
+{
+    TEST_ASSERT_EQUAL_STRING("0.0.10", unicstl_version());
+    // TEST_ASSERT_GREATER_THAN( 0x000002L , UNICSTL_VERSION );
+    // TEST_ASSERT_LESS_THAN( 0x010000L , UNICSTL_VERSION );
+}
+
 void test_unicstl_capacity(void)
 {
     TEST_ASSERT_EQUAL_UINT32(UNICSTL_CAPACITY_INIT, unicstl_new_capacity(0));
@@ -30,5 +37,6 @@ void test_unicstl(void)
 {
     UnitySetTestFile(__FILE__);
 
+    RUN_TEST(test_unicstl_version);
     RUN_TEST(test_unicstl_capacity);
 }

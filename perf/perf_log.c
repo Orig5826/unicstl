@@ -23,7 +23,7 @@ bool perf_log_new(void)
     plans = darray_new(sizeof(darray_t), PERF_TEST_TIEMS);
     if(plans == NULL)
     {
-        LOG_WARN("plans->new failed\n");
+        log_warn("plans->new failed\n");
         goto done;
     }
 
@@ -32,7 +32,7 @@ bool perf_log_new(void)
         darray_t items = darray_new(sizeof(log_args_t), 16);
         if(items == NULL)
         {
-            LOG_WARN("items->new failed\n");
+            log_warn("items->new failed\n");
             goto done;
         }
         plans->append(plans, &items);
@@ -57,7 +57,7 @@ void perf_log_free(void)
 
 bool perf_log_append(const char *name, size_t id, double time_ms)
 {
-    LOG_DEBUG("id=%d, name=%s, time=%f\n", id, name, time_ms);
+    log_debug("id=%d, name=%s, time=%f\n", id, name, time_ms);
     log_args_t args = {
          // .name = name, 
         .id = id,
@@ -71,26 +71,26 @@ bool perf_log_append(const char *name, size_t id, double time_ms)
     darray_t items = NULL;
     if(!plans->get(plans, id, &items))
     {
-        LOG_DEBUG("not find items\n");
+        log_debug("not find items\n");
         return false;
     }
 
     if(!items->append(items, &args))
     {
-        LOG_DEBUG("items->append failed\n");
+        log_debug("items->append failed\n");
         return false;
     }
 
-    LOG_DEBUG("size = %d\n", items->size(items));
+    log_debug("size = %d\n", items->size(items));
     log_args_t args2;
     if(!items->get(items, 0, &args2))
     {
-        LOG_DEBUG("items->get failed\n");
+        log_debug("items->get failed\n");
         return false;
     }
-    LOG_INFO("name=%s, id=%d, time=%f\n", args2.name, args2.id, args2.elapsed);
+    log_info("name=%s, id=%d, time=%f\n", args2.name, args2.id, args2.elapsed);
 
-    LOG_DEBUG("perf_log_append end\n");
+    log_debug("perf_log_append end\n");
     return true;
 }
 
@@ -101,14 +101,14 @@ bool perf_log_clear(void)
     {
         if(!plans->get(plans, i, &items))
         {
-            LOG_DEBUG("plans->get failed\n");
+            log_debug("plans->get failed\n");
             return false;
         }
 
         items->clear(items);
     }
 
-    LOG_DEBUG("perf_log_clear\n");
+    log_debug("perf_log_clear\n");
     return true;
 }
 
@@ -148,26 +148,26 @@ bool perf_log_print(void)
     }
     size_t count = items->size(items);
 
-    LOG_DEBUG("count=%d\n", count);
+    log_debug("count=%d\n", count);
     for(size_t i = 0; i < count; ++i)
     {
         name_printed = false;
         for(size_t j = 0; j < plans->capacity(plans); j++)
         {
-            LOG_DEBUG("i=%d, j=%d\n", i, j);
+            log_debug("i=%d, j=%d\n", i, j);
 
             if(!plans->get(plans, j, &items))
             {
-                LOG_DEBUG("plans->get failed\n");
+                log_debug("plans->get failed\n");
                 return false;
             }
 
-            LOG_DEBUG("size = %d\n", items->size(items));
+            log_debug("size = %d\n", items->size(items));
 
             log_args_t args;
             if(!items->get(items, i, &args))
             {
-                LOG_DEBUG("items->get failed\n");
+                log_debug("items->get failed\n");
                 return false;
             }
 
@@ -180,6 +180,6 @@ bool perf_log_print(void)
         }
         printf("\n");
     }
-    LOG_DEBUG("perf_log_print end\n");
+    log_debug("perf_log_print end\n");
     return true;
 }

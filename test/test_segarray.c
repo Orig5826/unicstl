@@ -498,26 +498,26 @@ static void test_segarray_iter(void)
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
-        LOG_DEBUG("iter-test: i=%d\n", i);
+        log_debug("iter-test: i=%d\n", i);
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i++;
     }
     TEST_ASSERT_EQUAL_INT(len, i);
-    LOG_INFO("iter-forward cuccess!");
+    log_info("iter-forward cuccess!");
 
     iter = segarray->iter(segarray, RINGBUF_REVERSE);
     i = len - 1;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
-        LOG_DEBUG("iter-test: i=%d\n", i);
+        log_debug("iter-test: i=%d\n", i);
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;
     }
     TEST_ASSERT_EQUAL_INT(0, i);
-    LOG_INFO("iter-reverse cuccess!");
+    log_info("iter-reverse cuccess!");
 
     segarray_free(&segarray);
 }

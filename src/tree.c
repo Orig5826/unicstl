@@ -18,17 +18,17 @@ static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
 {
     unicstl_assert(self != NULL);
 
-    void* obj_new = malloc(self->_obj_size);
+    void* obj_new = unicstl_malloc(self->_obj_size);
     if (obj_new == NULL)
     {
         return NULL;
     }
     memmove(obj_new, obj, self->_obj_size);
 
-    struct _tree_node* node_new = (struct _tree_node*)malloc(sizeof(struct _tree_node));
+    struct _tree_node* node_new = (struct _tree_node*)unicstl_malloc(sizeof(struct _tree_node));
     if (node_new == NULL)
     {
-        free(obj_new);
+        unicstl_free(obj_new);
         return NULL;
     }
     node_new->obj = obj_new;
@@ -46,9 +46,9 @@ static void tree_node_free(struct _tree_node** node)
     {
         if ((*node)->obj != NULL)
         {
-            free((*node)->obj);
+            unicstl_free((*node)->obj);
         }
-        free(*node);
+        unicstl_free(*node);
         *node = NULL;
     }
 }
@@ -1483,15 +1483,17 @@ static bool tree_rb_init(struct _tree* self, size_t obj_size)
 tree_t tree_avl_new(size_t obj_size)
 {
     tree_t tree = NULL;
-    tree = (struct _tree*)malloc(sizeof(struct _tree));
+    tree = (struct _tree*)unicstl_malloc(sizeof(struct _tree));
     if(tree == NULL)
     {
+        log_warn("avltree malloc failed\n");
         return NULL;
     }
 
     if(tree_avl_init(tree, obj_size) != true)
     {
-        free(tree);
+        log_warn("avltree init failed\n");
+        unicstl_free(tree);
         return NULL;
     }
     return tree;
@@ -1500,15 +1502,17 @@ tree_t tree_avl_new(size_t obj_size)
 tree_t tree_rb_new(size_t obj_size)
 {
     tree_t tree = NULL;
-    tree = (struct _tree*)malloc(sizeof(struct _tree));
+    tree = (struct _tree*)unicstl_malloc(sizeof(struct _tree));
     if(tree == NULL)
     {
+        log_warn("rbtree malloc failed\n");
         return NULL;
     }
 
     if(tree_rb_init(tree, obj_size) != true)
     {
-        free(tree);
+        log_warn("rbtree init failed\n");
+        unicstl_free(tree);
         return NULL;
     }
     return tree;
@@ -1519,7 +1523,7 @@ void tree_free(tree_t* tree)
     if (*tree != NULL)
     {
         (*tree)->_destory(*tree);
-        free(*tree);
+        unicstl_free(*tree);
     }
     *tree = NULL;
 }

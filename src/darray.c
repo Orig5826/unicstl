@@ -47,7 +47,7 @@ static void darray_destory(struct _darray *self)
     unicstl_assert(self != NULL);
     if (self->obj != NULL)
     {
-        free(self->obj);
+        unicstl_free(self->obj);
     }
 }
 
@@ -398,12 +398,14 @@ darray_t darray_new(size_t obj_size, size_t capacity)
     darray = (struct _darray *)unicstl_malloc(sizeof(struct _darray));
     if (darray == NULL)
     {
+        log_warn("darray malloc failed!");
         return NULL;
     }
 
     if (darray_init(darray, obj_size, capacity) != true)
     {
-        free(darray);
+        log_warn("darray init failed!");
+        unicstl_free(darray);
         return NULL;
     }
     return darray;
@@ -417,7 +419,7 @@ void darray_free(darray_t *darray)
         {
             (*darray)->_destory((*darray));
         }
-        free(*darray);
+        unicstl_free(*darray);
         *darray = NULL;
     }
 }
