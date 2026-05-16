@@ -372,7 +372,6 @@ static void test_segarray_front_invalid(void)
     segarray_free(&segarray);
 }
 
-#if 0
 static void test_segarray_set(void)
 {
     int temp = 0;
@@ -475,7 +474,6 @@ static void test_segarray_at(void)
 
     segarray_free(&segarray);
 }
-#endif
 
 static void test_segarray_iter(void)
 {
@@ -767,11 +765,12 @@ static void test_segarray_struct(void)
             TEST_ASSERT_FALSE(segarray->back(segarray, &temp));
         }
     }
+    TEST_ASSERT_TRUE(segarray->empty(segarray));
 
     for (i = 0; i < len; i++)
     {
         TEST_ASSERT_TRUE(segarray->push_front(segarray, &data[i]));
-
+        
         TEST_ASSERT_TRUE(segarray->front(segarray, &temp));
         TEST_ASSERT_EQUAL_INT(data[i].id, temp.id);
         TEST_ASSERT_EQUAL_STRING(data[i].name, temp.name);
@@ -855,13 +854,13 @@ void test_segarray(void)
     RUN_TEST(test_segarray_front_invalid);
 
     // ---------- random access ----------
-//     RUN_TEST(test_segarray_set);
-//     RUN_TEST(test_segarray_set_invalid);
+    RUN_TEST(test_segarray_set);
+    RUN_TEST(test_segarray_set_invalid);
 
-//     RUN_TEST(test_segarray_at);
+    RUN_TEST(test_segarray_at);
 
     // ---------- base ----------
-    // RUN_TEST(test_segarray_iter);
+    RUN_TEST(test_segarray_iter);
 
 //     RUN_TEST(test_segarray_resize);
 //     RUN_TEST(test_segarray_resize_invalid);
@@ -869,8 +868,8 @@ void test_segarray(void)
 
 //     RUN_TEST(test_segarray_dynamic);
 
-    // RUN_TEST(test_segarray_status);
+    RUN_TEST(test_segarray_status);
     
     // ---------- ext ----------
-    // RUN_TEST(test_segarray_struct);
+    RUN_TEST(test_segarray_struct);
 }

@@ -70,6 +70,7 @@ ringbuf_t ringbuf_new(size_t obj_size, size_t capacity);
 void ringbuf_free(ringbuf_t* ringbuf);
 
 #ifdef UNICSTL_STATIC_MEMORY
+// mem_base_size = obj_size * (capacity + 1)
 bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void *mem_base);
 #endif
 

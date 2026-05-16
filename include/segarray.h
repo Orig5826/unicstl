@@ -33,8 +33,7 @@ struct _segarray
     size_t _segsize;
 
     ringbuf_t _map;
-    size_t _maphead;
-    size_t _maptail;
+    ringbuf_t _mapfree;
     size_t _seghead;
     size_t _segtail;
     
@@ -50,6 +49,11 @@ struct _segarray
     bool (*back)(struct _segarray* self, void* obj);
     bool (*front)(struct _segarray* self, void* obj);
     
+    // -------------------- random access -------------------- 
+    bool (*set)(struct _segarray *self, size_t index, const void *obj);      // O(1)
+    bool (*get)(struct _segarray *self, size_t index, void *obj);            // O(1)
+    const void* (*at)(struct _segarray *self, size_t index);                 // O(1)
+
     // base
     bool (*resize)(struct _segarray *self, size_t capacity);
     size_t (*size)(struct _segarray* self);

@@ -28,36 +28,39 @@
 #include "iterator.h"
 #include "logger.h"
 
-#define UNICSTL_VERSION_MAJOR 0
-#define UNICSTL_VERSION_MINOR 0
-#define UNICSTL_VERSION_MICRO 10
-#define UNICSTL_VERSION ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
+// clang-format off
+#define UNICSTL_VERSION_MAJOR       0
+#define UNICSTL_VERSION_MINOR       0
+#define UNICSTL_VERSION_MICRO       10
+#define UNICSTL_VERSION             ((UNICSTL_VERSION_MAJOR << 16) | (UNICSTL_VERSION_MINOR << 8) | UNICSTL_VERSION_MICRO)
 
-#define UNICSTL_TOSTRING_(x) #x
-#define UNICSTL_TOSTRING(x) UNICSTL_TOSTRING_(x)
-#define UNICSTL_VERSION_STRING UNICSTL_TOSTRING(UNICSTL_VERSION_MAJOR) "." UNICSTL_TOSTRING(UNICSTL_VERSION_MINOR) "." UNICSTL_TOSTRING(UNICSTL_VERSION_MICRO)
-
-#define UNICSTL_UNUSED(x) (void)(x)
-
+#define UNICSTL_TOSTRING_(x)        #x
+#define UNICSTL_TOSTRING(x)         UNICSTL_TOSTRING_(x)
+#define UNICSTL_VERSION_STRING      UNICSTL_TOSTRING(UNICSTL_VERSION_MAJOR) "." \
+                                    UNICSTL_TOSTRING(UNICSTL_VERSION_MINOR) "." \
+                                    UNICSTL_TOSTRING(UNICSTL_VERSION_MICRO)
 /**
  * @brief default capacity and ratio
  *
  */
 #ifndef UNICSTL_CAPACITY_INIT
-#define UNICSTL_CAPACITY_INIT 8 // 若capacity参数为0时，自动分配默认初始容量
+#define UNICSTL_CAPACITY_INIT       8 // 若capacity参数为0时，自动分配默认初始容量
 #endif
 
 #ifndef UNICSTL_CAPACITY_MAX
-#define UNICSTL_CAPACITY_MAX 8192 // 最大容量
+#define UNICSTL_CAPACITY_MAX        8192 // 最大容量
 #endif
 
 #ifndef UNICSTL_OBJSIZE_MAX
-#define UNICSTL_OBJSIZE_MAX 8192 // 最大对象大小
+#define UNICSTL_OBJSIZE_MAX         8192 // 最大对象大小
 #endif
 
 #ifndef UNICSTL_STATIC_MEMORY
 #define UNICSTL_STATIC_MEMORY
 #endif
+
+#define UNICSTL_UNUSED(x) (void)(x)
+// clang-format on
 
 /**
  * @brief assert function
@@ -78,7 +81,8 @@ extern void _unicstl_assert(const char *expr, const char *file, int line);
 
 #else
 #define unicstl_assert(expr) // assert(expr)
-#endif                       // UNICSTL_ASSERT_ENABLE
+
+#endif // UNICSTL_ASSERT_ENABLE
 
 /**
  * @brief malloc and free function
@@ -115,7 +119,7 @@ extern void unicstl_free(void *ptr);
 static inline void *unicstl_malloc(size_t size) { return NULL; }
 static inline void *unicstl_calloc(size_t num, size_t size) { return NULL; }
 static inline void *unicstl_realloc(void *ptr, size_t size) { return NULL; }
-static inline void unicstl_free(void *ptr) { }
+static inline void unicstl_free(void *ptr) {}
 #endif // UNICSTL_MALLOC_ENABLE
 
 static inline const void *obj_at(const void *objs, size_t index, size_t obj_size)

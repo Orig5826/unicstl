@@ -1,15 +1,16 @@
 /**
  * @file unicstl_config.h
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2025-04-22
- * 
+ *
  * @copyright Copyright (c) 2025
- * 
+ *
  */
 #ifndef _UNICSTL_CONFIG_H_
 #define _UNICSTL_CONFIG_H_
+// clang-format off
 
 // #define NDEBUG          // release mode if define
 #ifndef NDEBUG
@@ -84,4 +85,5 @@
 
 #endif  // UNICSTL_DEBUG
 
-#endif  // _UNICSTL_CONFIG_H_
+// clang-format on
+#endif // _UNICSTL_CONFIG_H_
