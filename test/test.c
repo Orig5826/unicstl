@@ -75,9 +75,11 @@ void tearDown(void)
 
 int main(int argc, char const *argv[])
 {
+    log_init();
+
     printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
-
+    
     TEST_ADD(test_unicstl);
 
     TEST_ADD(test_darray);
@@ -98,5 +100,6 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_rawbuf);
     TEST_ADD(test_segarray);
     
+    log_deinit();
     return UNITY_END();
 }

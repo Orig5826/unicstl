@@ -65,7 +65,7 @@
  *   LOG_ERROR
  *   LOG_NONE
  */
-#define LOG_LEVEL                       LOG_WARN
+#define LOG_LEVEL                       LOG_DEBUG
 
 /**
  * @brief 
@@ -74,7 +74,7 @@
  */
 #define LOG_DEBUG_DETAIL                LOG_DETAIL_ENABLE
 
-
+#define LOG_FILE_ENABLE
 
 // #define UNICSTL_DEBUG_STACK
 // #define UNICSTL_DEBUG_QUEUE

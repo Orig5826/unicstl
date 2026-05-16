@@ -12,12 +12,12 @@
 
 static void test_linklist_new(void)
 {
+    // TEST_ASSERT_NULL(linklist_new(0));       // nomeaning
+
     linklist_t linklist = NULL;
     linklist = linklist_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(linklist);
     linklist_free(&linklist);
-
-    TEST_ASSERT_NULL(linklist_new(0));
 
     // ------------------------------
     TEST_ASSERT_NULL(linklist);

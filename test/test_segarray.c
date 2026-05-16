@@ -193,6 +193,7 @@ static void test_segarray_pop_back(void)
     TEST_ASSERT_FALSE(segarray->pop_back(segarray, NULL));
 
     segarray_free(&segarray);
+    log_info("test_segarray_pop_back pass");
 }
 
 static void test_segarray_pop_front(void)
@@ -201,6 +202,7 @@ static void test_segarray_pop_front(void)
     int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
+    log_info("test_segarray_pop_front start");
 
     segarray_t segarray = segarray_new(sizeof(int), len);
     segarray->print_obj = print_num;
@@ -691,7 +693,7 @@ static void test_segarray_status(void)
         TEST_ASSERT_FALSE(segarray->full(segarray));
     }
     TEST_ASSERT_TRUE(segarray->push_back(segarray, &data[i]));
-    // TEST_ASSERT_TRUE(segarray->full(segarray));
+    TEST_ASSERT_TRUE(segarray->full(segarray));
     TEST_ASSERT_TRUE(segarray->push_back(segarray, &data[i]));
 
     TEST_ASSERT_TRUE(segarray->clear(segarray));

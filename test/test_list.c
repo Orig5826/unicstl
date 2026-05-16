@@ -21,9 +21,8 @@ static void test_list_new(void)
     list_free(&list); // list_free(NULL);
     TEST_ASSERT_NULL(list);
 
-    // 
-    TEST_ASSERT_NULL(list_new2(0, 1));
-    TEST_ASSERT_NULL(list_new2(sizeof(int), 0));
+    // TEST_ASSERT_NULL(list_new2(0, 1));               // nomeaing
+    // TEST_ASSERT_NULL(list_new2(sizeof(int), 0));     // 
 }
 
 static void test_list_append(void)

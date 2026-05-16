@@ -278,11 +278,8 @@ static void linklist_print(struct _linklist* self)
 static bool linklist_init(struct _linklist * self, size_t obj_size)
 {
     unicstl_assert(self != NULL);
-    if(self == NULL || obj_size == 0)
-    {
-        return false;
-    }
-
+    unicstl_assert(obj_size != 0);
+    
     // -------------------- private -------------------- 
     self->_size = 0;
     self->_obj_size = obj_size;

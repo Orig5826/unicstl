@@ -64,10 +64,7 @@ bool rawbuf_init(struct _rawbuf *self, size_t obj_size, size_t capacity, void *m
 {
     unicstl_assert(self != NULL);
     unicstl_assert(obj_size > 0);
-    if(capacity == 0)
-    {
-        return false;
-    }
+    unicstl_assert(capacity > 0);
 
     // -------------------- private --------------------
     self->_obj_size = obj_size;

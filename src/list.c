@@ -367,7 +367,8 @@ iterator_t list_iter(struct _list* self)
 static bool list_init2(struct _list* self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    if (self == NULL || obj_size == 0 || capacity == 0)
+    unicstl_assert(obj_size != 0);
+    if (capacity == 0)
     {
         return false;
     }
