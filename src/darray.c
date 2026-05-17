@@ -60,13 +60,10 @@ static void darray_print(struct _darray *self)
         return;
     }
 
-    void *obj = NULL;
-    size_t offset = 0;
-
+    const void *obj = NULL;
     for (size_t i = 0; i < self->size(self); i++)
     {
-        offset = self->_obj_size * i;
-        obj = (char *)self->obj + offset;
+        obj = obj_at(self, i, self->_obj_size);
         self->print_obj(obj);
     }
 }
@@ -110,18 +107,14 @@ static bool darray_insert(struct _darray *self, size_t index, const void *obj)
         }
     }
 
-    size_t offset = index * self->_obj_size;
     if (index < self->size(self))
     {
-        size_t offset1 = (index + 1) * self->_obj_size;
-        size_t count = self->size(self) - index;
-        // move data to right
-        memmove((char *)self->obj + offset1, (char *)self->obj + offset, count * self->_obj_size);
+        obj_shift(self->obj, index + 1, index, self->size(self) - index, self->_obj_size);
     }
     // copy new data
-    memmove((char *)self->obj + offset, obj, self->_obj_size);
-    self->_size += 1;
+    obj_copy((char *)self->obj + index * self->_obj_size, obj, 1, self->_obj_size);
 
+    self->_size += 1;
     self->_sorted = false;
     return true;
 }
@@ -134,26 +127,26 @@ static bool darray_remove(struct _darray *self, size_t index, void *obj)
         return false;
     }
 
-    size_t offset = index * self->_obj_size;
-    size_t offset1 = (index + 1) * self->_obj_size;
     size_t count = self->size(self) - 1 - index;
     if (obj != NULL)
     {
-        memmove(obj, (char *)self->obj + offset, self->_obj_size);
+        size_t offset = index * self->_obj_size;
+        obj_copy(obj, self->obj + offset, 1, self->_obj_size);
     }
-    memmove((char *)self->obj + offset, (char *)self->obj + offset1, count * self->_obj_size);
+    obj_shift(self->obj, index, index + 1, count, self->_obj_size);
+
     self->_size -= 1;
     return true;
 }
 
 static bool darray_append(struct _darray *self, const void *obj)
 {
-    return darray_insert(self, self->size(self), obj);
+    return self->insert(self, self->size(self), obj);
 }
 
 static bool darray_pop(struct _darray *self, void *obj)
 {
-    return darray_remove(self, self->size(self) - 1, obj);
+    return self->remove(self, self->size(self) - 1, obj);
 }
 
 static bool darray_set(struct _darray *self, size_t index, const void *obj)
@@ -163,8 +156,7 @@ static bool darray_set(struct _darray *self, size_t index, const void *obj)
     {
         return false;
     }
-    size_t offset = index * self->_obj_size;
-    memmove((char *)self->obj + offset, obj, self->_obj_size);
+    obj_set(self->obj, index, obj, self->_obj_size);
     return true;
 }
 
@@ -175,8 +167,7 @@ static bool darray_get(struct _darray *self, size_t index, void *obj)
     {
         return false;
     }
-    size_t offset = index * self->_obj_size;
-    memmove(obj, (char *)self->obj + offset, self->_obj_size);
+    obj_get(self->obj, index, obj, self->_obj_size);
     return true;
 }
 
@@ -187,8 +178,7 @@ const void *darray_at(struct _darray *self, size_t index)
     {
         return false;
     }
-    size_t offset = index * self->_obj_size;
-    return (const char *)self->obj + offset;
+    return obj_at(self->obj, index, self->_obj_size);
 }
 
 bool darray_iter_hasnext(struct _iterator *iter)
@@ -232,6 +222,9 @@ const void *darray_iter_next(struct _iterator *iter)
         iter->_index = iter->_index - 1;
     }
     return obj_at(self->obj, index, self->_obj_size);
+    
+    // log_debug("index:%zu", index);
+    // return self->at(self->obj, index);   // TODO: 这里有问题，结构体指针都崩了
 }
 
 iterator_t darray_iter(struct _darray *self, linear_order_t order)
@@ -265,7 +258,7 @@ static size_t darray_index(struct _darray *self, const void *obj)
 static bool darray_contains(struct _darray *self, const void *obj)
 {
     unicstl_assert(self != NULL);
-    return self->search(self, obj) != (size_t)-1;
+    return self->search(self, obj) != (size_t) - 1;
 }
 
 static bool darry_sort(struct _darray *self)
@@ -299,6 +292,7 @@ static size_t darry_search(struct _darray *self, const void *obj)
 #else
     if(self->_sorted)
     {
+        log_debug("bsearch of standard library");
         const void *addr = bsearch(obj, self->obj, self->size(self), self->_obj_size, self->compare);
         if(addr != NULL)
         {
@@ -354,21 +348,19 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->obj = NULL;
     self->_destory = darray_destory;
 
-
     // -------------------- public --------------------
     // kernel
-    self->resize = darray_resize;
     self->insert = darray_insert;
     self->remove = darray_remove;
     self->append = darray_append;
     self->pop = darray_pop;
-
+    
     self->set = darray_set;
     self->get = darray_get;
     self->at = darray_at;
-    self->index = darray_index;
-    self->contains = darray_contains;
 
+    // base
+    self->resize = darray_resize;
     self->size = darray_size;
     self->capacity = darray_capacity;
     self->empty = darray_empty;
@@ -379,6 +371,8 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->iter = darray_iter;
 
     // sort and search
+    self->index = darray_index;
+    self->contains = darray_contains;
     self->sort = darry_sort;
     self->search = darry_search;
 

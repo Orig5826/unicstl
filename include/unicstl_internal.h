@@ -149,37 +149,40 @@ static inline void unicstl_free(void *ptr) {}
 
 static inline const void *obj_at(const void *objs, size_t index, size_t obj_size)
 {
-#ifdef UNICSTL_DEBUG
     unicstl_assert(objs != NULL);
-#endif
     return (const char *)objs + obj_size * index;
 }
 
 static inline void obj_set(void *objs, size_t index, const void *obj, size_t obj_size)
 {
-#ifdef UNICSTL_DEBUG
     unicstl_assert(objs != NULL);
     unicstl_assert(obj != NULL);
-#endif
     memmove((char *)objs + obj_size * index, obj, obj_size);
 }
 
 static inline void obj_get(const void *objs, size_t index, void *obj, size_t obj_size)
 {
-#ifdef UNICSTL_DEBUG
     unicstl_assert(objs != NULL);
     unicstl_assert(obj != NULL);
-#endif
     memmove(obj, (const char *)objs + obj_size * index, obj_size);
+}
+
+static inline size_t obj_index(const void *objs, const void *obj, size_t obj_size)
+{
+    return ((const char *)obj - (const char *)objs) / obj_size;
 }
 
 static inline void obj_copy(void *dst, const void *src, size_t count, size_t obj_size)
 {
-#ifdef UNICSTL_DEBUG
     unicstl_assert(dst != NULL);
     unicstl_assert(src != NULL);
-#endif
     memmove(dst, src, obj_size * count);
+}
+
+static inline void obj_shift(void *objs, size_t dst_idx, size_t src_idx, size_t count, size_t obj_size)
+{
+    unicstl_assert(objs != NULL);
+    obj_copy((char *)objs + obj_size * dst_idx, (const char *)objs + obj_size * src_idx, count, obj_size);
 }
 
 static inline size_t ring_index(size_t head, size_t index, size_t capacity)

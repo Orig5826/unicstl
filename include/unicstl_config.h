@@ -21,6 +21,8 @@
  * @brief unicstl contains which module
  * 
  */
+#define UNICSTL_ARRAYLIST
+
 #define UNICSTL_LIST
 #define UNICSTL_STACK
 #define UNICSTL_QUEUE

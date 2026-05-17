@@ -218,6 +218,63 @@ static void test_arraylist_pop(void)
     arraylist_free(&arraylist);
 }
 
+static void test_arraylist_get(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, len-1, &temp));
+    TEST_ASSERT_EQUAL_INT(data[len-1], temp);
+
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, -len, &temp));
+    TEST_ASSERT_EQUAL_INT(data[0], temp);
+
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, -1, &temp));
+    TEST_ASSERT_EQUAL_INT(data[len-1], temp);
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_get_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+
+    // ---------- invalid index ----------
+    temp = 0x11;
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, len, &temp));
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, 999, &temp));
+
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, -len-1, &temp));
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, -999, &temp));
+
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, 0, NULL));
+
+    arraylist_free(&arraylist);
+}
+
 static void test_arraylist_set(void)
 {
     int temp = 0;
@@ -255,6 +312,38 @@ static void test_arraylist_set(void)
     arraylist_free(&arraylist);
 }
 
+static void test_arraylist_set_negative(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+
+    temp = 0x11;
+    TEST_ASSERT_TRUE(arraylist->set(arraylist, -len, &temp));
+    temp = 0x22;
+    TEST_ASSERT_TRUE(arraylist->set(arraylist, -5, &temp));
+    temp = 0x33;
+    TEST_ASSERT_TRUE(arraylist->set(arraylist, -1, &temp));
+
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(0x11, temp);
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, 5, &temp));
+    TEST_ASSERT_EQUAL_INT(0x22, temp);
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, 9, &temp));
+    TEST_ASSERT_EQUAL_INT(0x33, temp);
+    
+    arraylist_free(&arraylist);
+}
+
 static void test_arraylist_set_invalid(void)
 {
     int temp = 0;
@@ -272,9 +361,11 @@ static void test_arraylist_set_invalid(void)
 
     // ---------- invalid index ----------
     temp = 0x11;
-    TEST_ASSERT_FALSE(arraylist->set(arraylist, -1, &temp));
     TEST_ASSERT_FALSE(arraylist->set(arraylist, len, &temp));
     TEST_ASSERT_FALSE(arraylist->set(arraylist, 999, &temp));
+
+    TEST_ASSERT_FALSE(arraylist->set(arraylist, -len-1, &temp));
+    TEST_ASSERT_FALSE(arraylist->set(arraylist, -999, &temp));
 
     TEST_ASSERT_FALSE(arraylist->set(arraylist, 0, NULL));
 
@@ -304,10 +395,48 @@ static void test_arraylist_at(void)
 
     p_int = arraylist->at(arraylist, 9);
     TEST_ASSERT_EQUAL_INT(10, *p_int);
+}
+
+static void test_arraylist_at_negative(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+
+    const int *p_int = NULL;
+    p_int = arraylist->at(arraylist, -len);
+    TEST_ASSERT_EQUAL_INT(1, *p_int);
+
+    p_int = arraylist->at(arraylist, -6);
+    TEST_ASSERT_EQUAL_INT(5, *p_int);
+
+    p_int = arraylist->at(arraylist, -1);
+    TEST_ASSERT_EQUAL_INT(10, *p_int);
+}
+
+static void test_arraylist_at_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
 
     TEST_ASSERT_NULL(arraylist->at(arraylist, 10));
-    TEST_ASSERT_NULL(arraylist->at(arraylist, -1));
-
 
     //  warning: initialization discards 'const' qualifier from pointer target type
     // int *p_int_warring = arraylist->at(arraylist, 0);
@@ -321,6 +450,7 @@ static void test_arraylist_at(void)
 
     arraylist_free(&arraylist);
 }
+
 
 static void test_arraylist_resize(void)
 {
@@ -393,7 +523,8 @@ static void test_arraylist_index(void)
     {
         arraylist->append(arraylist, &data[i]);
     }
-
+    log_info("test_arraylist_index: append finished");
+    
     temp = 1;
     TEST_ASSERT_EQUAL_INT(0, arraylist->index(arraylist, &temp));
     TEST_ASSERT_TRUE(arraylist->contains(arraylist, &temp));
@@ -413,6 +544,7 @@ static void test_arraylist_index(void)
     TEST_ASSERT_EQUAL_INT(-1, arraylist->index(arraylist, NULL));
 
     arraylist_free(&arraylist);
+    log_info("test_arraylist_index: pass");
 }
 
 static void test_arraylist_index_invalid(void)
@@ -685,10 +817,16 @@ void test_arraylist(void)
 
     RUN_TEST(test_arraylist_pop);
 
+    RUN_TEST(test_arraylist_get);
+    RUN_TEST(test_arraylist_get_invalid);
+
     RUN_TEST(test_arraylist_set);
+    RUN_TEST(test_arraylist_set_negative);
     RUN_TEST(test_arraylist_set_invalid);
 
     RUN_TEST(test_arraylist_at);
+    RUN_TEST(test_arraylist_at_negative);
+    RUN_TEST(test_arraylist_at_invalid);
 
     RUN_TEST(test_arraylist_resize);
     RUN_TEST(test_arraylist_resize_invalid);

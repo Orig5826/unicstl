@@ -49,9 +49,10 @@ void test_linklist(void);
 void test_dlinklist(void);
 void test_ringbuf(void);
 void test_rawbuf(void);
-
 void test_segarray(void);
+
 void test_deque(void);
+void test_arraylist(void);
 
 void test_queue(void);
 void test_stack(void);

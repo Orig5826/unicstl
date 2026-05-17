@@ -13,23 +13,19 @@
 
 #include "unicstl_internal.h"
 #include "iterator.h"
+#include "darray.h"
 
 #ifdef UNICSTL_ARRAYLIST
-// #ifndef _SSIZE_T_DECLARED
-// typedef ptrdiff_t ssize_t;
-// #define _SSIZE_T_DECLARED
-// #endif
+#ifndef _SSIZE_T_DECLARED
+typedef ptrdiff_t ssize_t;
+#define _SSIZE_T_DECLARED
+#endif
 
 struct _arraylist
 {
     // -------------------- private --------------------
-    void *obj;
-
-    size_t _obj_size;
-    size_t _size;
-    size_t _capacity;
-
-    bool _sorted;
+    darray_t _darray;
+    iterator_t _iter_darray;
 
     struct _iterator _iter;
     void (*_destory)(struct _arraylist *self);
