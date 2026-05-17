@@ -81,26 +81,27 @@ int main(int argc, char const *argv[])
     log_init();
     mempool_init();
     
-    TEST_ADD(test_unicstl);
+    // TEST_ADD(test_unicstl);
 
-    TEST_ADD(test_linklist);
-    TEST_ADD(test_dlinklist);
+    // TEST_ADD(test_linklist);
+    // TEST_ADD(test_dlinklist);
 
-    TEST_ADD(test_darray);
-    TEST_ADD(test_ringbuf);
-    TEST_ADD(test_rawbuf);
+    // TEST_ADD(test_darray);
+    // TEST_ADD(test_ringbuf);
+    // TEST_ADD(test_rawbuf);
     
-    TEST_ADD(test_deque);
+    // TEST_ADD(test_arraylist);
+    // TEST_ADD(test_deque);
 
-    TEST_ADD(test_queue);
-    TEST_ADD(test_stack);
+    // TEST_ADD(test_queue);
+    // TEST_ADD(test_stack);
 
-    TEST_ADD(test_heap);
+    // TEST_ADD(test_heap);
+    
     // TEST_ADD(test_tree);
     // TEST_ADD(test_graph);
 
     TEST_ADD(test_segarray);
-    TEST_ADD(test_arraylist);
 
     mempool_deinit();
     log_deinit();

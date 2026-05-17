@@ -34,39 +34,6 @@ static void test_segarray_new_lazy(void)
     segarray_free(&segarray);
 }
 
-// #ifdef UNICSTL_STATIC_MEMORY
-// static void test_segarray_init(void)
-// {
-//     size_t i = 0;
-//     const size_t len = 10;
-
-//     int data[10];
-//     int temp = 0;
-
-//     struct _segarray segarray;
-//     TEST_ASSERT_TRUE(segarray_init(&segarray, sizeof(int), len, data));
-
-//     TEST_ASSERT_TRUE(segarray.empty(&segarray));
-//     for (i = 0; i < len; i++)
-//     {
-//         TEST_ASSERT_TRUE(segarray.push_back(&segarray, &data[i]));
-
-//         TEST_ASSERT_TRUE(segarray.front((segarray_t)&segarray, &temp));
-//         TEST_ASSERT_EQUAL_INT(data[0], temp);
-
-//         TEST_ASSERT_TRUE(segarray.back((segarray_t)&segarray, &temp));
-//         TEST_ASSERT_EQUAL_INT(data[i], temp);
-
-//         TEST_ASSERT_EQUAL_INT(i + 1, segarray.size((segarray_t)&segarray));
-//     }
-//     TEST_ASSERT_TRUE(segarray.full(&segarray));
-
-//     TEST_ASSERT_FALSE(segarray.push_back(&segarray, &data[0]));
-//     TEST_ASSERT_FALSE(segarray.push_front(&segarray, &data[0]));
-// }
-// #endif
-
-
 static void test_segarray_push_back(void)
 {
     size_t i = 0;
@@ -528,7 +495,6 @@ static void test_segarray_iter(void)
     segarray_free(&segarray);
 }
 
-#if 0
 static void test_segarray_resize(void)
 {
     int temp = 0;
@@ -673,7 +639,38 @@ static void test_segarray_dynamic(void)
 
     segarray_free(&segarray);
 }
-#endif
+
+static void test_segarray_dynamic2(void)
+{
+    int temp = 0;
+    size_t i = 0;
+    size_t len = 10;
+    segarray_t segarray = segarray_new(sizeof(int), 2);
+    TEST_ASSERT_EQUAL_INT(0, segarray->size(segarray));
+
+    for(i = 0; i < len; i++)
+    {
+        segarray->push_front(segarray, &temp);
+    }
+    TEST_ASSERT_EQUAL_INT(10, segarray->size(segarray));
+
+    len *= 2;
+    for(; i < len; i++)
+    {
+        segarray->push_front(segarray, &temp);
+    }
+    TEST_ASSERT_EQUAL_INT(32, segarray->size(segarray));
+
+    len *= 2;
+    for(; i < len; i++)
+    {
+        segarray->push_front(segarray, &temp);
+    }
+    TEST_ASSERT_EQUAL_INT(64, segarray->size(segarray));
+
+    segarray_free(&segarray);
+}
+
 
 static void test_segarray_status(void)
 {
@@ -842,10 +839,6 @@ void test_segarray(void)
     RUN_TEST(test_segarray_new);
     RUN_TEST(test_segarray_new_lazy);
 
-// #ifdef UNICSTL_STATIC_MEMORY
-//     RUN_TEST(test_segarray_init);
-// #endif
-
     RUN_TEST(test_segarray_push_back);
     RUN_TEST(test_segarray_push_back_invalid);
 
@@ -870,11 +863,12 @@ void test_segarray(void)
     // ---------- base ----------
     RUN_TEST(test_segarray_iter);
 
-//     RUN_TEST(test_segarray_resize);
-//     RUN_TEST(test_segarray_resize_invalid);
-//     RUN_TEST(test_segarray_resize_edge);
+    RUN_TEST(test_segarray_resize);
+    RUN_TEST(test_segarray_resize_invalid);
+    RUN_TEST(test_segarray_resize_edge);
 
-//     RUN_TEST(test_segarray_dynamic);
+    RUN_TEST(test_segarray_dynamic);
+    // RUN_TEST(test_segarray_dynamic2);    // todo: fix it
 
     RUN_TEST(test_segarray_status);
     

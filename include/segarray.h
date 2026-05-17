@@ -23,7 +23,6 @@ struct _segarray
     size_t _obj_size;
     size_t _size;
     size_t _capacity;
-    bool _dynamic;
     size_t _segsize;
 
     ringbuf_t _map;
