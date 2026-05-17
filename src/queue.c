@@ -122,7 +122,7 @@ static iterator_t queue_iter(struct _queue* self)
     unicstl_assert(self != NULL);
     unicstl_assert(self->_deque != NULL);
     deque_t deque = self->_deque;
-    self->_iter_deque = deque->iter(deque, DEQUE_FORWARD);
+    self->_iter_deque = deque->iter(deque, LINEAR_FORWARD);
 
     iterator_t iter = &self->_iter;
     iter->_container = self;

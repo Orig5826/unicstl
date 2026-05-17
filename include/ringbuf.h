@@ -13,12 +13,6 @@
 
 #include "unicstl_internal.h"
 
-enum _ringbuf_order
-{
-    RINGBUF_FORWARD,
-    RINGBUF_REVERSE,
-};
-
 struct _ringbuf
 {
     // -------------------- private -------------------- 
@@ -58,7 +52,7 @@ struct _ringbuf
     bool (*clear)(struct _ringbuf* self);
 
     // iter
-    iterator_t (*iter)(struct _ringbuf* self, enum _ringbuf_order order);
+    iterator_t (*iter)(struct _ringbuf* self, linear_order_t order);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _ringbuf* self);

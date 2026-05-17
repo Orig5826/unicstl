@@ -14,12 +14,6 @@
 #include "unicstl_internal.h"
 #include "ringbuf.h"
 
-enum _deque_order
-{
-    DEQUE_FORWARD,
-    DEQUE_REVERSE,
-};
-
 struct _deque
 {
     // -------------------- private -------------------- 
@@ -50,7 +44,7 @@ struct _deque
     bool (*full)(struct _deque* self);
 
     // iter
-    iterator_t (*iter)(struct _deque* self, enum _deque_order order);
+    iterator_t (*iter)(struct _deque* self, linear_order_t order);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _deque* self);

@@ -14,12 +14,6 @@
 #include "unicstl_internal.h"
 #include "iterator.h"
 
-enum _darray_order
-{
-    DARRAY_FORWARD,
-    DARRAY_REVERSE,
-};
-
 struct _darray
 {
     // -------------------- private --------------------
@@ -66,7 +60,7 @@ struct _darray
     size_t (*count)(struct _darray *self, const void *obj);         // O(nlogn) if sorted; O(n) if not sorted
 
     // iter
-    iterator_t (*iter)(struct _darray *self, enum _darray_order order);
+    iterator_t (*iter)(struct _darray *self, linear_order_t order);
 
     // config
     compare_fun_t compare;      // !!! you have to implement this function

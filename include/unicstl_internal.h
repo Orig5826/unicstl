@@ -62,6 +62,31 @@
 #define UNICSTL_UNUSED(x) (void)(x)
 // clang-format on
 
+
+typedef enum {
+    LINEAR_FORWARD,
+    LINEAR_REVERSE,
+} linear_order_t;
+
+typedef enum {
+    TREE_PRE,
+    TREE_IN,
+    TREE_POST,
+    TREE_BREADTH,
+
+    TREE_PRE_R,
+    TREE_IN_R,
+    TREE_POST_R,
+    TREE_BREADTH_R,
+} tree_order_t;
+
+typedef enum {
+    GRAPH_BFS,
+    GRAPH_DFS,
+    GRAPH_BFS_R,
+    GRAPH_DFS_R,
+} graph_order_t;
+
 /**
  * @brief assert function
  *

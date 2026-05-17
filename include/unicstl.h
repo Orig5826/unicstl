@@ -20,6 +20,7 @@
 #include "rawbuf.h"
 
 #include "segarray.h"
+#include "arraylist.h"
 
 #include "list.h"
 #include "stack.h"
@@ -28,5 +29,6 @@
 #include "tree.h"
 #include "heap.h"
 #include "graph.h"
+
 
 #endif // _UNICSTL_H_

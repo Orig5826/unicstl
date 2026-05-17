@@ -524,7 +524,7 @@ static void test_darray_iter(void)
         darray->append(darray, &data[i]);
     }
 
-    iterator_t iter = darray->iter(darray, DARRAY_FORWARD);
+    iterator_t iter = darray->iter(darray, LINEAR_FORWARD);
     i = 0;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
@@ -535,7 +535,7 @@ static void test_darray_iter(void)
     }
     TEST_ASSERT_EQUAL_INT(len, i);
 
-    iter = darray->iter(darray, DARRAY_REVERSE);
+    iter = darray->iter(darray, LINEAR_REVERSE);
     i = len - 1;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
@@ -588,7 +588,7 @@ static void test_darray_sort(void)
     }
     TEST_ASSERT_TRUE(darray->sort(darray));
     
-    iterator_t iter = darray->iter(darray, DARRAY_FORWARD);
+    iterator_t iter = darray->iter(darray, LINEAR_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {
@@ -603,7 +603,7 @@ static void test_darray_sort(void)
 
     TEST_ASSERT_TRUE(darray->sort(darray));
 
-    iter = darray->iter(darray, DARRAY_FORWARD);
+    iter = darray->iter(darray, LINEAR_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {

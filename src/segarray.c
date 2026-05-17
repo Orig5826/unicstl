@@ -13,6 +13,7 @@
 static inline size_t clac_start_index(size_t capacity)
 {
     // return 0;
+    // return capacity - 1;
     return capacity <= 2 ? 0 : (capacity - 1) / 2;
 }
 
@@ -31,6 +32,7 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
     {
         if(self->_mapfree->empty(mapfree))
         {
+            log_debug("mapfree is empty!");
             if (map->full(map))
             {
                 // need resize 
@@ -45,12 +47,16 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
                     log_error("rawbuf_new failed!");
                     return false;
                 }
-                map->push_back(map, &seg);
-                self->_segtail = 0;
+                if (!map->push_back(map, &seg))
+                {
+                    log_error("map->push_back failed!");
+                    return false;
+                }
             }
         }
         else
         {
+            log_debug("mapfree is not empty!");
             rawbuf_t seg;
             if (!mapfree->pop_back(mapfree, &seg))
             {
@@ -62,9 +68,11 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
                 log_error("map->push_back failed!");
                 return false;
             }
-            self->_segtail = 0;
         }
+
+        self->_segtail = 0;
     }
+    log_debug("self->_segtail=%zu", self->_segtail);
 
     rawbuf_t seg;
     if (!map->back(map, &seg))
@@ -81,7 +89,7 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
     }
     self->_segtail = index + 1;
     
-    log_info("push_back success!");
+    log_debug("push_back success!");
     self->_size++;
     return true;
 }
@@ -116,7 +124,6 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
                     return false;
                 }
                 map->push_front(map, &seg);
-                self->_seghead = self->_segsize;
             }
         }
         else
@@ -132,8 +139,9 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
                 log_error("map->push_back failed!");
                 return false;
             }
-            self->_seghead = self->_segsize;
         }
+
+        self->_seghead = self->_segsize;
     }
 
     rawbuf_t seg;
@@ -150,7 +158,7 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
     }
     self->_seghead = index;
     
-    log_info("push_front success!");
+    log_debug("push_front success!");
     self->_size++;
     return true;
 }
@@ -181,6 +189,7 @@ static bool segarray_pop_back(struct _segarray *self, void *obj)
             return false;
         }
     }
+
     self->_segtail = index;
     if(self->_segtail == 0)
     {
@@ -199,7 +208,7 @@ static bool segarray_pop_back(struct _segarray *self, void *obj)
         }
     }
 
-    log_info("pop_back success!");
+    log_debug("pop_back success!");
     self->_size--;
     return true;
 }
@@ -254,7 +263,7 @@ static bool segarray_pop_front(struct _segarray *self, void *obj)
         }
     }
 
-    log_info("pop_front success!");
+    log_debug("pop_front success!");
     self->_size--;
     return true;
 }
@@ -266,6 +275,7 @@ static bool segarray_back(struct _segarray *self, void *obj)
     {
         return false;
     }
+    log_debug("back");
     return self->get(self, self->size(self) - 1, obj);
 }
 
@@ -276,6 +286,7 @@ static bool segarray_front(struct _segarray *self, void *obj)
     {
         return false;
     }
+    log_debug("front");
     return self->get(self, 0, obj);
 }
 
@@ -438,7 +449,7 @@ static void segarray_destory(struct _segarray *self)
         }
         ringbuf_free(&self->_map);
     }
-    log_info("segarray destoryed!");
+    log_debug("segarray destoryed!");
 }
 
 static void segarray_print(struct _segarray *self)
@@ -464,7 +475,7 @@ bool segarray_iter_hasnext(struct _iterator *iter)
     unicstl_assert(iter->_container != NULL);
     segarray_t self = (segarray_t)iter->_container;
 
-    if (iter->_order == SEGARRAY_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         if (iter->_index >= self->size(self))
         {
@@ -489,7 +500,7 @@ const void *segarray_iter_next(struct _iterator *iter)
     const void *obj = NULL;
 
     obj = self->at(self, iter->_index);
-    if (iter->_order == SEGARRAY_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         iter->_index++;
     }
@@ -500,7 +511,7 @@ const void *segarray_iter_next(struct _iterator *iter)
     return obj;
 }
 
-iterator_t segarray_iter(struct _segarray *self, enum _segarray_order order)
+iterator_t segarray_iter(struct _segarray *self, linear_order_t order)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -509,7 +520,7 @@ iterator_t segarray_iter(struct _segarray *self, enum _segarray_order order)
     iter->_index = 0;
     iter->_order = order;
 
-    if (iter->_order == SEGARRAY_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         iter->_index = 0;
     }
@@ -556,12 +567,14 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
         self->_map = ringbuf_new(sizeof(rawbuf_t), 8);
         if (self->_map == NULL)
         {
+            log_warn("self->_map new failed!");
             return false;
         }
 
         self->_mapfree = ringbuf_new(sizeof(rawbuf_t), 8);
         if (self->_mapfree == NULL)
         {
+            log_warn("self->_mapfree new failed!");
             ringbuf_free(&self->_map);
             return false;
         }
@@ -569,6 +582,7 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
         rawbuf_t seg = rawbuf_new(obj_size, self->_segsize);
         if (seg == NULL)
         {
+            log_warn("seg new failed!");
             ringbuf_free(&self->_map);
             ringbuf_free(&self->_mapfree);
             return false;
@@ -578,7 +592,14 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
         self->_segtail = self->_seghead;
 
         // add first seg array to map
-        self->_map->push_back(self->_map, &seg);
+        if(!self->_map->push_back(self->_map, &seg))
+        {
+            log_warn("self->_map push back failed!");
+            rawbuf_free(&seg);
+            ringbuf_free(&self->_map);
+            ringbuf_free(&self->_mapfree);
+            return false;
+        }
     }
 
     self->_destory = segarray_destory;

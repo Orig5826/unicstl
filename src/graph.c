@@ -941,7 +941,7 @@ const void *graph_iter_next(struct _iterator *iter)
     return obj;
 }
 
-iterator_t graph_iter(struct _graph *self, enum _graph_search search_type, void *start)
+iterator_t graph_iter(struct _graph *self, graph_order_t search_type, void *start)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;

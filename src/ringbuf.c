@@ -297,7 +297,7 @@ bool ringbuf_iter_hasnext(struct _iterator *iter)
 
     ringbuf_t self = (ringbuf_t)iter->_container;
 
-    if (iter->_order == RINGBUF_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         if (iter->_index == self->_tail)
         {
@@ -322,7 +322,7 @@ const void *ringbuf_iter_next(struct _iterator *iter)
     ringbuf_t self = (ringbuf_t)iter->_container;
 
     size_t index = iter->_index;
-    if (iter->_order == RINGBUF_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         iter->_index = ring_index_next(index, self->_capacity);
     }
@@ -334,7 +334,7 @@ const void *ringbuf_iter_next(struct _iterator *iter)
     return obj_at(self->obj, index, self->_obj_size);
 }
 
-iterator_t ringbuf_iter(struct _ringbuf *self, enum _ringbuf_order order)
+iterator_t ringbuf_iter(struct _ringbuf *self, linear_order_t order)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -342,7 +342,7 @@ iterator_t ringbuf_iter(struct _ringbuf *self, enum _ringbuf_order order)
     iter->_container = self;
     iter->_index = 0;
     iter->_order = order;
-    if (iter->_order == RINGBUF_FORWARD)
+    if (iter->_order == LINEAR_FORWARD)
     {
         iter->_index = self->_head;
     }
@@ -453,6 +453,6 @@ void ringbuf_free(ringbuf_t *ringbuf)
     {
         (*ringbuf)->_destory(*ringbuf);
         unicstl_free(*ringbuf);
+        *ringbuf = NULL;
     }
-    *ringbuf = NULL;
 }

@@ -13,12 +13,6 @@
 
 #include "unicstl_internal.h"
 
-enum _dlinklist_order
-{
-    DLLIST_FORWARD,
-    DLLIST_REVERSE,
-};
-
 struct _dlinklist_node
 {
     void* obj;
@@ -56,7 +50,7 @@ struct _dlinklist
     bool (*empty)(struct _dlinklist* self);
 
     // iter
-    iterator_t (*iter)(struct _dlinklist* self, enum _dlinklist_order order);
+    iterator_t (*iter)(struct _dlinklist* self, linear_order_t order);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _dlinklist* self);

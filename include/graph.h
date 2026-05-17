@@ -24,13 +24,6 @@ enum _graph_type
     // GRAPH_DIRECTED_WEIGHT,
 };
 
-enum _graph_search
-{
-    GRAPH_DFS,
-    GRAPH_BFS,
-};
-
-
 struct _graph_edge
 {
     size_t weight;
@@ -58,7 +51,7 @@ struct _graph
     size_t _ratio;
 
     enum _graph_type _type;
-    enum _graph_search _search;
+    graph_order_t _search;
 
     stack_t stack;
     queue_t queue;
@@ -86,7 +79,7 @@ struct _graph
     bool (*clear)(struct _graph* self);
 
     // iter
-    iterator_t (*iter)(struct _graph* self, enum _graph_search search, void *obj);
+    iterator_t (*iter)(struct _graph* self, graph_order_t search, void *obj);
 
     // config 
     compare_fun_t compare;  // !!! you have to implement this function

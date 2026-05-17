@@ -81,6 +81,10 @@ segarray扩容，开新segment，然后指向新的segment，性能也不差。
 
 ## 经典问题
 
+### 2026-05-17
+1. 单测多少或者调整顺序都能导致segarray报错？经过排查new之后，函数结构体成员函数的指针应该是异常了。
+push_back没有执行，而是莫名其妙跳到了segarray_free。暂未找到原因。只是单测先保留已重构的，tree和graph暂时先不测试了。
+
 ### 2026-05-15
 1. ringbuffer，resize扩容，截断的处理代码简化了。
 

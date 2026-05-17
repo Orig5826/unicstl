@@ -292,7 +292,7 @@ static void test_dlinklist_iter(void)
         TEST_ASSERT_EQUAL_INT(i + 1, dlinklist->size(dlinklist));
     }
 
-    iterator_t iter = dlinklist->iter(dlinklist, DLLIST_FORWARD);
+    iterator_t iter = dlinklist->iter(dlinklist, LINEAR_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {
@@ -301,7 +301,7 @@ static void test_dlinklist_iter(void)
         i++;
     }
 
-    iter = dlinklist->iter(dlinklist, DLLIST_FORWARD);
+    iter = dlinklist->iter(dlinklist, LINEAR_FORWARD);
     i = 0;
     while(iter->hasnext(iter))
     {
@@ -310,7 +310,7 @@ static void test_dlinklist_iter(void)
         i++;
     }
 
-    iter = dlinklist->iter(dlinklist, DLLIST_REVERSE);
+    iter = dlinklist->iter(dlinklist, LINEAR_REVERSE);
     i = len - 1;
     while(iter->hasnext(iter))
     {

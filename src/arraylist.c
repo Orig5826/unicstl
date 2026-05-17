@@ -1,48 +1,50 @@
 /**
- * @file darray.c
- * @author wenjf (orig5826@163.com)
- * @brief
+ * @file arraylist.c
+ * @author wenjf (Orig5826@163.com)
+ * @brief 
  * @version 0.1
- * @date 2026-05-11
- *
+ * @date 2026-05-17
+ * 
  * @copyright Copyright (c) 2026
- *
+ * 
  */
-#include "darray.h"
+#ifdef UNICSTL_ARRAYLIST
+
+#include "arraylist.h"
 #include "algo.h"
 
-static size_t darray_size(struct _darray *self)
+static size_t arraylist_size(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     return self->_size;
 }
 
-static size_t darray_capacity(struct _darray *self)
+static size_t arraylist_capacity(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     return self->_capacity;
 }
 
-static bool darray_empty(struct _darray *self)
+static bool arraylist_empty(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     return self->_size == 0;
 }
 
-static bool darray_full(struct _darray *self)
+static bool arraylist_full(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     return self->_size == self->_capacity;
 }
 
-static bool darray_clear(struct _darray *self)
+static bool arraylist_clear(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     self->_size = 0;
     return true;
 }
 
-static void darray_destory(struct _darray *self)
+static void arraylist_destory(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     if (self->obj != NULL)
@@ -51,7 +53,7 @@ static void darray_destory(struct _darray *self)
     }
 }
 
-static void darray_print(struct _darray *self)
+static void arraylist_print(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->print_obj != NULL);
@@ -71,7 +73,7 @@ static void darray_print(struct _darray *self)
     }
 }
 
-static bool darray_resize(struct _darray *self, size_t capacity)
+static bool arraylist_resize(struct _arraylist *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if(capacity == 0 || capacity > UNICSTL_CAPACITY_MAX)
@@ -93,7 +95,7 @@ static bool darray_resize(struct _darray *self, size_t capacity)
     return true;
 }
 
-static bool darray_insert(struct _darray *self, size_t index, const void *obj)
+static bool arraylist_insert(struct _arraylist *self, ssize_t index, const void *obj)
 {
     unicstl_assert(self != NULL);
     if (index > self->size(self) || obj == NULL)
@@ -126,7 +128,7 @@ static bool darray_insert(struct _darray *self, size_t index, const void *obj)
     return true;
 }
 
-static bool darray_remove(struct _darray *self, size_t index, void *obj)
+static bool arraylist_remove(struct _arraylist *self, ssize_t index, void *obj)
 {
     unicstl_assert(self != NULL);
     if (self->empty(self) || index >= self->size(self))
@@ -146,17 +148,17 @@ static bool darray_remove(struct _darray *self, size_t index, void *obj)
     return true;
 }
 
-static bool darray_append(struct _darray *self, const void *obj)
+static bool arraylist_append(struct _arraylist *self, const void *obj)
 {
-    return darray_insert(self, self->size(self), obj);
+    return arraylist_insert(self, self->size(self), obj);
 }
 
-static bool darray_pop(struct _darray *self, void *obj)
+static bool arraylist_pop(struct _arraylist *self, void *obj)
 {
-    return darray_remove(self, self->size(self) - 1, obj);
+    return arraylist_remove(self, self->size(self) - 1, obj);
 }
 
-static bool darray_set(struct _darray *self, size_t index, const void *obj)
+static bool arraylist_set(struct _arraylist *self, ssize_t index, const void *obj)
 {
     unicstl_assert(self != NULL);
     if (index >= self->size(self) || obj == NULL)
@@ -168,7 +170,7 @@ static bool darray_set(struct _darray *self, size_t index, const void *obj)
     return true;
 }
 
-static bool darray_get(struct _darray *self, size_t index, void *obj)
+static bool arraylist_get(struct _arraylist *self, ssize_t index, void *obj)
 {
     unicstl_assert(self != NULL);
     if (index >= self->size(self) || obj == NULL)
@@ -180,7 +182,7 @@ static bool darray_get(struct _darray *self, size_t index, void *obj)
     return true;
 }
 
-const void *darray_at(struct _darray *self, size_t index)
+const void *arraylist_at(struct _arraylist *self, ssize_t index)
 {
     unicstl_assert(self != NULL);
     if (index >= self->size(self))
@@ -191,12 +193,12 @@ const void *darray_at(struct _darray *self, size_t index)
     return (const char *)self->obj + offset;
 }
 
-bool darray_iter_hasnext(struct _iterator *iter)
+bool arraylist_iter_hasnext(struct _iterator *iter)
 {
     unicstl_assert(iter != NULL);
     unicstl_assert(iter->_container != NULL);
 
-    darray_t self = (darray_t)iter->_container;
+    arraylist_t self = (arraylist_t)iter->_container;
 
     if (iter->_order == LINEAR_FORWARD)
     {
@@ -215,12 +217,12 @@ bool darray_iter_hasnext(struct _iterator *iter)
     return true;
 }
 
-const void *darray_iter_next(struct _iterator *iter)
+const void *arraylist_iter_next(struct _iterator *iter)
 {
     unicstl_assert(iter != NULL);
     unicstl_assert(iter->_container != NULL);
 
-    darray_t self = (darray_t)iter->_container;
+    arraylist_t self = (arraylist_t)iter->_container;
 
     size_t index = iter->_index;
     if (iter->_order == LINEAR_FORWARD)
@@ -234,7 +236,7 @@ const void *darray_iter_next(struct _iterator *iter)
     return obj_at(self->obj, index, self->_obj_size);
 }
 
-iterator_t darray_iter(struct _darray *self, linear_order_t order)
+iterator_t arraylist_iter(struct _arraylist *self, enum _arraylist_order order)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -251,24 +253,24 @@ iterator_t darray_iter(struct _darray *self, linear_order_t order)
         iter->_index = self->size(self) - 1;
     }
 
-    iter->hasnext = darray_iter_hasnext;
-    iter->next = darray_iter_next;
+    iter->hasnext = arraylist_iter_hasnext;
+    iter->next = arraylist_iter_next;
     return iter;
 }
 
-static size_t darray_index(struct _darray *self, const void *obj)
+static ssize_t arraylist_index(struct _arraylist *self, const void *obj)
 {
     unicstl_assert(self != NULL);
     return self->search(self, obj);
 }
 
-static bool darray_contains(struct _darray *self, const void *obj)
+static bool arraylist_contains(struct _arraylist *self, const void *obj)
 {
     unicstl_assert(self != NULL);
     return self->search(self, obj) != (size_t)-1;
 }
 
-static bool darry_sort(struct _darray *self)
+static bool arraylist_sort(struct _arraylist *self)
 {
     unicstl_assert(self != NULL);
     if(self->_sorted)
@@ -284,7 +286,7 @@ static bool darry_sort(struct _darray *self)
     return true;
 }
 
-static size_t darry_search(struct _darray *self, const void *obj)
+static ssize_t arraylist_search(struct _arraylist *self, const void *obj)
 {
     unicstl_assert(self != NULL);
     if(obj == NULL)
@@ -309,7 +311,7 @@ static size_t darry_search(struct _darray *self, const void *obj)
     return linear_search(obj, self->obj, self->size(self), self->_obj_size, self->compare);
 }
 
-static size_t darry_count(struct _darray *self, const void *obj)
+static size_t arraylist_count(struct _arraylist *self, const void *obj)
 {
     unicstl_assert(self != NULL);
     if(obj == NULL)
@@ -339,7 +341,7 @@ static size_t darry_count(struct _darray *self, const void *obj)
     return count;
 }
 
-static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
+static bool arraylist_init(struct _arraylist *self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(obj_size > 0);
@@ -352,41 +354,41 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->_sorted = false;
 
     self->obj = NULL;
-    self->_destory = darray_destory;
+    self->_destory = arraylist_destory;
 
 
     // -------------------- public --------------------
     // kernel
-    self->resize = darray_resize;
-    self->insert = darray_insert;
-    self->remove = darray_remove;
-    self->append = darray_append;
-    self->pop = darray_pop;
+    self->resize = arraylist_resize;
+    self->insert = arraylist_insert;
+    self->remove = arraylist_remove;
+    self->append = arraylist_append;
+    self->pop = arraylist_pop;
 
-    self->set = darray_set;
-    self->get = darray_get;
-    self->at = darray_at;
-    self->index = darray_index;
-    self->contains = darray_contains;
+    self->set = arraylist_set;
+    self->get = arraylist_get;
+    self->at = arraylist_at;
+    self->index = arraylist_index;
+    self->contains = arraylist_contains;
 
-    self->size = darray_size;
-    self->capacity = darray_capacity;
-    self->empty = darray_empty;
-    self->full = darray_full;
-    self->clear = darray_clear;
+    self->size = arraylist_size;
+    self->capacity = arraylist_capacity;
+    self->empty = arraylist_empty;
+    self->full = arraylist_full;
+    self->clear = arraylist_clear;
 
     // iter
-    self->iter = darray_iter;
+    self->iter = arraylist_iter;
 
     // sort and search
-    self->sort = darry_sort;
-    self->search = darry_search;
+    self->sort = arraylist_sort;
+    self->search = arraylist_search;
 
     // -------------------- default --------------------
     self->print_obj = default_print_obj;
 
     // -------------------- debug --------------------
-    self->print = darray_print;
+    self->print = arraylist_print;
 
     // -------------------- malloc --------------------
     if(capacity > 0)
@@ -396,34 +398,36 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     return true;
 }
 
-darray_t darray_new(size_t obj_size, size_t capacity)
+arraylist_t arraylist_new(size_t obj_size, size_t capacity)
 {
-    struct _darray *darray = NULL;
-    darray = (struct _darray *)unicstl_malloc(sizeof(struct _darray));
-    if (darray == NULL)
+    struct _arraylist *arraylist = NULL;
+    arraylist = (struct _arraylist *)unicstl_malloc(sizeof(struct _arraylist));
+    if (arraylist == NULL)
     {
-        log_warn("darray malloc failed!");
+        log_warn("arraylist malloc failed!");
         return NULL;
     }
 
-    if (darray_init(darray, obj_size, capacity) != true)
+    if (arraylist_init(arraylist, obj_size, capacity) != true)
     {
-        log_warn("darray init failed!");
-        unicstl_free(darray);
+        log_warn("arraylist init failed!");
+        unicstl_free(arraylist);
         return NULL;
     }
-    return darray;
+    return arraylist;
 }
 
-void darray_free(darray_t *darray)
+void arraylist_free(arraylist_t *arraylist)
 {
-    if (darray != NULL && *darray != NULL)
+    if (arraylist != NULL && *arraylist != NULL)
     {
-        if ((*darray)->_destory != NULL)
+        if ((*arraylist)->_destory != NULL)
         {
-            (*darray)->_destory((*darray));
+            (*arraylist)->_destory((*arraylist));
         }
-        unicstl_free(*darray);
-        *darray = NULL;
+        unicstl_free(*arraylist);
+        *arraylist = NULL;
     }
 }
+
+#endif // UNICSTL_ARRAYLIST

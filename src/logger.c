@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <time.h>
 
 struct log_string
 {
@@ -30,6 +31,20 @@ struct log_string log_str[] = {
     LOG_NONE, NULL
 };
 
+void timestamp(FILE *file)
+{
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    fprintf(file, "[%04d-%02d-%02d %02d:%02d:%02d] ", timeinfo->tm_year + 1900,
+            timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_hour,
+            timeinfo->tm_min,
+            timeinfo->tm_sec);
+}
+
 
 void logger_init(const char *file_name)
 {
@@ -39,6 +54,8 @@ void logger_init(const char *file_name)
         perror("Failed to open log file");
         exit(-1);
     }
+    
+    timestamp(log_file);
     fprintf(log_file, "\n\n ============================== log start ============================== \n\n");
     fflush(log_file);
 }
@@ -65,7 +82,7 @@ void logger(loglevel_t level, const char *file_name, int line, const char *func_
         }
 
         fprintf(file, "[%5s] ", log_str[level].str);
-        fprintf(file, "%s:%d %s()\t", file_name, line, func_name);
+        fprintf(file, "%s:%-4d %-24s: ", file_name, line, func_name);
 
         va_list args;
         va_start(args, format);

@@ -171,6 +171,7 @@ static void test_avltree_delete(void)
     int count = 0;
     iterator_t iter = NULL;
 
+    log_info("test_avltree_delete");
     tree_t tree = tree_avl_new(sizeof(int));
     TEST_ASSERT_NOT_NULL(tree);
     tree->print_obj = print_num;
@@ -182,6 +183,7 @@ static void test_avltree_delete(void)
         temp = data[i];
         TEST_ASSERT_TRUE(tree->insert(tree, &temp));
     }
+    log_info("insert finished! tree size: %d\n", tree->size(tree));
 
     for (i = 0; i < len; i++)
     {

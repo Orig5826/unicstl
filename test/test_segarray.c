@@ -73,13 +73,16 @@ static void test_segarray_push_back(void)
     int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
+    log_info("test_segarray_push_back");
 
     segarray_t segarray = segarray_new(sizeof(int), len);
     segarray->print_obj = print_num;
 
     for (i = 0; i < len; i++)
     {
+        log_debug("i:%d", i);
         TEST_ASSERT_TRUE(segarray->push_back(segarray, &data[i]));
+        log_debug("push_back ok. size:%d, capacity:%d", segarray->size(segarray), segarray->capacity(segarray));
 
         TEST_ASSERT_TRUE(segarray->front(segarray, &temp));
         TEST_ASSERT_EQUAL_INT(data[0], temp);
@@ -94,6 +97,7 @@ static void test_segarray_push_back(void)
     TEST_ASSERT_EQUAL_INT(len + 2, segarray->size(segarray));
 
     segarray_free(&segarray);
+    log_info("test_segarray_push_back ok");
 }
 
 static void test_segarray_push_back_invalid(void)
@@ -101,6 +105,7 @@ static void test_segarray_push_back_invalid(void)
     segarray_t segarray = segarray_new(sizeof(int), 1);
     TEST_ASSERT_FALSE(segarray->push_back(segarray, NULL));
     segarray_free(&segarray);
+    log_info("test_segarray_push_back_invalid ok");
 }
 
 static void test_segarray_push_front(void)
@@ -475,6 +480,7 @@ static void test_segarray_at(void)
     TEST_ASSERT_EQUAL_INT(100, temp);
 
     segarray_free(&segarray);
+    log_info("segarray_at cuccess!");
 }
 
 static void test_segarray_iter(void)
@@ -493,12 +499,12 @@ static void test_segarray_iter(void)
     }
     TEST_ASSERT_EQUAL_INT(len, segarray->size(segarray));
 
-    iterator_t iter = segarray->iter(segarray, RINGBUF_FORWARD);
+    iterator_t iter = segarray->iter(segarray, LINEAR_FORWARD);
     i = 0;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
-        log_debug("iter-test: i=%d\n", i);
+        log_debug("iter-test: i=%d", i);
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i++;
@@ -506,12 +512,12 @@ static void test_segarray_iter(void)
     TEST_ASSERT_EQUAL_INT(len, i);
     log_info("iter-forward cuccess!");
 
-    iter = segarray->iter(segarray, RINGBUF_REVERSE);
+    iter = segarray->iter(segarray, LINEAR_REVERSE);
     i = len - 1;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
     {
-        log_debug("iter-test: i=%d\n", i);
+        log_debug("iter-test: i=%d", i);
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;

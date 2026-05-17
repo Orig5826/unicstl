@@ -355,7 +355,7 @@ static void test_deque_iter(void)
         deque->push_back(deque, &data[i]);
     }
 
-    iterator_t iter = deque->iter(deque, RINGBUF_FORWARD);
+    iterator_t iter = deque->iter(deque, LINEAR_FORWARD);
     i = 0;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
@@ -366,7 +366,7 @@ static void test_deque_iter(void)
     }
     TEST_ASSERT_EQUAL_INT(len, i);
 
-    iter = deque->iter(deque, RINGBUF_REVERSE);
+    iter = deque->iter(deque, LINEAR_REVERSE);
     i = len - 1;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))

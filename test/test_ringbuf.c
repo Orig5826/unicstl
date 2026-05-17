@@ -492,7 +492,7 @@ static void test_ringbuf_iter(void)
         ringbuf->push_back(ringbuf, &data[i]);
     }
 
-    iterator_t iter = ringbuf->iter(ringbuf, RINGBUF_FORWARD);
+    iterator_t iter = ringbuf->iter(ringbuf, LINEAR_FORWARD);
     i = 0;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))
@@ -503,7 +503,7 @@ static void test_ringbuf_iter(void)
     }
     TEST_ASSERT_EQUAL_INT(len, i);
 
-    iter = ringbuf->iter(ringbuf, RINGBUF_REVERSE);
+    iter = ringbuf->iter(ringbuf, LINEAR_REVERSE);
     i = len - 1;
     TEST_ASSERT_TRUE(iter->hasnext(iter));
     while(iter->hasnext(iter))

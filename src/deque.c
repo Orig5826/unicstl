@@ -128,7 +128,7 @@ const void* deque_iter_next(struct _iterator* iter)
     return self->_iter_ringbuf->next(self->_iter_ringbuf);
 }
 
-iterator_t deque_iter(struct _deque* self, enum _deque_order order)
+iterator_t deque_iter(struct _deque* self, linear_order_t order)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -210,6 +210,6 @@ void deque_free(deque_t *deque)
     {
         (*deque)->_destory(*deque);
         unicstl_free(*deque);
+        *deque = NULL;
     }
-    *deque = NULL;
 }

@@ -15,12 +15,6 @@
 #include "ringbuf.h"
 #include "rawbuf.h"
 
-enum _segarray_order
-{
-    SEGARRAY_FORWARD,
-    SEGARRAY_REVERSE,
-};
-
 struct _segarray
 {
     // -------------------- private -------------------- 
@@ -63,7 +57,7 @@ struct _segarray
     bool (*clear)(struct _segarray* self);
 
     // iter
-    iterator_t (*iter)(struct _segarray* self, enum _segarray_order order);
+    iterator_t (*iter)(struct _segarray* self, linear_order_t order);
 
     // -------------------- debug -------------------- 
     void (*print)(struct _segarray* self);

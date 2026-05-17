@@ -271,7 +271,7 @@ const void* dlinklist_iter_next(struct _iterator* iter)
     }
 
     obj = cur_node->obj;
-    if(iter->_order == DLLIST_FORWARD)
+    if(iter->_order == LINEAR_FORWARD)
     {
         iter->_node = cur_node->next;
     }
@@ -284,7 +284,7 @@ const void* dlinklist_iter_next(struct _iterator* iter)
     return obj;
 }
 
-iterator_t dlinklist_iter(struct _dlinklist* self, enum _dlinklist_order order)
+iterator_t dlinklist_iter(struct _dlinklist* self, linear_order_t order)
 {
     unicstl_assert(self != NULL);
     iterator_t iter = &self->_iter;
@@ -292,7 +292,7 @@ iterator_t dlinklist_iter(struct _dlinklist* self, enum _dlinklist_order order)
     iter->_container = self;
     iter->_index = 0;
     iter->_order = order;
-    if(iter->_order == DLLIST_FORWARD)
+    if(iter->_order == LINEAR_FORWARD)
     {
         iter->_node = self->_head;
     }
