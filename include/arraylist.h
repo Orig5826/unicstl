@@ -21,6 +21,8 @@ typedef ptrdiff_t ssize_t;
 #define _SSIZE_T_DECLARED
 #endif
 
+#define SLICE_UNLIMITED     SSIZE_MAX
+
 struct _arraylist
 {
     // -------------------- private --------------------
@@ -62,7 +64,7 @@ struct _arraylist
     size_t (*count)(struct _arraylist *self, const void *obj);          // O(nlogn) if sorted; O(n) if not sorted
 
     // slice
-    bool (*slice)(struct _arraylist *self, ssize_t start, ssize_t end, ssize_t step);    // O(n)
+    struct _arraylist* (*slice)(struct _arraylist *self, ssize_t start, ssize_t end, ssize_t step);    // O(n)
 
     // iter
     iterator_t (*iter)(struct _arraylist *self, linear_order_t order);

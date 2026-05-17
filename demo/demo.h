@@ -39,7 +39,7 @@ void print_str(const void* obj);
  * @brief test function
  * 
  */
-void demo_list(void);
+void demo_arraylist(void);
 void demo_stack(void);
 void demo_deque(void);
 void demo_queue(void);

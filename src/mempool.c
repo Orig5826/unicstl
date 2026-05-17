@@ -32,25 +32,27 @@ void mempool_init()
 
 void mempool_deinit()
 {
-    printf("\n------------------------------ \n");
-    printf("count_total: %zu\n", mempool.count_total);
-    printf("count_free: %zu\n", mempool.count_free);
+    printf("\n-------------------- \n");
     printf("count_malloc: %zu\n", mempool.count_malloc);
     printf("count_calloc: %zu\n", mempool.count_calloc);
     printf("count_realloc: %zu\n", mempool.count_realloc);
-    
+    printf("\n");
+    printf("count_total: %zu\n", mempool.count_total);
+    printf("count_free: %zu\n", mempool.count_free);
+    printf("-------------------- \n");
+
     size_t leak = mempool.count_total - mempool.count_free;
     if (mempool.count_total > mempool.count_free)
     {
-        printf("\nERROR: maybe leak: %zu\n", leak);
+        printf("ERROR: maybe leak: %zu\n", leak);
     }
     else if (mempool.count_total < mempool.count_free)
     {
-        printf("\nERROR: maybe free too many\n");
+        printf("ERROR: maybe free too many\n");
     }
     else
     {
-        printf("\nOK: no leak\n");
+        printf("OK: no leak\n");
     }
     memset(&mempool, 0, sizeof(mempool_t));
 }

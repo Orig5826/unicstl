@@ -60,7 +60,7 @@ int main()
     {
         demo_queue();
         demo_stack();
-        demo_list();
+        demo_arraylist();
         demo_deque();
         demo_tree();
         demo_heap();

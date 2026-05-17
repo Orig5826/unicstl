@@ -62,17 +62,49 @@ static void test_arraylist_insert(void)
 
     arraylist_free(&arraylist);
 }
+
+static void test_arraylist_insert_negative(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->print_obj = print_num;
+
+    TEST_ASSERT_TRUE(arraylist->empty(arraylist));
+    TEST_ASSERT_FALSE(arraylist->full(arraylist));
+    for(i = 0; i < len; i++)
+    {
+        ssize_t first_idx = -(ssize_t)arraylist->size(arraylist);
+
+        TEST_ASSERT_TRUE(arraylist->insert(arraylist, first_idx, &data[i]));
+        TEST_ASSERT_EQUAL_INT(i + 1, arraylist->size(arraylist));
+        
+        TEST_ASSERT_TRUE(arraylist->get(arraylist, 0, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+
+        TEST_ASSERT_FALSE(arraylist->empty(arraylist));
+    }
+    TEST_ASSERT_TRUE(arraylist->full(arraylist));
+
+    arraylist_free(&arraylist);
+}
     
 static void test_arraylist_insert_invalid(void)
 {
     int temp = 0;
+    size_t len = 10;
 
-    arraylist_t arraylist = arraylist_new(sizeof(int), 0);
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
     arraylist->print_obj = print_num;
 
-    TEST_ASSERT_FALSE(arraylist->insert(arraylist, 1, &temp));
-    TEST_ASSERT_FALSE(arraylist->insert(arraylist, -1, &temp));
+    TEST_ASSERT_FALSE(arraylist->insert(arraylist, len+1, &temp));
     TEST_ASSERT_FALSE(arraylist->insert(arraylist, 999, &temp));
+
+    TEST_ASSERT_FALSE(arraylist->insert(arraylist, -len-1, &temp));
+    TEST_ASSERT_FALSE(arraylist->insert(arraylist, -999, &temp));
 
     TEST_ASSERT_FALSE(arraylist->insert(arraylist, 0, NULL));
 
@@ -161,6 +193,45 @@ static void test_arraylist_remove(void)
     arraylist_free(&arraylist);
 }
 
+static void test_arraylist_remove_negative(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_TRUE(arraylist->remove(arraylist, -len, &temp));
+    TEST_ASSERT_EQUAL_INT(data[0], temp);
+    TEST_ASSERT_FALSE(arraylist->full(arraylist));
+
+    for (i = 0; i < len - 1; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->remove(arraylist, -1, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 1 - i], temp);
+        TEST_ASSERT_FALSE(arraylist->full(arraylist));
+    }
+    TEST_ASSERT_TRUE(arraylist->empty(arraylist));
+
+    // ---------- no return ----------
+    for(i = 0; i < 2; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_FALSE(arraylist->remove(arraylist, -3, NULL));
+    TEST_ASSERT_TRUE(arraylist->remove(arraylist, -2, NULL));
+    TEST_ASSERT_TRUE(arraylist->remove(arraylist, -1, NULL));
+
+    arraylist_free(&arraylist);
+}
+
+
 static void test_arraylist_remove_invalid(void)
 {
     int temp = 0;
@@ -175,10 +246,10 @@ static void test_arraylist_remove_invalid(void)
     {
         arraylist->append(arraylist, &data[i]);
     }
+    TEST_ASSERT_FALSE(arraylist->remove(arraylist, -len-1, &temp));
+    TEST_ASSERT_FALSE(arraylist->remove(arraylist, -999, &temp));
     TEST_ASSERT_FALSE(arraylist->remove(arraylist, len, &temp));
-    TEST_ASSERT_FALSE(arraylist->remove(arraylist, -1, &temp));
     TEST_ASSERT_FALSE(arraylist->remove(arraylist, 999, &temp));
-
     arraylist_free(&arraylist);
 }
 
@@ -760,6 +831,340 @@ static void test_arraylist_sort(void)
     arraylist_free(&arraylist);
 }
 
+static void test_arraylist_slice_empty(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = NULL;
+    arraylist_t list2 = NULL;
+
+    // ------------------------------
+    arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    arraylist->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->append(arraylist, &data[i]));
+    }
+
+    // -------------------- NULL --------------------
+    // python: arraylist[0:] -> []
+    list2 = arraylist->slice(arraylist, 1, 5, 0); // if step == 0
+    TEST_ASSERT_NULL(list2);
+    // arraylist_free(&list2);
+
+    // -------------------- empty --------------------
+    list2 = arraylist->slice(arraylist, 0, 0, 1); // if start == end
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, len, SLICE_UNLIMITED, 1); // if start == end
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, 1, 5, -1); // if start < end && step < 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, 5, 1, 1); // if start > end && step > 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, -1, -5, 1); // if start < end && step < 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, -5, -1, -1); // if start > end && step > 0
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    // -------------------- empty --------------------
+    list2 = arraylist->slice(arraylist, len, len + 1, 1); // if start > start_max
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, -len - 1, -len, 1); // if end < end_min
+    TEST_ASSERT_NOT_NULL(list2);
+    TEST_ASSERT_TRUE(list2->empty(list2));
+    arraylist_free(&list2);
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_slice_positive(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = NULL;
+    arraylist_t list2 = NULL;
+
+    // ------------------------------
+    arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    arraylist->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->append(arraylist, &data[i]));
+    }
+
+    // -------------------- elements --------------------
+    // python: arraylist[0:]
+    list2 = arraylist->slice(arraylist, 0, len, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+
+    // python: arraylist[0:11] if len(arraylist) == 10
+    list2 = arraylist->slice(arraylist, 0, len + 1, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+
+    // python: arraylist[-6:8] or arraylist[-6:-2] or arraylist[4:8]
+    list2 = arraylist->slice(arraylist, 4, 8, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 6 + i], temp);
+    }
+    arraylist_free(&list2);
+
+    // python: arraylist[4:0:-1]
+    list2 = arraylist->slice(arraylist, 4, 0, -1);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - i], temp);
+    }
+    arraylist_free(&list2);
+
+    // python: arraylist[::2]
+    list2 = arraylist->slice(arraylist, 0, len, 2);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i * 2], temp);
+    }
+    arraylist_free(&list2);
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_slice_negative(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = NULL;
+    arraylist_t list2 = NULL;
+
+    // ------------------------------
+    arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    arraylist->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->append(arraylist, &data[i]));
+    }
+
+    // -------------------- elements --------------------
+    // python: arraylist[:-1]
+    list2 = arraylist->slice(arraylist, 0, -1, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len - 1, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+
+    // python: arraylist[:-1]
+    list2 = arraylist->slice(arraylist, -1, len, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(1, list2->size(list2));
+    TEST_ASSERT_TRUE(list2->get(list2, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(data[len - 1], temp);
+    arraylist_free(&list2);
+
+    // python: arraylist[-6:8] or arraylist[-6:-2]
+    // list2 = arraylist->slice(arraylist, -6, 8, 1);   // It can be executed, but it's not intuitive
+    list2 = arraylist->slice(arraylist, -6, -2, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(4, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[len - 6 + i], temp);
+    }
+    arraylist_free(&list2);
+
+    // -------------------- step == 2 --------------------
+    // python: arraylist[::-2]
+    list2 = arraylist->slice(arraylist, len-1, 0, -2);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[9 - i * 2], temp);
+    }
+    arraylist_free(&list2);
+
+    // -------------------- start_limit --------------------
+    // arraylist[-len-1:-1]
+    list2 = arraylist->slice(arraylist, -len-1, -1, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    // list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len - 1, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+
+    arraylist_free(&arraylist);
+}
+
+
+static void test_arraylist_slice_unlimited(void)
+{
+    int temp = 0;
+    int data[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = NULL;
+    arraylist_t list2 = NULL;
+
+    // ------------------------------
+    arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+    arraylist->print_obj = print_num;
+
+    for (i = 0; i < len; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->append(arraylist, &data[i]));
+    }
+
+    // -------------------- umlimited --------------------
+    // python: arraylist[0:]
+    list2 = arraylist->slice(arraylist, 0, SLICE_UNLIMITED, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+    
+    // python: arraylist[4::-1]
+    list2 = arraylist->slice(arraylist, 4, SLICE_UNLIMITED, -1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - 1 - i], temp);
+    }
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, SLICE_UNLIMITED, SLICE_UNLIMITED, 1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, SLICE_UNLIMITED, SLICE_UNLIMITED, -1);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(len, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[list2->size(list2) - 1 - i], temp);
+    }
+    arraylist_free(&list2);
+
+    // -------------------- step == 2 --------------------
+    list2 = arraylist->slice(arraylist, SLICE_UNLIMITED, SLICE_UNLIMITED, 2);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i * 2], temp);
+    }
+    arraylist_free(&list2);
+
+    list2 = arraylist->slice(arraylist, SLICE_UNLIMITED, SLICE_UNLIMITED, -2);
+    TEST_ASSERT_NOT_NULL(list2);
+    //list2->print(list2); printf("\n");
+    TEST_ASSERT_EQUAL_INT(5, list2->size(list2));
+    for(i = 0; i < list2->size(list2); i++)
+    {
+        TEST_ASSERT_TRUE(list2->get(list2, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[9 - i*2], temp);
+    }
+    arraylist_free(&list2);
+
+    arraylist_free(&arraylist);
+}
+
+
 static void test_arraylist_struct(void)
 {
     size_t i = 0;
@@ -811,12 +1216,14 @@ void test_arraylist(void)
     RUN_TEST(test_arraylist_new_lazy);
 
     RUN_TEST(test_arraylist_insert);
+    RUN_TEST(test_arraylist_insert_negative);
     RUN_TEST(test_arraylist_insert_invalid);
 
     RUN_TEST(test_arraylist_append);
     RUN_TEST(test_arraylist_append_invalid);
 
     RUN_TEST(test_arraylist_remove);
+    RUN_TEST(test_arraylist_remove_negative);
     RUN_TEST(test_arraylist_remove_invalid);
 
     RUN_TEST(test_arraylist_pop);
@@ -843,6 +1250,12 @@ void test_arraylist(void)
     RUN_TEST(test_arraylist_iter);
 
     RUN_TEST(test_arraylist_sort);
+
+    // RUN_TEST(test_arraylist_slice);
+    RUN_TEST(test_arraylist_slice_empty);
+    RUN_TEST(test_arraylist_slice_positive);
+    RUN_TEST(test_arraylist_slice_negative);
+    RUN_TEST(test_arraylist_slice_unlimited);
 
     // ---------- base ----------
     RUN_TEST(test_arraylist_clear);

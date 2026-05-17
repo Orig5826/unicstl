@@ -1,16 +1,16 @@
 /**
- * @file demo_list->c
+ * @file demo_arraylist.c
  * @author wenjf (Orig5826@163.com)
  * @brief 
  * @version 0.1
- * @date 2024-08-27
+ * @date 2026-05-17
  * 
- * @copyright Copyright (c) 2024
+ * @copyright Copyright (c) 2026
  * 
  */
 #include "demo.h"
 
-static void demo_list_num(void)
+static void demo_arraylist_num(void)
 {
     int i = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -18,7 +18,7 @@ static void demo_list_num(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    list_t list = list_new2(sizeof(int), 64);
+    arraylist_t list = arraylist_new(sizeof(int), 64);
     list->print_obj = print_num;
 
     printf("\n\n----- list_demo_num -----\n");
@@ -32,15 +32,15 @@ static void demo_list_num(void)
     printf("\n");
 
     printf("----- pop -----\n");
-    list->delete(list, 9, NULL);
+    list->remove(list, 9, NULL);
     list->print(list);
     printf("\n");
 
-    list->delete(list, 0, NULL);
+    list->remove(list, 0, NULL);
     list->print(list);
     printf("\n");
 
-    list->delete(list, 4, NULL);
+    list->remove(list, 4, NULL);
     list->print(list);
     printf("\n");
 
@@ -138,10 +138,10 @@ static void demo_list_num(void)
         }
     }
 
-    list_free(&list);
+    arraylist_free(&list);
 }
 
-static void demo_list_struct(void)
+static void demo_arraylist_struct(void)
 {
     int i = 0;
     struct _student data[] = {
@@ -153,7 +153,7 @@ static void demo_list_struct(void)
     int index = 0;
     int len = sizeof(data) / sizeof(data[0]);
 
-    list_t list = list_new2(sizeof(struct _student), 64);
+    arraylist_t list = arraylist_new(sizeof(struct _student), 64);
     list->print_obj = print_struct;
 
     printf("\n\n----- list_demo_num -----\n");
@@ -167,15 +167,15 @@ static void demo_list_struct(void)
     printf("\n");
 
     printf("----- pop -----\n");
-    list->delete(list, 9, NULL);
+    list->remove(list, 9, NULL);
     list->print(list);
     printf("\n");
 
-    list->delete(list, 0, NULL);
+    list->remove(list, 0, NULL);
     list->print(list);
     printf("\n");
 
-    list->delete(list, 4, NULL);
+    list->remove(list, 4, NULL);
     list->print(list);
     printf("\n");
 
@@ -295,11 +295,11 @@ static void demo_list_struct(void)
         }
     }
 
-    list_free(&list);
+    arraylist_free(&list);
 }
 
-void demo_list(void)
+void demo_arraylist(void)
 {
-    demo_list_num();
-    demo_list_struct();
+    demo_arraylist_num();
+    demo_arraylist_struct();
 }

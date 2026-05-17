@@ -23,14 +23,13 @@
 
 #include "segarray.h"
 #include "arraylist.h"
+#include "deque.h"
 
-#include "list.h"
 #include "stack.h"
 #include "queue.h"
-#include "deque.h"
+
 #include "tree.h"
 #include "heap.h"
 #include "graph.h"
-
 
 #endif // _UNICSTL_H_

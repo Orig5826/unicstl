@@ -63,7 +63,7 @@ static void darray_print(struct _darray *self)
     const void *obj = NULL;
     for (size_t i = 0; i < self->size(self); i++)
     {
-        obj = obj_at(self, i, self->_obj_size);
+        obj = obj_at(self->obj, i, self->_obj_size);
         self->print_obj(obj);
     }
 }
