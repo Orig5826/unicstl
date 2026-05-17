@@ -98,3 +98,8 @@ int compare_string(const void *obj1, const void *obj2)
 {
     return strcmp(*(const char **)obj1, *(const char **)obj2);
 }
+
+void uprint_char(const void* obj)
+{
+    printf("%c", *(char*)obj);
+}

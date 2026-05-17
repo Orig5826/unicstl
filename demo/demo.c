@@ -50,20 +50,22 @@ void print_str(const void* obj)
 int main()
 {
     log_init();
-    printf("----- unicstl demo -----\n");
+    printf("\n----- unicstl demo -----\n");
     // while (1)
     {
-        demo_queue();
-        demo_stack();
-        demo_arraylist();
-        demo_deque();
+        demo_ustring();
 
-        demo_heap();
+        // demo_queue();
+        // demo_stack();
+        // demo_arraylist();
+        // demo_deque();
+
+        // demo_heap();
         // demo_tree();
         // demo_graph();
     }
 
-    printf("----- unicstl ok -----\n");
+    printf("\n----- unicstl ok -----\n");
     log_deinit();
     return 0;
 }

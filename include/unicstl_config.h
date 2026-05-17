@@ -36,8 +36,15 @@
  * @brief malloc config
  * 
  */
-#define UNICSTL_MALLOC_ENABLE           // malloc enable
+#define UNICSTL_MALLOC_ENABLE        // malloc enable
 #define UNICSTL_MALLOC_CUSTOM        // malloc custom support
+
+/**
+ * @brief algo config
+ * 
+ */
+#define UNICSTL_ALGO_ENABLE
+#define UNICSTL_ALGO_SORT
 
 
 /**

@@ -67,6 +67,7 @@ void tearDown(void)
 
 #define TEST_ADD(name)  printf("\n----- " #name " -----\n"); name();
 
+
 int main(int argc, char const *argv[])
 {
     printf("----- Unicstl Unit Test -----\n");
@@ -75,27 +76,51 @@ int main(int argc, char const *argv[])
     log_init();
     mempool_init();
     
-    // TEST_ADD(test_unicstl);
 
-    // TEST_ADD(test_linklist);
-    // TEST_ADD(test_dlinklist);
+    TEST_ADD(test_unicstl);
 
-    // TEST_ADD(test_darray);
-    // TEST_ADD(test_ringbuf);
-    // TEST_ADD(test_rawbuf);
-    
-    // TEST_ADD(test_arraylist);
-    // TEST_ADD(test_deque);
-
-    // TEST_ADD(test_queue);
-    // TEST_ADD(test_stack);
-
-    // TEST_ADD(test_heap);
-    
-    // TEST_ADD(test_tree);
-    // TEST_ADD(test_graph);
-
+#if UNITTEST_LINKLIST
+    TEST_ADD(test_linklist);
+#endif
+#if UNITTEST_DLINKLIST
+    TEST_ADD(test_dlinklist);
+#endif
+#if UNITTEST_DARRAY
+    TEST_ADD(test_darray);
+#endif
+#if UNITTEST_RINGBUF || UNITTEST_RAWBUF
+    TEST_ADD(test_ringbuf);
+#endif 
+#if UNITTEST_RAWBUF
+    TEST_ADD(test_rawbuf);
+#endif  
+#if UNITTEST_ARRAYLIST
+    TEST_ADD(test_arraylist);
+#endif
+#if UNITTEST_DEQUE
+    TEST_ADD(test_deque);
+#endif
+#if UNITTEST_QUEUE
+    TEST_ADD(test_queue);
+#endif
+#if UNITTEST_STACK
+    TEST_ADD(test_stack);
+#endif
+#if UNITTEST_HEAP
+    TEST_ADD(test_heap);
+#endif
+#if UNITTEST_TREE
+    TEST_ADD(test_tree);
+#endif
+#if UNITTEST_GRAPH
+    TEST_ADD(test_graph);
+#endif
+#if UNITTEST_SEGARRAY
     TEST_ADD(test_segarray);
+#endif
+#if  UNITTEST_USTRING
+    TEST_ADD(test_ustring);
+#endif
 
     mempool_deinit();
     log_deinit();

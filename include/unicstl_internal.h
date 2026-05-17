@@ -236,6 +236,8 @@ int compare_double(const void *obj1, const void *obj2);
 
 int compare_string(const void *obj1, const void *obj2);
 
+void uprint_char(const void* obj);
+
 /**
  * @brief new capacity
  *

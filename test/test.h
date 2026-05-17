@@ -19,6 +19,29 @@
 #include "unicstl.h"
 #include "unity.h"
 
+
+#define UNITTEST_ALL        0
+
+#define UNITTEST_LINKLIST   (UNITTEST_ALL || 0)
+#define UNITTEST_DLINKLIST  (UNITTEST_ALL || 0)
+#define UNITTEST_DARRAY     (UNITTEST_ALL || 0)
+#define UNITTEST_RINGBUF    (UNITTEST_ALL || 0)
+#define UNITTEST_RAWBUF     (UNITTEST_ALL || 0)
+
+#define UNITTEST_ARRAYLIST  (UNITTEST_ALL || 0)
+#define UNITTEST_DEQUE      (UNITTEST_ALL || 0)
+
+#define UNITTEST_QUEUE      (UNITTEST_ALL || 0)
+#define UNITTEST_STACK      (UNITTEST_ALL || 0)
+
+#define UNITTEST_HEAP       (UNITTEST_ALL || 0)
+// #define UNITTEST_TREE       (UNITTEST_ALL || 0)
+// #define UNITTEST_GRAPH      (UNITTEST_ALL || 0)
+
+#define UNITTEST_SEGARRAY   (UNITTEST_ALL || 0)
+#define UNITTEST_USTRING    (UNITTEST_ALL || 1)
+
+
 /**
  * @brief demo objects
  * 
@@ -60,5 +83,7 @@ void test_list(void);
 void test_tree(void);
 void test_heap(void);
 void test_graph(void);
+
+void test_ustring(void);
 
 #endif // _TEST_H_

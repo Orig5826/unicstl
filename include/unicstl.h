@@ -23,6 +23,8 @@
 
 #include "segarray.h"
 #include "arraylist.h"
+#include "ustring.h"
+
 #include "deque.h"
 
 #include "stack.h"

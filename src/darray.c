@@ -265,8 +265,12 @@ static bool darry_sort(struct _darray *self)
     {
         return true;
     }
-#ifdef UNICSTL_SORT
-    bubble_sort(self->obj, self->size(self), self->_obj_size, self->compare);
+#ifdef UNICSTL_ALGO_SORT
+    if(!unicstl_sort(self->obj, self->size(self), self->_obj_size, self->compare))
+    {
+        log_warn("sort failed!");
+        return false;
+    }
 #else
     qsort(self->obj, self->size(self), self->_obj_size, self->compare);
 #endif
@@ -281,7 +285,7 @@ static size_t darry_search(struct _darray *self, const void *obj)
     {
         return -1;
     }
-#ifdef UNICSTL_BSEARCH
+#ifdef UNICSTL_ALGO_BSEARCH
     if(self->_sorted)
     {
         return unicstl_search(obj, self->obj, self->size(self), self->_obj_size, self->compare);

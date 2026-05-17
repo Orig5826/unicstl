@@ -13,12 +13,6 @@
 
 #include "unicstl_internal.h"
 
-static inline void obj_swap(const void *base, size_t index, void *obj, size_t obj_size)
-{
-    //...
-}
-
-
 // --------------------------------------------------
 // 排序算法
 // void __cdecl qsort(void *_Base,size_t _NumOfElements,size_t _SizeOfElements,int (__cdecl *_PtFuncCompare)(const void *,const void *));
@@ -59,20 +53,20 @@ int binary_search(const void* key, const void* base, size_t count, size_t obj_si
 int binary_search_right(const void* key, const void* base, size_t count, size_t obj_size, compare_fun_t cmp);
 
 
-#ifdef UNICSTL_ALGO
+#ifdef UNICSTL_ALGO_ENABLE
 
-#ifdef UNICSTL_SORT
+#ifdef UNICSTL_ALGO_SORT
 #define unicstl_sort(base, count, obj_size, cmp) \
     quick_sort(base, count, obj_size, cmp)
-#endif // UNICSTL_SORT
+#endif // UNICSTL_ALGO_SORT
 
-#ifdef UNICSTL_BSEARCH
+#ifdef UNICSTL_ALGO_BSEARCH
 #define unicstl_search(base, count, obj_size, key, cmp) \
     binary_search(base, count, obj_size, key, cmp)
-#endif // UNICSTL_BSEARCH
+#endif // UNICSTL_ALGO_BSEARCH
 
 #else
 
-#endif // UNICSTL_ALGO
+#endif // UNICSTL_ALGO_ENABLE
 
 #endif // _ALGO_H_

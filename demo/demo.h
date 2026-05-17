@@ -47,5 +47,7 @@ void demo_tree(void);
 void demo_heap(void);
 void demo_graph(void);
 
+void demo_ustring(void);
+
 #endif // _DEMO_H_
 
