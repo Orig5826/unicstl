@@ -15,6 +15,7 @@
 #include "ringbuf.h"
 #include "segarray.h"
 
+// 0.rinfbuf   1.segarray
 #define DEQUE_DEFAULT_SELECT    1
 
 #if DEQUE_DEFAULT_SELECT == 1

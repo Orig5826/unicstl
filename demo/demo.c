@@ -17,13 +17,7 @@ void print_num(const void* obj)
 
 int compare_num(const void *obj, const void *obj2)
 {
-    int num1 = *(int*)obj;
-    int num2 = *(int*)obj2;
-    if(num1 == num2)
-    {
-        return 0;
-    }
-    return num1 > num2 ? 1 : -1;
+    return compare_int(obj, obj2);
 }
 
 void print_struct(const void* obj)
@@ -55,6 +49,7 @@ void print_str(const void* obj)
 
 int main()
 {
+    log_init();
     printf("----- unicstl demo -----\n");
     // while (1)
     {
@@ -62,11 +57,13 @@ int main()
         demo_stack();
         demo_arraylist();
         demo_deque();
-        demo_tree();
+
         demo_heap();
-        demo_graph();
+        // demo_tree();
+        // demo_graph();
     }
 
     printf("----- unicstl ok -----\n");
+    log_deinit();
     return 0;
 }

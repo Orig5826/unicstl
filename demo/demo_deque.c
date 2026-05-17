@@ -348,8 +348,8 @@ static void demo_deque_struct(void)
         }
     }
 #endif
-
     deque_free(&deque);
+    log_info("demo_deque_struct end\n");
 }
 
 void demo_deque(void)

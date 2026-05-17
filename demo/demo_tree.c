@@ -39,6 +39,8 @@ void demo_avltree_num(void)
     int temp = 0;
     iterator_t iter = NULL;
 
+    log_info("avltree_num\n");
+
     tree_t tree = tree_avl_new(sizeof(int));
     tree->print_obj = print_num;
     tree->compare = compare_num;

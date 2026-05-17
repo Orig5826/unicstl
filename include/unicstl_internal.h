@@ -214,6 +214,28 @@ typedef int (*compare_fun_t)(const void *obj, const void *obj2);
 int default_compare(const void *obj1, const void *obj2);
 void default_print_obj(const void *obj);
 
+int compare_char(const void *obj1, const void *obj2);
+int compare_int(const void *obj1, const void *obj2);
+int compare_long(const void *obj1, const void *obj2);
+
+int compare_int8_t(const void *obj1, const void *obj2);
+int compare_int16_t(const void *obj1, const void *obj2);
+int compare_uint16_t(const void *obj1, const void *obj2);
+int compare_int32_t(const void *obj1, const void *obj2);
+
+int compare_uint8_t(const void *obj1, const void *obj2);
+int compare_uint16_t(const void *obj1, const void *obj2);
+int compare_uint32_t(const void *obj1, const void *obj2);
+int compare_uint64_t(const void *obj1, const void *obj2);
+
+int compare_size_t(const void *obj1, const void *obj2);
+int compare_ssize_t(const void *obj1, const void *obj2);
+
+int compare_float(const void *obj1, const void *obj2);
+int compare_double(const void *obj1, const void *obj2);
+
+int compare_string(const void *obj1, const void *obj2);
+
 /**
  * @brief new capacity
  *

@@ -17,13 +17,7 @@ void print_num(const void* obj)
 
 int compare_num(const void *obj, const void *obj2)
 {
-    int num1 = *(int*)obj;
-    int num2 = *(int*)obj2;
-    if(num1 == num2)
-    {
-        return 0;
-    }
-    return num1 > num2 ? 1 : -1;
+    return compare_int(obj, obj2);
 }
 
 void print_struct(const void* obj)
