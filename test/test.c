@@ -75,10 +75,11 @@ void tearDown(void)
 
 int main(int argc, char const *argv[])
 {
-    log_init();
-
     printf("----- Unicstl Unit Test -----\n");
     UNITY_BEGIN();
+
+    log_init();
+    mempool_init();
     
     TEST_ADD(test_unicstl);
 
@@ -94,15 +95,15 @@ int main(int argc, char const *argv[])
     TEST_ADD(test_queue);
     TEST_ADD(test_stack);
 
-    // TEST_ADD(test_list);
-    // TEST_ADD(test_heap);
+    TEST_ADD(test_list);
+    TEST_ADD(test_heap);
     // TEST_ADD(test_tree);
     // TEST_ADD(test_graph);
 
     TEST_ADD(test_segarray);
-    
     TEST_ADD(test_arraylist);
 
+    mempool_deinit();
     log_deinit();
     return UNITY_END();
 }

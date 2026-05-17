@@ -37,7 +37,7 @@
  * 
  */
 #define UNICSTL_MALLOC_ENABLE           // malloc enable
-// #define UNICSTL_MALLOC_CUSTOM        // malloc custom support
+#define UNICSTL_MALLOC_CUSTOM        // malloc custom support
 
 
 /**

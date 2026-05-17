@@ -221,10 +221,7 @@ const void *darray_iter_next(struct _iterator *iter)
     {
         iter->_index = iter->_index - 1;
     }
-    return obj_at(self->obj, index, self->_obj_size);
-    
-    // log_debug("index:%zu", index);
-    // return self->at(self->obj, index);   // TODO: 这里有问题，结构体指针都崩了
+    return self->at(self, index);
 }
 
 iterator_t darray_iter(struct _darray *self, linear_order_t order)

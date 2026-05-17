@@ -432,22 +432,33 @@ static bool segarray_clear(struct _segarray *self)
 static void segarray_destory(struct _segarray *self)
 {
     unicstl_assert(self != NULL);
-    ringbuf_t map = self->_map;
-    if (self->_dynamic && map != NULL)
+    ringbuf_t map_used[2] = {
+        self->_map,
+        self->_mapfree
+    };
+
+    if(self->_dynamic == true)
     {
         rawbuf_t seg = NULL;
-        while(!map->empty(map))
+
+        ringbuf_t map = self->_map;
+        for(size_t i = 0; i < 2; i++)
         {
-            if (map->pop_back(map, &seg))
+            map = map_used[i];
+            while(!map->empty(map))
             {
-                if(seg == NULL)
+                if (map->pop_back(map, &seg))
                 {
-                    log_error("seg is NULL");
+                    if(seg == NULL)
+                    {
+                        log_error("seg is NULL");
+                    }
+                    rawbuf_free(&seg);
                 }
-                rawbuf_free(&seg);
             }
         }
         ringbuf_free(&self->_map);
+        ringbuf_free(&self->_mapfree);
     }
     log_debug("segarray destoryed!");
 }
@@ -540,11 +551,10 @@ iterator_t segarray_iter(struct _segarray *self, linear_order_t order)
  * @param self
  * @param obj_size
  * @param capacity
- * @param mem_pool !!! mem_pool_size = capacity * obj_size
  * @return true
  * @return false
  */
-bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, void *mem_pool)
+static bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(obj_size > 0);
@@ -554,53 +564,6 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
     self->_size = 0;
     self->_capacity = capacity;
     self->_segsize = capacity;
-
-    if (mem_pool != NULL)
-    {
-        self->obj = (char *)mem_pool;
-        self->_dynamic = false;
-    }
-    else
-    {
-        self->_dynamic = true;
-
-        self->_map = ringbuf_new(sizeof(rawbuf_t), 8);
-        if (self->_map == NULL)
-        {
-            log_warn("self->_map new failed!");
-            return false;
-        }
-
-        self->_mapfree = ringbuf_new(sizeof(rawbuf_t), 8);
-        if (self->_mapfree == NULL)
-        {
-            log_warn("self->_mapfree new failed!");
-            ringbuf_free(&self->_map);
-            return false;
-        }
-
-        rawbuf_t seg = rawbuf_new(obj_size, self->_segsize);
-        if (seg == NULL)
-        {
-            log_warn("seg new failed!");
-            ringbuf_free(&self->_map);
-            ringbuf_free(&self->_mapfree);
-            return false;
-        }
-        // config first obj index in seg array
-        self->_seghead = clac_start_index(self->_segsize);
-        self->_segtail = self->_seghead;
-
-        // add first seg array to map
-        if(!self->_map->push_back(self->_map, &seg))
-        {
-            log_warn("self->_map push back failed!");
-            rawbuf_free(&seg);
-            ringbuf_free(&self->_map);
-            ringbuf_free(&self->_mapfree);
-            return false;
-        }
-    }
 
     self->_destory = segarray_destory;
 
@@ -635,6 +598,46 @@ bool segarray_init(struct _segarray *self, size_t obj_size, size_t capacity, voi
     // -------------------- debug --------------------
     self->print = segarray_print;
 
+    // -------------------- memory --------------------
+
+    self->_dynamic = true;
+
+    self->_map = ringbuf_new(sizeof(rawbuf_t), 8);
+    if (self->_map == NULL)
+    {
+        log_warn("self->_map new failed!");
+        return false;
+    }
+
+    self->_mapfree = ringbuf_new(sizeof(rawbuf_t), 8);
+    if (self->_mapfree == NULL)
+    {
+        log_warn("self->_mapfree new failed!");
+        ringbuf_free(&self->_map);
+        return false;
+    }
+
+    rawbuf_t seg = rawbuf_new(obj_size, self->_segsize);
+    if (seg == NULL)
+    {
+        log_warn("seg new failed!");
+        ringbuf_free(&self->_map);
+        ringbuf_free(&self->_mapfree);
+        return false;
+    }
+    // config first obj index in seg array
+    self->_seghead = clac_start_index(self->_segsize);
+    self->_segtail = self->_seghead;
+
+    // add first seg array to map
+    if(!self->_map->push_back(self->_map, &seg))
+    {
+        log_warn("self->_map push back failed!");
+        rawbuf_free(&seg);
+        ringbuf_free(&self->_map);
+        ringbuf_free(&self->_mapfree);
+        return false;
+    }
     return true;
 }
 
@@ -648,7 +651,7 @@ segarray_t segarray_new(size_t obj_size, size_t capacity)
         return NULL;
     }
 
-    if (segarray_init(segarray, obj_size, capacity, NULL) != true)
+    if (segarray_init(segarray, obj_size, capacity) != true)
     {
         log_warn("segarray init failed");
         unicstl_free(segarray);

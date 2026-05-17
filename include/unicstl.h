@@ -13,6 +13,8 @@
 
 #include "unicstl_internal.h"
 
+#include "mempool.h"
+
 #include "darray.h"
 #include "linklist.h"
 #include "dlinklist.h"

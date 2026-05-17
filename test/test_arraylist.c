@@ -395,6 +395,8 @@ static void test_arraylist_at(void)
 
     p_int = arraylist->at(arraylist, 9);
     TEST_ASSERT_EQUAL_INT(10, *p_int);
+
+    arraylist_free(&arraylist);
 }
 
 static void test_arraylist_at_negative(void)
@@ -420,6 +422,8 @@ static void test_arraylist_at_negative(void)
 
     p_int = arraylist->at(arraylist, -1);
     TEST_ASSERT_EQUAL_INT(10, *p_int);
+
+    arraylist_free(&arraylist);
 }
 
 static void test_arraylist_at_invalid(void)
