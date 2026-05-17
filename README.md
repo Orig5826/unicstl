@@ -24,8 +24,8 @@ direction TB
 
 namespace basic {
     class ringbuf{
-        小数据
-        少扩容
+        不扩容或
+        小数据扩容
     }
     class rawbuf
     class darray
@@ -54,6 +54,10 @@ namespace hal {
         大数据
         优先扩容
     }
+    class arraylist{
+        切片
+        负索引
+    }
     class string
     class hashtable
 }
@@ -70,34 +74,32 @@ namespace top {
     class unordered_map
 }
 
-
-%% ========== 以下全部按你真实逻辑修正 ==========
-
-%% segarray 包含 ringbuf，同生共死
+%% hal层
 segarray *-- ringbuf : 组合
 segarray *-- rawbuf : 组合
 
-%% string / hashtable 底层使用darray
+arraylist *-- darray : 组合
 string *-- darray : 组合
 hashtable *-- darray : 组合
 
-%% deque 当前ringbuf，可换segarray
+
+%% 适配器
 deque *-- ringbuf : 组合
 deque *-- segarray : 组合
 
-%% stack/queue 持有deque*，管理生命周期
+%% 通用标准容器
 stack *-- deque : 组合
 queue *-- deque : 组合
 
-%% 临时使用 → 依赖
+%% 红黑树
 rbtree ..> stack : 依赖
 rbtree ..> queue : 依赖
 
-%% map/unordered_map 底层使用 rbtree/hashtable
+%% 高级容器
 map *-- rbtree : 组合
 unordered_map *-- hashtable : 组合
 
-%% embed 是内联函数，仅调用 → 依赖
+%% 嵌入式专用容器
 estack ..> ringbuf : 依赖
 equeue ..> ringbuf : 依赖
 ```

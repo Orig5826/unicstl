@@ -13,6 +13,24 @@
 
 #include "unicstl_internal.h"
 #include "ringbuf.h"
+#include "segarray.h"
+
+#define DEQUE_DEFAULT_SELECT    0
+
+#if DEQUE_DEFAULT_SELECT == 1
+#define DEQUE_RINGBUF   0
+#define DEQUE_SEGARRAY  1
+#else
+#define DEQUE_RINGBUF   1
+#define DEQUE_SEGARRAY  0
+#endif
+
+#if DEQUE_RINGBUF && DEQUE_SEGARRAY
+#error "Cannot enable both DEQUE_RINGBUF and DEQUE_SEGARRAY at the same time."
+#endif
+#if !(DEQUE_RINGBUF || DEQUE_SEGARRAY)
+#error "You must enable at least one backend: DEQUE_RINGBUF or DEQUE_SEGARRAY."
+#endif
 
 struct _deque
 {
@@ -20,8 +38,9 @@ struct _deque
     union 
     {
         ringbuf_t ringbuf;
+        segarray_t _segarray;
     };
-    iterator_t _iter_ringbuf;
+    iterator_t _iter_ptr;
     
     struct _iterator _iter;
     void (*_destory)(struct _deque* self);

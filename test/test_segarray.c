@@ -22,17 +22,17 @@ static void test_segarray_new(void)
     TEST_ASSERT_NULL(segarray);
 }
 
-// static void test_segarray_new_lazy(void)
-// {
-//     segarray_t segarray = segarray_new(sizeof(int), 0);
-//     TEST_ASSERT_NOT_NULL(segarray);
-//     TEST_ASSERT_EQUAL_size_t(0, segarray->capacity(segarray));
+static void test_segarray_new_lazy(void)
+{
+    segarray_t segarray = segarray_new(sizeof(int), 0);
+    TEST_ASSERT_NOT_NULL(segarray);
+    TEST_ASSERT_EQUAL_size_t(0, segarray->capacity(segarray));
 
-//     int temp = 0;
-//     TEST_ASSERT_TRUE(segarray->push_back(segarray, &temp));
-//     TEST_ASSERT_EQUAL_size_t(UNICSTL_CAPACITY_INIT, segarray->capacity(segarray));
-//     segarray_free(&segarray);
-// }
+    int temp = 0;
+    TEST_ASSERT_TRUE(segarray->push_back(segarray, &temp));
+    TEST_ASSERT_EQUAL_size_t(UNICSTL_CAPACITY_INIT, segarray->capacity(segarray));
+    segarray_free(&segarray);
+}
 
 // #ifdef UNICSTL_STATIC_MEMORY
 // static void test_segarray_init(void)
@@ -840,7 +840,7 @@ void test_segarray(void)
 
     // ---------- kernel ----------
     RUN_TEST(test_segarray_new);
-    // RUN_TEST(test_segarray_new_lazy);
+    RUN_TEST(test_segarray_new_lazy);
 
 // #ifdef UNICSTL_STATIC_MEMORY
 //     RUN_TEST(test_segarray_init);
