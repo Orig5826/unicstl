@@ -82,15 +82,15 @@ static bool deque_front(struct _deque* self, void* obj)
 #endif
 }
 
-static bool deque_resize(struct _deque *self, size_t capacity)
+static bool deque_reserve(struct _deque *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->ringbuf != NULL);
 #if DEQUE_RINGBUF == 1
-    return self->ringbuf->resize(self->ringbuf, capacity);
+    return self->ringbuf->reserve(self->ringbuf, capacity);
 #endif
 #if DEQUE_SEGARRAY == 1
-    return self->_segarray->resize(self->_segarray, capacity);
+    return self->_segarray->reserve(self->_segarray, capacity);
 #endif
 }
 
@@ -238,7 +238,7 @@ static bool deque_init(struct _deque* self, size_t obj_size, size_t capacity)
     self->front = deque_front;
     
     // base
-    self->resize = deque_resize;
+    self->reserve = deque_reserve;
     self->size = deque_size;
     self->capacity = deque_capacity;
     self->empty = deque_empty;

@@ -184,7 +184,7 @@ static void test_stack_iter(void)
     stack_free(&stack);
 }
 
-static void test_stack_resize(void)
+static void test_stack_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -194,7 +194,7 @@ static void test_stack_resize(void)
     stack_t stack = stack_new(sizeof(int), len);
 
     TEST_ASSERT_EQUAL_INT(len, stack->capacity(stack));
-    TEST_ASSERT_TRUE(stack->resize(stack, 16));
+    TEST_ASSERT_TRUE(stack->reserve(stack, 16));
     TEST_ASSERT_EQUAL_INT(16, stack->capacity(stack));
 
     for(i = 0; i < len; i++)
@@ -204,7 +204,7 @@ static void test_stack_resize(void)
     TEST_ASSERT_EQUAL_INT(16, stack->capacity(stack));
     TEST_ASSERT_EQUAL_INT(len, stack->size(stack));
 
-    TEST_ASSERT_TRUE(stack->resize(stack, 8));
+    TEST_ASSERT_TRUE(stack->reserve(stack, 8));
     TEST_ASSERT_EQUAL_INT(8, stack->capacity(stack));
     TEST_ASSERT_EQUAL_INT(8, stack->size(stack));
 
@@ -229,7 +229,7 @@ static void test_stack_resize(void)
     stack_free(&stack);
 }
 
-static void test_stack_resize_invalid(void)
+static void test_stack_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -239,18 +239,18 @@ static void test_stack_resize_invalid(void)
     stack_t stack = stack_new(sizeof(int), len);
     
     TEST_ASSERT_EQUAL_INT(len, stack->capacity(stack));
-    TEST_ASSERT_FALSE(stack->resize(stack, 0));
-    TEST_ASSERT_FALSE(stack->resize(stack, -1));
+    TEST_ASSERT_FALSE(stack->reserve(stack, 0));
+    TEST_ASSERT_FALSE(stack->reserve(stack, -1));
 
     stack_free(&stack);
 }
 
-static void test_stack_resize_edge(void)
+static void test_stack_reserve_edge(void)
 {
     stack_t stack = stack_new(sizeof(int), 10);
 
     TEST_ASSERT_EQUAL_INT(10, stack->capacity(stack));
-    TEST_ASSERT_TRUE(stack->resize(stack, 10));
+    TEST_ASSERT_TRUE(stack->reserve(stack, 10));
     TEST_ASSERT_EQUAL_INT(10, stack->capacity(stack));
 
     stack_free(&stack);
@@ -480,9 +480,9 @@ void test_stack(void)
 
     RUN_TEST(test_stack_iter);
 
-    RUN_TEST(test_stack_resize);
-    RUN_TEST(test_stack_resize_invalid);
-    RUN_TEST(test_stack_resize_edge);
+    RUN_TEST(test_stack_reserve);
+    RUN_TEST(test_stack_reserve_invalid);
+    RUN_TEST(test_stack_reserve_edge);
 
     RUN_TEST(test_stack_dynamic);
 

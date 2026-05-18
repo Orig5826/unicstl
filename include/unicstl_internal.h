@@ -48,11 +48,11 @@
 #endif
 
 #ifndef UNICSTL_CAPACITY_MAX
-#define UNICSTL_CAPACITY_MAX        8192 // 最大容量
+#define UNICSTL_CAPACITY_MAX        (1024 * 1024)   // 默认最大容量 = 1M
 #endif
 
 #ifndef UNICSTL_OBJSIZE_MAX
-#define UNICSTL_OBJSIZE_MAX         8192 // 最大对象大小
+#define UNICSTL_OBJSIZE_MAX         (64 * 1024)     // 默认对象最大 = 64K
 #endif
 
 #ifndef UNICSTL_STATIC_MEMORY
@@ -184,6 +184,13 @@ static inline void obj_shift(void *objs, size_t dst_idx, size_t src_idx, size_t 
     unicstl_assert(objs != NULL);
     obj_copy((char *)objs + obj_size * dst_idx, (const char *)objs + obj_size * src_idx, count, obj_size);
 }
+
+static inline void obj_zero(const void *objs, size_t index, size_t count, size_t obj_size)
+{
+    unicstl_assert(objs != NULL);
+    memset((char *)objs + index * obj_size, 0, count * obj_size);
+}
+
 
 static inline size_t ring_index(size_t head, size_t index, size_t capacity)
 {

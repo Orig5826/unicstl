@@ -46,7 +46,7 @@ struct _arraylist
     const void* (*at)(struct _arraylist *self, ssize_t index);                  // O(1)
 
     // base
-    bool (*resize)(struct _arraylist *self, size_t capacity);
+    bool (*reserve)(struct _arraylist *self, size_t capacity);
     size_t (*size)(struct _arraylist *self);
     size_t (*capacity)(struct _arraylist *self);
     bool (*empty)(struct _arraylist *self);

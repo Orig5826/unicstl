@@ -1,12 +1,12 @@
 /**
  * @file string.h
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2026-05-17
- * 
+ *
  * @copyright Copyright (c) 2026
- * 
+ *
  */
 #ifndef _USTRING_H_
 #define _USTRING_H_
@@ -15,11 +15,15 @@
 #include "iterator.h"
 #include "darray.h"
 
+// clang-format off
+#define UVIEW_BUF_SIZE              64
+// clang-format on
+
 typedef struct _uview
 {
     const char *str;
     size_t len;
-}uview_t;
+} uview_t;
 
 struct _ustring
 {
@@ -32,12 +36,13 @@ struct _ustring
     void (*_destory)(struct _ustring *self);
 
     // -------------------- public --------------------
-    bool (*set)(struct _ustring *self, size_t index, const char c);       // O(1)
-    bool (*get)(struct _ustring *self, size_t index, char *c);            // O(1)
-    char (*at)(struct _ustring *self, size_t index);                      // O(1)
+    // char operations
+    bool (*set)(struct _ustring *self, size_t index, const char c); // O(1)
+    bool (*get)(struct _ustring *self, size_t index, char *c);      // O(1)
+    char (*at)(struct _ustring *self, size_t index);                // O(1)
 
     // base
-    bool (*resize)(struct _ustring *self, size_t capacity);
+    bool (*reserve)(struct _ustring *self, size_t capacity);
     size_t (*len)(struct _ustring *self);
     size_t (*capacity)(struct _ustring *self);
     bool (*empty)(struct _ustring *self);
@@ -45,14 +50,13 @@ struct _ustring
     bool (*clear)(struct _ustring *self);
 
     // sort and search
-    size_t (*index)(struct _ustring *self, const void *obj);            // O(n) return (size_t)-1 if not found
-    bool (*contains)(struct _ustring *self, const void *obj);           // O(n)
+    size_t (*index)(struct _ustring *self, const void *obj);  // O(n) return (size_t)-1 if not found
+    bool (*contains)(struct _ustring *self, const void *obj); // O(n)
 
-    bool (*sort)(struct _ustring *self);                                // O(nlogn)
-    size_t (*search)(struct _ustring *self, const void *obj);           // O(n) if not sorted; O(logn) if sorted
-                                                                        // return leftmost matched index; return (size_t)-1 if not found
-    size_t (*count)(struct _ustring *self, const void *obj);            // O(nlogn) if sorted; O(n) if not sorted
-
+    bool (*sort)(struct _ustring *self);                      // O(nlogn)
+    size_t (*search)(struct _ustring *self, const void *obj); // O(n) if not sorted; O(logn) if sorted
+                                                              // return leftmost matched index; return (size_t)-1 if not found
+    size_t (*count)(struct _ustring *self, const void *obj);  // O(nlogn) if sorted; O(n) if not sorted
 
     // -------------------- uview --------------------
     // append and remove
@@ -67,8 +71,8 @@ struct _ustring
     bool (*join)(struct _ustring *self, uview_t delim);
 
     // substring
-    ssize_t (*find)(struct _ustring* str, uview_t v);
-    struct _ustring* (*substr)(struct _ustring *self, size_t start, size_t end);
+    ssize_t (*find)(struct _ustring *str, uview_t v);
+    struct _ustring *(*substr)(struct _ustring *self, size_t start, size_t end);
     bool (*replace)(struct _ustring *self, uview_t oldstr, uview_t newstr);
 
     // judge
@@ -84,7 +88,7 @@ struct _ustring
     bool (*isgraph)(struct _ustring *self);
 
     // transform
-    const char* (*cstr)(struct _ustring* self);
+    const char *(*cstr)(struct _ustring *self);
     bool (*tolower)(struct _ustring *self);
     bool (*toupper)(struct _ustring *self);
     bool (*trim)(struct _ustring *self);
@@ -97,7 +101,7 @@ struct _ustring
     bool (*ljust)(struct _ustring *self, size_t width);
     bool (*rjust)(struct _ustring *self, size_t width);
     bool (*center)(struct _ustring *self, size_t width);
-    bool (*format)(struct _ustring *self, const char* format); 
+    bool (*format)(struct _ustring *self, const char *format);
 
     // compare
     int (*eq)(struct _ustring *self, struct _ustring *other);
@@ -112,7 +116,7 @@ struct _ustring
     iterator_t (*iter)(struct _ustring *self, linear_order_t order);
 
     // config
-    compare_fun_t compare;      // !!! you have to implement this function
+    compare_fun_t compare; // !!! you have to implement this function
 
     // -------------------- debug --------------------
     void (*print)(struct _ustring *self);
@@ -120,15 +124,8 @@ struct _ustring
 };
 typedef struct _ustring *ustring_t;
 
-ustring_t ustring_new(const char *cstr);
-void ustring_free(ustring_t *ustring);
-
-
 /**
  * @brief create a uview from cstr
- * 
- * @param cstr 
- * @return uview_t 
  */
 static inline uview_t uv(const char *cstr)
 {
@@ -137,13 +134,10 @@ static inline uview_t uv(const char *cstr)
 
 /**
  * @brief create a uview from ustring
- * 
- * @param string 
- * @return uview_t 
  */
 static inline uview_t uvs(struct _ustring *string)
 {
-    if(string == NULL || string->_darray == NULL || string->len(string) == 0)
+    if (string == NULL || string->_darray == NULL || string->len(string) == 0)
     {
         return (uview_t){NULL, 0};
     }
@@ -152,13 +146,45 @@ static inline uview_t uvs(struct _ustring *string)
 
 /**
  * @brief create a uview from char
- * 
- * @param c 
- * @return uview_t 
  */
 static inline uview_t uvc(const char c)
 {
     return (uview_t){&c, 1};
 }
+
+/**
+ * @brief create a uview from int
+ */
+static inline uview_t uvi(int i)
+{
+    static char buf[UVIEW_BUF_SIZE + 1] = {0};
+    snprintf(buf, sizeof(buf), "%d", i);
+    return uv(buf);
+}
+
+/**
+ * @brief create a uview from long
+ */
+static inline uview_t uvl(long l)
+{
+    static char buf[UVIEW_BUF_SIZE + 1] = {0};
+    snprintf(buf, sizeof(buf), "%ld", l);
+    return uv(buf);
+}
+
+/**
+ * @brief create a uview from double
+ */
+static inline uview_t uvf(double f)
+{
+    static char buf[UVIEW_BUF_SIZE + 1] = {0};
+    snprintf(buf, sizeof(buf), "%f", f);
+    return uv(buf);
+}
+
+ustring_t ustring_new(uview_t view);
+void ustring_free(ustring_t *ustring);
+
+#define ustring_new_fromcstr(cstr) ustring_new(uv(cstr))
 
 #endif

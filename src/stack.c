@@ -37,13 +37,13 @@ static bool stack_peek(struct _stack* self, void* obj)
     return deque->back(deque, obj);
 }
 
-static size_t stack_resize(struct _stack* self, size_t capaticy)
+static size_t stack_reserve(struct _stack* self, size_t capaticy)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_deque != NULL);
     deque_t deque = self->_deque;
 
-    return deque->resize(deque, capaticy);
+    return deque->reserve(deque, capaticy);
 }
 
 static size_t stack_size(struct _stack* self)
@@ -166,7 +166,7 @@ static bool stack_init(struct _stack* self, size_t obj_size, size_t capacity)
     self->peek = stack_peek;
 
     // base
-    self->resize = stack_resize;
+    self->reserve = stack_reserve;
     self->size = stack_size;
     self->capacity = stack_capacity;
     self->empty = stack_empty;

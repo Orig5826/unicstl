@@ -31,7 +31,7 @@ struct _queue
     bool (*front)(struct _queue* self, void* obj);
 
     // base
-    size_t (*resize)(struct _queue* self, size_t capacity);
+    size_t (*reserve)(struct _queue* self, size_t capacity);
     size_t (*size)(struct _queue* self);
     size_t (*capacity)(struct _queue* self);
     bool (*empty)(struct _queue* self);

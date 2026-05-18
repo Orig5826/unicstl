@@ -527,7 +527,7 @@ static void test_arraylist_at_invalid(void)
 }
 
 
-static void test_arraylist_resize(void)
+static void test_arraylist_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -538,7 +538,7 @@ static void test_arraylist_resize(void)
     arraylist->compare = compare_num;
 
     TEST_ASSERT_EQUAL_INT(1, arraylist->capacity(arraylist));
-    arraylist->resize(arraylist, 16);
+    arraylist->reserve(arraylist, 16);
     TEST_ASSERT_EQUAL_INT(16, arraylist->capacity(arraylist));
 
     for(i = 0; i < len; i++)
@@ -548,7 +548,7 @@ static void test_arraylist_resize(void)
     TEST_ASSERT_EQUAL_INT(16, arraylist->capacity(arraylist));
     TEST_ASSERT_EQUAL_INT(10, arraylist->size(arraylist));
 
-    TEST_ASSERT_TRUE(arraylist->resize(arraylist, 8));
+    TEST_ASSERT_TRUE(arraylist->reserve(arraylist, 8));
     TEST_ASSERT_EQUAL_INT(8, arraylist->capacity(arraylist));
     for(i = 0; i < len; i++)
     {
@@ -568,7 +568,7 @@ static void test_arraylist_resize(void)
     arraylist_free(&arraylist);
 }
 
-static void test_arraylist_resize_invalid(void)
+static void test_arraylist_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -579,8 +579,8 @@ static void test_arraylist_resize_invalid(void)
     arraylist->compare = compare_num;
     
     TEST_ASSERT_EQUAL_INT(len, arraylist->capacity(arraylist));
-    TEST_ASSERT_FALSE(arraylist->resize(arraylist, 0));
-    TEST_ASSERT_FALSE(arraylist->resize(arraylist, -1));
+    TEST_ASSERT_FALSE(arraylist->reserve(arraylist, 0));
+    TEST_ASSERT_FALSE(arraylist->reserve(arraylist, -1));
 
     arraylist_free(&arraylist);
 }
@@ -1239,8 +1239,8 @@ void test_arraylist(void)
     RUN_TEST(test_arraylist_at_negative);
     RUN_TEST(test_arraylist_at_invalid);
 
-    RUN_TEST(test_arraylist_resize);
-    RUN_TEST(test_arraylist_resize_invalid);
+    RUN_TEST(test_arraylist_reserve);
+    RUN_TEST(test_arraylist_reserve_invalid);
 
     RUN_TEST(test_arraylist_index);    // index, search, contains
     RUN_TEST(test_arraylist_index_invalid);

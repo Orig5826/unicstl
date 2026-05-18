@@ -44,7 +44,7 @@ struct _ringbuf
     const void* (*at)(struct _ringbuf *self, size_t index);                 // O(1)
     
     // base
-    bool (*resize)(struct _ringbuf *self, size_t capacity);
+    bool (*reserve)(struct _ringbuf *self, size_t capacity);
     size_t (*size)(struct _ringbuf* self);
     size_t (*capacity)(struct _ringbuf* self);
     bool (*empty)(struct _ringbuf* self);

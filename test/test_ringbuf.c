@@ -517,7 +517,7 @@ static void test_ringbuf_iter(void)
     ringbuf_free(&ringbuf);
 }
 
-static void test_ringbuf_resize(void)
+static void test_ringbuf_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -527,7 +527,7 @@ static void test_ringbuf_resize(void)
     ringbuf_t ringbuf = ringbuf_new(sizeof(int), len);
 
     TEST_ASSERT_EQUAL_INT(len, ringbuf->capacity(ringbuf));
-    TEST_ASSERT_TRUE(ringbuf->resize(ringbuf, 16));
+    TEST_ASSERT_TRUE(ringbuf->reserve(ringbuf, 16));
     TEST_ASSERT_EQUAL_INT(16, ringbuf->capacity(ringbuf));
 
     for(i = 0; i < len; i++)
@@ -537,7 +537,7 @@ static void test_ringbuf_resize(void)
     TEST_ASSERT_EQUAL_INT(16, ringbuf->capacity(ringbuf));
     TEST_ASSERT_EQUAL_INT(len, ringbuf->size(ringbuf));
 
-    TEST_ASSERT_TRUE(ringbuf->resize(ringbuf, 8));
+    TEST_ASSERT_TRUE(ringbuf->reserve(ringbuf, 8));
     TEST_ASSERT_EQUAL_INT(8, ringbuf->capacity(ringbuf));
     TEST_ASSERT_EQUAL_INT(8, ringbuf->size(ringbuf));
 
@@ -564,7 +564,7 @@ static void test_ringbuf_resize(void)
     ringbuf_free(&ringbuf);
 }
 
-static void test_ringbuf_resize_invalid(void)
+static void test_ringbuf_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -574,18 +574,18 @@ static void test_ringbuf_resize_invalid(void)
     ringbuf_t ringbuf = ringbuf_new(sizeof(int), len);
     
     TEST_ASSERT_EQUAL_INT(len, ringbuf->capacity(ringbuf));
-    TEST_ASSERT_FALSE(ringbuf->resize(ringbuf, 0));
-    TEST_ASSERT_FALSE(ringbuf->resize(ringbuf, -1));
+    TEST_ASSERT_FALSE(ringbuf->reserve(ringbuf, 0));
+    TEST_ASSERT_FALSE(ringbuf->reserve(ringbuf, -1));
 
     ringbuf_free(&ringbuf);
 }
 
-static void test_ringbuf_resize_edge(void)
+static void test_ringbuf_reserve_edge(void)
 {
     ringbuf_t ringbuf = ringbuf_new(sizeof(int), 10);
 
     TEST_ASSERT_EQUAL_INT(10, ringbuf->capacity(ringbuf));
-    TEST_ASSERT_TRUE(ringbuf->resize(ringbuf, 10));
+    TEST_ASSERT_TRUE(ringbuf->reserve(ringbuf, 10));
     TEST_ASSERT_EQUAL_INT(10, ringbuf->capacity(ringbuf));
 
     ringbuf_free(&ringbuf);
@@ -863,9 +863,9 @@ void test_ringbuf(void)
     // ---------- base ----------
     RUN_TEST(test_ringbuf_iter);
 
-    RUN_TEST(test_ringbuf_resize);
-    RUN_TEST(test_ringbuf_resize_invalid);
-    RUN_TEST(test_ringbuf_resize_edge);
+    RUN_TEST(test_ringbuf_reserve);
+    RUN_TEST(test_ringbuf_reserve_invalid);
+    RUN_TEST(test_ringbuf_reserve_edge);
 
     RUN_TEST(test_ringbuf_dynamic);
 

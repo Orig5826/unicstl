@@ -12,7 +12,7 @@
 
 void demo_ustring(void)
 {
-    ustring_t str = ustring_new("unicstle string demo. ");
+    ustring_t str = ustring_new_fromcstr("unicstle string demo. ");
     printf("\n@len=%d\n", str->len(str));
     str->print(str);
 
@@ -24,7 +24,7 @@ void demo_ustring(void)
     printf("\n@len=%d\n", str->len(str));
     str->print(str);
 
-    ustring_t str2 = ustring_new("show time! \n");
+    ustring_t str2 = ustring_new_fromcstr("show time! \n");
     str->append(str, uvs(str2));
     printf("\n@len=%d\n", str->len(str));
     str->print(str);

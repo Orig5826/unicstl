@@ -257,7 +257,7 @@ static void test_queue_iter(void)
     queue_free(&queue);
 }
 
-static void test_queue_resize(void)
+static void test_queue_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -267,7 +267,7 @@ static void test_queue_resize(void)
     queue_t queue = queue_new(sizeof(int), len);
 
     TEST_ASSERT_EQUAL_INT(len, queue->capacity(queue));
-    TEST_ASSERT_TRUE(queue->resize(queue, 16));
+    TEST_ASSERT_TRUE(queue->reserve(queue, 16));
     TEST_ASSERT_EQUAL_INT(16, queue->capacity(queue));
 
     for(i = 0; i < len; i++)
@@ -277,7 +277,7 @@ static void test_queue_resize(void)
     TEST_ASSERT_EQUAL_INT(16, queue->capacity(queue));
     TEST_ASSERT_EQUAL_INT(len, queue->size(queue));
 
-    TEST_ASSERT_TRUE(queue->resize(queue, 8));
+    TEST_ASSERT_TRUE(queue->reserve(queue, 8));
     TEST_ASSERT_EQUAL_INT(8, queue->capacity(queue));
     TEST_ASSERT_EQUAL_INT(8, queue->size(queue));
 
@@ -304,7 +304,7 @@ static void test_queue_resize(void)
     queue_free(&queue);
 }
 
-static void test_queue_resize_invalid(void)
+static void test_queue_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -314,18 +314,18 @@ static void test_queue_resize_invalid(void)
     queue_t queue = queue_new(sizeof(int), len);
     
     TEST_ASSERT_EQUAL_INT(len, queue->capacity(queue));
-    TEST_ASSERT_FALSE(queue->resize(queue, 0));
-    TEST_ASSERT_FALSE(queue->resize(queue, -1));
+    TEST_ASSERT_FALSE(queue->reserve(queue, 0));
+    TEST_ASSERT_FALSE(queue->reserve(queue, -1));
 
     queue_free(&queue);
 }
 
-static void test_queue_resize_edge(void)
+static void test_queue_reserve_edge(void)
 {
     queue_t queue = queue_new(sizeof(int), 10);
 
     TEST_ASSERT_EQUAL_INT(10, queue->capacity(queue));
-    TEST_ASSERT_TRUE(queue->resize(queue, 10));
+    TEST_ASSERT_TRUE(queue->reserve(queue, 10));
     TEST_ASSERT_EQUAL_INT(10, queue->capacity(queue));
 
     queue_free(&queue);
@@ -528,9 +528,9 @@ void test_queue(void)
 
     RUN_TEST(test_queue_iter);
 
-    RUN_TEST(test_queue_resize);
-    RUN_TEST(test_queue_resize_invalid);
-    RUN_TEST(test_queue_resize_edge);
+    RUN_TEST(test_queue_reserve);
+    RUN_TEST(test_queue_reserve_invalid);
+    RUN_TEST(test_queue_reserve_edge);
 
     RUN_TEST(test_queue_dynamic);
 

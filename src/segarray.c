@@ -92,9 +92,9 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
             log_debug("mapfree is empty!");
             if (map->full(map))
             {
-                // resize 
+                // reserve 
                 size_t capacity_new = unicstl_new_capacity(self->_capacity);
-                if(self->resize(self, capacity_new))
+                if(self->reserve(self, capacity_new))
                 {
                     log_error("next, you need to realize it");
                     return false;
@@ -177,9 +177,9 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
         {
             if (map->full(map))
             {
-                // resize 
+                // reserve 
                 size_t capacity_new = unicstl_new_capacity(self->_capacity);
-                if(self->resize(self, capacity_new))
+                if(self->reserve(self, capacity_new))
                 {
                     log_error("next, you need to realize it");
                     return false;
@@ -461,7 +461,7 @@ static const void* segarray_at(struct _segarray *self, size_t index)
  * @return true 
  * @return false 
  */
-static bool segarray_resize(struct _segarray *self, size_t capacity)
+static bool segarray_reserve(struct _segarray *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if (capacity == 0 || capacity > UNICSTL_CAPACITY_MAX - 1)
@@ -477,15 +477,15 @@ static bool segarray_resize(struct _segarray *self, size_t capacity)
         ringbuf_t map = self->_map;
         if(map_size > map->size(map))
         {
-            // resize
-            if(map->resize(map, map_size))
+            // reserve
+            if(map->reserve(map, map_size))
             {
-                log_error("resize map failed!");
+                log_error("reserve map failed!");
                 return true;
             }
-            if(self->_mapfree->resize(self->_mapfree, map_size))
+            if(self->_mapfree->reserve(self->_mapfree, map_size))
             {
-                log_error("resize mapfree failed!");
+                log_error("reserve mapfree failed!");
                 return true;
             }
         }
@@ -732,7 +732,7 @@ static bool segarray_init(struct _segarray *self, size_t obj_size, size_t capaci
     self->at = segarray_at;
 
     // base
-    self->resize = segarray_resize;
+    self->reserve = segarray_reserve;
     self->size = segarray_size;
     self->capacity = segarray_capacity;
     self->empty = segarray_empty;

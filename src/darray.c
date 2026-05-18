@@ -68,12 +68,18 @@ static void darray_print(struct _darray *self)
     }
 }
 
-static bool darray_resize(struct _darray *self, size_t capacity)
+static bool darray_reserve(struct _darray *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if(capacity == 0 || capacity > UNICSTL_CAPACITY_MAX)
     {
         return false;
+    }
+    
+    if(capacity < self->_size)
+    {
+        log_warn("TODO: optimize reserve: disallow shrinking capacity (only allow growth).");
+        // return false;
     }
 
     void *new_obj = unicstl_realloc(self->obj, capacity * self->_obj_size);
@@ -90,6 +96,25 @@ static bool darray_resize(struct _darray *self, size_t capacity)
     return true;
 }
 
+static bool darray_resize(struct _darray *self, size_t size)
+{
+    unicstl_assert(self != NULL);
+    if(size > self->capacity(self))
+    {
+        size_t new_capacity = unicstl_new_capacity(size);
+        if (self->reserve(self, new_capacity) == false)
+        {
+            return false;
+        }
+    }
+    if(size > self->_size)
+    {
+        obj_zero(self->obj, self->_size, size - self->_size, self->_obj_size);
+    }
+    self->_size = size;
+    return true;
+}
+
 static bool darray_insert(struct _darray *self, size_t index, const void *obj)
 {
     unicstl_assert(self != NULL);
@@ -101,7 +126,7 @@ static bool darray_insert(struct _darray *self, size_t index, const void *obj)
     if (self->full(self))
     {
         size_t new_capacity = unicstl_new_capacity(self->capacity(self));
-        if (self->resize(self, new_capacity) == false)
+        if (self->reserve(self, new_capacity) == false)
         {
             return false;
         }
@@ -361,6 +386,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->at = darray_at;
 
     // base
+    self->reserve = darray_reserve;
     self->resize = darray_resize;
     self->size = darray_size;
     self->capacity = darray_capacity;
@@ -386,7 +412,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     // -------------------- malloc --------------------
     if(capacity > 0)
     {
-        self->resize(self, capacity);
+        self->reserve(self, capacity);
     }
     return true;
 }

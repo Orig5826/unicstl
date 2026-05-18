@@ -48,7 +48,7 @@ struct _segarray
     const void* (*at)(struct _segarray *self, size_t index);                 // O(1)
 
     // base
-    bool (*resize)(struct _segarray *self, size_t capacity);
+    bool (*reserve)(struct _segarray *self, size_t capacity);
     size_t (*size)(struct _segarray* self);
     size_t (*capacity)(struct _segarray* self);
     bool (*empty)(struct _segarray* self);

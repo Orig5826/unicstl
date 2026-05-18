@@ -73,11 +73,11 @@ static void arraylist_print(struct _arraylist *self)
     self->_darray->print(self->_darray);
 }
 
-static bool arraylist_resize(struct _arraylist *self, size_t capacity)
+static bool arraylist_reserve(struct _arraylist *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_darray != NULL);
-    return self->_darray->resize(self->_darray, capacity);
+    return self->_darray->reserve(self->_darray, capacity);
 }
 
 static bool arraylist_insert(struct _arraylist *self, ssize_t index, const void *obj)
@@ -370,7 +370,7 @@ static bool arraylist_init(struct _arraylist *self, size_t obj_size, size_t capa
     self->at = arraylist_at;
 
     // base
-    self->resize = arraylist_resize;
+    self->reserve = arraylist_reserve;
     self->size = arraylist_size;
     self->capacity = arraylist_capacity;
     self->empty = arraylist_empty;

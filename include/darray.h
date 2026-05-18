@@ -42,6 +42,7 @@ struct _darray
     const void* (*at)(struct _darray *self, size_t index);                  // O(1)
 
     // base
+    bool (*reserve)(struct _darray *self, size_t capacity);
     bool (*resize)(struct _darray *self, size_t capacity);
     size_t (*size)(struct _darray *self);
     size_t (*capacity)(struct _darray *self);

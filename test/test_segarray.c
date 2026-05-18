@@ -495,7 +495,7 @@ static void test_segarray_iter(void)
     segarray_free(&segarray);
 }
 
-static void test_segarray_resize(void)
+static void test_segarray_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -505,7 +505,7 @@ static void test_segarray_resize(void)
     segarray_t segarray = segarray_new(sizeof(int), len);
 
     TEST_ASSERT_EQUAL_INT(len, segarray->capacity(segarray));
-    TEST_ASSERT_TRUE(segarray->resize(segarray, 16));
+    TEST_ASSERT_TRUE(segarray->reserve(segarray, 16));
     TEST_ASSERT_EQUAL_INT(16, segarray->capacity(segarray));
 
     for(i = 0; i < len; i++)
@@ -515,7 +515,7 @@ static void test_segarray_resize(void)
     TEST_ASSERT_EQUAL_INT(16, segarray->capacity(segarray));
     TEST_ASSERT_EQUAL_INT(len, segarray->size(segarray));
 
-    TEST_ASSERT_TRUE(segarray->resize(segarray, 8));
+    TEST_ASSERT_TRUE(segarray->reserve(segarray, 8));
     TEST_ASSERT_EQUAL_INT(8, segarray->capacity(segarray));
     TEST_ASSERT_EQUAL_INT(8, segarray->size(segarray));
 
@@ -542,7 +542,7 @@ static void test_segarray_resize(void)
     segarray_free(&segarray);
 }
 
-static void test_segarray_resize_invalid(void)
+static void test_segarray_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -552,18 +552,18 @@ static void test_segarray_resize_invalid(void)
     segarray_t segarray = segarray_new(sizeof(int), len);
     
     TEST_ASSERT_EQUAL_INT(len, segarray->capacity(segarray));
-    TEST_ASSERT_FALSE(segarray->resize(segarray, 0));
-    TEST_ASSERT_FALSE(segarray->resize(segarray, -1));
+    TEST_ASSERT_FALSE(segarray->reserve(segarray, 0));
+    TEST_ASSERT_FALSE(segarray->reserve(segarray, -1));
 
     segarray_free(&segarray);
 }
 
-static void test_segarray_resize_edge(void)
+static void test_segarray_reserve_edge(void)
 {
     segarray_t segarray = segarray_new(sizeof(int), 10);
 
     TEST_ASSERT_EQUAL_INT(10, segarray->capacity(segarray));
-    TEST_ASSERT_TRUE(segarray->resize(segarray, 10));
+    TEST_ASSERT_TRUE(segarray->reserve(segarray, 10));
     TEST_ASSERT_EQUAL_INT(10, segarray->capacity(segarray));
 
     segarray_free(&segarray);
@@ -863,9 +863,9 @@ void test_segarray(void)
     // ---------- base ----------
     RUN_TEST(test_segarray_iter);
 
-    RUN_TEST(test_segarray_resize);
-    RUN_TEST(test_segarray_resize_invalid);
-    RUN_TEST(test_segarray_resize_edge);
+    RUN_TEST(test_segarray_reserve);
+    RUN_TEST(test_segarray_reserve_invalid);
+    RUN_TEST(test_segarray_reserve_edge);
 
     RUN_TEST(test_segarray_dynamic);
     // RUN_TEST(test_segarray_dynamic2);    // todo: fix it

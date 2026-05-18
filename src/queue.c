@@ -39,11 +39,11 @@ static bool queue_front(struct _queue* self, void* obj)
     return self->_deque->front(self->_deque, obj);
 }
 
-static size_t queue_resize(struct _queue* self, size_t capacity)
+static size_t queue_reserve(struct _queue* self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_deque != NULL);
-    return self->_deque->resize(self->_deque, capacity);
+    return self->_deque->reserve(self->_deque, capacity);
 }
 
 static size_t queue_size(struct _queue* self)
@@ -154,7 +154,7 @@ static bool queue_init(struct _queue * self, size_t obj_size, size_t capacity)
     self->front = queue_front;
 
     // base
-    self->resize = queue_resize;
+    self->reserve = queue_reserve;
     self->size = queue_size;
     self->capacity = queue_capacity;
     self->empty = queue_empty;

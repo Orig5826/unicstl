@@ -12,7 +12,7 @@
 
 void test_ustring_new(void)
 {
-    ustring_t str = ustring_new("hello");
+    ustring_t str = ustring_new(uv("hello"));
     TEST_ASSERT_EQUAL_INT(5, str->len(str));
     TEST_ASSERT_EQUAL_INT(6, str->capacity(str));
     TEST_ASSERT_EQUAL_STRING(str->cstr(str), "hello");
@@ -21,16 +21,36 @@ void test_ustring_new(void)
 
 void test_ustring_new_lazy(void)
 {
-    ustring_t str = ustring_new("");
+    ustring_t str = ustring_new(uv(""));
     TEST_ASSERT_EQUAL_INT(0, str->len(str));
     TEST_ASSERT_EQUAL_INT(1, str->capacity(str));
     TEST_ASSERT_EQUAL_STRING(str->cstr(str), "");
     ustring_free(&str);
 }
 
+void test_ustring_new_int(void)
+{
+    const int num = 1234567890;
+    ustring_t str = ustring_new(uvi(num));
+    TEST_ASSERT_EQUAL_INT(10, str->len(str));
+    TEST_ASSERT_EQUAL_INT(11, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "1234567890");
+    ustring_free(&str);
+}
+
+void test_ustring_new_float(void)
+{
+    const double num = 123.456789;
+    ustring_t str = ustring_new(uvf(num));
+    TEST_ASSERT_EQUAL_INT(10, str->len(str));
+    TEST_ASSERT_EQUAL_INT(11, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "123.456789");
+    ustring_free(&str);
+}
+
 void test_ustring_tolower(void)
 {
-    ustring_t str = ustring_new("HELLO wolrD");
+    ustring_t str = ustring_new(uv("HELLO wolrD"));
     str->tolower(str);
     TEST_ASSERT_EQUAL_STRING(str->cstr(str), "hello wolrd");
     ustring_free(&str);
@@ -38,7 +58,7 @@ void test_ustring_tolower(void)
 
 void test_ustring_toupper(void)
 {
-    ustring_t str = ustring_new("hello");
+    ustring_t str = ustring_new(uv("hello"));
     str->toupper(str);
     TEST_ASSERT_EQUAL_STRING(str->cstr(str), "HELLO");
     ustring_free(&str);
@@ -46,84 +66,84 @@ void test_ustring_toupper(void)
 
 void test_ustring_isalpha(void)
 {
-    ustring_t str = ustring_new("unicstl");
+    ustring_t str = ustring_new(uv("unicstl"));
     TEST_ASSERT_TRUE(str->isalpha(str));
     ustring_free(&str);
 
-    str = ustring_new("unicstl123");
+    str = ustring_new(uv("unicstl123"));
     TEST_ASSERT_FALSE(str->isalpha(str));
     ustring_free(&str);
 }
 
 void test_ustring_isalnum(void)
 {
-    ustring_t str = ustring_new("unicstl");
+    ustring_t str = ustring_new(uv("unicstl"));
     TEST_ASSERT_TRUE(str->isalnum(str));
     ustring_free(&str);
 
-    str = ustring_new("unicstl123");
+    str = ustring_new(uv("unicstl123"));
     TEST_ASSERT_TRUE(str->isalnum(str));
     ustring_free(&str);
 }
 
 void test_ustring_isdigit(void)
 {
-    ustring_t str = ustring_new("unicstl");
+    ustring_t str = ustring_new(uv("unicstl"));
     TEST_ASSERT_FALSE(str->isdigit(str));
     ustring_free(&str);
 
-    str = ustring_new("1234567890");
+    str = ustring_new(uv("1234567890"));
     TEST_ASSERT_TRUE(str->isdigit(str));
     ustring_free(&str);
 }
 
 void test_ustring_isprint(void)
 {
-    ustring_t str = ustring_new("unicstl");
+    ustring_t str = ustring_new(uv("unicstl"));
     TEST_ASSERT_TRUE(str->isprint(str));
     ustring_free(&str);
 
-    str = ustring_new("unicstl\r\n\t");
+    str = ustring_new(uv("unicstl\r\n\t"));
     TEST_ASSERT_FALSE(str->isprint(str));
     ustring_free(&str);
 }
 
 void test_ustring_isspace(void)
 {
-    ustring_t str = ustring_new("unicstl\r\n\t");
+    ustring_t str = ustring_new(uv("unicstl\r\n\t"));
     TEST_ASSERT_FALSE(str->isspace(str));
     ustring_free(&str);
 
-    str = ustring_new("\r\n\t");
+    str = ustring_new(uv("\r\n\t"));
     TEST_ASSERT_TRUE(str->isspace(str));
     ustring_free(&str);
 }
 
 void test_ustring_islower(void)
 {
-    ustring_t str = ustring_new("unicstl");
+    ustring_t str = ustring_new(uv("unicstl"));
     TEST_ASSERT_TRUE(str->islower(str));
     ustring_free(&str);
 
-    str = ustring_new("unicstl123");
+    str = ustring_new(uv("unicstl123"));
     TEST_ASSERT_FALSE(str->islower(str));
     ustring_free(&str);
 }
 
 void test_ustring_isupper(void)
 {
-    ustring_t str = ustring_new("UNICSTL");
+    ustring_t str = ustring_new(uv("UNICSTL"));
     TEST_ASSERT_TRUE(str->isupper(str));
     ustring_free(&str);
 
-    str = ustring_new("UNIcSTL");
+    str = ustring_new(uv("UNIcSTL"));
     TEST_ASSERT_FALSE(str->isupper(str));
     ustring_free(&str);
 }
 
 void test_ustring_strip(void)
 {
-    ustring_t str = ustring_new("  unicstl\r\n\t");
+    ustring_t str = ustring_new(uv("  unicstl\r\n\t"));
     str->strip(str);
     TEST_ASSERT_EQUAL_STRING("unicstl", str->cstr(str));
     ustring_free(&str);
@@ -136,6 +156,8 @@ void test_ustring(void)
     // ---------- kernel ----------
     RUN_TEST(test_ustring_new);
     RUN_TEST(test_ustring_new_lazy);
+    RUN_TEST(test_ustring_new_int);
+    RUN_TEST(test_ustring_new_float);
 
     RUN_TEST(test_ustring_tolower);
     RUN_TEST(test_ustring_toupper);

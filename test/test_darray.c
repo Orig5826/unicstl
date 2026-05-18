@@ -61,7 +61,7 @@ static void test_darray_insert(void)
 
     darray_free(&darray);
 }
-    
+
 static void test_darray_insert_invalid(void)
 {
     int temp = 0;
@@ -321,7 +321,7 @@ static void test_darray_at(void)
     darray_free(&darray);
 }
 
-static void test_darray_resize(void)
+static void test_darray_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -332,7 +332,7 @@ static void test_darray_resize(void)
     darray->compare = compare_num;
 
     TEST_ASSERT_EQUAL_INT(1, darray->capacity(darray));
-    darray->resize(darray, 16);
+    darray->reserve(darray, 16);
     TEST_ASSERT_EQUAL_INT(16, darray->capacity(darray));
 
     for(i = 0; i < len; i++)
@@ -342,7 +342,7 @@ static void test_darray_resize(void)
     TEST_ASSERT_EQUAL_INT(16, darray->capacity(darray));
     TEST_ASSERT_EQUAL_INT(10, darray->size(darray));
 
-    TEST_ASSERT_TRUE(darray->resize(darray, 8));
+    TEST_ASSERT_TRUE(darray->reserve(darray, 8));
     TEST_ASSERT_EQUAL_INT(8, darray->capacity(darray));
     for(i = 0; i < len; i++)
     {
@@ -362,7 +362,7 @@ static void test_darray_resize(void)
     darray_free(&darray);
 }
 
-static void test_darray_resize_invalid(void)
+static void test_darray_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -373,7 +373,63 @@ static void test_darray_resize_invalid(void)
     darray->compare = compare_num;
     
     TEST_ASSERT_EQUAL_INT(len, darray->capacity(darray));
-    TEST_ASSERT_FALSE(darray->resize(darray, 0));
+    TEST_ASSERT_FALSE(darray->reserve(darray, 0));
+    TEST_ASSERT_FALSE(darray->reserve(darray, -1));
+
+    darray_free(&darray);
+}
+
+static void test_darray_resize(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+    TEST_ASSERT_EQUAL_INT(10, darray->size(darray));
+
+    TEST_ASSERT_TRUE(darray->resize(darray, 8));
+    TEST_ASSERT_EQUAL_INT(8, darray->size(darray));
+
+    // judge all data
+    TEST_ASSERT_TRUE(darray->resize(darray, 16));
+    for(i = 0; i < 8; i++)
+    {
+        TEST_ASSERT_TRUE(darray->get(darray, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    for(i = 8; i < 16; i++)
+    {
+        TEST_ASSERT_TRUE(darray->get(darray, i, &temp));
+        TEST_ASSERT_EQUAL_INT(0, temp);
+    }
+
+    // if new size > capacity, then resize capacity
+    TEST_ASSERT_TRUE(darray->resize(darray, 32));
+    TEST_ASSERT_EQUAL_INT(32, darray->size(darray));
+    TEST_ASSERT_GREATER_OR_EQUAL_INT(32, darray->capacity(darray));
+
+    darray_free(&darray);
+}
+
+static void test_darray_resize_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+
+    // TEST_ASSERT_FALSE(darray->resize(darray, len+1));
     TEST_ASSERT_FALSE(darray->resize(darray, -1));
 
     darray_free(&darray);
@@ -688,6 +744,9 @@ void test_darray(void)
     RUN_TEST(test_darray_set_invalid);
 
     RUN_TEST(test_darray_at);
+
+    RUN_TEST(test_darray_reserve);
+    RUN_TEST(test_darray_reserve_invalid);
 
     RUN_TEST(test_darray_resize);
     RUN_TEST(test_darray_resize_invalid);

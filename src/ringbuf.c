@@ -25,7 +25,7 @@ static bool ringbuf_push_back(struct _ringbuf *self, const void *obj)
             return false;
         }
         size_t new_capacity = unicstl_new_capacity(self->capacity(self));
-        if (self->resize(self, new_capacity) == false)
+        if (self->reserve(self, new_capacity) == false)
         {
             return false;
         }
@@ -54,7 +54,7 @@ static bool ringbuf_push_front(struct _ringbuf *self, const void *obj)
             return false;
         }
         size_t new_capacity = unicstl_new_capacity(self->capacity(self));
-        if (self->resize(self, new_capacity) == false)
+        if (self->reserve(self, new_capacity) == false)
         {
             return false;
         }
@@ -174,7 +174,7 @@ static const void* ringbuf_at(struct _ringbuf *self, size_t index)
     return (const char *)self->obj + offset;
 }
 
-static bool ringbuf_resize(struct _ringbuf *self, size_t capacity)
+static bool ringbuf_reserve(struct _ringbuf *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     if (self->_dynamic != true || capacity == 0 || capacity > UNICSTL_CAPACITY_MAX - 1)
@@ -203,7 +203,7 @@ static bool ringbuf_resize(struct _ringbuf *self, size_t capacity)
         second_size = self->_tail;
     }
 
-    // resize to smaller capacity
+    // reserve to smaller capacity
     if(self->_size > capacity)
     {
         if(first_size >= capacity)
@@ -399,7 +399,7 @@ bool ringbuf_init(struct _ringbuf *self, size_t obj_size, size_t capacity, void 
     self->at = ringbuf_at;
 
     // base
-    self->resize = ringbuf_resize;
+    self->reserve = ringbuf_reserve;
     self->size = ringbuf_size;
     self->capacity = ringbuf_capacity;
     self->empty = ringbuf_empty;

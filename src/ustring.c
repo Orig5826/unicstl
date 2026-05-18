@@ -66,11 +66,11 @@ static void ustring_print(struct _ustring *self)
     self->_darray->print(self->_darray);
 }
 
-static bool ustring_resize(struct _ustring *self, size_t capacity)
+static bool ustring_reserve(struct _ustring *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_darray != NULL);
-    return self->_darray->resize(self->_darray, capacity);
+    return self->_darray->reserve(self->_darray, capacity);
 }
 
 static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
@@ -472,7 +472,7 @@ static bool ustring_strip_right(struct _ustring *self)
     return true;
 }
 
-static bool ustring_init(struct _ustring *self, const char *string)
+static bool ustring_init(struct _ustring *self, uview_t view)
 {
     unicstl_assert(self != NULL);
 
@@ -493,7 +493,7 @@ static bool ustring_init(struct _ustring *self, const char *string)
     self->at = ustring_at;
 
     // base
-    self->resize = ustring_resize;
+    self->reserve = ustring_reserve;
     self->len = ustring_len;
     self->capacity = ustring_capacity;
     self->empty = ustring_empty;
@@ -537,20 +537,15 @@ static bool ustring_init(struct _ustring *self, const char *string)
     self->print = ustring_print;
 
     // -------------------- malloc --------------------
-    size_t capacity = 0;
-    if (string != NULL)
-    {
-        capacity = strlen(string);
-    }
-    self->_darray = darray_new(sizeof(char), capacity + 1);
+    self->_darray = darray_new(sizeof(char), view.len + 1);
     if (self->_darray == NULL)
     {
         log_warn("malloc darray failed!");
         return false;
     }
-    for (size_t i = 0; i < capacity; i++)
+    for (size_t i = 0; i < view.len; i++)
     {
-        if(!self->_darray->append(self->_darray, &string[i]))
+        if(!self->_darray->append(self->_darray, &view.str[i]))
         {
             log_error("append failed!");
             return false;
@@ -564,7 +559,7 @@ static bool ustring_init(struct _ustring *self, const char *string)
     return true;
 }
 
-ustring_t ustring_new(const char *string)
+ustring_t ustring_new(uview_t view)
 {
     struct _ustring *ustring = NULL;
     ustring = (struct _ustring *)unicstl_malloc(sizeof(struct _ustring));
@@ -574,7 +569,7 @@ ustring_t ustring_new(const char *string)
         return NULL;
     }
 
-    if (ustring_init(ustring, string) != true)
+    if (ustring_init(ustring, view) != true)
     {
         log_warn("ustring init failed!");
         unicstl_free(ustring);

@@ -380,7 +380,7 @@ static void test_deque_iter(void)
     deque_free(&deque);
 }
 
-static void test_deque_resize(void)
+static void test_deque_reserve(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -390,7 +390,7 @@ static void test_deque_resize(void)
     deque_t deque = deque_new(sizeof(int), len);
 
     TEST_ASSERT_EQUAL_INT(len, deque->capacity(deque));
-    TEST_ASSERT_TRUE(deque->resize(deque, 16));
+    TEST_ASSERT_TRUE(deque->reserve(deque, 16));
     TEST_ASSERT_EQUAL_INT(16, deque->capacity(deque));
 
     for(i = 0; i < len; i++)
@@ -400,7 +400,7 @@ static void test_deque_resize(void)
     TEST_ASSERT_EQUAL_INT(16, deque->capacity(deque));
     TEST_ASSERT_EQUAL_INT(len, deque->size(deque));
 
-    TEST_ASSERT_TRUE(deque->resize(deque, 8));
+    TEST_ASSERT_TRUE(deque->reserve(deque, 8));
     TEST_ASSERT_EQUAL_INT(8, deque->capacity(deque));
     TEST_ASSERT_EQUAL_INT(8, deque->size(deque));
 
@@ -427,7 +427,7 @@ static void test_deque_resize(void)
     deque_free(&deque);
 }
 
-static void test_deque_resize_invalid(void)
+static void test_deque_reserve_invalid(void)
 {
     int temp = 0;
     int data[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -437,18 +437,18 @@ static void test_deque_resize_invalid(void)
     deque_t deque = deque_new(sizeof(int), len);
     
     TEST_ASSERT_EQUAL_INT(len, deque->capacity(deque));
-    TEST_ASSERT_FALSE(deque->resize(deque, 0));
-    TEST_ASSERT_FALSE(deque->resize(deque, -1));
+    TEST_ASSERT_FALSE(deque->reserve(deque, 0));
+    TEST_ASSERT_FALSE(deque->reserve(deque, -1));
 
     deque_free(&deque);
 }
 
-static void test_deque_resize_edge(void)
+static void test_deque_reserve_edge(void)
 {
     deque_t deque = deque_new(sizeof(int), 10);
 
     TEST_ASSERT_EQUAL_INT(10, deque->capacity(deque));
-    TEST_ASSERT_TRUE(deque->resize(deque, 10));
+    TEST_ASSERT_TRUE(deque->reserve(deque, 10));
     TEST_ASSERT_EQUAL_INT(10, deque->capacity(deque));
 
     deque_free(&deque);
@@ -715,9 +715,9 @@ void test_deque(void)
 
     RUN_TEST(test_deque_iter);
 
-    RUN_TEST(test_deque_resize);
-    RUN_TEST(test_deque_resize_invalid);
-    RUN_TEST(test_deque_resize_edge);
+    RUN_TEST(test_deque_reserve);
+    RUN_TEST(test_deque_reserve_invalid);
+    RUN_TEST(test_deque_reserve_edge);
 
     RUN_TEST(test_deque_dynamic);
 
