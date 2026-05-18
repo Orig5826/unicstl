@@ -183,6 +183,24 @@ void test_ustring_append(void)
     ustring_free(&str2);
 }
 
+void test_ustring_cmp(void)
+{
+    ustring_t str = ustring_new_fromcstr("unicstl");
+    TEST_ASSERT_TRUE(str->eq(str, uv("unicstl")));
+    TEST_ASSERT_TRUE(str->ne(str, uv("unicstl1")));
+
+    TEST_ASSERT_FALSE(str->eq(str, uv("")));
+    TEST_ASSERT_TRUE(str->ne(str, uv("")));
+
+    TEST_ASSERT_FALSE(str->eq(str, uv("unicstz")));
+    TEST_ASSERT_FALSE(str->ne(str, uv("unicstl")));
+
+    TEST_ASSERT_TRUE(str->le(str, uv("unicstz")));
+    TEST_ASSERT_TRUE(str->ge(str, uv("unicsta")));
+    TEST_ASSERT_TRUE(str->lt(str, uv("unicstz")));
+    TEST_ASSERT_TRUE(str->gt(str, uv("unicsta")));
+    ustring_free(&str);
+}
 
 void test_ustring(void)
 {
@@ -210,4 +228,6 @@ void test_ustring(void)
     RUN_TEST(test_ustring_strip);
 
     RUN_TEST(test_ustring_append);
+    
+    RUN_TEST(test_ustring_cmp);
 }

@@ -421,6 +421,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     self->search = darry_search;
 
     // -------------------- default --------------------
+    self->compare = compare_char;
     self->print_obj = default_print_obj;
 
     // -------------------- debug --------------------

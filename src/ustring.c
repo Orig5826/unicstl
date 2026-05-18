@@ -143,11 +143,11 @@ static bool ustring_get(struct _ustring *self, size_t index, char *c)
     return self->_alist->get(self->_alist, index, &c);
 }
 
-static char ustring_at(struct _ustring *self, size_t index)
+static const char* ustring_at(struct _ustring *self, size_t index)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    return *(char *)self->_alist->at(self->_alist, index);
+    return self->_alist->at(self->_alist, index);
 }
 
 bool ustring_iter_hasnext(struct _iterator *iter)
@@ -473,6 +473,60 @@ static bool ustring_strip_right(struct _ustring *self)
     return true;
 }
 
+int ustring_cmp(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    // size_t min = self->len(self) < v.len ? self->len(self) : v.len;
+    // for (size_t i = 0; i < min; i++)
+    // {
+    //     const char *a = (const char *)self->at(self, i);
+    //     if (*a != v.str[i])
+    //     {
+    //         return *(char*)self->at(self, i) - v.str[i];
+    //     }
+    // }
+    log_debug("self[%d]:%s, v.str[%d]:%s", self->len(self), self->at(self, 0), v.len, v.str);
+
+    size_t max = self->len(self) > v.len ? self->len(self) : v.len;
+    return strncmp(self->at(self, 0), v.str, max);
+}
+
+int ustring_eq(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) == 0;
+}
+
+int ustring_ne(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) != 0;
+}
+
+int ustring_lt(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) < 0;
+}
+
+int ustring_le(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) <= 0;
+}
+
+int ustring_gt(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) > 0;
+}
+
+int ustring_ge(struct _ustring *self, uview_t v)
+{
+    unicstl_assert(self != NULL);
+    return self->cmp(self, v) >= 0;
+}
+
 static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
 {
     unicstl_assert(self != NULL);
@@ -534,6 +588,14 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->strip_left = ustring_strip_left;
     self->strip_right = ustring_strip_right;
 
+    self->eq = ustring_eq;
+    self->ne = ustring_ne;
+    self->lt = ustring_lt;
+    self->le = ustring_le;
+    self->gt = ustring_gt;
+    self->ge = ustring_ge;
+    self->cmp = ustring_cmp;
+    
     // -------------------- default --------------------
     self->print_obj = uprint_char;
 

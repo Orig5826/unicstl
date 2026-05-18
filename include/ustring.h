@@ -30,9 +30,7 @@ struct _ustring
 {
     // -------------------- private --------------------
     arraylist_t _alist;
-
     bool is_view;
-
     bool _sorted;
 
     struct _iterator _iter;
@@ -40,9 +38,9 @@ struct _ustring
 
     // -------------------- public --------------------
     // char operations
-    bool (*set)(struct _ustring *self, size_t index, const char c); // O(1)
-    bool (*get)(struct _ustring *self, size_t index, char *c);      // O(1)
-    char (*at)(struct _ustring *self, size_t index);                // O(1)
+    bool (*set)(struct _ustring *self, size_t index, const char c);     // O(1)
+    bool (*get)(struct _ustring *self, size_t index, char *c);          // O(1)
+    const char* (*at)(struct _ustring *self, size_t index);             // O(1)
 
     // base
     bool (*reserve)(struct _ustring *self, size_t capacity);
@@ -108,13 +106,13 @@ struct _ustring
     bool (*format)(struct _ustring *self, const char *format);
 
     // compare
-    int (*eq)(struct _ustring *self, struct _ustring *other);
-    int (*ne)(struct _ustring *self, struct _ustring *other);
-    int (*lt)(struct _ustring *self, struct _ustring *other);
-    int (*le)(struct _ustring *self, struct _ustring *other);
-    int (*gt)(struct _ustring *self, struct _ustring *other);
-    int (*ge)(struct _ustring *self, struct _ustring *other);
-    int (*cmp)(struct _ustring *self, struct _ustring *other);
+    int (*eq)(struct _ustring *self, uview_t v);
+    int (*ne)(struct _ustring *self, uview_t v);
+    int (*lt)(struct _ustring *self, uview_t v);
+    int (*le)(struct _ustring *self, uview_t v);
+    int (*gt)(struct _ustring *self, uview_t v);
+    int (*ge)(struct _ustring *self, uview_t v);
+    int (*cmp)(struct _ustring *self, uview_t v);
 
     // iter
     iterator_t (*iter)(struct _ustring *self, linear_order_t order);
