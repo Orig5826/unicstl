@@ -181,6 +181,69 @@ static void test_darray_remove_invalid(void)
     darray_free(&darray);
 }
 
+
+static void test_darray_erase(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+    TEST_ASSERT_EQUAL_INT(len, darray->size(darray));
+    TEST_ASSERT_TRUE(darray->erase(darray, 1, 3));
+    TEST_ASSERT_EQUAL_INT(len-3, darray->size(darray));
+
+    TEST_ASSERT_TRUE(darray->get(darray, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(data[0], temp);
+    for (i = 1; i < len - 3; i++)
+    {
+        TEST_ASSERT_TRUE(darray->get(darray, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[3 + i], temp);
+    }
+
+    darray->clear(darray);
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+    TEST_ASSERT_TRUE(darray->erase(darray, 3, 100));
+    TEST_ASSERT_EQUAL_INT(3, darray->size(darray));
+    for (i = 0; i < 3; i++)
+    {
+        TEST_ASSERT_TRUE(darray->get(darray, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    TEST_ASSERT_FALSE(darray->get(darray, 3, &temp));
+
+    darray_free(&darray);
+}
+
+static void test_darray_erase_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    darray_t darray = darray_new(sizeof(int), len);
+    darray->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        darray->append(darray, &data[i]);
+    }
+    TEST_ASSERT_FALSE(darray->erase(darray, len, 3));
+    TEST_ASSERT_FALSE(darray->erase(darray, 2, 0));
+    darray_free(&darray);
+}
+
 static void test_darray_pop(void)
 {
     int temp = 0;
@@ -737,6 +800,9 @@ void test_darray(void)
 
     RUN_TEST(test_darray_remove);
     RUN_TEST(test_darray_remove_invalid);
+
+    RUN_TEST(test_darray_erase);
+    RUN_TEST(test_darray_erase_invalid);
 
     RUN_TEST(test_darray_pop);
 

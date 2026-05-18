@@ -17,98 +17,111 @@ static const char null_char = '\0';
 static size_t ustring_len(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->size(self->_darray) - 1;
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->size(self->_alist) - 1;
 }
 
 static size_t ustring_capacity(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->capacity(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->capacity(self->_alist);
 }
 
 static bool ustring_empty(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->empty(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->empty(self->_alist);
 }
 
 static bool ustring_full(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->full(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->full(self->_alist);
 }
 
 static bool ustring_clear(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->clear(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->clear(self->_alist);
 }
 
 static void ustring_destory(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    if (self->_darray != NULL)
+    if (self->_alist != NULL)
     {
-        darray_free(&self->_darray);
+        arraylist_free(&self->_alist);
     }
 }
 
 static void ustring_print(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    self->_darray->print_obj = self->print_obj;
-    self->_darray->print(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    self->_alist->print_obj = self->print_obj;
+    self->_alist->print(self->_alist);
 }
 
 static bool ustring_reserve(struct _ustring *self, size_t capacity)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->reserve(self->_darray, capacity);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->reserve(self->_alist, capacity);
+}
+
+static bool ustring_resize(struct _ustring *self, size_t size)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t alist = self->_alist;
+    if (!alist->resize(alist, size + 1))
+    {
+        false;
+    }
+    alist->set(alist, size, &null_char);
+    return true;
 }
 
 static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     return true;
 }
 
 static bool ustring_remove(struct _ustring *self, uview_t oldstr)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     return true;
 }
 
 static bool ustring_pop(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->pop(self->_darray, NULL);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->pop(self->_alist, NULL);
 }
 
 static bool ustring_append(struct _ustring *self, uview_t v)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-
-    // ustring_pop(self);
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t alist = self->_alist;
+    alist->pop(alist, NULL); // pop '\0' first
     for (size_t i = 0; i < v.len; i++)
     {
-        if (!self->_darray->append(self->_darray, &v.str[i]))
+        if (!alist->append(alist, &v.str[i]))
         {
             log_error("ustring_append error");
             return false;
         }
     }
-    if(!self->_darray->append(self->_darray, '\0'))
+    if (!alist->append(alist, &null_char))
     {
         log_error("append '\0' error");
         return false;
@@ -119,22 +132,22 @@ static bool ustring_append(struct _ustring *self, uview_t v)
 static bool ustring_set(struct _ustring *self, size_t index, const char c)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->set(self->_darray, index, &c);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->set(self->_alist, index, &c);
 }
 
 static bool ustring_get(struct _ustring *self, size_t index, char *c)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->get(self->_darray, index, &c);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->get(self->_alist, index, &c);
 }
 
 static char ustring_at(struct _ustring *self, size_t index)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return *(char *)self->_darray->at(self->_darray, index);
+    unicstl_assert(self->_alist != NULL);
+    return *(char *)self->_alist->at(self->_alist, index);
 }
 
 bool ustring_iter_hasnext(struct _iterator *iter)
@@ -177,7 +190,7 @@ const void *ustring_iter_next(struct _iterator *iter)
     {
         iter->_index = iter->_index - 1;
     }
-    return self->_darray->at(self->_darray, index);
+    return self->_alist->at(self->_alist, index);
 }
 
 iterator_t ustring_iter(struct _ustring *self, linear_order_t order)
@@ -217,31 +230,31 @@ static bool ustring_contains(struct _ustring *self, const void *obj)
 static bool darry_sort(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->sort(self->_darray);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->sort(self->_alist);
 }
 
 static size_t darry_search(struct _ustring *self, const void *obj)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->search(self->_darray, obj);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->search(self->_alist, obj);
 }
 
 static size_t darry_count(struct _ustring *self, const void *obj)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return self->_darray->count(self->_darray, obj);
+    unicstl_assert(self->_alist != NULL);
+    return self->_alist->count(self->_alist, obj);
 }
 
 bool ustring_isdigit(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isdigit(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isdigit(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -251,10 +264,10 @@ bool ustring_isdigit(struct _ustring *self)
 bool ustring_isalpha(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isalpha(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isalpha(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -265,10 +278,10 @@ bool ustring_isalpha(struct _ustring *self)
 bool ustring_isalnum(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isalnum(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isalnum(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -279,10 +292,10 @@ bool ustring_isalnum(struct _ustring *self)
 bool ustring_isspace(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isspace(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isspace(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -293,10 +306,10 @@ bool ustring_isspace(struct _ustring *self)
 bool ustring_islower(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!islower(*(char *)self->_darray->at(self->_darray, i)))
+        if (!islower(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -307,10 +320,10 @@ bool ustring_islower(struct _ustring *self)
 bool ustring_isupper(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isupper(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isupper(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -321,10 +334,10 @@ bool ustring_isupper(struct _ustring *self)
 bool ustring_iscntrl(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!iscntrl(*(char *)self->_darray->at(self->_darray, i)))
+        if (!iscntrl(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -335,10 +348,10 @@ bool ustring_iscntrl(struct _ustring *self)
 bool ustring_isprint(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isprint(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isprint(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -349,10 +362,10 @@ bool ustring_isprint(struct _ustring *self)
 bool ustring_ispunct(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!ispunct(*(char *)self->_darray->at(self->_darray, i)))
+        if (!ispunct(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -363,10 +376,10 @@ bool ustring_ispunct(struct _ustring *self)
 bool ustring_isgraph(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        if (!isgraph(*(char *)self->_darray->at(self->_darray, i)))
+        if (!isgraph(*(char *)self->_alist->at(self->_alist, i)))
         {
             return false;
         }
@@ -377,17 +390,18 @@ bool ustring_isgraph(struct _ustring *self)
 const char *ustring_cstr(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    return (const char *)self->_darray->obj;
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t alist = self->_alist;
+    return (const char *)alist->_darray->obj;
 }
 
 bool ustring_tolower(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        *(char *)self->_darray->at(self->_darray, i) = tolower(*(char *)self->_darray->at(self->_darray, i));
+        *(char *)self->_alist->at(self->_alist, i) = tolower(*(char *)self->_alist->at(self->_alist, i));
     }
     return true;
 }
@@ -395,10 +409,10 @@ bool ustring_tolower(struct _ustring *self)
 bool ustring_toupper(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
+    unicstl_assert(self->_alist != NULL);
     for (size_t i = 0; i < self->len(self); i++)
     {
-        *(char *)self->_darray->at(self->_darray, i) = toupper(*(char *)self->_darray->at(self->_darray, i));
+        *(char *)self->_alist->at(self->_alist, i) = toupper(*(char *)self->_alist->at(self->_alist, i));
     }
     return true;
 }
@@ -406,10 +420,10 @@ bool ustring_toupper(struct _ustring *self)
 bool ustring_reverse(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    darray_t da = self->_darray;
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t da = self->_alist;
     char temp = 0;
-    for (size_t i = 0; i < self->len(self)/2; i++)
+    for (size_t i = 0; i < self->len(self) / 2; i++)
     {
         size_t j = self->len(self) - i - 1;
         da->get(da, i, &temp);
@@ -421,66 +435,55 @@ bool ustring_reverse(struct _ustring *self)
 static bool ustring_strip(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    return self->strip_left(self) && self->strip_right(self);
+    return self->strip_right(self) && self->strip_left(self);
 }
 
 static bool ustring_strip_left(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    darray_t da = self->_darray;
-    for (size_t i = 0; i < da->size(da); i++)
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t da = self->_alist;
+    log_debug("strip_left: %ld", da->size(da));
+    size_t i = 0;
+    for (i = 0; i < da->size(da); i++)
     {
-        if (isspace(*(char *)da->at(da, 0)))
-        {
-            if(!da->remove(da, 0, NULL))
-            {
-                log_error("da->remove failed!");
-                return false;
-            }
-        }
-        else
+        if (!isspace(*(char *)da->at(da, i)))
         {
             break;
         }
     }
-    log_warn("TODO: optimize later");
+    da->erase(da, 0, i);
     return true;
 }
 
 static bool ustring_strip_right(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_darray != NULL);
-    darray_t da = self->_darray;
-    for (size_t i = self->len(self) - 1; i >= 0; i--)
+    unicstl_assert(self->_alist != NULL);
+    arraylist_t da = self->_alist;
+    size_t i = 0;
+    for (i = self->len(self) - 1; i >= 0; i--)
     {
-        if (isspace(*(char *)da->at(da, i)))
-        {
-            if(!da->remove(da, i, NULL))
-            {
-                log_error("da->remove failed!");
-                return false;
-            }
-        }
-        else
+        if (!isspace(*(char *)da->at(da, i)))
         {
             break;
         }
     }
-    log_warn("TODO: optimize later");
+    self->resize(self, i + 1);
     return true;
 }
 
-static bool ustring_init(struct _ustring *self, uview_t view)
+static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
 {
     unicstl_assert(self != NULL);
 
     // -------------------- private --------------------
     self->_sorted = false;
 
-    self->_darray = NULL;
+    self->_alist = NULL;
     self->_destory = ustring_destory;
+
+    self->is_view = is_view;
 
     // -------------------- public --------------------
     // kernel
@@ -494,6 +497,7 @@ static bool ustring_init(struct _ustring *self, uview_t view)
 
     // base
     self->reserve = ustring_reserve;
+    self->resize = ustring_resize;
     self->len = ustring_len;
     self->capacity = ustring_capacity;
     self->empty = ustring_empty;
@@ -537,21 +541,21 @@ static bool ustring_init(struct _ustring *self, uview_t view)
     self->print = ustring_print;
 
     // -------------------- malloc --------------------
-    self->_darray = darray_new(sizeof(char), view.len + 1);
-    if (self->_darray == NULL)
+    self->_alist = arraylist_new(sizeof(char), view.len + 1);
+    if (self->_alist == NULL)
     {
         log_warn("malloc darray failed!");
         return false;
     }
     for (size_t i = 0; i < view.len; i++)
     {
-        if(!self->_darray->append(self->_darray, &view.str[i]))
+        if (!self->_alist->append(self->_alist, &view.str[i]))
         {
             log_error("append failed!");
             return false;
         }
     }
-    if(!self->_darray->append(self->_darray, &null_char))
+    if (!self->_alist->append(self->_alist, &null_char))
     {
         log_error("append '\0' failed!");
         return false;
@@ -569,7 +573,7 @@ ustring_t ustring_new(uview_t view)
         return NULL;
     }
 
-    if (ustring_init(ustring, view) != true)
+    if (ustring_init(ustring, view, false) != true)
     {
         log_warn("ustring init failed!");
         unicstl_free(ustring);
@@ -589,4 +593,26 @@ void ustring_free(ustring_t *ustring)
         unicstl_free(*ustring);
         *ustring = NULL;
     }
+}
+
+ustring_t ustring_view(uview_t view)
+{
+    log_error("TODO: implement ustring_view()");
+    return NULL;
+
+    struct _ustring *ustring = NULL;
+    ustring = (struct _ustring *)unicstl_malloc(sizeof(struct _ustring));
+    if (ustring == NULL)
+    {
+        log_warn("ustring malloc failed!");
+        return NULL;
+    }
+
+    if (ustring_init(ustring, view, true) != true)
+    {
+        log_warn("ustring init failed!");
+        unicstl_free(ustring);
+        return NULL;
+    }
+    return ustring;
 }

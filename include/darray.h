@@ -35,6 +35,7 @@ struct _darray
     
     bool (*insert)(struct _darray *self, size_t index, const void *obj);    // O(n)
     bool (*remove)(struct _darray *self, size_t index, void *obj);          // O(n)
+    bool (*erase)(struct _darray *self, size_t index, size_t count);        // O(n)
 
     // -------------------- random access -------------------- 
     bool (*set)(struct _darray *self, size_t index, const void *obj);       // O(1)
@@ -43,7 +44,7 @@ struct _darray
 
     // base
     bool (*reserve)(struct _darray *self, size_t capacity);
-    bool (*resize)(struct _darray *self, size_t capacity);
+    bool (*resize)(struct _darray *self, size_t size);
     size_t (*size)(struct _darray *self);
     size_t (*capacity)(struct _darray *self);
     bool (*empty)(struct _darray *self);

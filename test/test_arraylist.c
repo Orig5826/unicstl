@@ -253,6 +253,68 @@ static void test_arraylist_remove_invalid(void)
     arraylist_free(&arraylist);
 }
 
+static void test_arraylist_erase(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_EQUAL_INT(len, arraylist->size(arraylist));
+    TEST_ASSERT_TRUE(arraylist->erase(arraylist, 1, 3));
+    TEST_ASSERT_EQUAL_INT(len-3, arraylist->size(arraylist));
+
+    TEST_ASSERT_TRUE(arraylist->get(arraylist, 0, &temp));
+    TEST_ASSERT_EQUAL_INT(data[0], temp);
+    for (i = 1; i < len - 3; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->get(arraylist, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[3 + i], temp);
+    }
+
+    arraylist->clear(arraylist);
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_TRUE(arraylist->erase(arraylist, 3, 100));
+    TEST_ASSERT_EQUAL_INT(3, arraylist->size(arraylist));
+    for (i = 0; i < 3; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->get(arraylist, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    TEST_ASSERT_FALSE(arraylist->get(arraylist, 3, &temp));
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_erase_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_FALSE(arraylist->erase(arraylist, len, 3));
+    TEST_ASSERT_FALSE(arraylist->erase(arraylist, 2, 0));
+    arraylist_free(&arraylist);
+}
+
 static void test_arraylist_pop(void)
 {
     int temp = 0;
@@ -581,6 +643,62 @@ static void test_arraylist_reserve_invalid(void)
     TEST_ASSERT_EQUAL_INT(len, arraylist->capacity(arraylist));
     TEST_ASSERT_FALSE(arraylist->reserve(arraylist, 0));
     TEST_ASSERT_FALSE(arraylist->reserve(arraylist, -1));
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_resize(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    for(i = 0; i < len; i++)
+    {
+        arraylist->append(arraylist, &data[i]);
+    }
+    TEST_ASSERT_EQUAL_INT(10, arraylist->size(arraylist));
+
+    TEST_ASSERT_TRUE(arraylist->resize(arraylist, 8));
+    TEST_ASSERT_EQUAL_INT(8, arraylist->size(arraylist));
+
+    // judge all data
+    TEST_ASSERT_TRUE(arraylist->resize(arraylist, 16));
+    for(i = 0; i < 8; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->get(arraylist, i, &temp));
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+    }
+    for(i = 8; i < 16; i++)
+    {
+        TEST_ASSERT_TRUE(arraylist->get(arraylist, i, &temp));
+        TEST_ASSERT_EQUAL_INT(0, temp);
+    }
+
+    // if new size > capacity, then resize capacity
+    TEST_ASSERT_TRUE(arraylist->resize(arraylist, 32));
+    TEST_ASSERT_EQUAL_INT(32, arraylist->size(arraylist));
+    TEST_ASSERT_GREATER_OR_EQUAL_INT(32, arraylist->capacity(arraylist));
+
+    arraylist_free(&arraylist);
+}
+
+static void test_arraylist_resize_invalid(void)
+{
+    int temp = 0;
+    int data[] = { 1,2,3,4,5,6,7,8,9,10 };
+    size_t len = sizeof(data) / sizeof(data[0]);
+    size_t i = 0;
+
+    arraylist_t arraylist = arraylist_new(sizeof(int), len);
+    arraylist->compare = compare_num;
+
+    // TEST_ASSERT_FALSE(arraylist->resize(arraylist, len+1));
+    TEST_ASSERT_FALSE(arraylist->resize(arraylist, -1));
 
     arraylist_free(&arraylist);
 }
@@ -1226,6 +1344,9 @@ void test_arraylist(void)
     RUN_TEST(test_arraylist_remove_negative);
     RUN_TEST(test_arraylist_remove_invalid);
 
+    RUN_TEST(test_arraylist_erase);
+    RUN_TEST(test_arraylist_erase_invalid);
+
     RUN_TEST(test_arraylist_pop);
 
     RUN_TEST(test_arraylist_get);
@@ -1241,6 +1362,9 @@ void test_arraylist(void)
 
     RUN_TEST(test_arraylist_reserve);
     RUN_TEST(test_arraylist_reserve_invalid);
+
+    RUN_TEST(test_arraylist_resize);
+    RUN_TEST(test_arraylist_resize_invalid);
 
     RUN_TEST(test_arraylist_index);    // index, search, contains
     RUN_TEST(test_arraylist_index_invalid);

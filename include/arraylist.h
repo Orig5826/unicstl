@@ -39,6 +39,7 @@ struct _arraylist
     
     bool (*insert)(struct _arraylist *self, ssize_t index, const void *obj);    // O(n)
     bool (*remove)(struct _arraylist *self, ssize_t index, void *obj);          // O(n)
+    bool (*erase)(struct _arraylist *self, ssize_t index, size_t count);        // O(n)
 
     // -------------------- random access -------------------- 
     bool (*set)(struct _arraylist *self, ssize_t index, const void *obj);       // O(1)
@@ -47,6 +48,7 @@ struct _arraylist
 
     // base
     bool (*reserve)(struct _arraylist *self, size_t capacity);
+    bool (*resize)(struct _arraylist *self, size_t size);
     size_t (*size)(struct _arraylist *self);
     size_t (*capacity)(struct _arraylist *self);
     bool (*empty)(struct _arraylist *self);

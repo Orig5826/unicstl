@@ -80,6 +80,13 @@ static bool arraylist_reserve(struct _arraylist *self, size_t capacity)
     return self->_darray->reserve(self->_darray, capacity);
 }
 
+static bool arraylist_resize(struct _arraylist *self, size_t size)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_darray != NULL);
+    return self->_darray->resize(self->_darray, size);
+}
+
 static bool arraylist_insert(struct _arraylist *self, ssize_t index, const void *obj)
 {
     unicstl_assert(self != NULL);
@@ -99,6 +106,14 @@ static bool arraylist_remove(struct _arraylist *self, ssize_t index, void *obj)
     unicstl_assert(self->_darray != NULL);
     index = calc_index(index, self->size(self));
     return self->_darray->remove(self->_darray, index, obj);
+}
+
+bool arraylist_erase(struct _arraylist *self, ssize_t index, size_t count)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_darray != NULL);
+    index = calc_index(index, self->size(self));
+    return self->_darray->erase(self->_darray, index, count);
 }
 
 static bool arraylist_append(struct _arraylist *self, const void *obj)
@@ -362,6 +377,7 @@ static bool arraylist_init(struct _arraylist *self, size_t obj_size, size_t capa
     // kernel
     self->insert = arraylist_insert;
     self->remove = arraylist_remove;
+    self->erase = arraylist_erase;
     self->append = arraylist_append;
     self->pop = arraylist_pop;
 
@@ -371,6 +387,7 @@ static bool arraylist_init(struct _arraylist *self, size_t obj_size, size_t capa
 
     // base
     self->reserve = arraylist_reserve;
+    self->resize = arraylist_resize;
     self->size = arraylist_size;
     self->capacity = arraylist_capacity;
     self->empty = arraylist_empty;

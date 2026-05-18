@@ -141,13 +141,48 @@ void test_ustring_isupper(void)
     ustring_free(&str);
 }
 
+void test_ustring_strip_right(void)
+{
+    ustring_t str = ustring_new(uv("  unicstl\r\n\t"));
+    TEST_ASSERT_EQUAL_INT(12, str->len(str));
+    str->strip_right(str);
+    TEST_ASSERT_EQUAL_STRING("  unicstl", str->cstr(str));
+    TEST_ASSERT_EQUAL_INT(9, str->len(str));
+    ustring_free(&str);
+}
+
+void test_ustring_strip_left(void)
+{
+    ustring_t str = ustring_new(uv("  unicstl\r\n\t"));
+    TEST_ASSERT_EQUAL_INT(12, str->len(str));
+    str->strip_left(str);
+    TEST_ASSERT_EQUAL_STRING("unicstl\r\n\t", str->cstr(str));
+    TEST_ASSERT_EQUAL_INT(10, str->len(str));
+    ustring_free(&str);
+}
+
 void test_ustring_strip(void)
 {
     ustring_t str = ustring_new(uv("  unicstl\r\n\t"));
+    TEST_ASSERT_EQUAL_INT(12, str->len(str));
     str->strip(str);
     TEST_ASSERT_EQUAL_STRING("unicstl", str->cstr(str));
+    TEST_ASSERT_EQUAL_INT(7, str->len(str));
     ustring_free(&str);
 }
+
+void test_ustring_append(void)
+{
+    ustring_t str = ustring_new_fromcstr("unicstl ");
+    ustring_t str2 = ustring_new_fromcstr("ustring");
+    size_t len = str->len(str);
+    size_t len2 = str2->len(str2);
+    TEST_ASSERT_TRUE(str->append(str, uvs(str2)));
+    TEST_ASSERT_EQUAL_INT(len + len2, str->len(str));
+    ustring_free(&str);
+    ustring_free(&str2);
+}
+
 
 void test_ustring(void)
 {
@@ -170,5 +205,9 @@ void test_ustring(void)
     RUN_TEST(test_ustring_islower);
     RUN_TEST(test_ustring_isupper);
 
+    RUN_TEST(test_ustring_strip_right);
+    RUN_TEST(test_ustring_strip_left);
     RUN_TEST(test_ustring_strip);
+
+    RUN_TEST(test_ustring_append);
 }

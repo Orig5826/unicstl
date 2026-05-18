@@ -164,6 +164,22 @@ static bool darray_remove(struct _darray *self, size_t index, void *obj)
     return true;
 }
 
+bool darray_erase(struct _darray *self, size_t index, size_t count)
+{
+    unicstl_assert(self != NULL);
+    if (index >= self->size(self) || count == 0)
+    {
+        return false;
+    }
+    if (count > self->size(self) - index)
+    {
+        count = self->size(self) - index;
+    }
+    obj_shift(self->obj, index, index + count, self->size(self) - (index + count), self->_obj_size);
+    self->_size -= count;
+    return true;
+}
+
 static bool darray_append(struct _darray *self, const void *obj)
 {
     return self->insert(self, self->size(self), obj);
@@ -378,6 +394,7 @@ static bool darray_init(struct _darray *self, size_t obj_size, size_t capacity)
     // kernel
     self->insert = darray_insert;
     self->remove = darray_remove;
+    self->erase = darray_erase;
     self->append = darray_append;
     self->pop = darray_pop;
     

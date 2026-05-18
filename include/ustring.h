@@ -14,6 +14,7 @@
 #include "unicstl_internal.h"
 #include "iterator.h"
 #include "darray.h"
+#include "arraylist.h"
 
 // clang-format off
 #define UVIEW_BUF_SIZE              64
@@ -28,7 +29,9 @@ typedef struct _uview
 struct _ustring
 {
     // -------------------- private --------------------
-    darray_t _darray;
+    arraylist_t _alist;
+
+    bool is_view;
 
     bool _sorted;
 
@@ -43,6 +46,7 @@ struct _ustring
 
     // base
     bool (*reserve)(struct _ustring *self, size_t capacity);
+    bool (*resize)(struct _ustring *self, size_t size);
     size_t (*len)(struct _ustring *self);
     size_t (*capacity)(struct _ustring *self);
     bool (*empty)(struct _ustring *self);
@@ -137,11 +141,12 @@ static inline uview_t uv(const char *cstr)
  */
 static inline uview_t uvs(struct _ustring *string)
 {
-    if (string == NULL || string->_darray == NULL || string->len(string) == 0)
+    if (string == NULL || string->_alist == NULL || string->len(string) == 0)
     {
         return (uview_t){NULL, 0};
     }
-    return (uview_t){string->_darray->obj, string->len(string)};
+    arraylist_t alist = string->_alist;
+    return (uview_t){alist->_darray->obj, string->len(string)};
 }
 
 /**
@@ -184,6 +189,8 @@ static inline uview_t uvf(double f)
 
 ustring_t ustring_new(uview_t view);
 void ustring_free(ustring_t *ustring);
+
+ustring_t ustring_view(uview_t view);
 
 #define ustring_new_fromcstr(cstr) ustring_new(uv(cstr))
 
