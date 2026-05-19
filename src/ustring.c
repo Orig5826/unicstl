@@ -25,7 +25,7 @@ static size_t ustring_capacity(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    return self->_alist->capacity(self->_alist);
+    return self->_alist->capacity(self->_alist) - 1;
 }
 
 static bool ustring_empty(struct _ustring *self)
@@ -62,8 +62,12 @@ static void ustring_print(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    self->_alist->print_obj = self->print_obj;
-    self->_alist->print(self->_alist);
+    // self->_alist->print_obj = self->print_obj;
+    log_debug("ustring_print: len = %d", self->len(self));
+    for (size_t i = 0; i < self->len(self); i++)
+    {
+        self->print_obj(self->at(self, i));
+    }
 }
 
 static bool ustring_reserve(struct _ustring *self, size_t capacity)
@@ -90,6 +94,49 @@ static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
+
+    size_t len_cur = self->len(self);
+    size_t len_sum = len_cur + v.len;
+
+    if (!self->resize(self, len_sum))
+    {
+        return false;
+    }
+
+    size_t left = len_cur - index;
+    size_t idx = 0;
+    char temp = 0;
+    for (size_t i = 0; i < left; i++)
+    {
+        idx = len_cur - 1 - i;
+        if (!self->get(self, idx, &temp))
+        {
+            log_error("get ustring[i] error");
+            return false;
+        }
+
+        idx = len_sum - 1 - i;
+        if (!self->set(self, idx, &temp))
+        {
+            log_error("get ustring[i-1] error");
+            return false;
+        }
+    }
+
+    for (size_t i = 0; i < v.len; i++)
+    {
+        if (!self->set(self, index + i, &v.str[i]))
+        {
+            log_error("ustring_insert error");
+            return false;
+        }
+    }
+
+    if (!self->set(self, len_sum, &null_char))
+    {
+        log_error("set '\0' error");
+        return false;
+    }
     return true;
 }
 
@@ -100,12 +147,12 @@ static bool ustring_remove(struct _ustring *self, uview_t oldstr)
     return true;
 }
 
-static bool ustring_pop(struct _ustring *self)
-{
-    unicstl_assert(self != NULL);
-    unicstl_assert(self->_alist != NULL);
-    return self->_alist->pop(self->_alist, NULL);
-}
+// static bool ustring_pop(struct _ustring *self)
+// {
+//     unicstl_assert(self != NULL);
+//     unicstl_assert(self->_alist != NULL);
+//     return self->_alist->pop(self->_alist, NULL);
+// }
 
 static bool ustring_append(struct _ustring *self, uview_t v)
 {
@@ -129,24 +176,56 @@ static bool ustring_append(struct _ustring *self, uview_t v)
     return true;
 }
 
-static bool ustring_set(struct _ustring *self, size_t index, const char c)
+static bool ustring_set(struct _ustring *self, ssize_t index, const char *ch)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    return self->_alist->set(self->_alist, index, &c);
+    if (index > (ssize_t)self->len(self) + 1)
+    {
+        log_error("size out of range");
+        return false;
+    }
+    if(index == self->len(self) + 1 && *ch != null_char)
+    {
+        log_error("!notice: the last char is not null_char");
+    }
+
+    if(index < 0)
+    {
+        index -= 1;
+    }
+    return self->_alist->set(self->_alist, index, ch);
 }
 
-static bool ustring_get(struct _ustring *self, size_t index, char *c)
+static bool ustring_get(struct _ustring *self, ssize_t index, char *ch)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    return self->_alist->get(self->_alist, index, &c);
+    if (index > (ssize_t)self->len(self))
+    {
+        log_error("size out of range");
+        return false;
+    }
+    if(index < 0)
+    {
+        index -= 1;
+    }
+    return self->_alist->get(self->_alist, index, ch);
 }
 
-static const char* ustring_at(struct _ustring *self, size_t index)
+static const char *ustring_at(struct _ustring *self, ssize_t index)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
+    if (index > (ssize_t)self->len(self))
+    {
+        log_error("size out of range");
+        return false;
+    }
+    if(index < 0)
+    {
+        index -= 1;
+    }
     return self->_alist->at(self->_alist, index);
 }
 
@@ -261,6 +340,21 @@ bool ustring_isdigit(struct _ustring *self)
     }
     return true;
 }
+
+bool ustring_isxdigit(struct _ustring *self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    for (size_t i = 0; i < self->len(self); i++)
+    {
+        if (!isxdigit(*(char *)self->_alist->at(self->_alist, i)))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool ustring_isalpha(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
@@ -391,8 +485,7 @@ const char *ustring_cstr(struct _ustring *self)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
-    arraylist_t alist = self->_alist;
-    return (const char *)alist->_darray->obj;
+    return (const char *)self->at(self, 0);
 }
 
 bool ustring_tolower(struct _ustring *self)
@@ -428,7 +521,7 @@ bool ustring_reverse(struct _ustring *self)
         size_t j = self->len(self) - i - 1;
         da->get(da, i, &temp);
         da->set(da, i, da->at(da, j));
-        da->set(da, j, da->at(da, i));
+        da->set(da, j, &temp);
     }
 }
 
@@ -569,6 +662,7 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
 
     // string
     self->isdigit = ustring_isdigit;
+    self->isxdigit = ustring_isxdigit;
     self->isalpha = ustring_isalpha;
     self->isalnum = ustring_isalnum;
     self->isspace = ustring_isspace;
@@ -578,6 +672,8 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->isprint = ustring_isprint;
     self->ispunct = ustring_ispunct;
     self->isgraph = ustring_isgraph;
+
+    // format
     self->cstr = ustring_cstr;
     self->tolower = ustring_tolower;
     self->toupper = ustring_toupper;
@@ -595,7 +691,7 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->gt = ustring_gt;
     self->ge = ustring_ge;
     self->cmp = ustring_cmp;
-    
+
     // -------------------- default --------------------
     self->print_obj = uprint_char;
 

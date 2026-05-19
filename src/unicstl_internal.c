@@ -9,6 +9,7 @@
  *
  */
 #include "unicstl_internal.h"
+#include <ctype.h>
 
 const char *unicstl_version(void)
 {
@@ -52,8 +53,10 @@ size_t unicstl_new_capacity(size_t capacity)
     {                                                      \
         const type num1 = *(const type *)obj1;             \
         const type num2 = *(const type *)obj2;             \
-        if (num1 < num2) return -1;                        \
-        if (num1 > num2) return 1;                         \
+        if (num1 < num2)                                   \
+            return -1;                                     \
+        if (num1 > num2)                                   \
+            return 1;                                      \
         return 0;                                          \
     }
 
@@ -99,7 +102,15 @@ int compare_string(const void *obj1, const void *obj2)
     return strcmp(*(const char **)obj1, *(const char **)obj2);
 }
 
-void uprint_char(const void* obj)
+void uprint_char(const void *obj)
 {
-    printf("%c", *(char*)obj);
+    uint8_t ch = *(uint8_t *)obj;
+    if (isgraph(ch) || isspace(ch))
+    {
+        putchar(ch);
+    }
+    else
+    {
+        printf("\\x%02x", ch);
+    }
 }

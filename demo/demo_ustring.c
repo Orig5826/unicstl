@@ -20,7 +20,7 @@ void demo_ustring(void)
     printf("\n@len=%d\n", str->len(str));
     str->print(str);
 
-    str->append(str, uvc('#'));
+    str->append(str, uvch('#'));
     printf("\n@len=%d\n", str->len(str));
     str->print(str);
 

@@ -20,10 +20,20 @@
 #define UVIEW_BUF_SIZE              64
 // clang-format on
 
+typedef enum{
+    UV_CSTR,
+    UV_CHAR,
+    UV_USTRING,
+    UV_INT,
+    UV_LONG,
+    UV_DOBULE
+}uv_type;
+
 typedef struct _uview
 {
     const char *str;
     size_t len;
+    uv_type type;
 } uview_t;
 
 struct _ustring
@@ -38,9 +48,9 @@ struct _ustring
 
     // -------------------- public --------------------
     // char operations
-    bool (*set)(struct _ustring *self, size_t index, const char c);     // O(1)
-    bool (*get)(struct _ustring *self, size_t index, char *c);          // O(1)
-    const char* (*at)(struct _ustring *self, size_t index);             // O(1)
+    bool (*set)(struct _ustring *self, ssize_t index, const char* ch);   // O(1)
+    bool (*get)(struct _ustring *self, ssize_t index, char *ch);         // O(1)
+    const char* (*at)(struct _ustring *self, ssize_t index);             // O(1)
 
     // base
     bool (*reserve)(struct _ustring *self, size_t capacity);
@@ -61,31 +71,31 @@ struct _ustring
     size_t (*count)(struct _ustring *self, const void *obj);  // O(nlogn) if sorted; O(n) if not sorted
 
     // -------------------- uview --------------------
-    // append and remove
-    bool (*append)(struct _ustring *self, uview_t v);
-    // bool (*pop)(struct _ustring *self);
+    // append 
+    bool (*append)(struct _ustring *self, uview_t newstr);
+    bool (*insert)(struct _ustring *self, size_t index, uview_t newstr);
+    
+    // find and ...
+    ssize_t (*find)(struct _ustring *str, uview_t v);
+    bool (*replace)(struct _ustring *self, uview_t oldstr, uview_t newstr);
     bool (*remove)(struct _ustring *self, uview_t oldstr);
-    bool (*insert)(struct _ustring *self, size_t index, uview_t v);
 
     // split
+    struct _ustring *(*substr)(struct _ustring *self, size_t start, size_t end);
     bool (*split)(struct _ustring *self, uview_t delim);
     bool (*splitlines)(struct _ustring *self);
     bool (*join)(struct _ustring *self, uview_t delim);
 
-    // substring
-    ssize_t (*find)(struct _ustring *str, uview_t v);
-    struct _ustring *(*substr)(struct _ustring *self, size_t start, size_t end);
-    bool (*replace)(struct _ustring *self, uview_t oldstr, uview_t newstr);
-
     // judge
     bool (*isdigit)(struct _ustring *self);
-    bool (*isalpha)(struct _ustring *self);
+    bool (*isxdigit)(struct _ustring *self);
     bool (*isalnum)(struct _ustring *self);
+    bool (*isalpha)(struct _ustring *self);
     bool (*isspace)(struct _ustring *self);
     bool (*islower)(struct _ustring *self);
     bool (*isupper)(struct _ustring *self);
-    bool (*iscntrl)(struct _ustring *self);
     bool (*isprint)(struct _ustring *self);
+    bool (*iscntrl)(struct _ustring *self);
     bool (*ispunct)(struct _ustring *self);
     bool (*isgraph)(struct _ustring *self);
 
@@ -131,7 +141,7 @@ typedef struct _ustring *ustring_t;
  */
 static inline uview_t uv(const char *cstr)
 {
-    return (uview_t){cstr, cstr ? strlen(cstr) : 0};
+    return (uview_t){cstr, cstr ? strlen(cstr) : 0, UV_CSTR};
 }
 
 /**
@@ -144,15 +154,15 @@ static inline uview_t uvs(struct _ustring *string)
         return (uview_t){NULL, 0};
     }
     arraylist_t alist = string->_alist;
-    return (uview_t){alist->_darray->obj, string->len(string)};
+    return (uview_t){alist->_darray->obj, string->len(string), UV_USTRING};
 }
 
 /**
  * @brief create a uview from char
  */
-static inline uview_t uvc(const char c)
+static inline uview_t uvch(const char c)
 {
-    return (uview_t){&c, 1};
+    return (uview_t){&c, 1, UV_CHAR};
 }
 
 /**
@@ -162,7 +172,7 @@ static inline uview_t uvi(int i)
 {
     static char buf[UVIEW_BUF_SIZE + 1] = {0};
     snprintf(buf, sizeof(buf), "%d", i);
-    return uv(buf);
+    return (uview_t){buf, strlen(buf), UV_INT};
 }
 
 /**
@@ -172,7 +182,7 @@ static inline uview_t uvl(long l)
 {
     static char buf[UVIEW_BUF_SIZE + 1] = {0};
     snprintf(buf, sizeof(buf), "%ld", l);
-    return uv(buf);
+    return (uview_t){buf, strlen(buf), UV_LONG};
 }
 
 /**
@@ -182,7 +192,7 @@ static inline uview_t uvf(double f)
 {
     static char buf[UVIEW_BUF_SIZE + 1] = {0};
     snprintf(buf, sizeof(buf), "%f", f);
-    return uv(buf);
+    return (uview_t){buf, strlen(buf), UV_DOBULE};
 }
 
 ustring_t ustring_new(uview_t view);

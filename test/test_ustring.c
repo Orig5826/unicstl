@@ -14,8 +14,8 @@ void test_ustring_new(void)
 {
     ustring_t str = ustring_new(uv("hello"));
     TEST_ASSERT_EQUAL_INT(5, str->len(str));
-    TEST_ASSERT_EQUAL_INT(6, str->capacity(str));
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "hello");
+    TEST_ASSERT_EQUAL_INT(5, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING("hello", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -23,8 +23,8 @@ void test_ustring_new_lazy(void)
 {
     ustring_t str = ustring_new(uv(""));
     TEST_ASSERT_EQUAL_INT(0, str->len(str));
-    TEST_ASSERT_EQUAL_INT(1, str->capacity(str));
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "");
+    TEST_ASSERT_EQUAL_INT(0, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING("", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -33,8 +33,8 @@ void test_ustring_new_int(void)
     const int num = 1234567890;
     ustring_t str = ustring_new(uvi(num));
     TEST_ASSERT_EQUAL_INT(10, str->len(str));
-    TEST_ASSERT_EQUAL_INT(11, str->capacity(str));
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "1234567890");
+    TEST_ASSERT_EQUAL_INT(10, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING("1234567890", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -43,16 +43,66 @@ void test_ustring_new_float(void)
     const double num = 123.456789;
     ustring_t str = ustring_new(uvf(num));
     TEST_ASSERT_EQUAL_INT(10, str->len(str));
-    TEST_ASSERT_EQUAL_INT(11, str->capacity(str));
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "123.456789");
+    TEST_ASSERT_EQUAL_INT(10, str->capacity(str));
+    TEST_ASSERT_EQUAL_STRING("123.456789", str->cstr(str));
     ustring_free(&str);
 }
+
+void test_ustring_get(void)
+{
+    ustring_t str = ustring_new(uv("hello"));
+    TEST_ASSERT_EQUAL_INT(5, str->len(str));
+
+    char ch = 0;
+    TEST_ASSERT_TRUE(str->get(str, 0, &ch));
+    TEST_ASSERT_EQUAL_CHAR('h', ch);
+
+    TEST_ASSERT_TRUE(str->get(str, 5, &ch));
+    TEST_ASSERT_EQUAL_CHAR('\0', ch);
+
+    TEST_ASSERT_TRUE(str->get(str, -1, &ch));
+    TEST_ASSERT_EQUAL_CHAR('o', ch);
+
+    ustring_free(&str);
+}
+
+void test_ustring_at(void)
+{
+    ustring_t str = ustring_new(uv("hello"));
+    TEST_ASSERT_EQUAL_INT(5, str->len(str));
+
+    TEST_ASSERT_EQUAL_CHAR('h', *(char *)str->at(str, 0));
+    TEST_ASSERT_EQUAL_CHAR('\0', *(char *)str->at(str, 5));
+    TEST_ASSERT_EQUAL_CHAR('o', *(char *)str->at(str, -1));
+
+    ustring_free(&str);
+}
+
+void test_ustring_set(void)
+{
+    ustring_t str = ustring_new(uv("hello"));
+    TEST_ASSERT_EQUAL_INT(5, str->len(str));
+
+    char ch = '1';
+    TEST_ASSERT_TRUE(str->set(str, 0, &ch));
+    TEST_ASSERT_EQUAL_CHAR('1', *(char *)str->at(str, 0));
+
+    ch = '5';
+    TEST_ASSERT_TRUE(str->set(str, 5, &ch));
+    TEST_ASSERT_EQUAL_CHAR('5', *(char *)str->at(str, 5));
+
+    TEST_ASSERT_TRUE(str->set(str, -1, &ch));
+    TEST_ASSERT_EQUAL_CHAR('5', *(char *)str->at(str, -1));
+
+    ustring_free(&str);
+}
+
 
 void test_ustring_tolower(void)
 {
     ustring_t str = ustring_new(uv("HELLO wolrD"));
     str->tolower(str);
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "hello wolrd");
+    TEST_ASSERT_EQUAL_STRING("hello wolrd", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -60,7 +110,15 @@ void test_ustring_toupper(void)
 {
     ustring_t str = ustring_new(uv("hello"));
     str->toupper(str);
-    TEST_ASSERT_EQUAL_STRING(str->cstr(str), "HELLO");
+    TEST_ASSERT_EQUAL_STRING("HELLO",str->cstr(str));
+    ustring_free(&str);
+}
+
+void test_ustring_reverse(void)
+{
+    ustring_t str = ustring_new(uv("hello"));
+    str->reverse(str);
+    TEST_ASSERT_EQUAL_STRING("olleh", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -94,6 +152,17 @@ void test_ustring_isdigit(void)
 
     str = ustring_new(uv("1234567890"));
     TEST_ASSERT_TRUE(str->isdigit(str));
+    ustring_free(&str);
+}
+
+void test_ustring_isxdigit(void)
+{
+    ustring_t str = ustring_new(uv("GHgh"));
+    TEST_ASSERT_FALSE(str->isxdigit(str));
+    ustring_free(&str);
+
+    str = ustring_new(uv("ABCDEF1234567890abcdef"));
+    TEST_ASSERT_TRUE(str->isxdigit(str));
     ustring_free(&str);
 }
 
@@ -141,6 +210,39 @@ void test_ustring_isupper(void)
     ustring_free(&str);
 }
 
+void test_ustring_iscntrl(void)
+{
+    ustring_t str = ustring_new(uv("\x01\x02\x03\t\b\n"));
+    TEST_ASSERT_TRUE(str->iscntrl(str));
+    ustring_free(&str);
+
+    str = ustring_new(uv("@#$#*"));
+    TEST_ASSERT_FALSE(str->iscntrl(str));
+    ustring_free(&str);
+}
+
+void test_ustring_ispunct(void)
+{
+    ustring_t str = ustring_new(uv("unicstl"));
+    TEST_ASSERT_FALSE(str->ispunct(str));
+    ustring_free(&str);
+
+    str = ustring_new(uv(",.;:?!"));
+    TEST_ASSERT_TRUE(str->ispunct(str));
+    ustring_free(&str);
+}
+
+void test_ustring_isgrach(void)
+{
+    ustring_t str = ustring_new(uv("\1\2\0"));
+    TEST_ASSERT_FALSE(str->isgraph(str));
+    ustring_free(&str);
+
+    str = ustring_new(uv("unicstl123*&#@"));
+    TEST_ASSERT_TRUE(str->isgraph(str));
+    ustring_free(&str);
+}
+
 void test_ustring_strip_right(void)
 {
     ustring_t str = ustring_new(uv("  unicstl\r\n\t"));
@@ -177,8 +279,23 @@ void test_ustring_append(void)
     ustring_t str2 = ustring_new_fromcstr("ustring");
     size_t len = str->len(str);
     size_t len2 = str2->len(str2);
+
     TEST_ASSERT_TRUE(str->append(str, uvs(str2)));
     TEST_ASSERT_EQUAL_INT(len + len2, str->len(str));
+    ustring_free(&str);
+    ustring_free(&str2);
+}
+
+void test_ustring_insert(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello wolrd");
+    ustring_t str2 = ustring_new_fromcstr(" unicstl");
+    size_t len = str->len(str);
+    size_t len2 = str2->len(str2);
+
+    TEST_ASSERT_TRUE(str->insert(str, 5, uvs(str2)));
+    TEST_ASSERT_EQUAL_INT(len + len2, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("hello unicstl wolrd", str->cstr(str));
     ustring_free(&str);
     ustring_free(&str2);
 }
@@ -212,22 +329,32 @@ void test_ustring(void)
     RUN_TEST(test_ustring_new_int);
     RUN_TEST(test_ustring_new_float);
 
-    RUN_TEST(test_ustring_tolower);
-    RUN_TEST(test_ustring_toupper);
+    RUN_TEST(test_ustring_get);
+    RUN_TEST(test_ustring_at);
+    RUN_TEST(test_ustring_set);
 
-    RUN_TEST(test_ustring_isalpha);
-    RUN_TEST(test_ustring_isalnum);
     RUN_TEST(test_ustring_isdigit);
+    RUN_TEST(test_ustring_isxdigit);
+    RUN_TEST(test_ustring_isalnum);
+    RUN_TEST(test_ustring_isalpha);
     RUN_TEST(test_ustring_isprint);
     RUN_TEST(test_ustring_isspace);
     RUN_TEST(test_ustring_islower);
     RUN_TEST(test_ustring_isupper);
+    RUN_TEST(test_ustring_iscntrl);
+    RUN_TEST(test_ustring_ispunct);
+    RUN_TEST(test_ustring_isgrach);
+
+    RUN_TEST(test_ustring_tolower);
+    RUN_TEST(test_ustring_toupper);
+    RUN_TEST(test_ustring_reverse);
 
     RUN_TEST(test_ustring_strip_right);
     RUN_TEST(test_ustring_strip_left);
     RUN_TEST(test_ustring_strip);
 
     RUN_TEST(test_ustring_append);
+    RUN_TEST(test_ustring_insert);
     
     RUN_TEST(test_ustring_cmp);
 }
