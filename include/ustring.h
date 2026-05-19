@@ -21,6 +21,7 @@
 // clang-format on
 
 typedef enum{
+    UV_NONE = 0,
     UV_CSTR,
     UV_CHAR,
     UV_USTRING,
@@ -61,30 +62,28 @@ struct _ustring
     bool (*full)(struct _ustring *self);
     bool (*clear)(struct _ustring *self);
 
-    // sort and search
-    size_t (*index)(struct _ustring *self, const void *obj);  // O(n) return (size_t)-1 if not found
-    bool (*contains)(struct _ustring *self, const void *obj); // O(n)
-
-    bool (*sort)(struct _ustring *self);                      // O(nlogn)
-    size_t (*search)(struct _ustring *self, const void *obj); // O(n) if not sorted; O(logn) if sorted
-                                                              // return leftmost matched index; return (size_t)-1 if not found
-    size_t (*count)(struct _ustring *self, const void *obj);  // O(nlogn) if sorted; O(n) if not sorted
-
     // -------------------- uview --------------------
+    // erase
+    bool (*erase)(struct _ustring *self, ssize_t index, size_t count);
+    
     // append 
     bool (*append)(struct _ustring *self, uview_t newstr);
-    bool (*insert)(struct _ustring *self, size_t index, uview_t newstr);
+    bool (*insert)(struct _ustring *self, ssize_t index, uview_t newstr);
     
     // find and ...
-    ssize_t (*find)(struct _ustring *str, uview_t v);
+    uview_t (*find)(struct _ustring *self, uview_t v);
     bool (*replace)(struct _ustring *self, uview_t oldstr, uview_t newstr);
     bool (*remove)(struct _ustring *self, uview_t oldstr);
 
+    size_t (*index)(struct _ustring *self, uview_t uvstr);
+    bool (*contains)(struct _ustring *self, uview_t uvstr);
+    size_t (*count)(struct _ustring *self, uview_t uvstr);
+
     // split
-    struct _ustring *(*substr)(struct _ustring *self, size_t start, size_t end);
-    bool (*split)(struct _ustring *self, uview_t delim);
-    bool (*splitlines)(struct _ustring *self);
-    bool (*join)(struct _ustring *self, uview_t delim);
+    struct _ustring *(*substr)(struct _ustring *self, ssize_t start, ssize_t end);
+    // bool (*split)(struct _ustring *self, uview_t delim);
+    // bool (*splitlines)(struct _ustring *self);
+    // bool (*join)(struct _ustring *self, uview_t delim);
 
     // judge
     bool (*isdigit)(struct _ustring *self);
@@ -113,7 +112,6 @@ struct _ustring
     bool (*ljust)(struct _ustring *self, size_t width);
     bool (*rjust)(struct _ustring *self, size_t width);
     bool (*center)(struct _ustring *self, size_t width);
-    bool (*format)(struct _ustring *self, const char *format);
 
     // compare
     int (*eq)(struct _ustring *self, uview_t v);

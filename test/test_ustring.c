@@ -100,9 +100,9 @@ void test_ustring_set(void)
 
 void test_ustring_tolower(void)
 {
-    ustring_t str = ustring_new(uv("HELLO wolrD"));
+    ustring_t str = ustring_new(uv("HELLO worlD"));
     str->tolower(str);
-    TEST_ASSERT_EQUAL_STRING("hello wolrd", str->cstr(str));
+    TEST_ASSERT_EQUAL_STRING("hello world", str->cstr(str));
     ustring_free(&str);
 }
 
@@ -273,6 +273,48 @@ void test_ustring_strip(void)
     ustring_free(&str);
 }
 
+void test_ustring_ljust(void)
+{
+    ustring_t str = ustring_new(uv("unicstl"));
+    TEST_ASSERT_EQUAL_INT(7, str->len(str));
+    TEST_ASSERT_TRUE(str->ljust(str, 16));
+    TEST_ASSERT_EQUAL_INT(16, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("unicstl         ", str->cstr(str));
+    ustring_free(&str);
+}
+
+void test_ustring_rjust(void)
+{
+    ustring_t str = ustring_new(uv("unicstl"));
+    TEST_ASSERT_EQUAL_INT(7, str->len(str));
+    TEST_ASSERT_TRUE(str->rjust(str, 16));
+    TEST_ASSERT_EQUAL_INT(16, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("         unicstl", str->cstr(str));
+    ustring_free(&str);
+}
+
+void test_ustring_center(void)
+{
+    ustring_t str = ustring_new(uv("unicstl"));
+    TEST_ASSERT_EQUAL_INT(7, str->len(str));
+    TEST_ASSERT_TRUE(str->center(str, 16));
+    TEST_ASSERT_EQUAL_INT(16, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("    unicstl     ", str->cstr(str));
+    ustring_free(&str);
+}
+
+void test_ustring_erase(void)
+{
+    log_info("start");
+    ustring_t str = ustring_new_fromcstr("hello world");
+    TEST_ASSERT_EQUAL_INT(11, str->len(str));
+    TEST_ASSERT_TRUE(str->erase(str, 2, 7));
+    TEST_ASSERT_EQUAL_INT(4, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("held", str->cstr(str));
+    ustring_free(&str);
+    log_info("end");
+}
+
 void test_ustring_append(void)
 {
     ustring_t str = ustring_new_fromcstr("unicstl ");
@@ -288,16 +330,57 @@ void test_ustring_append(void)
 
 void test_ustring_insert(void)
 {
-    ustring_t str = ustring_new_fromcstr("hello wolrd");
+    ustring_t str = ustring_new_fromcstr("hello world");
     ustring_t str2 = ustring_new_fromcstr(" unicstl");
     size_t len = str->len(str);
     size_t len2 = str2->len(str2);
 
     TEST_ASSERT_TRUE(str->insert(str, 5, uvs(str2)));
     TEST_ASSERT_EQUAL_INT(len + len2, str->len(str));
-    TEST_ASSERT_EQUAL_STRING("hello unicstl wolrd", str->cstr(str));
+    TEST_ASSERT_EQUAL_STRING("hello unicstl world", str->cstr(str));
     ustring_free(&str);
     ustring_free(&str2);
+
+    str = ustring_new_fromcstr("hello world");
+    TEST_ASSERT_TRUE(str->insert(str, 0, uv("unicstl ")));
+    TEST_ASSERT_EQUAL_INT(len + 8, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("unicstl hello world", str->cstr(str));
+    ustring_free(&str);
+    log_info("end");
+}
+
+void test_ustring_find(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world");
+    ustring_t str2 = ustring_new_fromcstr("world");
+    uview_t v = str->find(str, uvs(str2));
+    TEST_ASSERT_EQUAL_INT(5, v.len);
+    TEST_ASSERT_EQUAL_STRING("world", v.str);
+
+    v = str->find(str, uv("llo"));
+    TEST_ASSERT_EQUAL_INT(3, v.len);
+    // TEST_ASSERT_EQUAL_STRING("llo", v.str);  // change test case
+    TEST_ASSERT_EQUAL_MEMORY("llo", v.str, 3);  // is ok!
+
+    ustring_free(&str);
+    ustring_free(&str2);
+}
+
+void test_ustring_remove(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world");
+    TEST_ASSERT_TRUE(str->remove(str, uv("llo wor")));
+    TEST_ASSERT_EQUAL_INT(4, str->len(str));
+    TEST_ASSERT_EQUAL_STRING("held", str->cstr(str));
+    ustring_free(&str);
+}
+
+void test_ustring_replace(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world!");
+    TEST_ASSERT_TRUE(str->replace(str, uv("world"), uv("unicstl")));
+    TEST_ASSERT_EQUAL_STRING("hello unicstl!", str->cstr(str));
+    ustring_free(&str);
 }
 
 void test_ustring_cmp(void)
@@ -316,6 +399,34 @@ void test_ustring_cmp(void)
     TEST_ASSERT_TRUE(str->ge(str, uv("unicsta")));
     TEST_ASSERT_TRUE(str->lt(str, uv("unicstz")));
     TEST_ASSERT_TRUE(str->gt(str, uv("unicsta")));
+    ustring_free(&str);
+}
+
+void test_ustring_substr(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world");
+    ustring_t substr = str->substr(str, 6, 10);
+    TEST_ASSERT_EQUAL_STRING("world", substr->cstr(substr));
+    ustring_free(&substr);
+    ustring_free(&str);
+}
+
+void test_ustring_index(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world");
+    TEST_ASSERT_EQUAL_INT(2, str->index(str, uv("l")));
+    TEST_ASSERT_EQUAL_INT(6, str->index(str, uv("wor")));
+
+    TEST_ASSERT_TRUE(str->contains(str, uv("l")));
+    TEST_ASSERT_TRUE(str->contains(str, uv("wor")));
+    ustring_free(&str);
+}
+
+void test_ustring_count(void)
+{
+    ustring_t str = ustring_new_fromcstr("hello world");
+    TEST_ASSERT_EQUAL_INT(3, str->count(str, uv("l")));
+    TEST_ASSERT_EQUAL_INT(1, str->count(str, uv("ll")));
     ustring_free(&str);
 }
 
@@ -352,9 +463,21 @@ void test_ustring(void)
     RUN_TEST(test_ustring_strip_right);
     RUN_TEST(test_ustring_strip_left);
     RUN_TEST(test_ustring_strip);
+    RUN_TEST(test_ustring_ljust);
+    RUN_TEST(test_ustring_rjust);
+    RUN_TEST(test_ustring_center);
 
+    RUN_TEST(test_ustring_erase);
     RUN_TEST(test_ustring_append);
     RUN_TEST(test_ustring_insert);
-    
+
+    RUN_TEST(test_ustring_find);
+    RUN_TEST(test_ustring_remove);
+    RUN_TEST(test_ustring_replace);
+
     RUN_TEST(test_ustring_cmp);
+
+    RUN_TEST(test_ustring_substr);
+    RUN_TEST(test_ustring_index);
+    RUN_TEST(test_ustring_count);
 }

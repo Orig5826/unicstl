@@ -171,7 +171,7 @@ bool darray_erase(struct _darray *self, size_t index, size_t count)
     {
         return false;
     }
-    if (count > self->size(self) - index)
+    if (index + count > self->size(self))
     {
         count = self->size(self) - index;
     }

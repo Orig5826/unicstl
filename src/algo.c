@@ -128,7 +128,6 @@ bool counting_sort(void* base, size_t count, size_t obj_size)
     return false;
 }
 
-
 int linear_search(const void* key, const void* base, size_t count, size_t obj_size, compare_fun_t cmp)
 {
     if (key == NULL)
@@ -146,14 +145,22 @@ int linear_search(const void* key, const void* base, size_t count, size_t obj_si
     return -1;
 }
 
-// 2. 二分查找（默认左边界）
 int binary_search(const void* key, const void* base, size_t count, size_t obj_size, compare_fun_t cmp)
 {
 
 }
 
-// 3. 二分找右边界：右边界
 int binary_search_right(const void* key, const void* base, size_t count, size_t obj_size, compare_fun_t cmp)
+{
+
+}
+
+int brute_find(const void* key, size_t key_count, const void* base, size_t base_count, size_t obj_size, compare_fun_t cmp)
+{
+
+}
+
+int kmp_find(const void* key, size_t key_count, const void* base, size_t base_count, size_t obj_size, compare_fun_t cmp)
 {
 
 }

@@ -13,6 +13,7 @@
 #include <ctype.h>
 
 static const char null_char = '\0';
+static const char space_char = ' ';
 
 static size_t ustring_len(struct _ustring *self)
 {
@@ -90,7 +91,25 @@ static bool ustring_resize(struct _ustring *self, size_t size)
     return true;
 }
 
-static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
+static bool ustring_erase(struct _ustring *self, ssize_t index, size_t count)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    log_debug("erase start");
+    if(index >= (ssize_t)self->len(self))
+    {
+        log_error("index or count error");
+        return false;
+    }
+    if(index + count > (ssize_t)self->len(self))
+    {
+        count = self->len(self) - index;
+    }
+    log_debug("index = %d, count = %d", index, count);
+    return self->_alist->erase(self->_alist, index, count);
+}
+
+static bool ustring_insert(struct _ustring *self, ssize_t index, uview_t v)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
@@ -100,30 +119,36 @@ static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
 
     if (!self->resize(self, len_sum))
     {
+        log_error("resize error");
         return false;
     }
 
+    log_debug("insert str: %s", v.str);
+
     size_t left = len_cur - index;
-    size_t idx = 0;
+    ssize_t idx = 0;
     char temp = 0;
     for (size_t i = 0; i < left; i++)
     {
-        idx = len_cur - 1 - i;
+        idx = (ssize_t)len_cur - 1 - i;
+        // log_debug("idx = %d", idx);
         if (!self->get(self, idx, &temp))
         {
             log_error("get ustring[i] error");
             return false;
         }
 
-        idx = len_sum - 1 - i;
+        idx = (ssize_t)len_sum - 1 - i;
+        // log_debug("idx = %d", idx);
         if (!self->set(self, idx, &temp))
         {
             log_error("get ustring[i-1] error");
             return false;
         }
     }
+    // log_debug("move after index");
 
-    for (size_t i = 0; i < v.len; i++)
+    for (ssize_t i = 0; i < v.len; i++)
     {
         if (!self->set(self, index + i, &v.str[i]))
         {
@@ -131,6 +156,7 @@ static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
             return false;
         }
     }
+    // log_debug("set before index");
 
     if (!self->set(self, len_sum, &null_char))
     {
@@ -140,10 +166,63 @@ static bool ustring_insert(struct _ustring *self, size_t index, uview_t v)
     return true;
 }
 
+uview_t ustring_find(struct _ustring *self, uview_t uvstr)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    uview_t v = {0, 0, UV_NONE};
+
+    v.str = strstr(self->cstr(self), uvstr.str);
+    if(v.str != NULL)
+    {
+        v.len = uvstr.len;
+    }
+    return v;
+}
+
+bool ustring_replace(struct _ustring *self, uview_t oldstr, uview_t newstr)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    uview_t v = self->find(self, oldstr);
+    if(v.len == 0)
+    {
+        log_error("not found");
+        return false;
+    }
+    size_t index = v.str - self->at(self, 0);
+    if(!self->erase(self, index, oldstr.len))
+    {
+        log_error("erase error");
+        return false;
+    }
+    if(!self->insert(self, index, newstr))
+    {
+        log_error("insert error");
+        return false;
+    }
+    return true;
+}
+
 static bool ustring_remove(struct _ustring *self, uview_t oldstr)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_alist != NULL);
+
+    uview_t v = self->find(self, oldstr);
+    if(v.len == 0)
+    {
+        log_error("not found");
+        return false;
+    }
+    size_t index = v.str - self->at(self, 0);
+    log_debug("remove_idx: %ld", index);
+    if(!self->erase(self, index, oldstr.len))
+    {
+        log_error("erase error");
+        return false;
+    }
+    log_debug("remove ok!");
     return true;
 }
 
@@ -294,37 +373,39 @@ iterator_t ustring_iter(struct _ustring *self, linear_order_t order)
     return iter;
 }
 
-static size_t ustring_index(struct _ustring *self, const void *obj)
+static size_t ustring_index(struct _ustring *self, uview_t uvstr)
 {
     unicstl_assert(self != NULL);
-    return self->search(self, obj);
+    char *p = strstr(self->cstr(self), uvstr.str);
+    if(p == NULL)
+    {
+        return (size_t)-1;
+    }
+    return p - self->at(self, 0);
 }
 
-static bool ustring_contains(struct _ustring *self, const void *obj)
+static bool ustring_contains(struct _ustring *self, uview_t uvstr)
 {
     unicstl_assert(self != NULL);
-    return self->search(self, obj) != (size_t)-1;
+    return self->index(self, uvstr) != (size_t)-1;
 }
 
-static bool darry_sort(struct _ustring *self)
+static size_t ustring_count(struct _ustring *self, uview_t uvstr)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_alist != NULL);
-    return self->_alist->sort(self->_alist);
-}
-
-static size_t darry_search(struct _ustring *self, const void *obj)
-{
-    unicstl_assert(self != NULL);
-    unicstl_assert(self->_alist != NULL);
-    return self->_alist->search(self->_alist, obj);
-}
-
-static size_t darry_count(struct _ustring *self, const void *obj)
-{
-    unicstl_assert(self != NULL);
-    unicstl_assert(self->_alist != NULL);
-    return self->_alist->count(self->_alist, obj);
+    size_t count = 0;
+    char *p = self->cstr(self);
+    while(p != '\0')
+    {
+        p = strstr(p, uvstr.str);
+        if(p == NULL)
+        {
+            break;
+        }
+        count++;
+        p += uvstr.len;
+    }
+    return count;
 }
 
 bool ustring_isdigit(struct _ustring *self)
@@ -566,20 +647,116 @@ static bool ustring_strip_right(struct _ustring *self)
     return true;
 }
 
+bool ustring_ljust(struct _ustring *self, size_t width)
+{
+    unicstl_assert(self != NULL);
+    if (width <= self->len(self))
+    {
+        return true;
+    }
+    size_t len = width - self->len(self);
+    for (size_t i = 0; i < len; i++)
+    {
+        self->append(self, uv(" "));
+    }
+    return true;
+}
+
+static bool ustring_rshift(struct _ustring *self, size_t shift, size_t count)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_alist != NULL);
+    if(shift + count > self->len(self))
+    {
+        if(!self->resize(self, shift + count))
+        {
+            return false;
+        }
+    }
+    char* src = (char*)self->at(self, 0);
+    char* dst = src + shift;
+    memmove(dst, src, count);
+    return true;
+}
+
+bool ustring_rjust(struct _ustring *self, size_t width)
+{
+    unicstl_assert(self != NULL);
+    size_t count = self->len(self);
+    if(width < count)
+    {
+        return false;
+    }
+    if(!self->resize(self, width))
+    {
+        return false;
+    }
+    size_t shift = width - count;
+    if(!ustring_rshift(self, shift, count))
+    {
+        log_error("rshift failed");
+        return false;
+    }
+    for(size_t i = 0; i < shift; i++)
+    {
+        if(!self->set(self, i, &space_char))
+        {
+            log_error("set failed");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ustring_center(struct _ustring *self, size_t width)
+{
+    unicstl_assert(self != NULL);
+    size_t count = self->len(self);
+    if(width < count)
+    {
+        return false;
+    }
+    if(!self->resize(self, width))
+    {
+        return false;
+    }
+
+    size_t shift = (width - count)/2;
+    log_debug("space_cnt: %ld", shift);
+    if(!ustring_rshift(self, shift, count))
+    {
+        log_error("rshift failed");
+        return false;
+    }
+
+    for(size_t i = 0; i < shift; i++)
+    {
+        if(!self->set(self, i, &space_char))
+        {
+            log_error("insert failed");
+            return false;
+        }
+    }
+
+    size_t idx = shift + count;
+    if((width - count) % 2 == 1)
+    {
+        shift += 1;
+    }
+    for(size_t i = 0; i < shift; i++)
+    {
+        if(!self->set(self, idx + i, &space_char))
+        {
+            log_error("insert failed");
+            return false;
+        }
+    }
+    return true;
+}
+
 int ustring_cmp(struct _ustring *self, uview_t v)
 {
     unicstl_assert(self != NULL);
-    // size_t min = self->len(self) < v.len ? self->len(self) : v.len;
-    // for (size_t i = 0; i < min; i++)
-    // {
-    //     const char *a = (const char *)self->at(self, i);
-    //     if (*a != v.str[i])
-    //     {
-    //         return *(char*)self->at(self, i) - v.str[i];
-    //     }
-    // }
-    log_debug("self[%d]:%s, v.str[%d]:%s", self->len(self), self->at(self, 0), v.len, v.str);
-
     size_t max = self->len(self) > v.len ? self->len(self) : v.len;
     return strncmp(self->at(self, 0), v.str, max);
 }
@@ -620,6 +797,34 @@ int ustring_ge(struct _ustring *self, uview_t v)
     return self->cmp(self, v) >= 0;
 }
 
+struct _ustring* ustring_substr(struct _ustring *self, ssize_t start, ssize_t end)
+{
+    unicstl_assert(self != NULL);
+    log_debug("substr");
+    ustring_t substr = ustring_new(uv(""));
+    if(substr == NULL)
+    {
+        return NULL;
+    }
+    log_debug("ustring_new");
+    char ch = 0;
+    for(ssize_t i = start; i <= end; i++)
+    {
+        if(!self->get(self, i, &ch))
+        {
+            log_error("get failed");
+            return NULL;
+        }
+        log_debug("ch: %c", ch);
+        if(!substr->append(substr, uvch(ch)))
+        {
+            log_error("append failed");
+            return NULL;
+        }
+    }
+    return substr;
+}
+
 static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
 {
     unicstl_assert(self != NULL);
@@ -633,11 +838,6 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->is_view = is_view;
 
     // -------------------- public --------------------
-    // kernel
-    self->insert = ustring_insert;
-    self->remove = ustring_remove;
-    self->append = ustring_append;
-
     self->set = ustring_set;
     self->get = ustring_get;
     self->at = ustring_at;
@@ -654,11 +854,22 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     // iter
     self->iter = ustring_iter;
 
+    // 
+    self->erase = ustring_erase;
+
+    // append
+    self->append = ustring_append;
+    self->insert = ustring_insert;
+
+    // 
+    self->find = ustring_find;
+    self->replace = ustring_replace;
+    self->remove = ustring_remove;
+
     // sort and search
     self->index = ustring_index;
     self->contains = ustring_contains;
-    self->sort = darry_sort;
-    self->search = darry_search;
+    self->count = ustring_count;
 
     // string
     self->isdigit = ustring_isdigit;
@@ -683,6 +894,9 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->strip = ustring_strip;
     self->strip_left = ustring_strip_left;
     self->strip_right = ustring_strip_right;
+    self->ljust = ustring_ljust;
+    self->rjust = ustring_rjust;
+    self->center = ustring_center;
 
     self->eq = ustring_eq;
     self->ne = ustring_ne;
@@ -691,6 +905,11 @@ static bool ustring_init(struct _ustring *self, uview_t view, bool is_view)
     self->gt = ustring_gt;
     self->ge = ustring_ge;
     self->cmp = ustring_cmp;
+
+    // split
+    self->substr = ustring_substr;
+    // self->split = ustring_split;
+    // self->join = ustring_join;
 
     // -------------------- default --------------------
     self->print_obj = uprint_char;

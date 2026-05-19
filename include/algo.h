@@ -53,6 +53,13 @@ int binary_search(const void* key, const void* base, size_t count, size_t obj_si
 int binary_search_right(const void* key, const void* base, size_t count, size_t obj_size, compare_fun_t cmp);
 
 
+// 字符串查找算法
+// 1. 暴力查找
+int brute_find(const void* key, size_t key_count, const void* base, size_t base_count, size_t obj_size, compare_fun_t cmp);
+// 2. KMP查找
+int kmp_find(const void* key, size_t key_count, const void* base, size_t base_count, size_t obj_size, compare_fun_t cmp);
+
+
 #ifdef UNICSTL_ALGO_ENABLE
 
 #ifdef UNICSTL_ALGO_SORT
