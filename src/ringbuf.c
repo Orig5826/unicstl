@@ -306,7 +306,7 @@ bool ringbuf_iter_hasnext(struct _iterator *iter)
     }
     else
     {
-        if (iter->_index == self->_head)
+        if (iter->_index == ring_index_prev(self->_head, self->_capacity))
         {
             return false;
         }

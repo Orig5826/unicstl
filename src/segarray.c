@@ -636,7 +636,7 @@ bool segarray_iter_hasnext(struct _iterator *iter)
     }
     else
     {
-        if (iter->_index == 0)
+        if (iter->_index == -1)
         {
             return false;
         }

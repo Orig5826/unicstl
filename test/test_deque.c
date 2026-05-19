@@ -375,7 +375,7 @@ static void test_deque_iter(void)
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;
     }
-    TEST_ASSERT_EQUAL_INT(0, i);
+    TEST_ASSERT_EQUAL_INT(-1, i);
 
     deque_free(&deque);
 }

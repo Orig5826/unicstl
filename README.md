@@ -79,7 +79,7 @@ segarray *-- ringbuf : 组合
 segarray *-- rawbuf : 组合
 
 arraylist *-- darray : 组合
-string *-- darray : 组合
+string *-- arraylist : 组合
 hashtable *-- darray : 组合
 
 
@@ -107,21 +107,25 @@ equeue ..> ringbuf : 依赖
 ## 数据结构
 
 ### 底层基础容器
-> 原生裸数据结构
 
 |数据结构 |名称 |说明 |
 |---|---|---|
-| darray  | 动态数组 | 扩容
-| ringbuf   | 环形缓存区 | 扩容/外部缓存 
 | linklist   | 单链表 | 
 | dlinklist   | 双向链表 |
+| darray  | 动态数组 | 扩容
+| ringbuf   | 环形缓存区 | 扩容/外部缓存 
 | rawbuf | 原始缓冲区 | 动态分配固定容量/外部缓存
 | segarray | 分段数组 | 扩容
+
+### 中层容器
+|数据结构 |名称 |说明 |
+|---|---|---|
+| segarray | 分段数组 | 扩容
+| arraylist | 动态数组 | 扩容（负索引/切片）
 
 **使用建议**
 - ringbuf 小数据，少库容
 - segarray 大数据，优先扩容
-
 
 ### 通用标准容器
 > 基于底层封装
@@ -131,6 +135,7 @@ equeue ..> ringbuf : 依赖
 | deque  | 双端队列 | 扩容
 | stack  | 栈 | 扩容
 | queue  | 队列 | 扩容
+| ustring | 字符串 | 扩容
 
 ### 嵌入式专用容器
 > 适配嵌入式场景、外置内存、无动态堆分配
@@ -192,6 +197,7 @@ size_t index(void *obj);                // 获取元素索引, -1为不存在
 
 bool insert(size_t index, const void* obj);     // 插入元素
 bool remove(size_t index, const void *obj);     // 删除元素 < delete !!!废弃：防止项目用于C++，关键字冲突>
+bool erase(size_t index, size_t count);         // 删除区间元素
 
 // 随机访问
 bool set(uint32_t index, const void* obj);      // 设置元素

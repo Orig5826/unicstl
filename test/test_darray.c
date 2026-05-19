@@ -662,8 +662,10 @@ static void test_darray_iter(void)
         temp = *(int *)iter->next(iter);
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;
+
+        // darray->print_obj(&temp);
     }
-    TEST_ASSERT_EQUAL_INT(0, i);
+    TEST_ASSERT_EQUAL_INT(-1, i);
 
     darray_free(&darray);
 }

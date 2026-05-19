@@ -430,6 +430,47 @@ void test_ustring_count(void)
     ustring_free(&str);
 }
 
+static void test_ustring_iter(void)
+{
+    const char *data = "hello wolrd!";
+    ustring_t ustring = ustring_new(uv(data));
+
+    size_t i = 0;
+    char temp;
+    size_t len = ustring->len(ustring);
+
+    iterator_t iter = ustring->iter(ustring, LINEAR_FORWARD);
+    i = 0;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        TEST_ASSERT_EQUAL_INT(data[i], temp);
+        i++;
+
+        // ustring->print_obj(&temp);
+    }
+    TEST_ASSERT_EQUAL_INT(len, i);
+
+    iter = ustring->iter(ustring, LINEAR_REVERSE);
+    i = 0;
+    size_t idx = len - 1;
+    TEST_ASSERT_TRUE(iter->hasnext(iter));
+    while(iter->hasnext(iter))
+    {
+        temp = *(int *)iter->next(iter);
+        
+        TEST_ASSERT_EQUAL_INT(data[idx], temp);
+        idx-=1;
+        i++;
+        ustring->print_obj(&temp);
+    }
+    TEST_ASSERT_EQUAL_INT(len, i);
+
+    ustring_free(&ustring);
+}
+
+
 void test_ustring(void)
 {
     UnitySetTestFile(__FILE__);
@@ -480,4 +521,6 @@ void test_ustring(void)
     RUN_TEST(test_ustring_substr);
     RUN_TEST(test_ustring_index);
     RUN_TEST(test_ustring_count);
+
+    RUN_TEST(test_ustring_iter);
 }

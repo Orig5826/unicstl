@@ -324,7 +324,7 @@ bool ustring_iter_hasnext(struct _iterator *iter)
     }
     else
     {
-        if (iter->_index == 0)
+        if (iter->_index == (size_t)-1)
         {
             return false;
         }
@@ -348,7 +348,7 @@ const void *ustring_iter_next(struct _iterator *iter)
     {
         iter->_index = iter->_index - 1;
     }
-    return self->_alist->at(self->_alist, index);
+    return self->at(self, index);
 }
 
 iterator_t ustring_iter(struct _ustring *self, linear_order_t order)
@@ -367,7 +367,6 @@ iterator_t ustring_iter(struct _ustring *self, linear_order_t order)
     {
         iter->_index = self->len(self) - 1;
     }
-
     iter->hasnext = ustring_iter_hasnext;
     iter->next = ustring_iter_next;
     return iter;
@@ -394,8 +393,8 @@ static size_t ustring_count(struct _ustring *self, uview_t uvstr)
 {
     unicstl_assert(self != NULL);
     size_t count = 0;
-    char *p = self->cstr(self);
-    while(p != '\0')
+    char *p = (char *)self->cstr(self);
+    while(*p != '\0')
     {
         p = strstr(p, uvstr.str);
         if(p == NULL)

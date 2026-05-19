@@ -20,7 +20,7 @@
 #include "unity.h"
 
 
-#define UNITTEST_ALL        0
+#define UNITTEST_ALL        1
 
 #define UNITTEST_LINKLIST   (UNITTEST_ALL || 0)
 #define UNITTEST_DLINKLIST  (UNITTEST_ALL || 0)
