@@ -12,6 +12,7 @@
 #define _HEAP_H_
 
 #include "unicstl_internal.h"
+#include "darray.h"
 
 typedef enum
 {
@@ -22,12 +23,7 @@ typedef enum
 struct _heap
 {
     // -------------------- private -------------------- 
-    void* obj;
-
-    size_t _size;
-    size_t _obj_size;
-    size_t _capacity;
-    size_t _ratio;
+    darray_t _darray;
 
     heap_type _type;
     struct _iterator _iter;
@@ -41,8 +37,10 @@ struct _heap
     bool (*peek)(struct _heap* self, void* obj);
 
     // base
+    bool (*reserve)(struct _heap* self, size_t capacity);
+    size_t (*capacity)(struct _heap* self);
+    size_t (*size)(struct _heap* self);
     bool (*empty)(struct _heap* self);
-    size_t(*size)(struct _heap* self);
     bool (*clear)(struct _heap* self);
 
     // iter
@@ -58,8 +56,8 @@ struct _heap
 typedef struct _heap* heap_t;
 
 // create and free heap
-heap_t heap_max_new2(size_t obj_size, size_t capacity);
-heap_t heap_min_new2(size_t obj_size, size_t capacity);
+heap_t heap_max_new(size_t obj_size, size_t capacity);
+heap_t heap_min_new(size_t obj_size, size_t capacity);
 
 void heap_free(heap_t* heap);
 

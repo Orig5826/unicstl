@@ -10,27 +10,6 @@
  */
 #include "algo.h"
 
-static inline void mem_swap(const void *obj1, void *obj2, size_t obj_size)
-{
-    size_t cnt = obj_size;
-    for(size_t i = 0; i < cnt; ++i)
-    {
-        char tmp = ((char*)obj1)[i];
-        ((char*)obj1)[i] = ((char*)obj2)[i];
-        ((char*)obj2)[i] = tmp;
-    }
-}
-
-static inline void obj_swap(const void *base, size_t index1, size_t index2, size_t obj_size)
-{
-    mem_swap((char*)base + index1 * obj_size, (char*)base + index2 * obj_size, obj_size);
-}
-
-static inline int compare_obj(const void *base, size_t index1, size_t index2, size_t obj_size, compare_fun_t cmp)
-{
-    return cmp((char*)base + index1 * obj_size, (char*)base + index2 * obj_size);
-}
-
 // 1. 冒泡排序
 bool bubble_sort(void* base, size_t count, size_t obj_size, compare_fun_t cmp)
 {

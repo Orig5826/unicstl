@@ -10,27 +10,39 @@
  */
 #include "test.h"
 
-static void* get_max(struct _heap* heap, void *array, int start, int end)
+static const void* get_max(const void *base, size_t index, size_t count, size_t obj_size, compare_fun_t compare)
 {
-    void* max = array;
-    for (int i = start; i < end; i++)
+    const void* max = base;
+    if(count <= 1)
     {
-        if (heap->compare((char*)array + heap->_obj_size * i, max) > 0)
+        return base;
+    }
+    size_t idx = 0;
+    for (size_t i = 0; i < count; i++)
+    {
+        idx = index + i * obj_size;
+        if (compare((char*)base + idx, max) > 0)
         {
-            max = (char*)array + heap->_obj_size * i;
+            max = (char*)base + idx;
         }
     }
     return max;
 }
 
-static void* get_min(struct _heap* heap, void *array, int start, int end)
+static const void* get_min(const void *base, size_t index, size_t count, size_t obj_size, compare_fun_t compare)
 {
-    void* min = array;
-    for (int i = start; i < end; i++)
+    const void* min = base;
+    if(count <= 1)
     {
-        if (heap->compare((char*)array + heap->_obj_size * i, min) < 0)
+        return base;
+    }
+    size_t idx = 0;
+    for (size_t i = 0; i < count ; i++)
+    {
+        idx = index + i * obj_size;
+        if (compare((char*)base + idx, min) < 0)
         {
-            min = (char*)array + heap->_obj_size * i;
+            min = (char*)base + idx;
         }
     }
     return min;
@@ -45,8 +57,9 @@ static void test_heap_min_num(void)
     int data[] = { 5,2,3,1,7,8,6,4,9,10,12,11,15,14,13 };
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
+    int min = 0;
 
-    heap_t heap = heap_min_new2(sizeof(int), 64);
+    heap_t heap = heap_min_new(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
     heap->print_obj = print_num;
     heap->compare = compare_num;
@@ -58,7 +71,9 @@ static void test_heap_min_num(void)
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
 
         TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-        TEST_ASSERT_EQUAL_INT(*(int *)get_min(heap, data, 0, heap->size(heap)), temp);
+        min = *(int *)get_min(data, 0, i + 1, sizeof(int), compare_num);
+        log_debug("i = %d, min = %d, heap_peek: %d, ", i, min, temp);
+        TEST_ASSERT_EQUAL_INT(min, temp);
     }
     
     TEST_ASSERT_TRUE(heap->clear(heap));
@@ -96,7 +111,7 @@ static void test_heap_min_struct(void)
     struct _student temp = {0};
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    heap_t heap = heap_min_new2(sizeof(struct _student), 64);
+    heap_t heap = heap_min_new(sizeof(struct _student), 64);
     TEST_ASSERT_NOT_NULL(heap);
     heap->print_obj = print_struct;
     heap->compare = compare_struct;
@@ -108,8 +123,8 @@ static void test_heap_min_struct(void)
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
 
         TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-        TEST_ASSERT_EQUAL_INT(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->id, temp.id);
-        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_min(heap, data, 0, heap->size(heap)))->name, temp.name);
+        TEST_ASSERT_EQUAL_INT(((struct _student*)get_min(data, 0, i + 1, sizeof(struct _student), compare_struct))->id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_min(data, 0, i + 1, sizeof(struct _student), compare_struct))->name, temp.name);
     }
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
     TEST_ASSERT_TRUE(heap->peek(heap, &temp));
@@ -143,7 +158,7 @@ static void test_heap_max_num(void)
     int temp = 0;
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    heap_t heap = heap_max_new2(sizeof(int), 64);
+    heap_t heap = heap_max_new(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
     heap->print_obj = print_num;
     heap->compare = compare_num;
@@ -155,7 +170,7 @@ static void test_heap_max_num(void)
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
 
         TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-        TEST_ASSERT_EQUAL_INT(*(int *)get_max(heap, data, 0, heap->size(heap)), temp);
+        TEST_ASSERT_EQUAL_INT(*(int *)get_max(data, 0, i + 1, sizeof(int), compare_num), temp);
     }
 
     TEST_ASSERT_TRUE(heap->clear(heap));
@@ -193,7 +208,7 @@ static void test_heap_max_struct(void)
     struct _student temp = {0};
     size_t len = sizeof(data) / sizeof(data[0]);
 
-    heap_t heap = heap_max_new2(sizeof(struct _student), 64);
+    heap_t heap = heap_max_new(sizeof(struct _student), 64);
     TEST_ASSERT_NOT_NULL(heap);
     heap->print_obj = print_struct;
     heap->compare = compare_struct;
@@ -205,8 +220,8 @@ static void test_heap_max_struct(void)
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
 
         TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-        TEST_ASSERT_EQUAL_INT(((struct _student*)get_max(heap, data, 0, heap->size(heap)))->id, temp.id);
-        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_max(heap, data, 0, heap->size(heap)))->name, temp.name);
+        TEST_ASSERT_EQUAL_INT(((struct _student*)get_max(data, 0, i + 1, sizeof(struct _student), compare_struct))->id, temp.id);
+        TEST_ASSERT_EQUAL_STRING(((struct _student*)get_max(data, 0, i + 1, sizeof(struct _student), compare_struct))->name, temp.name);
 
         // heap->print_obj(&temp);
         // printf("\n");
@@ -260,7 +275,7 @@ static void test_heap_max_iter(void)
     int out[15] = { 0 };
     int outlen = 0;
 
-    heap_t heap = heap_max_new2(sizeof(int), 64);
+    heap_t heap = heap_max_new(sizeof(int), 64);
     TEST_ASSERT_NOT_NULL(heap);
     heap->print_obj = print_num;
     heap->compare = compare_num;
@@ -272,7 +287,7 @@ static void test_heap_max_iter(void)
         TEST_ASSERT_EQUAL_INT(i + 1, heap->size(heap));
 
         TEST_ASSERT_TRUE(heap->peek(heap, &temp));
-        TEST_ASSERT_EQUAL_INT(*(int *)get_max(heap, data, 0, heap->size(heap)), temp);
+        TEST_ASSERT_EQUAL_INT(*(int *)get_max(data, 0, i + 1, sizeof(int), compare_num), temp);
 
         iterator_t iter = heap->iter(heap);
 

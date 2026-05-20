@@ -33,10 +33,22 @@ void test_unicstl_capacity(void)
     TEST_ASSERT_EQUAL_UINT32(1125000, unicstl_new_capacity(1000000));
 }
 
+void test_unicstl_compare_obj(void)
+{
+    int data[] = {1,2,3};
+    int obj_size = sizeof(int);
+
+    TEST_ASSERT_EQUAL_INT(0, compare_obj(data, 0, 0, obj_size, compare_int));
+    TEST_ASSERT_EQUAL_INT(1, compare_obj(data, 2, 1, obj_size, compare_int));
+    TEST_ASSERT_EQUAL_INT(-1, compare_obj(data, 0, 1, obj_size, compare_int));
+}
+
 void test_unicstl(void)
 {
     UnitySetTestFile(__FILE__);
 
     RUN_TEST(test_unicstl_version);
     RUN_TEST(test_unicstl_capacity);
+
+    RUN_TEST(test_unicstl_compare_obj);
 }

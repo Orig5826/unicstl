@@ -8,91 +8,60 @@
  */
 #include "heap.h"
 
-static int left(int i)
+static size_t left(size_t i)
 {
     return 2 * i + 1;
 }
 
-static int right(int i)
+static size_t right(size_t i)
 {
     return (i << 1) + 2;
 }
 
-static int parent(int i)
+static size_t parent(size_t i)
 {
     if(i == 0)
     {
         return -1;
     }
-    return (i-1) >> 1;
+    return (i - 1) >> 1;
 }
 
 static bool heap_peek(struct _heap* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(obj != NULL);
-    if(obj == NULL)
+    size_t index = self->size(self) - 1;
+    if(!self->_darray->get(self->_darray, 0, obj))
     {
         return false;
     }
-    if(self->empty(self))
-    {
-        return false;
-    }
-    memmove(obj, self->obj, self->_obj_size);
     return true;
 }
 
-static void heap_swap(struct _heap* self, int i, int j)
+static void heap_fixed_up(struct _heap* self, size_t i)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->_obj_size != 0);
-#if __STDC_VERSION__ >= 199901L
-// #define C99_VLA  // VLA should be avoided for portability reasons and due to the risk of stack overflow.
-#endif
-
-#ifdef C99_VLA
-    char tmp[self->_obj_size];
-#else
-    char* tmp = unicstl_malloc(self->_obj_size);
-    if (tmp == NULL)
-    {
-        return;
-    }
-#endif
-
-    memmove(tmp, (char *)self->obj + i * self->_obj_size, self->_obj_size);
-    memmove((char*)self->obj + i * self->_obj_size, (char*)self->obj + j * self->_obj_size, self->_obj_size);
-    memmove((char*)self->obj + j * self->_obj_size, tmp, self->_obj_size);
-
-#ifndef C99_VLA
-    unicstl_free(tmp);
-#endif
-}
-
-static void heap_fixed_up(struct _heap* self, int i)
-{
-    unicstl_assert(self != NULL);
+    unicstl_assert(self->_darray != NULL);
     unicstl_assert(self->compare != NULL);
-    int p = 0;
 
-    if(self->compare == NULL)
-    {
-        return ;
-    }
-    
+    const void *base = self->_darray->at(self->_darray, 0);
+    size_t obj_size = self->_darray->_obj_size;
+    size_t p = 0;
+
     if(self->_type == HEAP_MAX)
     {
         while(1)
         {
             p = parent(i);
             // if current node is greater than its parent, swap the position. otherwise break out of loop
-            if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) <= 0)
+            if(p == (size_t)-1 || compare_obj(base, i, p, obj_size, self->compare) <= 0)
             {
                 break;
             }
-            heap_swap(self, i, p);
+            obj_swap(base, i, p, obj_size);
             i = p;
+
+            self->print(self);
         }
     }
     else /* if(self->_type == HEAP_MIN) */
@@ -100,13 +69,17 @@ static void heap_fixed_up(struct _heap* self, int i)
         while(1)
         {
             p = parent(i);
+            log_debug("heap_fixed_up: p = %d, i = %zu\n", (ssize_t)p, i);
+
             // if current node is less than its parent, swap the position. otherwise break out of loop
-            if(p < 0 || self->compare((char *)self->obj + i * self->_obj_size, (char *)self->obj + p * self->_obj_size) >= 0)
+            if(p == (size_t)-1 || compare_obj(base, i, p, obj_size, self->compare) >= 0)
             {
                 break;
             }
-            heap_swap(self, i, p);
+            obj_swap(base, i, p, obj_size);
             i = p;
+
+            self->print(self);
         }
     }
 }
@@ -114,28 +87,24 @@ static void heap_fixed_up(struct _heap* self, int i)
 static bool heap_push(struct _heap* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    if(self->size(self) > self->_capacity)
+    unicstl_assert(self->_darray != NULL);
+    if(!self->_darray->append(self->_darray, obj))
     {
         return false;
     }
-    size_t index = self->size(self);
-    memmove((char *)self->obj + index * self->_obj_size, obj, self->_obj_size);
-    self->_size++;
-
-    heap_fixed_up(self, index);
+    heap_fixed_up(self, self->size(self) - 1);
     return true;
 }
 
-static void heap_fixed_down(struct _heap* self, int i)
+static void heap_fixed_down(struct _heap* self, size_t i)
 {
     unicstl_assert(self != NULL);
-    int l = 0,r = 0;
-    int max = 0, min = 0;
+    unicstl_assert(self->_darray != NULL);
+    size_t l = 0,r = 0;
+    size_t max = 0, min = 0;
 
-    if(self->compare == NULL)
-    {
-        return;
-    }
+    const void *base = self->_darray->at(self->_darray, 0);
+    size_t obj_size = self->_darray->_obj_size;
 
     if(self->_type == HEAP_MAX)
     {
@@ -145,20 +114,20 @@ static void heap_fixed_down(struct _heap* self, int i)
             r = right(i);
             max = i;
 
-            if(l < self->size(self) && self->compare((char *)self->obj + l * self->_obj_size, (char *)self->obj + max * self->_obj_size) > 0)
+            if(l < self->size(self) && compare_obj(base, l, max, obj_size, self->compare) > 0)
             {
                 max = l;
             }
-
-            if(r < self->size(self) && self->compare((char *)self->obj + r * self->_obj_size, (char *)self->obj + max * self->_obj_size) > 0)
+            if(r < self->size(self) && compare_obj(base, r, max, obj_size, self->compare) > 0)
             {
                 max = r;
             }
+
             if(max == i)
             {
                 break;
             }
-            heap_swap(self, i, max);
+            obj_swap(base, i, max, obj_size);
             i = max;
         }
     }
@@ -170,12 +139,12 @@ static void heap_fixed_down(struct _heap* self, int i)
             r = right(i);
             min = i;
 
-            if(l < self->size(self) && self->compare((char *)self->obj + l * self->_obj_size, (char *)self->obj + min * self->_obj_size) < 0)
+            if(l < self->size(self) && compare_obj(base, l, min, obj_size, self->compare) < 0)
             {
                 min = l;
             }
 
-            if(r < self->size(self) && self->compare((char *)self->obj + r * self->_obj_size, (char *)self->obj + min * self->_obj_size) < 0)
+            if(r < self->size(self) && compare_obj(base, r, min, obj_size, self->compare) < 0)
             {
                 min = r;
             }
@@ -183,7 +152,7 @@ static void heap_fixed_down(struct _heap* self, int i)
             {
                 break;
             }
-            heap_swap(self, i, min);
+            obj_swap(self, i, min, obj_size);
             i = min;
         }
     }
@@ -192,25 +161,34 @@ static void heap_fixed_down(struct _heap* self, int i)
 static bool heap_pop(struct _heap* self, void* obj)
 {
     unicstl_assert(self != NULL);
-    if(self->empty(self))
+    unicstl_assert(self->_darray != NULL);
+    if(!self->_darray->pop(self->_darray, obj))
     {
         return false;
     }
-    int index = self->size(self) - 1;
-    heap_swap(self, 0, index);
-    if(obj != NULL)
-    {
-        memmove(obj, (char *)self->obj + index * self->_obj_size, self->_obj_size);
-    }
-    self->_size--;
     heap_fixed_down(self, 0);
     return true;
+}
+
+static size_t heap_reserve(struct _heap* self, size_t capacity)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_darray != NULL);
+    return self->_darray->reserve(self->_darray, capacity);
 }
 
 static size_t heap_size(struct _heap* self)
 {
     unicstl_assert(self != NULL);
-    return self->_size;
+    unicstl_assert(self->_darray != NULL);
+    return self->_darray->size(self->_darray);
+}
+
+static size_t heap_capacity(struct _heap* self)
+{
+    unicstl_assert(self != NULL);
+    unicstl_assert(self->_darray != NULL);
+    return self->_darray->capacity(self->_darray);
 }
 
 static bool heap_empty(struct _heap* self)
@@ -222,34 +200,26 @@ static bool heap_empty(struct _heap* self)
 static bool heap_clear(struct _heap* self)
 {
     unicstl_assert(self != NULL);
-    self->_size = 0;
-    return true;
+    unicstl_assert(self->_darray != NULL);
+    return self->_darray->clear(self->_darray);
 }
 
 static void heap_destory(struct _heap* self)
 {
     unicstl_assert(self != NULL);
     self->clear(self);
-    if(self->obj)
+    if(self->_darray != NULL)
     {
-        unicstl_free(self->obj);
+        darray_free(&self->_darray);
     }
 }
 
 static void heap_print(struct _heap* self)
 {
     unicstl_assert(self != NULL);
-    unicstl_assert(self->obj != NULL);
-
-    void* obj = NULL;
-    size_t offset = 0;
-
-    for (int i = 0; i < self->size(self); i++)
-    {
-        offset = self->_obj_size * i;
-        obj = (char *)self->obj + offset;
-        self->print_obj(obj);
-    }
+    unicstl_assert(self->_darray != NULL);
+    self->_darray->print_obj = self->print_obj;
+    self->_darray->print(self->_darray);
 }
 
 bool heap_iter_hasnext(struct _iterator* iter)
@@ -269,15 +239,12 @@ const void* heap_iter_next(struct _iterator* iter)
 {
     unicstl_assert(iter != NULL);
     unicstl_assert(iter->_container != NULL);
-
     heap_t self = (heap_t)iter->_container;
-    void *obj = NULL;
+    unicstl_assert(self->_darray != NULL);
 
     size_t index = iter->_index;
-    obj = self->obj + self->_obj_size * index;
-
     iter->_index += 1;
-    return obj;
+    return self->_darray->at(self->_darray, index);
 }
 
 iterator_t heap_iter(struct _heap* self)
@@ -287,28 +254,20 @@ iterator_t heap_iter(struct _heap* self)
 
     iter->_container = self;
     iter->_index = 0;
-    iter->_node = self->obj;
 
     iter->hasnext = heap_iter_hasnext;
     iter->next = heap_iter_next;
     return iter;
 }
 
-static bool heap_init2(struct _heap* self, size_t obj_size, size_t capacity)
+static bool heap_init(struct _heap* self, size_t obj_size, size_t capacity, heap_type type)
 {
     unicstl_assert(self != NULL);
+    unicstl_assert(obj_size > 0);
 
     // -------------------- private -------------------- 
-    self->_obj_size = obj_size;
-    self->_size = 0;
-    self->_capacity = capacity;
-    self->_ratio = 2;
-
-    self->obj = (void*)unicstl_malloc(self->_capacity * self->_obj_size);
-    if(self->obj == NULL)
-    {
-        return false;
-    }
+    self->_darray = NULL;
+    self->_type = type;
 
     self->_destory = heap_destory;
 
@@ -320,25 +279,31 @@ static bool heap_init2(struct _heap* self, size_t obj_size, size_t capacity)
     self->empty = heap_empty;
 
     // base
+    self->reserve = heap_reserve;
+    self->capacity = heap_capacity;
     self->size = heap_size;
     self->clear = heap_clear;
 
     // iter
     self->iter = heap_iter;
 
-    // config
-    self->compare = NULL;
-    
     // -------------------- default --------------------
     self->compare = default_compare;
     self->print_obj = default_print_obj;
 
     // -------------------- debug -------------------- 
     self->print = heap_print;
+
+    // -------------------- init -------------------- 
+    self->_darray = darray_new(obj_size, capacity);
+    if(self->_darray == NULL)
+    {
+        return false;
+    }
     return true;
 }
 
-heap_t heap_max_new2(size_t obj_size, size_t capacity)
+heap_t heap_max_new(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
     heap = (struct _heap*)unicstl_malloc(sizeof(struct _heap));
@@ -347,17 +312,15 @@ heap_t heap_max_new2(size_t obj_size, size_t capacity)
         return NULL;
     }
 
-    if(heap_init2(heap, obj_size, capacity) != true)
+    if(heap_init(heap, obj_size, capacity, HEAP_MAX) != true)
     {
         unicstl_free(heap);
         return NULL;
     }
-
-    heap->_type = HEAP_MAX;
     return heap;
 }
 
-heap_t heap_min_new2(size_t obj_size, size_t capacity)
+heap_t heap_min_new(size_t obj_size, size_t capacity)
 {
     heap_t heap = NULL;
     heap = (struct _heap*)unicstl_malloc(sizeof(struct _heap));
@@ -367,14 +330,12 @@ heap_t heap_min_new2(size_t obj_size, size_t capacity)
         return NULL;
     }
 
-    if(heap_init2(heap, obj_size, capacity) != true)
+    if(heap_init(heap, obj_size, capacity, HEAP_MIN) != true)
     {
         log_warn("heap init failed\n");
         unicstl_free(heap);
         return NULL;
     }
-
-    heap->_type = HEAP_MIN;
     return heap;
 }
 

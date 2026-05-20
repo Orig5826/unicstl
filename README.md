@@ -23,18 +23,18 @@ classDiagram
 direction TB
 
 namespace basic {
-    class ringbuf{
-        不扩容或
-        小数据扩容
-    }
-    class rawbuf
-    class darray
     class linklist{
         <<单链表>>
     }
     class dlinklist{
         <<双向链表>>
     }
+    class ringbuf{
+        不扩容或
+        小数据扩容
+    }
+    class rawbuf
+    class darray
 }
 
 namespace embed {
@@ -58,7 +58,6 @@ namespace hal {
         切片
         负索引
     }
-    class string
     class hashtable
 }
 
@@ -69,9 +68,13 @@ namespace adapter {
 namespace top {
     class stack
     class queue
+    
     class rbtree
     class map
+
+    class string
     class unordered_map
+    class heap
 }
 
 %% hal层
@@ -90,6 +93,7 @@ deque *-- segarray : 组合
 %% 通用标准容器
 stack *-- deque : 组合
 queue *-- deque : 组合
+heap *-- darray : 组合
 
 %% 红黑树
 rbtree ..> stack : 依赖
@@ -108,14 +112,18 @@ equeue ..> ringbuf : 依赖
 
 ### 底层基础容器
 
+#### 链表结构
 |数据结构 |名称 |说明 |
 |---|---|---|
 | linklist   | 单链表 | 
 | dlinklist   | 双向链表 |
+
+#### 数组结构
+|数据结构 |名称 |说明 |
+|---|---|---|
 | darray  | 动态数组 | 扩容
 | ringbuf   | 环形缓存区 | 扩容/外部缓存 
 | rawbuf | 原始缓冲区 | 动态分配固定容量/外部缓存
-| segarray | 分段数组 | 扩容
 
 ### 中层容器
 |数据结构 |名称 |说明 |
@@ -136,6 +144,7 @@ equeue ..> ringbuf : 依赖
 | stack  | 栈 | 扩容
 | queue  | 队列 | 扩容
 | ustring | 字符串 | 扩容
+| heap | 堆 | 扩容
 
 ### 嵌入式专用容器
 > 适配嵌入式场景、外置内存、无动态堆分配

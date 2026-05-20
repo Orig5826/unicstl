@@ -147,6 +147,34 @@ static inline void *unicstl_realloc(void *ptr, size_t size) { return NULL; }
 static inline void unicstl_free(void *ptr) {}
 #endif // UNICSTL_MALLOC_ENABLE
 
+
+/**
+ * @brief obj compare with obj2
+ *
+ * @return
+ *      obj < obj2 return -1
+ *      obj == obj2 return 0
+ *      obj > obj2 return 1
+ */
+typedef int (*compare_fun_t)(const void *obj, const void *obj2);
+
+
+
+static inline size_t ring_index(size_t head, size_t index, size_t capacity)
+{
+    return (head + index) % capacity;
+}
+
+static inline size_t ring_index_next(size_t index, size_t capacity)
+{
+    return (index + 1) % capacity;
+}
+
+static inline size_t ring_index_prev(size_t index, size_t capacity)
+{
+    return index == 0 ? (capacity - 1) : index - 1;
+}
+
 static inline const void *obj_at(const void *objs, size_t index, size_t obj_size)
 {
     unicstl_assert(objs != NULL);
@@ -191,31 +219,26 @@ static inline void obj_zero(const void *objs, size_t index, size_t count, size_t
     memset((char *)objs + index * obj_size, 0, count * obj_size);
 }
 
-
-static inline size_t ring_index(size_t head, size_t index, size_t capacity)
+static inline void mem_swap(const void *obj1, void *obj2, size_t obj_size)
 {
-    return (head + index) % capacity;
+    size_t cnt = obj_size;
+    for(size_t i = 0; i < cnt; ++i)
+    {
+        char tmp = ((char*)obj1)[i];
+        ((char*)obj1)[i] = ((char*)obj2)[i];
+        ((char*)obj2)[i] = tmp;
+    }
 }
 
-static inline size_t ring_index_next(size_t index, size_t capacity)
+static inline void obj_swap(const void *base, size_t index1, size_t index2, size_t obj_size)
 {
-    return (index + 1) % capacity;
+    mem_swap((char*)base + index1 * obj_size, (char*)base + index2 * obj_size, obj_size);
 }
 
-static inline size_t ring_index_prev(size_t index, size_t capacity)
+static inline int compare_obj(const void *base, size_t index1, size_t index2, size_t obj_size, compare_fun_t cmp)
 {
-    return index == 0 ? (capacity - 1) : index - 1;
+    return cmp((char*)base + index1 * obj_size, (char*)base + index2 * obj_size);
 }
-
-/**
- * @brief obj compare with obj2
- *
- * @return
- *      obj < obj2 return -1
- *      obj == obj2 return 0
- *      obj > obj2 return 1
- */
-typedef int (*compare_fun_t)(const void *obj, const void *obj2);
 
 // default function
 int default_compare(const void *obj1, const void *obj2);

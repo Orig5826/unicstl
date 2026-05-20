@@ -512,7 +512,7 @@ static void test_ringbuf_iter(void)
         TEST_ASSERT_EQUAL_INT(data[i], temp);
         i--;
 
-        ringbuf->print_obj(&temp);
+        // ringbuf->print_obj(&temp);
     }
     TEST_ASSERT_EQUAL_INT(-1, i);
 
