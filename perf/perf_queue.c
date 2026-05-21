@@ -19,7 +19,7 @@ void perf_queue_new(void)
 
 void perf_queue_push(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         queue->push(queue, &g_test_obj.obj);
     }
@@ -27,7 +27,7 @@ void perf_queue_push(void)
 
 void perf_queue_pop(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         queue->pop(queue, &g_test_obj.obj);
     }

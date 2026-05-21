@@ -1,24 +1,29 @@
 /**
  * @file main.c
  * @author wenjf (Orig5826@163.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2026-05-12
- * 
+ *
  * @copyright Copyright (c) 2026
- * 
+ *
  */
 #include "perf.h"
 #include "perf_log.h"
 
+// clang-format off
 test_obj_t test_plans[PERF_TEST_TIEMS] = {
-    {.capacity = 1024, .obj_size = 256},  // 1. 小对象 + 少量数据
-    {.capacity = 4096, .obj_size = 256},  // 2. 小对象 + 中等数据
-    {.capacity = 8192, .obj_size = 256},  // 3. 小对象 + 大量数据
-    {.capacity = 1024, .obj_size = 4096}, // 4. 大对象 + 少量数据
-    {.capacity = 4096, .obj_size = 4096}, // 5. 大对象 + 中等数据
-    {.capacity = 8192, .obj_size = 4096}  // 6. 大对象 + 大量数据
+    {.obj_size = 256,  .capacity = 1024, .run_count = 1024, },      // 1. 小对象 + 少量数据
+    {.obj_size = 256,  .capacity = 8192, .run_count = 8192, },      // 2. 小对象 + 大量数据
+    {.obj_size = 4096, .capacity = 1024, .run_count = 1024, },      // 3. 大对象 + 少量数据
+    {.obj_size = 4096, .capacity = 8192, .run_count = 8192, },      // 4. 大对象 + 大量数据
+
+    {.obj_size = 256,  .capacity = 1024, .run_count = 100000, },    // 1. 小对象 + 少量数据 + 扩容
+    {.obj_size = 256,  .capacity = 8192, .run_count = 100000, },    // 2. 小对象 + 大量数据 + 扩容
+    {.obj_size = 4096, .capacity = 1024, .run_count = 100000, },    // 3. 大对象 + 少量数据 + 扩容
+    {.obj_size = 4096, .capacity = 8192, .run_count = 100000, },    // 4. 大对象 + 大量数据 + 扩容
 };
+// clang-format on
 
 test_obj_t g_test_obj;
 
@@ -37,17 +42,19 @@ void perf_deinit(void)
     perf_log_free();
 }
 
-void perf_begin(struct _perf_args* args)
+void perf_begin(struct _perf_args *args)
 {
     timespec_get(&args->start, TIME_UTC);
 }
 
-void perf_end(struct _perf_args* args)
+void perf_end(struct _perf_args *args)
 {
     timespec_get(&args->end, TIME_UTC);
     args->elapsed = calc_elapsed(args->start, args->end);
 
-    perf_log_append(args->name, args->id, args->elapsed * 1000);
+    // printf("run_count = %zu, elapsed = %.3f ms\n", args->run_count, args->elapsed * 1000);
+    // perf_log_append(args->name, args->id, args->elapsed * 1000);
+    perf_log_append(args->name, args->id, args->elapsed * 1000*1000 / args->run_count);
 }
 
 void perf_run_start(size_t id)
@@ -56,9 +63,10 @@ void perf_run_start(size_t id)
 
     g_test_obj.capacity = test_plans[id].capacity;
     g_test_obj.obj_size = test_plans[id].obj_size;
+    g_test_obj.run_count = test_plans[id].run_count;
 
     g_test_obj.obj = unicstl_malloc(g_test_obj.capacity);
-    if(g_test_obj.obj == NULL)
+    if (g_test_obj.obj == NULL)
     {
         log_debug("unicstl_malloc failed");
         return;
@@ -72,9 +80,10 @@ void perf_run_end(size_t id)
 
 void perf_print(void)
 {
-    for(size_t i = 0; i < PERF_TEST_TIEMS; i++)
+    for (size_t i = 0; i < PERF_TEST_TIEMS; i++)
     {
-        printf("T%d: capacity = %zu, obj_size = %zu\n", i, test_plans[i].capacity, test_plans[i].obj_size);
+        printf("T%d: obj_size=%zu, capacity=%zu, run_count=%zu\n", i,
+               test_plans[i].obj_size, test_plans[i].capacity, test_plans[i].run_count);
     }
     printf("\n");
     perf_log_print();
@@ -85,9 +94,12 @@ int main(int argc, char *argv[])
 {
     perf_init();
 
-    perf_test_deque();
-    perf_test_stack();
-    perf_test_queue();
+    perf_test_segarray();
+    perf_test_ringbuf();
+
+    // perf_test_deque();
+    // perf_test_stack();
+    // perf_test_queue();
 
     perf_print();
     perf_deinit();

@@ -24,7 +24,16 @@ struct _perf_args
     struct timespec start;  // [C11]
     struct timespec end;    // [C11]
     double elapsed;
+    size_t run_count;
 };
+
+typedef struct _test_obj
+{
+    void *obj;
+    size_t obj_size;
+    size_t capacity;
+    size_t run_count;
+}test_obj_t;
 
 /**
  * @brief run the performance test function
@@ -37,6 +46,7 @@ struct _perf_args
         .start = {0}, \
         .end = {0}, \
         .elapsed = 0, \
+        .run_count = g_test_obj.run_count,\
     };\
     perf_begin(&args); \
     (func); \
@@ -49,16 +59,7 @@ struct _perf_args
     perf_run_end(ID); \
 }while(0)
 
-
-typedef struct _test_obj
-{
-    void *obj;
-    size_t obj_size;
-    size_t capacity;
-}test_obj_t;
-
-
-#define PERF_TEST_TIEMS            6
+#define PERF_TEST_TIEMS            8
 extern test_obj_t g_test_obj;
 
 /**
@@ -80,6 +81,9 @@ void perf_print(void);
  * @brief perf test items
  *
  */
+void perf_test_segarray(void);
+void perf_test_ringbuf(void);
+
 void perf_test_deque(void);
 void perf_test_stack(void);
 void perf_test_queue(void);

@@ -123,7 +123,7 @@ static void perf_log_print_header(void)
     printf(PERF_FORMAT_FUNC, "       function       ");
     for(size_t i = 0; i < count; ++i)
     {
-        printf("   T%-2d(ms)", i);
+        printf("   T%-2d(us)", i);
     }
     printf("\n");
 

@@ -74,7 +74,7 @@
  *   LOG_ERROR
  *   LOG_NONE
  */
-#define LOG_LEVEL                       LOG_DEBUG
+#define LOG_LEVEL                       LOG_NONE
 
 /**
  * @brief 

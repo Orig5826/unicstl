@@ -19,7 +19,7 @@ void perf_stack_new(void)
 
 void perf_stack_push(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         stack->push(stack, &g_test_obj.obj);
     }
@@ -27,7 +27,7 @@ void perf_stack_push(void)
 
 void perf_stack_pop(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         stack->pop(stack, &g_test_obj.obj);
     }

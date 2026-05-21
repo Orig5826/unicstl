@@ -19,7 +19,7 @@ void perf_deque_new(void)
 
 void perf_deque_push_back(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         deque->push_back(deque, &g_test_obj.obj);
     }
@@ -27,7 +27,7 @@ void perf_deque_push_back(void)
 
 void perf_deque_pop_back(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         deque->pop_back(deque, &g_test_obj.obj);
     }
@@ -35,7 +35,7 @@ void perf_deque_pop_back(void)
 
 void perf_deque_push_front(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         deque->push_front(deque, &g_test_obj.obj);
     }
@@ -43,7 +43,7 @@ void perf_deque_push_front(void)
 
 void perf_deque_pop_front(void)
 {
-    for (size_t i = 0; i < g_test_obj.capacity; i++)
+    for (size_t i = 0; i < g_test_obj.run_count; i++)
     {
         deque->pop_front(deque, &g_test_obj.obj);
     }
@@ -59,6 +59,9 @@ void perf_deque(size_t id)
     RUN_PERF(id, perf_deque_new());
     RUN_PERF(id, perf_deque_push_back() );
     RUN_PERF(id, perf_deque_pop_back() );
+    RUN_PERF(id, perf_deque_free() );
+
+    RUN_PERF(id, perf_deque_new());
     RUN_PERF(id, perf_deque_push_front() );
     RUN_PERF(id, perf_deque_pop_front() );
     RUN_PERF(id, perf_deque_free() );

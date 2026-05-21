@@ -60,8 +60,6 @@ static void heap_fixed_up(struct _heap* self, size_t i)
             }
             obj_swap(base, i, p, obj_size);
             i = p;
-
-            self->print(self);
         }
     }
     else /* if(self->_type == HEAP_MIN) */
@@ -78,8 +76,6 @@ static void heap_fixed_up(struct _heap* self, size_t i)
             }
             obj_swap(base, i, p, obj_size);
             i = p;
-
-            self->print(self);
         }
     }
 }
@@ -170,7 +166,7 @@ static bool heap_pop(struct _heap* self, void* obj)
     return true;
 }
 
-static size_t heap_reserve(struct _heap* self, size_t capacity)
+static bool heap_reserve(struct _heap* self, size_t capacity)
 {
     unicstl_assert(self != NULL);
     unicstl_assert(self->_darray != NULL);
