@@ -96,7 +96,7 @@ static bool segarray_push_back(struct _segarray *self, const void *obj)
                 size_t capacity_new = unicstl_new_capacity(self->_capacity);
                 if(self->reserve(self, capacity_new))
                 {
-                    log_error("next, you need to realize it");
+                    log_error("reserve failed!");
                     return false;
                 }
             }
@@ -181,7 +181,7 @@ static bool segarray_push_front(struct _segarray *self, const void *obj)
                 size_t capacity_new = unicstl_new_capacity(self->_capacity);
                 if(self->reserve(self, capacity_new))
                 {
-                    log_error("next, you need to realize it");
+                    log_error("reserve failed!");
                     return false;
                 }
             }

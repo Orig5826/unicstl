@@ -29,9 +29,11 @@
 
 #include "stack.h"
 #include "queue.h"
+#include "heap.h"
+#include "rbtree.h"
 
 #include "tree.h"
-#include "heap.h"
 #include "graph.h"
+
 
 #endif // _UNICSTL_H_

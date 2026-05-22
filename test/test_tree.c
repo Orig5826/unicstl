@@ -10,6 +10,8 @@
  */
 #include "test.h"
 
+#ifdef UNICSTL_TREE
+
  // if vs2022 has error: 'max': macro redefinition
 #ifdef max
 #undef max
@@ -363,11 +365,14 @@ static void test_rbtree_delete(void)
     tree_free(&tree);
     TEST_ASSERT_NULL(tree);
 }
+#endif
+
 
 void test_tree(void)
 {
     UnitySetTestFile(__FILE__);
 
+#if UNICSTL_TREE
     RUN_TEST(test_avltree_iter);
     RUN_TEST(test_avltree_insert);
     RUN_TEST(test_avltree_delete);
@@ -375,4 +380,5 @@ void test_tree(void)
     RUN_TEST(test_rbtree_iter);
     RUN_TEST(test_rbtree_insert);
     RUN_TEST(test_rbtree_delete);
+#endif
 }

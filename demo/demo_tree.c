@@ -10,6 +10,8 @@
  */
 #include "demo.h"
 
+#ifdef UNICSTL_TREE
+
 // if vs2022 has error: 'max': macro redefinition
 #ifdef max
 #undef max
@@ -621,3 +623,5 @@ void demo_tree(void)
     demo_rbtree_num();
     demo_rbtree_struct();
 }
+
+#endif

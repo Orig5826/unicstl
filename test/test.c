@@ -121,6 +121,9 @@ int main(int argc, char const *argv[])
 #if  UNITTEST_USTRING
     TEST_ADD(test_ustring);
 #endif
+#if UNITTEST_RBTREE
+    TEST_ADD(test_rbtree);
+#endif
 
     mempool_deinit();
     log_deinit();

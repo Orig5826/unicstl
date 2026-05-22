@@ -12,6 +12,7 @@
 #include "queue.h"
 #include "stack.h"
 
+#if UNICSTL_TREE
 // #define TREE_RECURSIVE_ENABLED 
 
 static struct _tree_node* tree_node_new(struct _tree* self, void* obj)
@@ -1527,3 +1528,5 @@ void tree_free(tree_t* tree)
     }
     *tree = NULL;
 }
+
+#endif

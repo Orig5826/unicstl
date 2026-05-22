@@ -16,7 +16,7 @@
 #include "stack.h"
 #include "queue.h"
 
-
+#if UNICSTL_TREE
 typedef enum {
     RBT_RED,
     RBT_BLACK,
@@ -98,5 +98,7 @@ tree_t tree_avl_new(size_t obj_size);
 tree_t tree_rb_new(size_t obj_size);
 
 void tree_free(tree_t* tree);
+
+#endif
 
 #endif // _TREE_H_

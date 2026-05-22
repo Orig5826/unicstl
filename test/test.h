@@ -20,7 +20,7 @@
 #include "unity.h"
 
 
-#define UNITTEST_ALL        1
+#define UNITTEST_ALL        0
 
 #define UNITTEST_LINKLIST   (UNITTEST_ALL || 0)
 #define UNITTEST_DLINKLIST  (UNITTEST_ALL || 0)
@@ -39,8 +39,9 @@
 // #define UNITTEST_GRAPH      (UNITTEST_ALL || 0)
 
 #define UNITTEST_SEGARRAY   (UNITTEST_ALL || 0)
-#define UNITTEST_USTRING    (UNITTEST_ALL || 1)
+#define UNITTEST_USTRING    (UNITTEST_ALL || 0)
 
+#define UNITTEST_RBTREE     (UNITTEST_ALL || 1)
 
 /**
  * @brief demo objects
@@ -85,5 +86,6 @@ void test_heap(void);
 void test_graph(void);
 
 void test_ustring(void);
+void test_rbtree(void);
 
 #endif // _TEST_H_

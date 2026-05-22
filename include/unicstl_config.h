@@ -27,7 +27,7 @@
 #define UNICSTL_STACK
 #define UNICSTL_QUEUE
 #define UNICSTL_DEQUE
-#define UNICSTL_TREE
+// #define UNICSTL_TREE
 #define UNICSTL_HEAP
 #define UNICSTL_GRAPH
 #define UNICSTL_ITERATOR
